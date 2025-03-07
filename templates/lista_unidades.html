@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GFC</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/tooltip.css">
+</head>
+<body>
+    {% include 'menu.html' %}
+    {% if unidades %}
+    <div style="margin-top: 4em; text-align: center; font-size: 30px; "> 
+        <a style="font-size: 2ch">{{nmEmpreend}}</a>        
+        <table border="1" align="center" style="font-family: Arial; font-size: 13px; margin-top: 2%; border-spacing: 1px; border-color: white; background-color: #e7e7e7;" >
+            <thead>
+            <tr>
+                <th>Torre</th>
+                <th>Unidade</th>
+                <th colspan="5"></th>
+            </tr>
+        </thead>        
+        <tbody>
+            {% for u in unidades %}            
+            <tr>
+                <td>{{ u.getNmTorre() }}</td>
+                <td>{{ u.getUnidade() }}</td>
+                <td>
+                    <div class="tooltip">
+                        <a href="/consultar_unidade?idUnidade={{u.getIdUnidade()}}&modo=consulta&idEmpreend={{u.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}&nmTorre={{u.getNmTorre()}}"><img src="../static/icons8-pesquisar-48.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">consultar</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="tooltip">
+                        <a href="/editar_unidade?idUnidade={{u.getIdUnidade()}}"><img src="../static/icons8-editar-32.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">Editar</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="tooltip">                                                    
+                        <a href="/consultar_unidade?idUnidade={{u.getIdUnidade()}}&modo=exclui&idEmpreend={{u.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}&nmTorre={{u.getNmTorre()}}"><img src="../static/icons8-lixeira-24.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">Excluir</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="tooltip">
+                        <a href="/importar_unidades?unidade={{u.getUnidade()}}"><img src="../static/icons8-importar-arquivo-48.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">Importar Gastos</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="tooltip">
+                        <a href="/criar_graficos?unidade={{u.getUnidade()}}"><img src="../static/icons8-increase-80.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">Gráficos</span>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>        
+        </table>
+    </div>
+    <div>    
+        <form action="/abrir_cad_unidade" method="POST" style="border: 0px;" id="formListaUnidades">   
+            <div> 
+                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />        
+                <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" />       
+                <button type="submit">Novo</button>
+                <button type="button" onclick="document.getElementById('formListaUnidades').action = '/home'; document.getElementById('formListaUnidades').method = 'GET'; document.getElementById('formListaUnidades').submit();"  style="bottom: 10; right: 10;">Voltar</button>
+            </div>
+        </form>
+    </div>
+    {% else %}
+    <div>    
+        <form action="/abrir_cad_unidade" method="POST" style="border: 0px;" id="formListaUnidades"  method="POST">   
+            <div> 
+                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />     
+                <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" />          
+                <button type="submit">Novo</button>
+                <button type="button" onclick="document.getElementById('formListaUnidades').action = '/home'; document.getElementById('formListaUnidades').method = 'GET'; document.getElementById('formListaUnidades').submit();"  style="bottom: 10; right: 10;">Voltar</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+
+</body>
+
+</html>

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GFC</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/tooltip.css">
+</head>
+<body>
+    {% include 'menu.html' %}
+    {% if clienteS %}
+    <div style="margin-top: 10em;">
+        <table border="1" align="center" style="font-family: Arial; border-spacing: 1px; border-color: white; background-color: #e7e7e7;"" >
+        <thead>
+            <tr>
+                <th>CPF / CNPJ</th>
+                <th>Tipo (CPF/CNPJ)</th>
+                <th>Nome do Cliente</th>
+                <th>DDD</th>
+                <th>Telefone</th>
+                <th>Email</th>
+                <th colspan="3"></th>
+            </tr>
+        </thead>        
+        <tbody>
+            {% for c in clienteS %}            
+            <tr>
+                <td>{{ c.getCpfCnpj() }}</td>
+                <td>{{ c.getTpCpfCnpj() }}</td>
+                <td>{{ c.getNmCliente() }}</td>
+                <td>{{ c.getDdd() }}</td>
+                <td>{{ c.getTel() }}</td>
+                <td>{{ c.getEmail() }}</td>
+                <td>
+                    <div class="tooltip">
+                        <a href="/consultar_cliente?cpfCnpj={{c.getCpfCnpj()}}&modo=consulta&idEmpreend={{idEmpreend}}"><img src="../static/icons8-pesquisar-48.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">consultar</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="tooltip">
+                        <a href="/editar_cliente?cpfCnpj={{c.getCpfCnpj()}}"><img src="../static/icons8-editar-32.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">Editar</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="tooltip">                                                    
+                        <a href="/excluir_cliente?cpfCnpj={{c.getCpfCnpj()}}&modo=exclui&idEmpreend={{idEmpreend}}"><img src="../static/icons8-lixeira-24.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">Excluir</span>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>        
+        </table>
+    </div>
+    <div>    
+        <form action="/abrir_cad_cliente" method="POST" style="border: 0px;" id="formListaClientes"  method="POST">   
+            <div> 
+                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />          
+                <button type="submit">Novo</button>
+                <button type="button" onclick="document.getElementById('formListaClientes').action = '/home'; document.getElementById('formListaClientes').method = 'GET'; document.getElementById('formListaClientes').submit();"  style="bottom: 10; right: 10;">Voltar</button>
+            </div>
+        </form>
+    </div>
+
+    {% else %}
+    <h1>Não há Torres cadastradas no empreendimento.</h1>
+    {% endif %}
+
+</body>
+
+</html>

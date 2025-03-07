@@ -1,0 +1,81 @@
+<!--                                                                                   \lista_orcamentos.html-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.1">
+    <title>GFC</title>
+    <link rel="stylesheet" href="../static/style.css"> 
+    <link rel="stylesheet" href="../static/tooltip.css"> 
+</head>
+<body>
+    {% include 'menu.html' %} 
+    {% if orcamentos %}
+    <div style="margin-top: 7em; text-align: center; font-size: 30px; "> 
+        <a style="font-size: 2ch">{{nmEmpreend}}</a>
+        <table border="1" align="center" style="font-family: Arial; font-size: 13px; margin-top: 2%; border-spacing: 1px; border-color: white; background-color: #e7e7e7;" >
+            <thead>
+            <tr>
+                <th>Mes vigencia</th>
+                <th>Ano vigencia</th>
+                <th>Data carga</th>
+                <th colspan="3"></th>
+            </tr>
+        </thead>        
+        <tbody>
+            {% for m in orcamentos %}            
+            <tr>
+                <td>{{ m.getMesVigencia() }}</td>
+                <td>{{ m.getAnoVigencia() }}</td>
+                <td>{{ m.getDtCarga() }}</td>
+                <td>
+                    <div class="tooltip">
+                        <a href="/consultar_orcamento_data?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}"><img src="../static/icons8-pesquisar-48.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">consultar</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="tooltip">
+                        <a href="/excluir_orcamento?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}"><img src="../static/icons8-lixeira-24.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">Excluir movimento</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="tooltip">
+                        <a href="/graf_orcamento_liberacao?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}&tipo=valor" target="_blank"><img src="../static/icons8-increase-80.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">Gráfico %</span>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>        
+        </table>
+    </div> 
+    <div>    
+        <form action="/home" method="POST" style="border: 0px;" id="formListaOrcamentos"  method="POST">   
+            <div> 
+                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />          
+                <button type="submit">Voltar</button>
+                <button type="button" onclick="document.getElementById('formListaOrcamentos').action = '/importar_orcamentos'; document.getElementById('formListaOrcamentos').method = 'GET'; document.getElementById('formListaOrcamentos').submit();"  style="bottom: 10; right: 10;">Carregar Excel</button>
+            </div>
+        </form>
+    </div>
+    {% else %}
+<!--    <div>
+        <a href="/importar_orcamentos?idEmpreend={{idEmpreend}}"><img src="../static/icons8-ms-excel-50.png" style="width: 30px; height: 30px; align-items: center;"/></a>
+        <span>Importar Excel</span>
+    </div>
+-->
+    <div>    
+        <form action="/home" method="POST" style="border: 0px;" id="formListaOrcamentos"  method="POST">   
+            <div> 
+                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />          
+                <button type="submit">Voltar</button>
+                <button type="button" onclick="document.getElementById('formListaOrcamentos').action = '/importar_orcamentos'; document.getElementById('formListaOrcamentos').method = 'GET'; document.getElementById('formListaOrcamentos').submit();"  style="bottom: 10; right: 10;">Carregar Excel</button>
+            </div>
+        </form>
+    </div>
+    {% endif %}
+</body>
+
+</html>

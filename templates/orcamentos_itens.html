@@ -1,0 +1,78 @@
+<!--                                                                                                               orcamentos_items.html-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=0.1">
+    <title>GFC</title>
+    <link rel="stylesheet" href="../static/style.css"> 
+    <link rel="stylesheet" href="../static/tooltip.css"> 
+</head>
+<body>
+    {% include 'menu.html' %}
+    {% if orcamentos %}
+    <div style="margin-top: 10em; height: 600px; overflow-y:auto;"> 
+        <table border="1" align="center" style="font-family: Arial; font-size: 13px; margin-top: 5em; border-spacing: 1px; border-color: white; background-color: #e7e7e7;" >
+        <thead>
+            <tr>
+                <th> Mes vigêcia </th>
+                <th> Ano vigência </th>
+                <th>Data carga</th>
+                <th>Item</th>
+                <th> Orcado </th>
+                <th> Físico R$ </th>
+                <th> Físico % </th>
+                <th> Físico saldo </th>
+                <th> Financeiro R$ </th>
+                <th> Financeiro % </th>
+                <th> Financeiro saldo </th>
+           </tr>
+        </thead>        
+        <tbody>
+            {% for m in orcamentos %}            
+            <tr>
+                <td>{{ m.getMesVigencia() }}</td>
+                <td>{{ m.getAnoVigencia() }}</td>
+                <td>{{ m.getDtCarga() }}</td>
+                <td>{{ m.getItem() }}</td>
+                <td>{{ m.getOrcadoValor() }}</td>
+                <td>{{ m.getFisicoValor() }}</td>
+                <td>{{ m.getFisicoPercentual() }}</td>
+                <td>{{ m.getFisicoSaldo() }}</td>
+                <td>{{ m.getFinanceiroValor() }}</td>
+                <td>{{ m.getFinanceiroPercentual() }}</td>
+                <td>{{ m.getFinanceiroSaldo() }}</td>
+                <td>
+                    <div class="tooltip">
+                        <a href="/editar_item_orcamento?idOrcamento={{m.getIdOrcamento()}}"><img src="../static/icons8-editar-32.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">Editar</span>
+                    </div>
+                </td>
+                <td>
+                    <div class="tooltip">                                                    
+                        <a href="/excluir_item_orcamento?idOrcamento={{m.getIdOrcamento()}}&idEmpreend={{m.getIdEmpreend()}}&dtCarga={{m.getDtCarga()}}&modo=exclui"><img src="../static/icons8-lixeira-24.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">Excluir</span>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>        
+        </table>
+    </div> 
+    <div>    
+        <form action="/abrir_cad_orcamento" method="POST" style="border: 0px;" id="formListaOrcamentosItens"  method="POST">   
+            <div> 
+                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />          
+                <button type="submit">Novo</button>
+                <button type="button" onclick="document.getElementById('formListaOrcamentosItens').action = '/tratar_orcamentos'; document.getElementById('formListaOrcamentosItens').method = 'GET'; document.getElementById('formListaOrcamentosItens').submit();"  style="bottom: 10; right: 10;">Voltar</button>
+            </div>
+        </form>
+    </div>
+
+    {% else %}
+    <h1>Não há Unidades cadastradas no empreendimento.</h1>
+    {% endif %}
+
+</body>
+
+</html>

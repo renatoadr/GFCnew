@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GFC</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/tooltip.css">
+   
+</head>
+<body>
+    <div style="margin-top: 4em; text-align: center; font-size: 30px; "> 
+        <a style="font-size: 2ch">{{nmEmpreend}}</a>
+    </div>     
+    {% include 'menu.html' %}
+    {% if torre %}
+    <form action="/salvar_alteracao_torre" style= "border: 0px; margin-top: 3em;" id="formAlterarTorre"  method="POST">   
+        <div>
+            <label for="nmTorre">Nome da torre:</label>
+            <input type="text" name="nmTorre" value="{{ torre.getNmTorre() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} />
+        </div>
+        <div>
+            <label for="qtUnidade">Quantidade de unidades:</label>
+            <input type="text" name="qtUnidade" value="{{ torre.getQtUnidade() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} />
+        </div>
+        <div>           
+            <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />  
+            <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" />   
+            <input type="hidden" name="idTorre" value="{{ torre.getIdTorre() }}" />
+            <button {% if modo == 'consulta' or modo=='exclui' %} hidden {% endif %} type="submit">Salvar</button>
+            <button type="button" onclick="document.getElementById('formAlterarTorre').action = '/tratar_torres'; document.getElementById('formAlterarTorre').method = 'GET'; document.getElementById('formAlterarTorre').submit();"  style="bottom: 10; right: 10;">Cancelar</button>
+            <button {% if modo != 'exclui' %} hidden {% endif %} type="button" onclick="document.getElementById('formAlterarTorre').action = '/excluir_torre'; document.getElementById('formAlterarTorre').method = 'GET'; document.getElementById('formAlterarTorre').submit();"  style="bottom: 10; right: 10;">Confirmar exclusão</button>
+        </div>
+    </form>
+    {% else %}
+    <form action="/cadastrar_torre" style= "border: 0px; margin-top: 3em;" id="formIncluirTorre"  method="POST">   
+        <div>
+            <label for="nmTorre">Nome da torre:</label>
+            <input type="text" name="nmTorre" />
+        </div>
+        <div>
+            <label for="qtUnidade">Quantidade de unidades:</label>
+            <input type="text" name="qtUnidade" />
+        </div>
+        <div>   
+            <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />         
+            <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" /> 
+            <button type="submit">Salvar</button>
+            <button type="button" onclick="document.getElementById('formIncluirTorre').action = '/tratar_torres'; document.getElementById('formIncluirTorre').method = 'GET'; document.getElementById('formIncluirTorre').submit();"  style="bottom: 10; right: 10;">Cancelar</button>
+        </div>
+    </form>
+    {% endif %}                                                               
+</body>
+</html>

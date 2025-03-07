@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GFC</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/tooltip.css">
+</head>
+<body>
+     {% include 'menu.html' %}
+     <div  style="margin-top: 5em;">
+     <h3>Carregar arquivo de medições</hr3><br>
+
+     <form action="/upload_arquivo_orcamentos" method="POST" enctype="multipart/form-data">
+          Id do Empreendimento: <input type="text" name="idEmpreend" value="{{idEmpreend}}">
+          <input type="file" name="file">
+          <input type="submit" value="Carregar arquivo de orcamentos">
+     </form>
+     </div>
+</body>
+</html>

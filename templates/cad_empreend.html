@@ -3,38 +3,136 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Desafio 1</title>
+    <title>GFC</title>
     <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/tooltip.css">
 </head>
 <body>
-    <form action="/efetuar_cad_empreend" method="POST">
+    {% include 'menu.html' %}
+    {% if empreend %}
+
+    <form action="/salvar_empreend" method="POST" style="margin-top: 10em" id="formListaEmpreend">
         <div>
-             <label for="nmEmpreendimento">Empreendimento:</label>
-             <input type="text" id="nmEmpreendimento" />
+            <label for="idEmpreendimento">Codigo do Empreendimento:</label>
+            <input type="text" name="idEmpreendimento" value="{{ empreend.getIdEmpreend() }}"  readonly  />
         </div>
         <div>
-             <label for="nmEndereco">Endereço:</label>
-             <input type="text" id="nmEndereco" />
+            <label for="nmEmpreendimento">Nome:</label>
+            <input type="text" name="nmEmpreendimento" value="{{ empreend.getNmEmpreend() }}" />
         </div>
         <div>
-             <label for="nmIncorporador">Incorporador:</label>
-             <input type="text" id="nmIncorporador" />
+            <label for="logradouro">Endereço:</label>
+            <input type="text" name="logradouro" value="{{ empreend.getLogradouro() }}" />
         </div>
         <div>
-             <label for="nmConstrutora">Construtora:</label>
-             <input type="text" id="nmConstrutora" />
+             <label for="bairro">Bairro:</label>
+             <input type="text" name="bairro" value="{{ empreend.getBairro() }}" /> 
+        </div>
+        <div>
+            <label for="cidade">Cidade:</label>
+            <input type="text" name="cidade" value="{{ empreend.getCidade() }}" /> 
+       </div>
+        <div>
+             <label for="estado">Estado:</label>
+             <input type="text" name="estado" value="{{ empreend.getEstado() }}" /> 
+        </div>
+        <div>
+            <label for="cep">CEP :</label>
+            <input type="text" name="cep" value="{{ empreend.getCep() }}" /> 
+        </div>
+        <div>
+             <label for="nmIncorp">Incorporador:</label>
+             <input type="text" name="nmIncorp" value="{{ empreend.getNmIncorp() }}" /> 
+        </div>
+        <div>
+             <label for="nmConstrutor">Construtora:</label>
+             <input type="text" name="nmConstrutor" value="{{ empreend.getNmConstrutor() }}" />
         </div>
         <div>
              <label for="nmBanco">Banco:</label>
-             <input type="text" id="nmBanco" />
+             <input type="text" name="nmBanco" value="{{ empreend.getNmBanco() }}" />
         </div>
-<!--        <div>
-          <label for="notas">Anotações:</label>
-          <textarea id="msg"></textarea>
-         </div>
--->     <div class="button">
-    <button type="pesquisa">Pesquisar</button><button type="submit">Salvar</button><button type="delete">Excluir</button>
+        <div>
+            <label for="nmEngenheiro">Nome do engenheiro:</label>
+            <input type="text" name="nmEngenheiro" value="{{ empreend.getNmEngenheiro() }}" />
         </div>
-      </form>
+        <div>
+            <label for="vlPlanoEmp">Valor do Plano Empresário:</label>
+            <input type="text" name="vlPlanoEmp" value="{{ empreend.getVlPlanoEmp() }}" />
+        </div>
+        <div>
+            <label for="indiceGarantia">Indice de Garantia Contratado:</label>
+            <input type="text" name="indiceGarantia" value="{{ empreend.getIndiceGarantia() }}" />
+        </div>
+        <div>
+            <label for="previsaoEntrega">Previsão de entrega:</label>
+            <input type="date" name="previsaoEntrega" value="{{ empreend.getPrevisaoEntrega() }}" />
+        </div>
+        <div> 
+            <button type="submit">Salvar</button>
+            <button type="button" onclick="document.getElementById('formListaEmpreend').action = '/home'; document.getElementById('formListaEmpreend').method = 'GET'; document.getElementById('formListaEmpreend').submit();"  style="bottom: 10; right: 10;">Cancelar</button>
+        </div>
+    </form>
+    {% else %}
+    <form action="/efetuar_cad_empreend" method="POST" style="margin-top: 10em" id="formListaEmpreend">
+        <div>
+            <label for="nmEmpreendimento">nome:</label>
+            <input type="text" name="nmEmpreendimento" />
+        </div>
+        <div>
+            <label for="logradouro">Endereço:</label>
+            <input type="text" name="logradouro" />
+        </div>
+        <div>
+             <label for="bairro">Bairro:</label>
+             <input type="text" name="bairro" />
+        </div>
+        <div>
+            <label for="cidade">Cidade:</label>
+            <input type="text" name="cidade" />
+       </div>
+        <div>
+             <label for="estado">Estado:</label>
+             <input type="text" name="estado" />
+        </div>
+        <div>
+            <label for="cep">CEP :</label>
+            <input type="text" name="cep" />
+        </div>
+        <div>
+             <label for="nmIncorp">Incorporador:</label>
+             <input type="text" name="nmIncorp" />
+        </div>
+        <div>
+             <label for="nmConstrutor">Construtora:</label>
+             <input type="text" name="nmConstrutor" />
+        </div>
+        <div>
+             <label for="nmBanco">Banco:</label>
+             <input type="text" name="nmBanco" />
+        </div>
+        <div>
+            <label for="nmEngenheiro">Nome do engenheiro:</label>
+            <input type="text" name="nmEngenheiro" />
+        </div>
+        <div>
+            <label for="vlPlanoEmp">Valor do Plano Empresário:</label>
+            <input type="text" name="vlPlanoEmp" />
+        </div>
+        <div>
+            <label for="indiceGarantia">Indice de Garantia Contratado:</label>
+            <input type="text" name="indiceGarantia" />
+        </div>
+        <div>
+            <label for="previsaoEntrega">Previsão de entrega:</label>
+            <input type="date" name="previsaoEntrega" />
+        </div>
+        <div> 
+            <button type="submit">Salvar</button>
+            <button type="button" onclick="document.getElementById('formListaEmpreend').action = '/home'; document.getElementById('formListaEmpreend').method = 'GET'; document.getElementById('formListaEmpreend').submit();"  style="bottom: 10; right: 10;">Cancelar</button>
+        </div>
+    </form>
+    {% endif %}
 </body>
 </html>
+

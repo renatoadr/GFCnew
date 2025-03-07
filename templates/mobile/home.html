@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GFC</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/tooltip.css">
+</head>
+<body>
+
+{% include 'mobile/menu.html' %}
+    <div style="margin-top: 10em;">
+        <table border="1" align="center" style="font-family: Arial; border-spacing: 1px; border-color: white; background-color: #e7e7e7;"" >
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th colspan="1"></th>
+            </tr>
+        </thead>        
+        <tbody>
+            {% for e in apelidos %}     
+            <tr>
+                <td>{{ e.getApelido() }}</td>
+
+                <td><div class="tooltip">
+                        <a href="/lista_relatorios?apelido={{e.getApelido()}}"><img src="../static/icons8-dedo-indicador-e-o-polegar-50.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">Selecionar Empreendimento</span>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>        
+        </table>
+    </div>
+</body>
+</html>

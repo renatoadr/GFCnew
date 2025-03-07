@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GFC</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/tooltip.css">
+</head>
+<body>
+     {% include 'menu.html' %}
+     <div  style="margin-top: 5em;">
+     <h3>Carregar fotos</hr3><br>
+
+     <form action="/upload_arquivo_fotos" method="POST" enctype="multipart/form-data">
+          Id do Empreendimento: <input type="text" name="idEmpreend" value="{{idEmpreend}}">
+          <input type="file" name="file" multiple="multiple">
+          <input type="submit" value="Carregar fotos">
+     </form>
+     </div>
+</body>
+</html>

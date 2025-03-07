@@ -1,0 +1,26 @@
+
+<header style="box-shadow: 0px 0px 20px rgba(38, 4F, 7C, 0.1); background: #384f7C; position: fixed; width: 100%; top: 0;">
+
+<table border=0 style="width: 100%;">
+    <tr>
+        <td><p align="left"><div class="tooltip"><a href="/home"><img src="../static/gfc.png" alt="Home" style="width:60px;height:60px;"/></a></div></p></td>
+        <td><p style="color: white; font-family: Arial">Gestão Financeira da Construção</p></td>
+        <td>
+            <p align="right">
+              {{session.email}} 
+              <div>
+                <a href="/logout" style="text-align: center; display: inline-block;">
+                  <img src="../static/icons8-sair-48-neg.png" alt="Sair" style="width: 30px; height: 30px;" />
+                  <span style="color: white; display: block;">Sair</span>
+                </a>
+              </div>
+            </p>
+          </td>
+    </tr>
+</table>
+</header>
+{% if mensagem %}
+    <div style="margin-top: 6em; font-family:Arial; text-align: left; font-size: 20px" class="smoothbox">
+     <p> {{mensagem}} </p>  
+    </div>
+{% endif %} 
