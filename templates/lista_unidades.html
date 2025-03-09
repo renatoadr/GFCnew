@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GFC</title>
-    <link rel="stylesheet" href="../static/style.css">
-    <link rel="stylesheet" href="../static/tooltip.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/tooltip.css">
 </head>
 <body>
     {% include 'menu.html' %}
@@ -27,31 +27,31 @@
                 <td>{{ u.getUnidade() }}</td>
                 <td>
                     <div class="tooltip">
-                        <a href="/consultar_unidade?idUnidade={{u.getIdUnidade()}}&modo=consulta&idEmpreend={{u.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}&nmTorre={{u.getNmTorre()}}"><img src="../static/icons8-pesquisar-48.png" style="width: 24px; height: 24px;"/></a>
+                        <a href="/consultar_unidade?idUnidade={{u.getIdUnidade()}}&modo=consulta&idEmpreend={{u.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}&nmTorre={{u.getNmTorre()}}"><img src="../static/imgs/icons8-pesquisar-48.png" style="width: 24px; height: 24px;"/></a>
                         <span class="tooltiptext">consultar</span>
                     </div>
                 </td>
                 <td>
                     <div class="tooltip">
-                        <a href="/editar_unidade?idUnidade={{u.getIdUnidade()}}"><img src="../static/icons8-editar-32.png" style="width: 24px; height: 24px;"/></a>
+                        <a href="/editar_unidade?idUnidade={{u.getIdUnidade()}}"><img src="../static/imgs/icons8-editar-32.png" style="width: 24px; height: 24px;"/></a>
                         <span class="tooltiptext">Editar</span>
                     </div>
                 </td>
                 <td>
                     <div class="tooltip">                                                    
-                        <a href="/consultar_unidade?idUnidade={{u.getIdUnidade()}}&modo=exclui&idEmpreend={{u.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}&nmTorre={{u.getNmTorre()}}"><img src="../static/icons8-lixeira-24.png" style="width: 24px; height: 24px;"/></a>
+                        <a href="/consultar_unidade?idUnidade={{u.getIdUnidade()}}&modo=exclui&idEmpreend={{u.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}&nmTorre={{u.getNmTorre()}}"><img src="../static/imgs/icons8-lixeira-24.png" style="width: 24px; height: 24px;"/></a>
                         <span class="tooltiptext">Excluir</span>
                     </div>
                 </td>
                 <td>
                     <div class="tooltip">
-                        <a href="/importar_unidades?unidade={{u.getUnidade()}}"><img src="../static/icons8-importar-arquivo-48.png" style="width: 24px; height: 24px;"/></a>
+                        <a href="/importar_unidades?unidade={{u.getUnidade()}}"><img src="../static/imgs/icons8-importar-arquivo-48.png" style="width: 24px; height: 24px;"/></a>
                         <span class="tooltiptext">Importar Gastos</span>
                     </div>
                 </td>
                 <td>
                     <div class="tooltip">
-                        <a href="/criar_graficos?unidade={{u.getUnidade()}}"><img src="../static/icons8-increase-80.png" style="width: 24px; height: 24px;"/></a>
+                        <a href="/criar_graficos?unidade={{u.getUnidade()}}"><img src="../static/imgs/icons8-increase-80.png" style="width: 24px; height: 24px;"/></a>
                         <span class="tooltiptext">Gráficos</span>
                     </div>
                 </td>

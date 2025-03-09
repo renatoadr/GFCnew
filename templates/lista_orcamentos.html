@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.1">
     <title>GFC</title>
-    <link rel="stylesheet" href="../static/style.css"> 
-    <link rel="stylesheet" href="../static/tooltip.css"> 
+    <link rel="stylesheet" href="../static/css/style.css"> 
+    <link rel="stylesheet" href="../static/css/tooltip.css"> 
 </head>
 <body>
     {% include 'menu.html' %} 
@@ -30,19 +30,19 @@
                 <td>{{ m.getDtCarga() }}</td>
                 <td>
                     <div class="tooltip">
-                        <a href="/consultar_orcamento_data?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}"><img src="../static/icons8-pesquisar-48.png" style="width: 24px; height: 24px;"/></a>
+                        <a href="/consultar_orcamento_data?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}"><img src="../static/imgs/icons8-pesquisar-48.png" style="width: 24px; height: 24px;"/></a>
                         <span class="tooltiptext">consultar</span>
                     </div>
                 </td>
                 <td>
                     <div class="tooltip">
-                        <a href="/excluir_orcamento?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}"><img src="../static/icons8-lixeira-24.png" style="width: 24px; height: 24px;"/></a>
+                        <a href="/excluir_orcamento?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}"><img src="../static/imgs/icons8-lixeira-24.png" style="width: 24px; height: 24px;"/></a>
                         <span class="tooltiptext">Excluir movimento</span>
                     </div>
                 </td>
                 <td>
                     <div class="tooltip">
-                        <a href="/graf_orcamento_liberacao?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}&tipo=valor" target="_blank"><img src="../static/icons8-increase-80.png" style="width: 24px; height: 24px;"/></a>
+                        <a href="/graf_orcamento_liberacao?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}&tipo=valor" target="_blank"><img src="../static/imgs/icons8-increase-80.png" style="width: 24px; height: 24px;"/></a>
                         <span class="tooltiptext">Gráfico %</span>
                     </div>
                 </td>
@@ -62,7 +62,7 @@
     </div>
     {% else %}
 <!--    <div>
-        <a href="/importar_orcamentos?idEmpreend={{idEmpreend}}"><img src="../static/icons8-ms-excel-50.png" style="width: 30px; height: 30px; align-items: center;"/></a>
+        <a href="/importar_orcamentos?idEmpreend={{idEmpreend}}"><img src="../static/imgs/icons8-ms-excel-50.png" style="width: 30px; height: 30px; align-items: center;"/></a>
         <span>Importar Excel</span>
     </div>
 -->

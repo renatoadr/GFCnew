@@ -5,8 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=0.1">
     <title>GFC</title>
-    <link rel="stylesheet" href="../static/style.css"> 
-    <link rel="stylesheet" href="../static/tooltip.css"> 
+    <link rel="stylesheet" href="../static/css/style.css"> 
+    <link rel="stylesheet" href="../static/css/tooltip.css"> 
 </head>
 <body>
     {% include 'menu.html' %}
@@ -44,13 +44,13 @@
                 <td>{{ m.getFinanceiroSaldo() }}</td>
                 <td>
                     <div class="tooltip">
-                        <a href="/editar_item_orcamento?idOrcamento={{m.getIdOrcamento()}}"><img src="../static/icons8-editar-32.png" style="width: 24px; height: 24px;"/></a>
+                        <a href="/editar_item_orcamento?idOrcamento={{m.getIdOrcamento()}}"><img src="../static/imgs/icons8-editar-32.png" style="width: 24px; height: 24px;"/></a>
                         <span class="tooltiptext">Editar</span>
                     </div>
                 </td>
                 <td>
                     <div class="tooltip">                                                    
-                        <a href="/excluir_item_orcamento?idOrcamento={{m.getIdOrcamento()}}&idEmpreend={{m.getIdEmpreend()}}&dtCarga={{m.getDtCarga()}}&modo=exclui"><img src="../static/icons8-lixeira-24.png" style="width: 24px; height: 24px;"/></a>
+                        <a href="/excluir_item_orcamento?idOrcamento={{m.getIdOrcamento()}}&idEmpreend={{m.getIdEmpreend()}}&dtCarga={{m.getDtCarga()}}&modo=exclui"><img src="../static/imgs/icons8-lixeira-24.png" style="width: 24px; height: 24px;"/></a>
                         <span class="tooltiptext">Excluir</span>
                     </div>
                 </td>
