@@ -1152,22 +1152,22 @@ def excluir_agenda():
 
 @app.route('/obter_grafico', methods=['GET'])
 def obter_grafico():
-    
-  
+     
     grafNome = request.args.get("grafNome")
     
-#    filename = UPLOAD_FOLDER + '\\' + 'teste.png'
     print ('------------ obter_grafico -------------')
     print (grafNome)
     return send_file(grafNome, mimetype='image/png')
- 
-  
+   
 @app.route('/graf_orcamento_liberacao', methods=['GET'])
 def graf_orcamento_liberacao():
 
     tipo = request.args.get("tipo")
     idEmpreend = request.args.get("idEmpreend")
     dtCarga = request.args.get("dtCarga")
+    mes = request.args.get("mesV")
+    ano = request.args.get("anoV") 
+    print ('==============>', mes, ano)
     
     medC = orcamentoController ()
     medS = medC.consultarOrcamentoPelaData (idEmpreend, dtCarga)
@@ -1179,6 +1179,7 @@ def graf_orcamento_liberacao():
 
     for m in medS:
         index.append(m.getItem())
+ 
         if tipo == "valor":
             fisico.append(float(m.getFisicoValor()))        
             financeiro.append(float(m.getFinanceiroValor()))
@@ -1197,16 +1198,11 @@ def graf_orcamento_liberacao():
     ax.set_xlabel('Valor em milhões')
     plt.legend(loc='lower left', bbox_to_anchor=(0,-0.2), fontsize=8,ncols=3) # Adicionar a legenda fora do gráfico
 
-#    ax = df.plot()
-
     grafC = graficoController (app)
-
-    idEmpreend = str(55)            ###### preciso montar esse informação
-    mes = "12"
-    ano = "2024"
-    
+  
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
+
     if tipo == "valor":
         grafNome = diretorio + 'graf_orcamento_liberacao_valor.png'
     else:
@@ -2110,15 +2106,14 @@ def tab_prev_realizado():
 @app.route('/tab_orcamento_liberacao')
 def tab_orcamento_liberacao():
 
-#    tipo = request.args.get("tipo")
-#    idEmpreend = request.args.get("idEmpreend")
-#    dtCarga = request.args.get("dtCarga")
+    idEmpreend = request.args.get("idEmpreend")
+    dtCarga = request.args.get("dtCarga")
+    mes = request.args.get("mesV")
+    ano = request.args.get("anoV")
 
-    idEmpreend = 45
-    dtCarga = '2025-02-26 22:36:33'
+#    idEmpreend = 45
+#    dtCarga = '2025-02-26 22:36:33'
     ###### preciso montar esse informação
-    mes = "01"
-    ano = "2025"
 
     geral = geralController (app)
     medC = orcamentoController ()
@@ -2207,6 +2202,9 @@ def tab_orcamento_liberacao():
 
     plt.savefig(grafNome)
 
+#    plt.savefig(grafNome, bbox_inches='tight')
+
+    return render_template("orcamento_liberacao.html", grafNome=grafNome)
 
 ############ PDF ######################
 

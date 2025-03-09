@@ -19,7 +19,7 @@
                 <th>Mes vigencia</th>
                 <th>Ano vigencia</th>
                 <th>Data carga</th>
-                <th colspan="3"></th>
+                <th colspan="4"></th>
             </tr>
         </thead>        
         <tbody>
@@ -42,8 +42,12 @@
                 </td>
                 <td>
                     <div class="tooltip">
-                        <a href="/graf_orcamento_liberacao?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}&tipo=valor" target="_blank"><img src="../static/icons8-increase-80.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Gráfico %</span>
+                        <a href="/graf_orcamento_liberacao?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}&mesV={{m.getMesVigencia()}}&anoV={{m.getAnoVigencia()}}&tipo=valor" target="_blank"><img src="../static/icons8-increase-80.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">Gráfico</span>
+                    </div>
+                    <div class="tooltip">
+                        <a href="/tab_orcamento_liberacao?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}&mesV={{m.getMesVigencia()}}&anoV={{m.getAnoVigencia()}}&tipo=valor" target="_blank"><img src="../static/icons8-tabela-94.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">Tabela</span>
                     </div>
                 </td>
             </tr>
