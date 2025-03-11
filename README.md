@@ -44,3 +44,5 @@ Por ser um monolito, foi adicionado as bibliotecas abaixo para layout e comporta
 - [jQuery *(Manipulação do DOM)*](https://api.jquery.com)
 - [Bootstrap *(layout e comportamentos)*](https://getbootstrap.com/docs/5.3)
 - [jQuery Validate *(Validaçao dos formulários)*](https://jqueryvalidation.org/validate/)
+- [Fonte Ubuntu *(google fontes)*](https://fonts.google.com/specimen/Ubuntu)
+- [Fontawesome *(galeria de ícones)*](https://fontawesome.com/icons)

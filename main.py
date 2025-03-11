@@ -834,7 +834,7 @@ def tratar_orcamentos():
     print(idEmpreend, nmEmpreend)
 
     medC = orcamentoController ()
-    medS = medC.consultarOrcamentos (idEmpreend)
+    medS = medC.consultarOrcamentos(idEmpreend)
 
     if len(medS) == 0:
         return render_template("lista_orcamentos.html", idEmpreend=idEmpreend, mensagem="Medição não Cadastrada, importar o arquivo Excel!!!", orcamentos=medS)
@@ -944,7 +944,7 @@ def excluir_orcamento():
     orcC = orcamentoController ()
     orcC.excluirOrcamento(idEmpreend,dtCarga)
 
-    orcS = orcC.consultarOrcamentos (idEmpreend)
+    orcS = orcC.consultarOrcamentos(idEmpreend)
 
     if len(orcS) == 0:
         return render_template("lista_orcamentos.html", idEmpreend=idEmpreend, mensagem="Medição não Cadastrada, importar o arquivo Excel!!!", orcamentos=orcS)
