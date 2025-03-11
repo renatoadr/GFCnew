@@ -3,7 +3,7 @@
 #from array import array
 from flask import Flask, request, render_template, redirect, url_for, flash, send_file, session, send_from_directory, jsonify
 from controller.empreendimentoController import empreendimentoController
-from controller.gastoController import gastoController 
+from controller.gastoController import gastoController
 from controller.unidadeController import unidadeController
 from controller.torreController import torreController
 from controller.clienteController import clienteController
@@ -60,19 +60,19 @@ import configparser
 
 app = Flask(__name__)
 
-app.secret_key = "gfc001" 
+app.secret_key = "gfc001"
 
 def init(app):
     config = configparser.ConfigParser()
     try:
         config_location = "gfc.cfg"
         config.read(config_location)
-    
+
         app.config['UPLOAD_FOLDER'] = config.get("config", "UPLOAD_FOLDER")
         app.config['ALLOWED_EXTENSIONS'] = config.get("config", "ALLOWED_EXTENSIONS")
         app.config['BARRADIR'] = config.get("config", "BARRADIR")
         app.config['DIRSYS'] = config.get("config", "DIRSYS")
-    
+
         print ("Succesfully read configs from: ", config_location)
     except:
         print ("Couldn't read configs from: ", config_location)
@@ -88,17 +88,18 @@ def mlogin():
 @app.route('/login', methods=['POST'])
 def valida_login():
 
-    email = request.form.get('email') 
-    senha = request.form.get('senha') 
+    email = request.form.get('email')
+    senha = request.form.get('senha')
     usuC = usuarioController ()
     usu = usuC.consultarAcesso(email, senha)
-#    print ('++++++++++++++++++>>>>', usu)
-  
+    # print ('++++++++++++++++++>>>>', usu)
+
     if  usu:                       # encontrou usuário e senha corretos
         empc = empreendimentoController ()
         emps = empc.consultarEmpreendimentos ()
         session['logged_in'] = True
         session['email'] = email
+        session['nome'] = usu.getNmUsuario()
         return render_template("home.html", empreends=emps)
     else:
         session['logged_in'] = False
@@ -107,14 +108,14 @@ def valida_login():
 @app.route('/login_m', methods=['POST'])
 def valida_login_m():
 
-    email = request.form.get('email') 
-    senha = request.form.get('senha') 
+    email = request.form.get('email')
+    senha = request.form.get('senha')
     usuC = usuarioController ()
     usu = usuC.consultarAcesso(email, senha)
 #    print ('++++++++++++++++++>>>>', usu)
-  
+
     if  usu:                       # encontrou usuário e senha corretos
-        idUsuario = usu.getIdUsuario() 
+        idUsuario = usu.getIdUsuario()
         uApelidos = usuC.consultarApelidos(idUsuario)
 
 #        print ('++++++++++++++++++>>>>', idUsuario)
@@ -130,14 +131,14 @@ def valida_login_m():
 @app.route('/lista_relatorios', methods=['GET'])
 def lista_relatorios():
 
-    apelido = request.args.get('apelido') 
+    apelido = request.args.get('apelido')
 #    print('==========lista_relatorios==========', apelido)
     gerC = geralController (app)
-    diretorio = "c://GFC//Relatorios" 
+    diretorio = "c://GFC//Relatorios"
     arqS = gerC.listar_arquivos_com_prefixo(diretorio, apelido)
 #    print ('=========== lista de arquivos   ', arqS)
     return render_template("mobile/download.html", arquivos=arqS)
- 
+
 def protectedPage():
     if 'logged_in' not in session:
 #        print('opcao1')
@@ -151,18 +152,18 @@ def protectedPage():
 @app.route('/home', methods=['POST','GET'])
 def abrir_home(empreends=None):
 
-# ---- teste de sessão  
+# ---- teste de sessão
     temp = protectedPage()
 
     if temp != None:
         print ('protectedPage()')
         return temp
 #---- fim teste de sessão
-    
+
     empc = empreendimentoController ()
     emps = empc.consultarEmpreendimentos ()
     return render_template("home.html", empreends=emps)
- 
+
 @app.route('/abrir_cad_empreend')
 def abrir_cad_empreend():
     return render_template("cad_empreend.html")
@@ -171,19 +172,19 @@ def abrir_cad_empreend():
 def efetuar_cad_empreend():
     empreend = empreendimento ()
     empreend.setNmEmpreend (request.form.get('nmEmpreendimento'))
-    empreend.setNmBanco (request.form.get('nmBanco')) 
-    empreend.setNmIncorp (request.form.get('nmIncorp')) 
+    empreend.setNmBanco (request.form.get('nmBanco'))
+    empreend.setNmIncorp (request.form.get('nmIncorp'))
     empreend.setNmConstrutor (request.form.get('nmConstrutor'))
     empreend.setLogradouro (request.form.get('logradouro'))
     empreend.setBairro (request.form.get('bairro'))
     empreend.setCidade (request.form.get('cidade'))
-    empreend.setEstado (request.form.get('estado')) 
-    empreend.setCep (request.form.get('cep')) 
+    empreend.setEstado (request.form.get('estado'))
+    empreend.setCep (request.form.get('cep'))
     empreend.setNmEngenheiro (request.form.get('nmEngenheiro'))
     empreend.setVlPlanoEmp (request.form.get('vlPlanoEmp'))
     empreend.setIndiceGarantia (request.form.get('indiceGarantia'))
     empreend.setPrevisaoEntrega (request.form.get('previsaoEntrega'))
-    
+
     empc = empreendimentoController()
     empc.inserirEmpreendimento(empreend)
     emps = empc.consultarEmpreendimentos ()
@@ -192,19 +193,19 @@ def efetuar_cad_empreend():
 
 @app.route('/excluir_empreend')
 def excluir_empreend():
-   
-    idEmpreend = request.args.get('idEmpreend') 
+
+    idEmpreend = request.args.get('idEmpreend')
     print (idEmpreend)
     empc = empreendimentoController()
     empc.excluirEmpreendimento(idEmpreend)
 
     emps = empc.consultarEmpreendimentos ()
-    return render_template("home.html", empreends=emps)    
- 
+    return render_template("home.html", empreends=emps)
+
 @app.route('/abrir_edicao_empreend')
 def abrir_edicao_empreend():
-   
-    idEmpreend = request.args.get('idEmpreend') 
+
+    idEmpreend = request.args.get('idEmpreend')
     print (idEmpreend)
     empc = empreendimentoController ()
     empreend = empc.consultarEmpreendimentoPeloId (idEmpreend)
@@ -214,23 +215,23 @@ def abrir_edicao_empreend():
 
 @app.route('/salvar_empreend', methods=['POST'])
 def salvar_empreend():
-   
+
     empreend = empreendimento ()
     empreend.setIdEmpreend (int(request.form.get('idEmpreendimento')))
     empreend.setNmEmpreend (request.form.get('nmEmpreendimento'))
-    empreend.setNmBanco (request.form.get('nmBanco')) 
-    empreend.setNmIncorp (request.form.get('nmIncorp')) 
+    empreend.setNmBanco (request.form.get('nmBanco'))
+    empreend.setNmIncorp (request.form.get('nmIncorp'))
     empreend.setNmConstrutor (request.form.get('nmConstrutor'))
     empreend.setLogradouro (request.form.get('logradouro'))
     empreend.setBairro (request.form.get('bairro'))
     empreend.setCidade (request.form.get('cidade'))
-    empreend.setEstado (request.form.get('estado')) 
-    empreend.setCep (request.form.get('cep')) 
+    empreend.setEstado (request.form.get('estado'))
+    empreend.setCep (request.form.get('cep'))
     empreend.setNmEngenheiro (request.form.get('nmEngenheiro'))
     empreend.setVlPlanoEmp (request.form.get('vlPlanoEmp'))
     empreend.setIndiceGarantia (request.form.get('indiceGarantia'))
     empreend.setPrevisaoEntrega (request.form.get('previsaoEntrega'))
-    
+
     empc = empreendimentoController()
     empc.salvarEmpreendimento(empreend)
     emps = empc.consultarEmpreendimentos ()
@@ -252,15 +253,15 @@ def logout_m():
 
 @app.route('/importar_gastos')
 def abrir_form_upload_gastos():
-    
-# ---- teste de sessão  
+
+# ---- teste de sessão
     temp = protectedPage()
 
     if temp != None:
         print ('protectedPage()')
         return temp
 #---- fim teste de sessão
-    
+
     idEmpreend = request.args.get("idEmpreend")
     print(idEmpreend)
     return render_template("upload_gastos.html", idEmpreend=idEmpreend)
@@ -273,7 +274,7 @@ def upload_file():
     # check if the post request has the file part
     if 'file' not in request.files:
         mensagem = "Erro no upload do arquivo. No file part."
-        return render_template("erro.html", mensagem=mensagem)    
+        return render_template("erro.html", mensagem=mensagem)
     file = request.files['file']
     if file:
         if file.filename == '':
@@ -284,7 +285,7 @@ def upload_file():
             filename = secure_filename(file.filename)
             caminhoArq = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(caminhoArq)
-            
+
             carregar_gastos(caminhoArq, request.form.get('idEmpreendimento'))
 
             empc = empreendimentoController()
@@ -292,21 +293,21 @@ def upload_file():
 
             return render_template("home.html", empreends=emps)
     else:
-        mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."    
+        mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
     return render_template("erro.html", mensagem=mensagem)
 
 #@app.route('/importar_gastos', methods=['POST'])
 def carregar_gastos(caminhoArq, idEmpreend):
-   
+
     tabela = pd.read_excel(caminhoArq)
 
     l, c = tabela.shape
-    linha = 0 
+    linha = 0
 
     g = gasto()
     dtTime = datetime.now()
     dateTime = dtTime.strftime("%Y-%m-%d %H:%M:%S")
-   
+
  #   print (idEmpreend)
 
     while linha < l:
@@ -316,27 +317,27 @@ def carregar_gastos(caminhoArq, idEmpreend):
         vlRhAdm = tabela.at[linha, 'Rh/ADM']
 
         datetime_object = datetime.strptime(str(dtEvento), "%Y-%m-%d %H:%M:%S")
-        
+
         dtEvento = datetime_object.date().isoformat()
         mes = tabela.at[linha, 'mês']
 
         print(g)
-        
+
         g.setIdGasto (dateTime)
         g.setIdEmpreend (idEmpreend)
         g.setDtEvento (dtEvento)
 
-        if vlMedicao > 0:    
+        if vlMedicao > 0:
             g.setVlMedicao (vlMedicao)
         else:
             g.setVlMedicao (0)
 
-        if vlCompras > 0: 
+        if vlCompras > 0:
             g.setVlCompras (vlCompras)
         else:
             g.setVlCompras (0)
 
-        if vlRhAdm > 0:    
+        if vlRhAdm > 0:
             g.setVlRhAdm (vlRhAdm)
         else:
             g.setVlRhAdm (0)
@@ -344,32 +345,32 @@ def carregar_gastos(caminhoArq, idEmpreend):
         gastoc = gastoController()
         gastoc.inserirGasto(g)
         linha += 1
-    
+
 ############ UNIDADES ######################
 
 @app.route('/tratar_unidades')
 def tratarunidades():
-    
-# ---- teste de sessão  
+
+# ---- teste de sessão
     temp = protectedPage()
 
     if temp != None:
         print ('protectedPage()')
         return temp
 #---- fim teste de sessão
-    
+
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
     print('-----tratar_unidades----')
     print(idEmpreend, nmEmpreend)
-    
+
     unidC = unidadeController ()
     unidS = unidC.consultarUnidades (idEmpreend)
 
-    if len(unidS) == 0: 
+    if len(unidS) == 0:
         return render_template("lista_unidades.html", idEmpreend=idEmpreend, mensagem="Unidade não Cadastrada!!!", unidades=unidS)
-    else:   
+    else:
         return render_template("lista_unidades.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend, unidades=unidS)
 
 @app.route('/abrir_cad_unidade', methods=['POST'])
@@ -378,7 +379,7 @@ def abrir_cad_unidade():
     idEmpreend = request.form.get("idEmpreend")
     idTorre = 10                                   # precisa colocar uma lista de torres para escolher
     print('-----------abrir_cad_unidade-----------')
-    print(idTorre,idEmpreend)        
+    print(idTorre,idEmpreend)
 
     t1 = torre()
     t1.setIdTorre (1)
@@ -392,8 +393,8 @@ def abrir_cad_unidade():
 
 @app.route('/abrir_edicao_unidade')
 def abrir_edicao_unidade():
-   
-    idUnidade = request.args.get("idUnidade") 
+
+    idUnidade = request.args.get("idUnidade")
     print('----------- abrir_edicao_unidade')
     print (idUnidade)
     unidc = unidadeController ()
@@ -404,26 +405,26 @@ def abrir_edicao_unidade():
 
 @app.route('/cadastrar_unidade', methods=['POST'])
 def cadastrar_unidade():
-   
+
     print('passei aqui 1')
-    
+
     un = unidade ()
     un.setIdTorre (request.form.get('idTorre'))
-    un.setIdEmpreend (request.form.get('idEmpreend')) 
-    un.setUnidade (request.form.get('unidade')) 
+    un.setIdEmpreend (request.form.get('idEmpreend'))
+    un.setUnidade (request.form.get('unidade'))
     un.setMesVigencia (request.form.get('mesVigencia'))
     un.setAnoVigencia (request.form.get('anoVigencia'))
     un.setVlUnidade (request.form.get('vlUnidade'))
     un.setStatus (request.form.get('status'))
-    un.setNmComprador (request.form.get('nmComprador')) 
-    un.setVlPago (request.form.get('vlPago')) 
+    un.setNmComprador (request.form.get('nmComprador'))
+    un.setVlPago (request.form.get('vlPago'))
     un.setDtOcorrencia (request.form.get('dtOcorrencia'))
     un.setFinanciado (request.form.get('financiado'))
     un.setVlChaves (request.form.get('vlChaves'))
 
     print(request.form.get('vlChaves'))
     print('passei aqui 2')
-    
+
     unid = unidadeController()
     unid.inserirUnidade(un)
     idEmpreend = request.form.get('idEmpreend')
@@ -433,8 +434,8 @@ def cadastrar_unidade():
 
 @app.route('/editar_unidade')
 def editar_unidade():
-   
-    idUni = request.args.get("idUnidade") 
+
+    idUni = request.args.get("idUnidade")
     print('------ editar_unidade --------')
     print (idUni)
     unidc = unidadeController ()
@@ -445,24 +446,24 @@ def editar_unidade():
 
 @app.route('/salvar_alteracao_unidade', methods=['POST'])
 def salvar_alteracao_unidade():
-     
+
     print('------- salvar_alteracao_unidade INICIO --------')
- 
+
     un = unidade ()
     un.setIdUnidade (request.form.get('idUnidade'))
     un.setIdTorre (request.form.get('idTorre'))
-    un.setIdEmpreend (request.form.get('idEmpreend')) 
-    un.setUnidade (request.form.get('unidade')) 
+    un.setIdEmpreend (request.form.get('idEmpreend'))
+    un.setUnidade (request.form.get('unidade'))
     un.setMesVigencia (request.form.get('mesVigencia'))
     un.setAnoVigencia (request.form.get('anoVigencia'))
     un.setVlUnidade (request.form.get('vlUnidade'))
     un.setStatus (request.form.get('status'))
-    un.setNmComprador (request.form.get('nmComprador')) 
-    un.setVlPago (request.form.get('vlPago')) 
+    un.setNmComprador (request.form.get('nmComprador'))
+    un.setVlPago (request.form.get('vlPago'))
     un.setDtOcorrencia (request.form.get('dtOcorrencia'))
     un.setFinanciado (request.form.get('financiado'))
     un.setVlChaves (request.form.get('vlChaves'))
-  
+
     print('------- salvar_alteracao_unidade --------')
     idEmpreend = request.form.get('idEmpreend')
     print(idEmpreend)
@@ -471,26 +472,26 @@ def salvar_alteracao_unidade():
     unidc.salvarUnidade(un)
 
     print(idEmpreend)
-    
+
     unids = unidc.consultarUnidades (idEmpreend)
     return render_template("lista_unidades.html", idEmpreend=idEmpreend, unidades=unids)
 
 @app.route('/consultar_unidade')
 def consultar_unidade():
-   
-    modo = request.args.get("modo") 
-    idUni = request.args.get("idUnidade") 
-    nmEmpreend = request.args.get("nmEmpreend") 
-    nmTorre = request.args.get("nmTorre") 
+
+    modo = request.args.get("modo")
+    idUni = request.args.get("idUnidade")
+    nmEmpreend = request.args.get("nmEmpreend")
+    nmTorre = request.args.get("nmTorre")
 
     print('------ consultar_unidade --------')
     print(modo)
     print (idUni)
-    
+
     unidc = unidadeController ()
     unidade = unidc.consultarUnidadePeloId (idUni)
     print(unidade)
-    
+
     print('------ consultar_unidade --------')
     print(modo)
 
@@ -498,40 +499,40 @@ def consultar_unidade():
 
 @app.route('/excluir_unidade')
 def excluir_unidade():
-   
-    idUnidade = request.args.get('idUnidade') 
+
+    idUnidade = request.args.get('idUnidade')
     idEmpreend = request.args.get('idEmpreend')
     nmEmpreend = request.args.get('nmEmpreend')
 
     print('--------------excluir_unidade -------------')
     print (idUnidade, idEmpreend)
-    
+
     unidc = unidadeController()
     unidc.excluirUnidade(idUnidade)
     unids = unidc.consultarUnidades (idEmpreend)
-  
+
     return render_template("lista_unidades.html", nmEmpreend=nmEmpreend, unidades=unids)
 
-    
+
 ############ TORRES ######################
 
 @app.route('/tratar_torres')
 def tratartorres():
-    
-# ---- teste de sessão  
+
+# ---- teste de sessão
     temp = protectedPage()
 
     if temp != None:
         print ('protectedPage()')
         return temp
 #---- fim teste de sessão
-    
+
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
     print('-----tratar_torres----')
     print(idEmpreend,nmEmpreend)
-    
+
     torreC = torreController ()
     torreS = torreC.consultarTorres (idEmpreend)
 
@@ -547,14 +548,14 @@ def abrir_cad_torre():
     nmEmpreend = request.form.get("nmEmpreend")
 
     print('-----------abrir_cad_torre-----------')
-    print(idEmpreend)        
+    print(idEmpreend)
 
     return render_template("torre.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend)
 
 #@app.route('/abrir_edicao_torre', methods=['POST'])
 #def abrir_edicao_torre():
-#   
-#    idUnidade = request.form.get("idUnidade") 
+#
+#    idUnidade = request.form.get("idUnidade")
 #    print('----------- abrir_edicao_torre')
 #    print (idUnidade)
 #    unidc = torreController ()
@@ -565,17 +566,17 @@ def abrir_cad_torre():
 
 @app.route('/cadastrar_torre', methods=['POST'])
 def cadastrar_torre():
-   
+
     print('passei aqui 1')
     nmEmpreend = request.form.get('nmEmpreend')
-    
+
     t = torre ()
-    t.setIdEmpreend (request.form.get('idEmpreend')) 
-    t.setNmTorre (request.form.get('nmTorre')) 
+    t.setIdEmpreend (request.form.get('idEmpreend'))
+    t.setNmTorre (request.form.get('nmTorre'))
     t.setQtUnidade (request.form.get('qtUnidade'))
 
     print('passei aqui 2')
-    
+
     torreC = torreController()
     torreC.inserirTorre(t)
 
@@ -586,8 +587,8 @@ def cadastrar_torre():
 
 @app.route('/editar_torre')
 def editar_torre():
-   
-    idT = request.args.get("idTorre") 
+
+    idT = request.args.get("idTorre")
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
@@ -602,42 +603,42 @@ def editar_torre():
 
 @app.route('/salvar_alteracao_torre', methods=['POST'])
 def salvar_alteracao_torre():
-     
+
     print('------- salvar_alteracao_torre INICIO --------')
     nmEmpreend = request.form.get("nmEmpreend")
 
     t = torre ()
     t.setIdTorre (request.form.get('idTorre'))
-    t.setIdEmpreend (request.form.get('idEmpreend')) 
-    t.setNmTorre (request.form.get('nmTorre')) 
+    t.setIdEmpreend (request.form.get('idEmpreend'))
+    t.setNmTorre (request.form.get('nmTorre'))
     t.setQtUnidade (request.form.get('qtUnidade'))
-  
+
     print('------- salvar_alteracao_torre --------')
     idEmpreend = request.form.get('idEmpreend')
     print(idEmpreend)
 
     torreC = torreController()
     torreC.salvarTorre(t)
-    
+
     torreS = torreC.consultarTorres (idEmpreend)
     return render_template("lista_torres.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend, torreS=torreS)
 
 @app.route('/consultar_torre')
 def consultar_torre():
-   
-    modo = request.args.get("modo") 
-    idT = request.args.get("idTorre") 
+
+    modo = request.args.get("modo")
+    idT = request.args.get("idTorre")
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
 
     print('------ consultar_torre --------')
     print(modo, idT,idEmpreend,nmEmpreend)
-        
+
     torrec = torreController ()
     torre = torrec.consultarTorrePeloId (idT)
     print(torre)
-    
+
     print('------ consultar_torre --------')
     print(modo)
 
@@ -645,14 +646,14 @@ def consultar_torre():
 
 @app.route('/excluir_torre')
 def excluir_torre():
-   
-    idTorre = request.args.get('idTorre') 
+
+    idTorre = request.args.get('idTorre')
     idEmpreend = request.args.get('idEmpreend')
     nmEmpreend = request.args.get('nmEmpreend')
 
     print('--------------excluir_torre -------------')
     print (idTorre, idEmpreend)
-    
+
     torreC = torreController()
     torreC.excluirTorre(idTorre)
     torreS = torreC.consultarTorres (idEmpreend)
@@ -668,27 +669,27 @@ def excluir_torre():
 
 @app.route('/tratar_clientes')
 def tratarclientes():
-    
-# ---- teste de sessão  
+
+# ---- teste de sessão
     temp = protectedPage()
 
     if temp != None:
         print ('protectedPage()')
         return temp
 #---- fim teste de sessão
-    
+
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
     print('-----tratar_clientes----')
     print(idEmpreend)
-    
+
     cliC = clienteController ()
     cliS = cliC.consultarClientes ()
 
-    if len(cliS) == 0: 
+    if len(cliS) == 0:
         return render_template("lista_clientes.html", idEmpreend=idEmpreend, mensagem="Cliente não Cadastrado!!!", clienteS=cliS)
-    else:   
+    else:
         return render_template("lista_clientes.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend, clienteS=cliS)
 
 @app.route('/abrir_cad_cliente', methods=['POST'])
@@ -697,7 +698,7 @@ def abrir_cad_cliente():
     idEmpreend = request.form.get("idEmpreend")
     idTorre = 10                                   # precisa colocar uma lista de torres para escolher
     print('-----------abrir_cad_cliente-----------')
-    print(idTorre,idEmpreend)        
+    print(idTorre,idEmpreend)
 
     t1 = torre()
     t1.setIdTorre (1)
@@ -711,8 +712,8 @@ def abrir_cad_cliente():
 
 @app.route('/abrir_edicao_cliente')
 def abrir_edicao_cliente():
-   
-    idUnidade = request.args.get("idUnidade") 
+
+    idUnidade = request.args.get("idUnidade")
     print('----------- abrir_edicao_cliente ----------------')
     print (idUnidade)
     unidc = clienteController ()
@@ -725,19 +726,19 @@ def abrir_edicao_cliente():
 
 @app.route('/cadastrar_cliente', methods=['POST'])
 def cadastrar_cliente():
-   
+
     print('passei aqui 1')
-    
+
     cli = cliente ()
     cli.setCpfCnpj (request.form.get('cpfCnpj'))
-    cli.setTpCpfCnpj (request.form.get('tpCpfCnpj')) 
-    cli.setNmCliente (request.form.get('nmCliente')) 
+    cli.setTpCpfCnpj (request.form.get('tpCpfCnpj'))
+    cli.setNmCliente (request.form.get('nmCliente'))
     cli.setDdd (request.form.get('ddd'))
     cli.setTel (request.form.get('tel'))
     cli.setEmail (request.form.get('email'))
-   
+
     print('passei aqui 2')
-    
+
     cliC = clienteController()
     cliC.inserirCliente(cli)
 
@@ -747,8 +748,8 @@ def cadastrar_cliente():
 
 @app.route('/editar_cliente')
 def editar_cliente():
-   
-    idCli = request.args.get("cpfCnpj") 
+
+    idCli = request.args.get("cpfCnpj")
     print('------ editar_cliente --------')
     print (idCli)
     cliC = clienteController ()
@@ -759,13 +760,13 @@ def editar_cliente():
 
 @app.route('/salvar_alteracao_cliente', methods=['POST'])
 def salvar_alteracao_cliente():
-     
+
     print('------- salvar_alteracao_cliente INICIO --------')
- 
+
     cli = cliente ()
     cli.setCpfCnpj (request.form.get('cpfCnpj'))
-    cli.setTpCpfCnpj (request.form.get('tpCpfCnpj')) 
-    cli.setNmCliente (request.form.get('nmCliente')) 
+    cli.setTpCpfCnpj (request.form.get('tpCpfCnpj'))
+    cli.setNmCliente (request.form.get('nmCliente'))
     cli.setDdd (request.form.get('ddd'))
     cli.setTel (request.form.get('tel'))
     cli.setEmail (request.form.get('email'))
@@ -781,18 +782,18 @@ def salvar_alteracao_cliente():
 
 @app.route('/consultar_cliente')
 def consultar_cliente():
-   
-    modo = request.args.get("modo") 
-    idCli = request.args.get("cpfCnpj") 
+
+    modo = request.args.get("modo")
+    idCli = request.args.get("cpfCnpj")
     idEmpreend = request.args.get("idEmpreend")
 
     print('------ consultar_cliente --------')
     print(modo, idCli, idEmpreend)
-    
+
     cliC = clienteController ()
     cliente = cliC.consultarClientePeloId (idCli)
     print(cliente)
-    
+
     print('------ consultar_cliente fim --------')
     print(modo)
 
@@ -800,38 +801,38 @@ def consultar_cliente():
 
 @app.route('/excluir_cliente')
 def excluir_cliente():
-   
-    idCli = request.args.get('cpfCnpj') 
+
+    idCli = request.args.get('cpfCnpj')
 #    idEmpreend = request.args.get('idEmpreend')
 
     print('--------------excluir_cliente -------------')
     print (idCli)
-    
+
     cliC = clienteController()
-    cliC.excluirCliente(idCli) 
+    cliC.excluirCliente(idCli)
     cliS = cliC.consultarClientes ()
-  
+
     return render_template("lista_clientes.html", clienteS=cliS)
-      
+
 ############ ORÇAMENTOS ######################
 
 @app.route('/tratar_orcamentos')
 def tratar_orcamentos():
-    
-# ---- teste de sessão  
+
+# ---- teste de sessão
     temp = protectedPage()
 
     if temp != None:
         print ('protectedPage()')
         return temp
 #---- fim teste de sessão
-    
+
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
     print('-----tratar_orcamentos----')
     print(idEmpreend, nmEmpreend)
-    
+
     medC = orcamentoController ()
     medS = medC.consultarOrcamentos (idEmpreend)
 
@@ -839,21 +840,21 @@ def tratar_orcamentos():
         return render_template("lista_orcamentos.html", idEmpreend=idEmpreend, mensagem="Medição não Cadastrada, importar o arquivo Excel!!!", orcamentos=medS)
     else:
         return render_template("lista_orcamentos.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend, orcamentos=medS)
- 
+
 @app.route('/consultar_orcamento_data')
 def consultar_orcamento_data():
-   
-#    modo = request.args.get("modo") 
-    idEmpreend = request.args.get("idEmpreend") 
+
+#    modo = request.args.get("modo")
+    idEmpreend = request.args.get("idEmpreend")
     dtCarga = request.args.get("dtCarga")
 
     print('------ consultar_orcamento_data ------')
 #    print(modo)
     print (idEmpreend, dtCarga)
-    
+
     medC = orcamentoController ()
     medS = medC.consultarOrcamentoPelaData (idEmpreend, dtCarga)
-    
+
     print('------ consultar_orcamento_data fim --------')
 #    print(modo)
 
@@ -874,7 +875,7 @@ def upload_arquivo_orcamentos():
     # check if the post request has the file part
     if 'file' not in request.files:
         mensagem = "Erro no upload do arquivo. No file part."
-        return render_template("erro.html", mensagem=mensagem)    
+        return render_template("erro.html", mensagem=mensagem)
     file = request.files['file']
     if file:
         if file.filename == '':
@@ -885,7 +886,7 @@ def upload_arquivo_orcamentos():
             filename = secure_filename(file.filename)
             caminhoArq = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(caminhoArq)
-            
+
             idEmpreend = request.form.get("idEmpreend")
             print ('-------------- upload_arquivo_orcamentos ----------------')
 
@@ -896,13 +897,13 @@ def upload_arquivo_orcamentos():
 
             return render_template("lista_orcamentos.html", idEmpreend=idEmpreend, orcamentos=orcS)
     else:
-        mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."    
+        mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
     return render_template("erro.html", mensagem=mensagem)
 
 @app.route('/editar_item_orcamento')
 def editar_item_orcamento():
-   
-    idOrc = request.args.get("idOrcamento") 
+
+    idOrc = request.args.get("idOrcamento")
     print('------ editar_item_orcamanto --------')
     print (idOrc)
     orcC = orcamentoController ()
@@ -913,9 +914,9 @@ def editar_item_orcamento():
 
 @app.route('/excluir_item_orcamento')
 def excluir_item_orcamento():
-   
-    idOrc = request.args.get("idOrcamento") 
-    idEmpreend = request.args.get("idEmpreend") 
+
+    idOrc = request.args.get("idOrcamento")
+    idEmpreend = request.args.get("idEmpreend")
     dtCarga = request.args.get("dtCarga")
     print ('idEmpreend, dtCarga  ==>',   idEmpreend, dtCarga)
 
@@ -926,15 +927,15 @@ def excluir_item_orcamento():
     print('------ excluir_item_orcamanto --- consultar_orcamento_data ------')
     print (idEmpreend, dtCarga)
     orcS = orcC.consultarOrcamentoPelaData (idEmpreend, dtCarga)
-    
+
     print('------ excluir_item_orcamanto --- consultar_orcamento_data fim --------')
 
     return render_template("orcamentos_itens.html", orcamentos=orcS, idEmpreend=idEmpreend)
 
 @app.route('/excluir_orcamento')
 def excluir_orcamento():
-   
-    idEmpreend = request.args.get("idEmpreend") 
+
+    idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
     dtCarga = request.args.get("dtCarga")
     print ('idEmpreend, dtCarga  ==>',   idEmpreend, dtCarga)
@@ -950,20 +951,20 @@ def excluir_orcamento():
     else:
         return render_template("lista_orcamentos.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend, orcamentos=orcS)
 
-    return 
+    return
 
 @app.route('/salvar_item_orcamento', methods=['POST'])
 def salvar_item_orcamento():
- 
+
     item = orcamento ()
     item.setIdOrcamento (request.form.get('idOrcamento'))
     item.setIdEmpreend (request.form.get('idEmpreend'))
-    item.setMesVigencia (request.form.get('mesVigencia')) 
-    item.setAnoVigencia (request.form.get('anoVigencia')) 
+    item.setMesVigencia (request.form.get('mesVigencia'))
+    item.setAnoVigencia (request.form.get('anoVigencia'))
     item.setDtCarga (request.form.get('dtCarga'))
     item.setItem (request.form.get('item'))
     item.setOrcadoValor (request.form.get('orcadoValor'))
-    item.setFisicoPercentual (request.form.get('fisicoPercentual')) 
+    item.setFisicoPercentual (request.form.get('fisicoPercentual'))
     item.setFinanceiroValor (request.form.get('financeiroValor'))
     financeiroPercentual = float(request.form.get('financeiroValor')) / float(request.form.get('orcadoValor')) * 100
     item.setFinanceiroPercentual (financeiroPercentual)
@@ -974,14 +975,14 @@ def salvar_item_orcamento():
 
     print (request.form.get('idOrcamento'))
     print (request.form.get('idEmpreend'))
-    print (request.form.get('mesVigencia')) 
-    print (request.form.get('anoVigencia')) 
+    print (request.form.get('mesVigencia'))
+    print (request.form.get('anoVigencia'))
     print (request.form.get('dtCarga'))
     print (request.form.get('item'))
     print (request.form.get('orcadoValor'))
     print (request.form.get('fisicoValor'))
-    print (request.form.get('fisicoPercentual')) 
-    print (request.form.get('fisicoSaldo')) 
+    print (request.form.get('fisicoPercentual'))
+    print (request.form.get('fisicoSaldo'))
     print (request.form.get('financeiroValor'))
     print (request.form.get('financeiroPercentual'))
     print (request.form.get('financeiroSaldo'))
@@ -992,7 +993,7 @@ def salvar_item_orcamento():
 
     print (request.form.get('idEmpreend'), request.form.get('dtCarga'))
     orcS = orcC.consultarOrcamentoPelaData (request.form.get('idEmpreend'), request.form.get('dtCarga'))
-    
+
     print('------ salvar_item_orcamento --- fim --------')
 
     return render_template("orcamentos_itens.html", orcamentos=orcS, idEmpreend=request.form.get('idEmpreend'))
@@ -1001,21 +1002,21 @@ def salvar_item_orcamento():
 
 @app.route('/tratar_agendas')
 def tratar_agendas():
-    
-# ---- teste de sessão  
+
+# ---- teste de sessão
     temp = protectedPage()
 
     if temp != None:
         print ('protectedPage()')
         return temp
 #---- fim teste de sessão
-    
+
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
     print('-----tratar_agendas----')
     print(idEmpreend,nmEmpreend)
-    
+
     agendaC = agendaController ()
     agendaS = agendaC.consultarAgendas (idEmpreend)
 
@@ -1031,14 +1032,14 @@ def abrir_cad_agenda():
     nmEmpreend = request.form.get("nmEmpreend")
 
     print('-----------abrir_cad_agenda-----------')
-    print(idEmpreend)        
+    print(idEmpreend)
 
     return render_template("agenda.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend)
 
 #@app.route('/abrir_edicao_agenda', methods=['POST'])
 #def abrir_edicao_agenda():
-#   
-#    idUnidade = request.form.get("idUnidade") 
+#
+#    idUnidade = request.form.get("idUnidade")
 #    print('----------- abrir_edicao_agenda')
 #    print (idUnidade)
 #    unidc = agendaController ()
@@ -1049,17 +1050,17 @@ def abrir_cad_agenda():
 
 @app.route('/cadastrar_agenda', methods=['POST'])
 def cadastrar_agenda():
-   
+
     print('passei aqui 1')
     nmEmpreend = request.form.get('nmEmpreend')
-    
+
     t = agenda ()
-    t.setIdEmpreend (request.form.get('idEmpreend')) 
-    t.setNmAgenda (request.form.get('nmAgenda')) 
+    t.setIdEmpreend (request.form.get('idEmpreend'))
+    t.setNmAgenda (request.form.get('nmAgenda'))
     t.setQtUnidade (request.form.get('qtUnidade'))
 
     print('passei aqui 2')
-    
+
     agendaC = agendaController()
     agendaC.inserirAgenda(t)
 
@@ -1070,8 +1071,8 @@ def cadastrar_agenda():
 
 @app.route('/editar_agenda')
 def editar_agenda():
-   
-    idT = request.args.get("idAgenda") 
+
+    idT = request.args.get("idAgenda")
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
@@ -1086,42 +1087,42 @@ def editar_agenda():
 
 @app.route('/salvar_alteracao_agenda', methods=['POST'])
 def salvar_alteracao_agenda():
-     
+
     print('------- salvar_alteracao_agenda INICIO --------')
     nmEmpreend = request.form.get("nmEmpreend")
 
     t = agenda ()
     t.setIdAgenda (request.form.get('idAgenda'))
-    t.setIdEmpreend (request.form.get('idEmpreend')) 
-    t.setNmAgenda (request.form.get('nmAgenda')) 
+    t.setIdEmpreend (request.form.get('idEmpreend'))
+    t.setNmAgenda (request.form.get('nmAgenda'))
     t.setQtUnidade (request.form.get('qtUnidade'))
-  
+
     print('------- salvar_alteracao_agenda --------')
     idEmpreend = request.form.get('idEmpreend')
     print(idEmpreend)
 
     agendaC = agendaController()
     agendaC.salvarAgenda(t)
-    
+
     agendaS = agendaC.consultarAgendas (idEmpreend)
     return render_template("lista_agendas.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend, agendaS=agendaS)
 
 @app.route('/consultar_agenda')
 def consultar_agenda():
-   
-    modo = request.args.get("modo") 
-    idT = request.args.get("idAgenda") 
+
+    modo = request.args.get("modo")
+    idT = request.args.get("idAgenda")
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
 
     print('------ consultar_agenda --------')
     print(modo, idT,idEmpreend,nmEmpreend)
-        
+
     agendac = agendaController ()
     agenda = agendac.consultarAgendaPeloId (idT)
     print(agenda)
-    
+
     print('------ consultar_agenda --------')
     print(modo)
 
@@ -1129,14 +1130,14 @@ def consultar_agenda():
 
 @app.route('/excluir_agenda')
 def excluir_agenda():
-   
-    idAgenda = request.args.get('idAgenda') 
+
+    idAgenda = request.args.get('idAgenda')
     idEmpreend = request.args.get('idEmpreend')
     nmEmpreend = request.args.get('nmEmpreend')
 
     print('--------------excluir_agenda -------------')
     print (idAgenda, idEmpreend)
-    
+
     agendaC = agendaController()
     agendaC.excluirAgenda(idAgenda)
     agendaS = agendaC.consultarAgendas (idEmpreend)
@@ -1152,39 +1153,39 @@ def excluir_agenda():
 
 @app.route('/obter_grafico', methods=['GET'])
 def obter_grafico():
-    
-  
+
+
     grafNome = request.args.get("grafNome")
-    
+
 #    filename = UPLOAD_FOLDER + '\\' + 'teste.png'
     print ('------------ obter_grafico -------------')
     print (grafNome)
     return send_file(grafNome, mimetype='image/png')
- 
-  
+
+
 @app.route('/graf_orcamento_liberacao', methods=['GET'])
 def graf_orcamento_liberacao():
 
     tipo = request.args.get("tipo")
     idEmpreend = request.args.get("idEmpreend")
     dtCarga = request.args.get("dtCarga")
-    
+
     medC = orcamentoController ()
     medS = medC.consultarOrcamentoPelaData (idEmpreend, dtCarga)
 
-    fisico = [] 
+    fisico = []
     financeiro = []
-    orcado = [] 
+    orcado = []
     index = []
 
     for m in medS:
         index.append(m.getItem())
         if tipo == "valor":
-            fisico.append(float(m.getFisicoValor()))        
+            fisico.append(float(m.getFisicoValor()))
             financeiro.append(float(m.getFinanceiroValor()))
             orcado.append(float(m.getOrcadoValor()))
         else:
-            fisico.append(float(m.getFisicoPercentual()))        
+            fisico.append(float(m.getFisicoPercentual()))
             financeiro.append(float(m.getFinanceiroPercentual()))
 
 #    plt.title("\Medição Física da Obra x Liberação Financeira (em %)", fontdict={'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
@@ -1204,13 +1205,13 @@ def graf_orcamento_liberacao():
     idEmpreend = str(55)            ###### preciso montar esse informação
     mes = "12"
     ano = "2024"
-    
+
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     if tipo == "valor":
         grafNome = diretorio + 'graf_orcamento_liberacao_valor.png'
     else:
-        grafNome = diretorio + 'graf_orcamento_liberacao_percentual.png'    
+        grafNome = diretorio + 'graf_orcamento_liberacao_percentual.png'
 
     plt.savefig(grafNome, bbox_inches='tight')
 
@@ -1237,7 +1238,7 @@ def graf_progresso_obra():
 
     fig, ax = plt.subplots(1, 1)
 
-    x1 = [] 
+    x1 = []
     x2 = []
     y1 = []
     y2 = []
@@ -1248,10 +1249,10 @@ def graf_progresso_obra():
         y1.append(p.getPercPrevistoAcumulado())
         if p.getPercRealizadoAcumulado() > 0:
             y2.append(p.getPercRealizadoAcumulado())
-            x2.append(periodo)    
+            x2.append(periodo)
 
     plt.figure(figsize=(25, 10))     # Determina o tamanho da figura
-    plt.plot(x1, y1, label='Previsto', linewidth=4, marker='o') # espessura da linha =4 
+    plt.plot(x1, y1, label='Previsto', linewidth=4, marker='o') # espessura da linha =4
     plt.plot(x2, y2, label='Realizado', linewidth=4, marker='o') # marker indica o ponto xy
 
     annotationsy1 = y1
@@ -1260,8 +1261,8 @@ def graf_progresso_obra():
     plt.scatter(x1, y1, s=20)   # Determina caracteristicas dos pontos x/y no gráfico
     plt.scatter(x2, y2, s=20)
     plt.ylim(-5, 120)            # Força os valores do eixo Y
-    plt.tick_params(labelsize=14) # tamanho da letra nos eixos X e Y 
- 
+    plt.tick_params(labelsize=14) # tamanho da letra nos eixos X e Y
+
     plt.title("PROGRESSO FÍSICO DA OBRA (Previsto x Realizado)", fontdict={'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 28}, loc='center')
 
     for xi, yi, text in zip(x1, y1, annotationsy1):
@@ -1272,20 +1273,20 @@ def graf_progresso_obra():
     plt.legend(fontsize=20, loc="upper left")
 #    plt.xlabel(fontsize=14)
 #    plt.ylabel(fontsize=14)
-    
+
     grafC = graficoController (app)
 
     idEmpreend = str(55)            ###### preciso montar esse informação
     mes = "12"
     ano = "2024"
-    
+
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'graf_progresso_obra.png'
-    
+
     plt.savefig(grafNome) # , bbox_inches='tight')
-    
-    return 
+
+    return
 
 @app.route('/graf_indices_garantia_I', methods=['GET'])
 def graf_indices_garantia_I():
@@ -1311,7 +1312,7 @@ def graf_indices_garantia_I():
 
     linhas = [1.00, 1.10, 1.20, 1.30, 1.40, 1.50, 1.60]
     plt.hlines(linhas, 0, 3, '#9feafc')
- 
+
     plt.plot(x1, y1, label='IC Estipulado em contrato')
     plt.plot(x1, y2, label='IC Recebiveis + estoque')
 
@@ -1332,21 +1333,21 @@ def graf_indices_garantia_I():
 
     plt.legend(loc='lower left', bbox_to_anchor=(0,-0.2), fontsize=8,ncols=2) # Adicionar a legenda fora do gráfico
     plt.tight_layout()    # Ajustar o layout para evitar cortes
-    plt.margins(0.1,0.1)  # Ajustar margens da caixa x gráfico 
+    plt.margins(0.1,0.1)  # Ajustar margens da caixa x gráfico
 
     grafC = graficoController (app)
 
     idEmpreend = str(55)            ###### preciso montar esse informação
     mes = "12"
     ano = "2024"
-    
+
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'graf_indices_garantia_I.png'
 
     plt.savefig(grafNome) # , bbox_inches='tight')
-    
-    return 
+
+    return
 
 @app.route('/graf_indices_garantia_II', methods=['GET'])
 def graf_indices_garantia_II():
@@ -1385,27 +1386,27 @@ def graf_indices_garantia_II():
     plt.title("Índices de garantia previsto x existente", fontdict={'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
 
     for xi, yi, text in zip(x1, y3, annotationsy3):
-        plt.annotate(text, xy=(xi, yi), xycoords='data', xytext=(3, 10), textcoords='offset points')        
+        plt.annotate(text, xy=(xi, yi), xycoords='data', xytext=(3, 10), textcoords='offset points')
     for xi, yi, text in zip(x1, y4, annotationsy4):
-        plt.annotate(text, xy=(xi, yi), xycoords='data', xytext=(3, -10), textcoords='offset points')        
+        plt.annotate(text, xy=(xi, yi), xycoords='data', xytext=(3, -10), textcoords='offset points')
 
     plt.legend(loc='lower left', bbox_to_anchor=(0,-0.2), fontsize=8,ncols=2) # Adicionar a legenda fora do gráfico
     plt.tight_layout()    # Ajustar o layout para evitar cortes
-    plt.margins(0.1,0.1)  # Ajustar margens da caixa x gráfico 
+    plt.margins(0.1,0.1)  # Ajustar margens da caixa x gráfico
 
     grafC = graficoController (app)
 
     idEmpreend = str(55)            ###### preciso montar esse informação
     mes = "12"
     ano = "2024"
-    
+
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'graf_indices_garantia_II.png'
 
     plt.savefig(grafNome) # , bbox_inches='tight')
-    
-    return 
+
+    return
 
 @app.route('/graf_vendas', methods=['GET'])
 def graf_vendas():
@@ -1423,10 +1424,10 @@ def graf_vendas():
     tpStatus = []
     data = []
     soma = 0
-    
+
     for n in unid:
         soma += n.getTtStatus()
-        data.append(n.getTtStatus()) 
+        data.append(n.getTtStatus())
 
     recipe = []
 
@@ -1450,17 +1451,17 @@ def graf_vendas():
         ax.annotate(recipe[i], xy=(x, y), xytext=(1.35*np.sign(x), 1.4*y),
                     horizontalalignment=horizontalalignment, **kw)
 
-    ax.set_title("Vendas", fontdict={'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center') 
+    ax.set_title("Vendas", fontdict={'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
 
     grafC = graficoController (app)
- 
+
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'graf_vendas.png'
-    
+
     plt.savefig(grafNome) # , bbox_inches='tight')
-    
-    return 
+
+    return
 
 @app.route('/graf_chaves', methods=['GET'])
 def graf_chaves():
@@ -1484,9 +1485,9 @@ def graf_chaves():
 #    print('sizes = ', sizes)
 
     fig1, ax1 = plt.subplots()
-    
-    ax1.pie(sizes, labels=labels, autopct='%1.1f%%', shadow=False, startangle=90, textprops={'fontsize': 16}) 
-    
+
+    ax1.pie(sizes, labels=labels, autopct='%1.1f%%', shadow=False, startangle=90, textprops={'fontsize': 16})
+
     ax1.axis('equal')
 
     grafC = graficoController (app)
@@ -1494,13 +1495,13 @@ def graf_chaves():
     idEmpreend = str(55)            ###### preciso montar esse informação
     mes = "12"
     ano = "2024"
-    
+
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'graf_chaves.png'
-    
+
     plt.savefig(grafNome) # , bbox_inches='tight')
-    return 
+    return
 
 ############ TABELAS ######################
 
@@ -1513,9 +1514,9 @@ def tab_inadimplencia():
 
     idEmpreend = 55
     mesIni = '10'
-    anoIni = '2024' 
+    anoIni = '2024'
     mesFim = '01'
-    anoFim = '2025' 
+    anoFim = '2025'
 
     geral = geralController (app)
     inaC = inadimplenciaController ()
@@ -1525,13 +1526,13 @@ def tab_inadimplencia():
     mesTeste = ''
     anoTeste = ''
     atrasoTeste = True
-    
+
     column_labels.append('Atraso')
 
     for m in inaS:
         if m.getOrdem() == 1:
             column_labels.append(geral.formatammmaa(m.getMesVigencia(), m.getAnoVigencia()))
-        else:    
+        else:
             break
 
 #    print('++++++++ column_labels', column_labels )
@@ -1545,7 +1546,7 @@ def tab_inadimplencia():
 #    print ('===============> ', tamanho)
     posicao = 0
 
-    while posicao < tamanho: 
+    while posicao < tamanho:
         print ('a ', posicao, tamanho)
         m=inaS[posicao]
         print ('b ',ordemTeste, m.getOrdem())
@@ -1553,7 +1554,7 @@ def tab_inadimplencia():
             if len(dd) == 0:
                 dd.append(m.getPeriodo())
             dd.append(m.getQtUnidades())
-        else:   
+        else:
             data.append(dd)
             dd=[]
             dd.append(m.getPeriodo())
@@ -1584,12 +1585,12 @@ def tab_inadimplencia():
     tabela.set_fontsize(8)
 #    tabela.scale(2,1)
 
-#   Ajustando o tamanho das colunas 
-    for x in range(0,num_cols): 
-        tabela.auto_set_column_width(x) 
+#   Ajustando o tamanho das colunas
+    for x in range(0,num_cols):
+        tabela.auto_set_column_width(x)
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
-        if row == 0:                       
+        if row == 0:
             cell.set_facecolor("lightblue")
 
     grafC = graficoController (app)
@@ -1597,7 +1598,7 @@ def tab_inadimplencia():
     idEmpreend = 55            ###### preciso montar esse informação
     mes = "12"
     ano = "2024"
-    
+
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_inadimplencia.png'
@@ -1628,16 +1629,16 @@ def tab_notas():
     data = []
     somaVlNotaFiscal = 0
     somaVlEstoque = 0
-     
+
     for n in notS:
         dd = []
-        dd.append(n.getItem())  
+        dd.append(n.getItem())
         somaVlNotaFiscal += n.getVlNotaFiscal()
         dd.append(geral.formataNumero(n.getVlNotaFiscal()))
         somaVlEstoque += n.getVlEstoque()
         dd.append(geral.formataNumero(n.getVlEstoque()))
         data.append(dd)
- 
+
     # incluindo a linha de totais
     dd = []
     dd.append('Estoque em '+ mes + '/' + ano )
@@ -1664,17 +1665,17 @@ def tab_notas():
     tabela.set_fontsize(8)
 #    tabela.scale(2,1)
 
-#   Ajustando o tamanho das colunas 
-    for x in range(0,num_cols): 
-        tabela.auto_set_column_width(x) 
+#   Ajustando o tamanho das colunas
+    for x in range(0,num_cols):
+        tabela.auto_set_column_width(x)
 
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
         if row == 0 or row == num_rows-1:
-            cell.set_facecolor("lightblue") # campos em azul encima e embaixo    
-            if row == 0:    
+            cell.set_facecolor("lightblue") # campos em azul encima e embaixo
+            if row == 0:
                 cell.set_text_props(ha='center', va='center')  # Alinhar 1ª linha no centro
-            else:    
+            else:
                 if col == 0:
                    cell.set_text_props(ha='left', va='center')  # Alinhar coluna 1 da ultima linha à esquerda
         else:  # Demais itens da tabela
@@ -1682,7 +1683,7 @@ def tab_notas():
                cell.set_text_props(ha='left', va='center')  # Alinhar à esquerda
 
     grafC = graficoController (app)
-    
+
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_notas.png'
@@ -1707,9 +1708,9 @@ def tab_conta_corrente():
     geral = geralController (app)
     conC = contaController ()
     conS = conC.consultarConta (idEmpreend)
-    
+
     data = []
-    
+
     for c in conS:
         dd = []
         periodo = geral.formatammmaa(c.getMesVigencia(),c.getAnoVigencia())
@@ -1744,20 +1745,20 @@ def tab_conta_corrente():
     tabela.set_fontsize(8)
 #    tabela.scale(2,1)
 
-#   Ajustando o tamanho das colunas 
-    for x in range(0,num_cols): 
-        tabela.auto_set_column_width(x) 
+#   Ajustando o tamanho das colunas
+    for x in range(0,num_cols):
+        tabela.auto_set_column_width(x)
 
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
-        if row == 0:                       
+        if row == 0:
             cell.set_facecolor("lightblue")
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
             cell.set_text_props(ha='right', va='center')  # Alinhar à esquerda
 
     grafC = graficoController (app)
-  
+
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_conta_corrente.png'
@@ -1780,12 +1781,12 @@ def tab_pontos_atencao_geral():
     ponS = ponC.consultarPontosPelaData (idEmpreend, dtCarga, tipo)
 
     fig, ax = plt.subplots(1, 1)
-    
+
     data = []
-     
+
     for p in ponS:
         dd = []
-        dd.append(p.getHistorico())  
+        dd.append(p.getHistorico())
         dd.append(p.getStatus())
         dd.append(p.getObservacao())
         data.append(dd)
@@ -1809,13 +1810,13 @@ def tab_pontos_atencao_geral():
     tabela.set_fontsize(8)
 #    tabela.scale(2,1)
 
-#   Ajustando o tamanho das colunas 
-    for x in range(0,num_cols): 
-        tabela.auto_set_column_width(x) 
+#   Ajustando o tamanho das colunas
+    for x in range(0,num_cols):
+        tabela.auto_set_column_width(x)
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
         cell.set_edgecolor("none")  # Define a cor da borda como "none" (sem borda)
-        if row == 0:                       
+        if row == 0:
             cell.set_facecolor("lightblue")
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
@@ -1826,7 +1827,7 @@ def tab_pontos_atencao_geral():
     idEmpreend = str(55)            ###### preciso montar esse informação
     mes = "12"
     ano = "2024"
-    
+
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_pontos_atencao_geral.png'
@@ -1849,12 +1850,12 @@ def tab_pontos_atencao_obra():
     ponS = ponC.consultarPontosPelaData (idEmpreend, dtCarga, tipo)
 
     fig, ax = plt.subplots(1, 1)
-    
+
     data = []
-     
+
     for p in ponS:
         dd = []
-        dd.append(p.getHistorico())  
+        dd.append(p.getHistorico())
         dd.append(p.getStatus())
         dd.append(p.getObservacao())
         data.append(dd)
@@ -1878,13 +1879,13 @@ def tab_pontos_atencao_obra():
     tabela.set_fontsize(8)
 #    tabela.scale(2,1)
 
-#   Ajustando o tamanho das colunas 
-    for x in range(0,num_cols): 
-        tabela.auto_set_column_width(x) 
+#   Ajustando o tamanho das colunas
+    for x in range(0,num_cols):
+        tabela.auto_set_column_width(x)
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
         cell.set_edgecolor("none")  # Define a cor da borda como "none" (sem borda)
-        if row == 0:                       
+        if row == 0:
             cell.set_facecolor("lightblue")
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
@@ -1895,7 +1896,7 @@ def tab_pontos_atencao_obra():
     idEmpreend = str(55)            ###### preciso montar esse informação
     mes = "12"
     ano = "2024"
-    
+
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_pontos_atencao_obra.png'
@@ -1918,12 +1919,12 @@ def tab_pontos_atencao_documentos():
     ponS = ponC.consultarPontosPelaData (idEmpreend, dtCarga, tipo)
 
     fig, ax = plt.subplots(1, 1)
-    
+
     data = []
-     
+
     for p in ponS:
         dd = []
-        dd.append(p.getHistorico())  
+        dd.append(p.getHistorico())
         dd.append(p.getStatus())
         dd.append(p.getObservacao())
         data.append(dd)
@@ -1947,13 +1948,13 @@ def tab_pontos_atencao_documentos():
     tabela.set_fontsize(8)
 #    tabela.scale(2,1)
 
-#   Ajustando o tamanho das colunas 
-    for x in range(0,num_cols): 
-        tabela.auto_set_column_width(x) 
+#   Ajustando o tamanho das colunas
+    for x in range(0,num_cols):
+        tabela.auto_set_column_width(x)
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
         cell.set_edgecolor("none")  # Define a cor da borda como "none" (sem borda)
-        if row == 0:                       
+        if row == 0:
             cell.set_facecolor("lightblue")
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
@@ -1964,7 +1965,7 @@ def tab_pontos_atencao_documentos():
     idEmpreend = str(55)            ###### preciso montar esse informação
     mes = "12"
     ano = "2024"
-    
+
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_pontos_atencao_documentos.png'
@@ -1985,16 +1986,16 @@ def tab_acomp_financeiro():
     finC = financeiroController ()
     finS = finC.consultarFinanceiroPelaData (idEmpreend, dtCarga)
     fig, ax = plt.subplots(1, 1)
-    
-    data = [] 
+
+    data = []
 
     for m in finS:
         dd = []
-        dd.append(m.getHistorico())  
+        dd.append(m.getHistorico())
         dd.append(geral.formataPerc(m.getPercFinanceiro(),0))
         dd.append(geral.formataNumero(m.getVlFinanceiro(),'R$'))
         data.append(dd)
-                       
+
     column_labels = ["                            ", "         ", "                "]
 
     # Definir tamanho das células
@@ -2014,13 +2015,13 @@ def tab_acomp_financeiro():
     tabela.set_fontsize(8)
 #    tabela.scale(2,1)
 
-#   Ajustando o tamanho das colunas 
-    for x in range(0,num_cols): 
-        tabela.auto_set_column_width(x) 
+#   Ajustando o tamanho das colunas
+    for x in range(0,num_cols):
+        tabela.auto_set_column_width(x)
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
         cell.set_edgecolor("none")  # Define a cor da borda como "none" (sem borda)
-#        if row == 0:                       
+#        if row == 0:
 #            cell.set_facecolor("lightblue")
 #            cell.set_text_props(ha='center', va='center')  # Alinhar no centro
 #        else:  # Demais itens da tabela
@@ -2031,7 +2032,7 @@ def tab_acomp_financeiro():
     idEmpreend = str(55)            ###### preciso montar esse informação
     mes = "12"
     ano = "2024"
-    
+
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_acomp_financeiro.png'
@@ -2055,10 +2056,10 @@ def tab_prev_realizado():
     fig, ax = plt.subplots(1, 1)
 
     data = []
-     
+
     for p in preS:
         dd = []
-        dd.append(str(p.getNrMedicao())+'ª')  
+        dd.append(str(p.getNrMedicao())+'ª')
         periodo = geral.formatammmaa(p.getMesVigencia(),p.getAnoVigencia())
         dd.append(periodo)
         dd.append(geral.formataNumero(p.getPercPrevistoAcumulado()))
@@ -2069,7 +2070,7 @@ def tab_prev_realizado():
             dd.append('')
         dd.append(geral.formataNumero(p.getPercPrevistoPeriodo()))
         data.append(dd)
- 
+
 #    print (data)
     column_labels = ["Medição", "Período", "Previsto acum.", "Realizado acum.", "Diferença","Previsto período"]
 
@@ -2091,16 +2092,16 @@ def tab_prev_realizado():
     tabela.set_fontsize(8)
 #    tabela.scale(2,1)
 
-#   Ajustando o tamanho das colunas 
-    for x in range(0,num_cols): 
-        tabela.auto_set_column_width(x) 
+#   Ajustando o tamanho das colunas
+    for x in range(0,num_cols):
+        tabela.auto_set_column_width(x)
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
-        if row == 0:                       
+        if row == 0:
             cell.set_facecolor("lightblue")
 
     grafC = graficoController (app)
- 
+
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_prev_realizado.png'
@@ -2131,10 +2132,10 @@ def tab_orcamento_liberacao():
     somaFisicoSaldo = 0
     somaFinanceiroValor = 0
     somaFinanceiroSaldo = 0
-     
+
     for m in medS:
         dd = []
-        dd.append(m.getItem())  
+        dd.append(m.getItem())
         somaOrcadoValor += m.getOrcadoValor()
         dd.append(geral.formataNumero(m.getOrcadoValor()))
         dd.append(' ')
@@ -2147,10 +2148,10 @@ def tab_orcamento_liberacao():
         somaFinanceiroValor += m.getFinanceiroValor()
         dd.append(geral.formataNumero(m.getFinanceiroValor()))
         dd.append(geral.formataNumero(m.getFinanceiroPercentual()))
-        somaFinanceiroSaldo += m.getFinanceiroSaldo()            
+        somaFinanceiroSaldo += m.getFinanceiroSaldo()
         dd.append(geral.formataNumero(m.getFinanceiroSaldo()))
         data.append(dd)
- 
+
     # incluindo a linha de totais
     dd = []
     dd.append('Total do Orçamento')
@@ -2187,20 +2188,20 @@ def tab_orcamento_liberacao():
     tabela.set_fontsize(8)
 #    tabela.scale(2,1)
 
-#   Ajustando o tamanho das colunas 
-    for x in range(0,num_cols): 
-        tabela.auto_set_column_width(x) 
+#   Ajustando o tamanho das colunas
+    for x in range(0,num_cols):
+        tabela.auto_set_column_width(x)
 
     for (row, col), cell in tabela.get_celld().items():
-        if row == 0 or row == num_rows-1:     # pinta a 1ª 1 ultima linhas               
-            cell.set_facecolor("lightblue") 
-        if col == 2 or col == 6:                     # pinta as colunas de divisão 
+        if row == 0 or row == num_rows-1:     # pinta a 1ª 1 ultima linhas
+            cell.set_facecolor("lightblue")
+        if col == 2 or col == 6:                     # pinta as colunas de divisão
             cell.set_facecolor("lightblue")
         if row > 0 and col == 0 :
             cell.set_text_props(ha='left', va='center')  # Alinhar à esquerda
 
     grafC = graficoController (app)
-    
+
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_orcamento_liberacao.png'
@@ -2219,12 +2220,12 @@ def gerar_relatorio():
     idEmpreend = str(55)            ###### preciso montar esse informação
     mes = "01"
     ano = "2025"
-    
+
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
 
     c = canvas.Canvas(diretorio + "Relatorio.pdf")
-    
+
     grafC.pdfPag1(c, diretorio)
     c.showPage()
     grafC.pdfPag2(c, diretorio)
@@ -2243,7 +2244,7 @@ def gerar_relatorio():
     c.showPage()
     grafC.pdfPag9(c, diretorio)
     c.showPage()
-    c.save()    
+    c.save()
 
     return
 
@@ -2262,13 +2263,13 @@ def upload_arquivo_fotos():
 # verifique se a solicitação de postagem tem a parte do arquivo
     if 'file' not in request.files:
         mensagem = "Erro no upload do arquivo. No file part."
-        return render_template("erro.html", mensagem=mensagem)    
+        return render_template("erro.html", mensagem=mensagem)
 
     id_empreend = str(42)
     anoMes = "2024_12"
 
     diretorio = app.config['DIRSYS'] + id_empreend + app.config['BARRADIR'] + anoMes + app.config['BARRADIR']
-    grafC.criaDir(diretorio)    
+    grafC.criaDir(diretorio)
 
     files = request.files.getlist("file")
 
@@ -2284,8 +2285,8 @@ def upload_arquivo_fotos():
 
 @app.route('/download_arquivo', methods=['GET'])
 def download_arquivo():
-    arquivo = request.args.get('arquivo') 
-    diretorio = "c://GFC//Relatorios"  
+    arquivo = request.args.get('arquivo')
+    diretorio = "c://GFC//Relatorios"
     print ('+++++++++++++', arquivo)
     return send_from_directory(diretorio, arquivo, as_attachment=True)
 

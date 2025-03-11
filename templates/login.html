@@ -21,14 +21,18 @@
         <form action="/login" method="POST" id="loginForm">
           <div class="row mt-3">
             <div class="col-12">
-              <label for="email" class="form-label">Email:</label>
-              <input type="text" name="email" class="form-control" />
+              <div class="form-floating">
+                <input type="email" name="email" id="emailIpt" class="form-control" placeholder="" />
+                <label for="emailIpt">Email:</label>
+              </div>
             </div>
           </div>
           <div class="row mt-3">
             <div class="col-12">
-              <label for="senha" class="form-label">Senha:</label>
-              <input type="password" name="senha" class="form-control" />
+              <div class="form-floating">
+                <input type="password" name="senha" id="senhaIpt" class="form-control" placeholder="" />
+                <label for="senhaIpt">Senha:</label>
+              </div>
             </div>
           </div>
           <div class="row mt-3">
@@ -65,9 +69,10 @@
         senha: 'Este campo é obrigatório'
       },
       errorClass: 'is-invalid',
+      errorElement: 'span',
       highlight: function (element, errorClass, validClass) {
         setTimeout(function () {
-          $(element).siblings(`label[id="${element.name}-error"]`).addClass('invalid-feedback').show();
+          $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
           $(element).addClass(errorClass)
         }, 50)
       },

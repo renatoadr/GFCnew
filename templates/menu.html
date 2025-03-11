@@ -1,26 +1,40 @@
+<header class="header">
+  <div class="container">
+    <div class="row align-items-center justify-content-between">
+      <div class="col-2">
+        <div class="row">
+          <div class="col-4">
+            <a href="/home" class="text-decoration-none d-block"><img src="../static/imgs/gfc.png" alt="Home" /></a>
+          </div>
+          <div class="col-7">
+            <a href="/home" class="text-decoration-none d-block">
+              <h1 class="text-white m-0">GFC</h1>
+            </a>
+          </div>
+        </div>
+      </div>
 
-<header style="box-shadow: 0px 0px 20px rgba(38, 4F, 7C, 0.1); background: #384f7C; position: fixed; width: 100%; top: 0;">
-
-<table border=0 style="width: 100%;">
-    <tr>
-        <td><p align="left"><div class="tooltip"><a href="/home"><img src="../static/imgs/gfc.png" alt="Home" style="width:60px;height:60px;"/></a></div></p></td>
-        <td><p style="color: white; font-family: Arial">Gestão Financeira da Construção</p></td>
-        <td>
-            <p align="right">
-              {{session.email}} 
-              <div>
-                <a href="/logout" style="text-align: center; display: inline-block;">
-                  <img src="../static/imgs/icons8-sair-48-neg.png" alt="Sair" style="width: 30px; height: 30px;" />
-                  <span style="color: white; display: block;">Sair</span>
-                </a>
-              </div>
+      <div class="col-4 d-flex justify-content-end">
+        <div class="row">
+          <div class="col-7">
+            <p class="text-white text-end m-0"><small>Seja bem vindo,</small> <strong
+                class="h4">{{session.nome}}</strong>
             </p>
-          </td>
-    </tr>
-</table>
-</header>
-{% if mensagem %}
-    <div style="margin-top: 6em; font-family:Arial; text-align: left; font-size: 20px" class="smoothbox">
-     <p> {{mensagem}} </p>  
+          </div>
+          <div class="col-5 d-flex flex-column justify-content-center">
+            <a href="/logout" class="btn btn-danger">
+              <i class="fa-solid fa-right-from-bracket"></i>
+              Sair
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
-{% endif %} 
+  </div>
+</header>
+
+{% if mensagem %}
+<div style="margin-top: 6em; font-family:Arial; text-align: left; font-size: 20px" class="smoothbox">
+  <p> {{mensagem}} </p>
+</div>
+{% endif %}

@@ -11,7 +11,7 @@ class MySql:
             connection = m.connect(
                 host="localhost",
                 user="root",
-                password="BIM@db2024"
+                password=""
             )
 
             if connection.is_connected():
@@ -23,4 +23,4 @@ class MySql:
     @staticmethod
     def close(connection):
         connection.close()
-    
+

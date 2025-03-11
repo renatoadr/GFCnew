@@ -1,121 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GFC</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/tooltip.css">
-</head>
-<body>
-<!--{% if mensagem %}
-    <div style="margin-top: 9.5em; text-align: center; background-color: #fdde31 ;font-size: 20px; color: brown ;"> 
-      <p> {{mensagem}} </p>  
-    </div>
-{% endif %}-->    
 
-{% include 'menu.html' %}
-    {% if empreends %}
-    <div style="margin-top: 10em;">
-        <table border="1" align="center" style="font-family: Arial; border-spacing: 1px; border-color: white; background-color: #e7e7e7;"" >
-        <thead>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC</title>
+  {% include 'fractials/head.html' %}
+</head>
+
+<body>
+  {% include 'menu.html' %}
+
+  <div class="container">
+    <div class="row">
+      <div class="col-6">
+        <h2 class="title">Empreendimentos</h2>
+      </div>
+      <div class="col-6 d-flex justify-content-end align-items-center">
+        <form action="/abrir_cad_empreend" id="formListaEmpreend">
+          <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-circle-plus"></i>
+            Novo Empreendimento
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+
+        <table class="table table-striped">
+          <thead class="table-light">
             <tr>
-                <th>Nome</th>
-                <th colspan="10"></th>
+              <th>Nome</th>
+              <th colspan="10" class="text-center">Ações</th>
             </tr>
-        </thead>        
-        <tbody>
-            {% for e in empreends %}            
+          </thead>
+          <tbody>
+            {% if empreends %}
+            {% for e in empreends %}
             <tr>
-                <td>{{ e.getNmEmpreend() }}</td>
-                
-                <td><div class="tooltip">
-                        <a href="/abrir_edicao_empreend?idEmpreend={{e.getIdEmpreend()}}"><img src="../static/imgs/icons8-editar-32.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Editar Empreendimento</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="tooltip">
-                        <a href="/excluir_empreend?idEmpreend={{e.getIdEmpreend()}}"><img src="../static/imgs/icons8-lixeira-24.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Excluir Empreendimento</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="tooltip">
-                        <a href="/importar_gastos?idEmpreend={{e.getIdEmpreend()}}"><img src="../static/icons8-razão-geral-100.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Importar Gastos</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="tooltip">
-                        <a href="/tratar_gastos?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"><img src="../static/imgs/icons8-receber-dinheiro-64.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Gastos</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="tooltip">
-                        <a href="/tratar_torres?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"><img src="../static/imgs/icons8-torre-32.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Torres</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="tooltip">
-                        <a href="/tratar_unidades?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"><img src="../static/imgs/icons8-varanda-50.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Unidades</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="tooltip">
-                        <a href="/tratar_clientes?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"><img src="../static/imgs/icons8-cliente-80.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Clientes</span>
-                    </div>
-                </td>  
-                <td>
-                    <div class="tooltip">
-                        <a href="/tratar_orcamentos?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"><img src="../static/icons8-não-testado-50.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Orçamentos</span>
-                    </div>
-                </td>                
-                <td>
-                    <div class="tooltip">
-                        <a href="/criar_documentacao?idEmpreend={{e.getIdEmpreend()}}"><img src="../static/icons8-modo-de-exibição-80.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Documentação</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="tooltip">
-                        <a href="/criar_graficos?idEmpreend={{e.getIdEmpreend()}}"><img src="../static/imgs/icons8-increase-80.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Gráficos</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="tooltip">
-                        <a href="/tratar_agendas?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"><img src="../static/imgs/icons8-agenda-50.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Agenda</span>
-                    </div>
-                </td>
+              <td>{{ e.getNmEmpreend() }}</td>
+              <td>
+                <a href="/abrir_edicao_empreend?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
+                  data-bs-title="Editar Empreendimento">
+                  <i class="fa-solid fa-pencil text-warning"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/excluir_empreend?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
+                  data-bs-title="Excluir Empreendimento">
+                  <i class="fa-solid fa-trash text-danger"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/importar_gastos?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
+                  data-bs-title="Importar Gastos">
+                  <i class="fa-solid fa-file-arrow-up"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/tratar_gastos?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Gastos">
+                  <i class="fa-solid fa-money-bill-trend-up"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/tratar_torres?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Torres">
+                  <i class="fa-solid fa-building"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/tratar_clientes?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Clientes">
+                  <i class="fa-solid fa-users"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/tratar_orcamentos?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Orçamentos">
+                  <i class="fa-solid fa-scale-balanced"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/criar_documentacao?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
+                  data-bs-title="Documentação">
+                  <i class="fa-solid fa-file-lines"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/criar_graficos?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
+                  data-bs-title="Gráficos">
+                  <i class="fa-solid fa-chart-pie"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/tratar_agendas?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Agenda">
+                  <i class="fa-solid fa-calendar-days"></i>
+                </a>
+              </td>
+
             </tr>
             {% endfor %}
-        </tbody>        
+            {% else %}
+            <tr>
+              <td colspan="11" class="text-center">
+                Não existem empreendimentos cadastrados.
+              </td>
+            </tr>
+            {% endif %}
+          </tbody>
         </table>
+      </div>
     </div>
-    <div>    
-        <form action="/abrir_cad_empreend" style="border: 0px;" id="formListaEmpreend">   
-            <div> 
-                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />          
-                <button type="submit">Novo</button>
-            </div>
-        </form>
-    </div>
-    {% else %}
-    <div>    
-        <form action="/abrir_cad_empreend" style="border: 0px;" id="formListaEmpreend">   
-            <div> 
-                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />          
-                <button type="submit">Novo</button>
-            </div>
-        </form>
-    </div>
-    {% endif %}
+
+  </div>
+
+  {% include 'fractials/footer.html' %}
 </body>
+
 </html>

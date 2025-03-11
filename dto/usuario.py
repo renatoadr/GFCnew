@@ -11,7 +11,7 @@ class usuario:
     __senha = ""
     __tpAcesso = ""
     __nmUsuario =""
-    
+
     #Getters
 
     def getIdUsuario(self):
@@ -23,8 +23,8 @@ class usuario:
     def getTpAcesso(self):
         return self.__tpAcesso
     def getNmUsuario(self):
-        return self.__NmUsuario
- 
+        return self.__nmUsuario
+
     #Setters
 
     def setIdUsuario(self, param):
