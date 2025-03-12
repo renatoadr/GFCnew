@@ -72,11 +72,11 @@
                 </a>
               </td>
               <td>
-                <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Empreendimento" class="btnExcluir">
-                  <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal"
-                    data-bs-target="#modalExcludeOrcamento"
-                    data-action="/excluir_orcamento?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}"
-                    data-text="Deseja realmente excluir o orçamento com a data <strong>{{m.getDtCarga()}}</strong>?"></i>
+                <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Empreendimento">
+                  <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
+                    data-modal-exclude-title="Orçamento"
+                    data-modal-exclude-action="/excluir_orcamento?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}"
+                    data-modal-exclude-text="Deseja realmente excluir o orçamento com a data <strong>{{m.getDtCarga()}}</strong>?"></i>
                 </a>
               </td>
             </tr>
@@ -90,24 +90,6 @@
             {% endif %}
           </tbody>
         </table>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="modalExcludeOrcamento">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Excluir Orçamento</h5>
-        </div>
-        <div class="modal-body">
-          <p id="modalText"></p>
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="button" class="btn btn-danger" data-bs-dismiss="modal" id="modalConfirm"
-            data-exec-action="">Deletar</button>
-        </div>
       </div>
     </div>
   </div>

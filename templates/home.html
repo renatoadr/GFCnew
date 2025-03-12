@@ -49,9 +49,11 @@
               </td>
 
               <td>
-                <a href="/excluir_empreend?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
-                  data-bs-title="Excluir Empreendimento">
-                  <i class="fa-solid fa-trash text-danger"></i>
+                <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Empreendimento">
+                  <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
+                    data-modal-exclude-title="Empreendimento"
+                    data-modal-exclude-action="/excluir_empreend?idEmpreend={{e.getIdEmpreend()}}"
+                    data-modal-exclude-text="Deseja realmente excluir o empreendimento <strong>{{ e.getNmEmpreend() }}</strong>?"></i>
                 </a>
               </td>
 

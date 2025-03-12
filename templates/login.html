@@ -53,29 +53,31 @@
     integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
     crossorigin="anonymous"></script>
   <script>
-    $("#loginForm").validate({
-      rules: {
-        email: {
-          required: true,
-          email: true
+    $(function () {
+      $("#loginForm").validate({
+        rules: {
+          email: {
+            required: true,
+            email: true
+          },
+          senha: 'required'
         },
-        senha: 'required'
-      },
-      messages: {
-        email: {
-          required: 'Este campo é obrigatório',
-          email: 'Informe um email válido'
+        messages: {
+          email: {
+            required: 'Este campo é obrigatório',
+            email: 'Informe um email válido'
+          },
+          senha: 'Este campo é obrigatório'
         },
-        senha: 'Este campo é obrigatório'
-      },
-      errorClass: 'is-invalid',
-      errorElement: 'span',
-      highlight: function (element, errorClass, validClass) {
-        setTimeout(function () {
-          $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
-          $(element).addClass(errorClass)
-        }, 50)
-      },
+        errorClass: 'is-invalid',
+        errorElement: 'span',
+        highlight: function (element, errorClass, validClass) {
+          setTimeout(function () {
+            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
+            $(element).addClass(errorClass)
+          }, 50)
+        },
+      });
     });
   </script>
 </body>

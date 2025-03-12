@@ -7,6 +7,12 @@ body {
   font-size: 16px;
   color: #333;
 }
+#footerPage {
+  width: 100%;
+  padding: 8px 0;
+  background: #333;
+  margin-top: 80px;
+}
 
 .login-bg {
   background-image: url('../imgs/gfc-splash-2.jpg');

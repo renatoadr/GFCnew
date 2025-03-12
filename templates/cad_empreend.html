@@ -1,138 +1,176 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GFC</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/tooltip.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Cadastro Empreendimento</title>
+  {% include 'fractials/head.html' %}
 </head>
+
 <body>
-    {% include 'menu.html' %}
-    {% if empreend %}
+  {% include 'menu.html' %}
 
-    <form action="/salvar_empreend" method="POST" style="margin-top: 10em" id="formListaEmpreend">
-        <div>
-            <label for="idEmpreendimento">Codigo do Empreendimento:</label>
-            <input type="text" name="idEmpreendimento" value="{{ empreend.getIdEmpreend() }}"  readonly  />
+
+  <div class="container">
+    <div class="row">
+      <div class="col-6">
+        <h2 class="title">{{ 'Editar' if empreend else 'Criar' }} Empreendimento</h2>
+      </div>
+    </div>
+
+    <form action="{{'/salvar_empreend' if empreend else '/efetuar_cad_empreend'}}" method="POST"
+      id="formEmpreendimento">
+      <div class="row">
+        <div class="col-6">
+
+          <div class="form-floating">
+            <input type="text" name="idEmpreendimento" id="idEmpreendimento" class="form-control" placeholder=""
+              readonly value="{{ empreend.getIdEmpreend() if empreend}}" disabled />
+            <label for="idEmpreendimento">Codigo do Empreendimento</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="text" name="nmEmpreendimento" id="nmEmpreendimento" class="form-control" placeholder=""
+              value="{{ empreend.getNmEmpreend() if empreend}}" />
+            <label for="nmEmpreendimento">Nome</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="text" name="cep" id="cep" class="form-control cep" placeholder=""
+              value="{{ empreend.getCep() if empreend}}" />
+            <label for="cep">CEP</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <select type="text" name="estado" id="estado" class="form-control" placeholder=""
+              value="{{ empreend.getEstado() if empreend}}">
+              <option value="">Selecione o estado</option>
+            </select>
+            <label for="estado">Estado</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <select type="text" name="cidade" id="cidade" class="form-control" placeholder=""
+              value="{{ empreend.getCidade() if empreend}}">
+              <option value="">Selecione a cidade</option>
+            </select>
+            <label for="cidade">Cidade</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="text" name="logradouro" id="logradouro" class="form-control" placeholder=""
+              value="{{ empreend.getLogradouro() if empreend}}" />
+            <label for="logradouro">Endereço</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="text" name="bairro" id="bairro" class="form-control" placeholder=""
+              value="{{ empreend.getBairro() if empreend}}" />
+            <label for="bairro">Bairro</label>
+          </div>
+
         </div>
-        <div>
-            <label for="nmEmpreendimento">Nome:</label>
-            <input type="text" name="nmEmpreendimento" value="{{ empreend.getNmEmpreend() }}" />
+
+        <div class="col-6">
+          <div class="form-floating">
+            <input type="text" name="nmIncorp" id="nmIncorp" class="form-control" placeholder=""
+              value="{{ empreend.getNmIncorp() if empreend}}" />
+            <label for="nmIncorp">Incorporador</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="text" name="nmConstrutor" id="nmConstrutor" class="form-control" placeholder=""
+              value="{{ empreend.getNmConstrutor() if empreend}}" />
+            <label for="nmConstrutor">Construtora</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="text" name="nmBanco" id="nmBanco" class="form-control" placeholder=""
+              value="{{ empreend.getNmBanco() if empreend}}" />
+            <label for="nmBanco">Banco</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="text" name="nmEngenheiro" id="nmEngenheiro" class="form-control" placeholder=""
+              value="{{ empreend.getNmEngenheiro() if empreend}}" />
+            <label for="nmEngenheiro">Nome do engenheiro</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="text" name="vlPlanoEmp" id="vlPlanoEmp" class="form-control money" placeholder=""
+              value="{{ empreend.getVlPlanoEmp() if empreend}}" />
+            <label for="vlPlanoEmp">Valor do Plano Empresário</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="text" name="indiceGarantia" id="indiceGarantia" class="form-control money" placeholder=""
+              value="{{ empreend.getIndiceGarantia() if empreend}}" />
+            <label for="indiceGarantia">Indice de Garantia Contratado</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="date" name="previsaoEntrega" id="previsaoEntrega" class="form-control" placeholder=""
+              value="{{ empreend.getPrevisaoEntrega() if empreend}}" />
+            <label for="previsaoEntrega">Previsão de entrega</label>
+          </div>
+
         </div>
-        <div>
-            <label for="logradouro">Endereço:</label>
-            <input type="text" name="logradouro" value="{{ empreend.getLogradouro() }}" />
+      </div>
+
+      <div class="row mt-5 justify-content-center d-flex">
+        <div class="col-3">
+          <a href="/home" class="btn btn-secondary w-100">Cancelar</a>
         </div>
-        <div>
-             <label for="bairro">Bairro:</label>
-             <input type="text" name="bairro" value="{{ empreend.getBairro() }}" /> 
+        <div class="col-3 offset-1">
+          <button type="submit" class="btn btn-success w-100">{{ 'Salvar' if empreend else 'Criar' }}</button>
         </div>
-        <div>
-            <label for="cidade">Cidade:</label>
-            <input type="text" name="cidade" value="{{ empreend.getCidade() }}" /> 
-       </div>
-        <div>
-             <label for="estado">Estado:</label>
-             <input type="text" name="estado" value="{{ empreend.getEstado() }}" /> 
-        </div>
-        <div>
-            <label for="cep">CEP :</label>
-            <input type="text" name="cep" value="{{ empreend.getCep() }}" /> 
-        </div>
-        <div>
-             <label for="nmIncorp">Incorporador:</label>
-             <input type="text" name="nmIncorp" value="{{ empreend.getNmIncorp() }}" /> 
-        </div>
-        <div>
-             <label for="nmConstrutor">Construtora:</label>
-             <input type="text" name="nmConstrutor" value="{{ empreend.getNmConstrutor() }}" />
-        </div>
-        <div>
-             <label for="nmBanco">Banco:</label>
-             <input type="text" name="nmBanco" value="{{ empreend.getNmBanco() }}" />
-        </div>
-        <div>
-            <label for="nmEngenheiro">Nome do engenheiro:</label>
-            <input type="text" name="nmEngenheiro" value="{{ empreend.getNmEngenheiro() }}" />
-        </div>
-        <div>
-            <label for="vlPlanoEmp">Valor do Plano Empresário:</label>
-            <input type="text" name="vlPlanoEmp" value="{{ empreend.getVlPlanoEmp() }}" />
-        </div>
-        <div>
-            <label for="indiceGarantia">Indice de Garantia Contratado:</label>
-            <input type="text" name="indiceGarantia" value="{{ empreend.getIndiceGarantia() }}" />
-        </div>
-        <div>
-            <label for="previsaoEntrega">Previsão de entrega:</label>
-            <input type="date" name="previsaoEntrega" value="{{ empreend.getPrevisaoEntrega() }}" />
-        </div>
-        <div> 
-            <button type="submit">Salvar</button>
-            <button type="button" onclick="document.getElementById('formListaEmpreend').action = '/home'; document.getElementById('formListaEmpreend').method = 'GET'; document.getElementById('formListaEmpreend').submit();"  style="bottom: 10; right: 10;">Cancelar</button>
-        </div>
+      </div>
     </form>
-    {% else %}
-    <form action="/efetuar_cad_empreend" method="POST" style="margin-top: 10em" id="formListaEmpreend">
-        <div>
-            <label for="nmEmpreendimento">nome:</label>
-            <input type="text" name="nmEmpreendimento" />
-        </div>
-        <div>
-            <label for="logradouro">Endereço:</label>
-            <input type="text" name="logradouro" />
-        </div>
-        <div>
-             <label for="bairro">Bairro:</label>
-             <input type="text" name="bairro" />
-        </div>
-        <div>
-            <label for="cidade">Cidade:</label>
-            <input type="text" name="cidade" />
-       </div>
-        <div>
-             <label for="estado">Estado:</label>
-             <input type="text" name="estado" />
-        </div>
-        <div>
-            <label for="cep">CEP :</label>
-            <input type="text" name="cep" />
-        </div>
-        <div>
-             <label for="nmIncorp">Incorporador:</label>
-             <input type="text" name="nmIncorp" />
-        </div>
-        <div>
-             <label for="nmConstrutor">Construtora:</label>
-             <input type="text" name="nmConstrutor" />
-        </div>
-        <div>
-             <label for="nmBanco">Banco:</label>
-             <input type="text" name="nmBanco" />
-        </div>
-        <div>
-            <label for="nmEngenheiro">Nome do engenheiro:</label>
-            <input type="text" name="nmEngenheiro" />
-        </div>
-        <div>
-            <label for="vlPlanoEmp">Valor do Plano Empresário:</label>
-            <input type="text" name="vlPlanoEmp" />
-        </div>
-        <div>
-            <label for="indiceGarantia">Indice de Garantia Contratado:</label>
-            <input type="text" name="indiceGarantia" />
-        </div>
-        <div>
-            <label for="previsaoEntrega">Previsão de entrega:</label>
-            <input type="date" name="previsaoEntrega" />
-        </div>
-        <div> 
-            <button type="submit">Salvar</button>
-            <button type="button" onclick="document.getElementById('formListaEmpreend').action = '/home'; document.getElementById('formListaEmpreend').method = 'GET'; document.getElementById('formListaEmpreend').submit();"  style="bottom: 10; right: 10;">Cancelar</button>
-        </div>
-    </form>
-    {% endif %}
+
+  </div>
+
+  {% include 'fractials/footer.html' %}
+  <script>
+    const inputNames = Array.from(document.querySelectorAll('#formEmpreendimento input')).map(item => item.name)
+    const names = inputNames.slice(1)
+    const rules = names.reduce(function (mount, name) {
+      mount[name] = 'required';
+      return mount;
+    }, {});
+    const messages = names.reduce(function (mount, name) {
+      mount[name] = 'Este campo é obrigatório';
+      return mount;
+    }, {});
+
+    $(function () {
+      $("#formEmpreendimento").validate({
+        rules,
+        messages,
+        errorClass: 'is-invalid',
+        errorElement: 'span',
+        highlight: function (element, errorClass, validClass) {
+          setTimeout(function () {
+            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
+            $(element).addClass(errorClass)
+          }, 50)
+        },
+      });
+    });
+  </script>
+  {% if empreend %}
+  <script>
+    $(function () {
+      setTimeout(function () {
+        $('#estado').val(document.querySelector('#estado').getAttribute('value'));
+        $('#estado').trigger('change')
+        setTimeout(function () {
+          $('#cidade').val(document.querySelector('#cidade').getAttribute('value'));
+        }, 500);
+      }, 500);
+    });
+  </script>
+  {% endif %}
 </body>
-</html>
 
+</html>
