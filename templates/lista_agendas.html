@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,79 +8,91 @@
     <link rel="stylesheet" href="../static/css/style.css">
     <link rel="stylesheet" href="../static/css/tooltip.css">
 </head>
+
 <body>
 
-    {% include 'menu.html' %}
+    {% include 'fractials/menu.html' %}
     {% if agendaS %}
-    <div style="margin-top: 4em; text-align: center; font-size: 30px; "> 
+    <div style="margin-top: 4em; text-align: center; font-size: 30px; ">
         <a style="font-size: 2ch">{{nmEmpreend}}</a>
-        <table border="1" align="center" style="font-family: Arial; font-size: 13px; margin-top: 2%; border-spacing: 1px; border-color: white; background-color: #e7e7e7;" >
+        <table border="1" align="center"
+            style="font-family: Arial; font-size: 13px; margin-top: 2%; border-spacing: 1px; border-color: white; background-color: #e7e7e7;">
             <thead>
-            <tr>
-                <th>Mes</th>
-                <th>Ano</th>
-                <th>Atividade</th>
-                <th>Status</th>
-                <th>Data</th>
-                <th>Responsável</th>
-                <th>Data baixa</th>
-                <th>Responsável</th>
-                <th colspan="3"></th>
-            </tr>
-        </thead>        
-        <tbody>
-            {% for a in agendaS %}            
-            <tr>
-                <td>{{ a.getMesVigencia() }}</td>
-                <td>{{ a.getAnoVigencia() }}</td>
-                <td>{{ a.getDescrAtividade() }}</td>
-                <td>{{ a.getStatus() }}</td>
-                <td>{{ a.getDtAtividade() }}</td>
-                <td>{{ a.getNmRespAtividade() }}</td>
-                <td>{{ a.getDtBaixa() }}</td>
-                <td>{{ a.getNmRespBaixa() }}</td>
+                <tr>
+                    <th>Mes</th>
+                    <th>Ano</th>
+                    <th>Atividade</th>
+                    <th>Status</th>
+                    <th>Data</th>
+                    <th>Responsável</th>
+                    <th>Data baixa</th>
+                    <th>Responsável</th>
+                    <th colspan="3"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for a in agendaS %}
+                <tr>
+                    <td>{{ a.getMesVigencia() }}</td>
+                    <td>{{ a.getAnoVigencia() }}</td>
+                    <td>{{ a.getDescrAtividade() }}</td>
+                    <td>{{ a.getStatus() }}</td>
+                    <td>{{ a.getDtAtividade() }}</td>
+                    <td>{{ a.getNmRespAtividade() }}</td>
+                    <td>{{ a.getDtBaixa() }}</td>
+                    <td>{{ a.getNmRespBaixa() }}</td>
 
-                <td>
-                    <div class="tooltip">
-                        <a href="/consultar_agenda?modo=consulta&idEmpreend={{a.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}"><img src="../static/imgs/icons8-pesquisar-48.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">consultar</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="tooltip">
-                        <a href="/editar_agenda?idEmpreend={{a.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}"><img src="../static/imgs/icons8-editar-32.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Editar</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="tooltip">                                                    
-                        <a href="/consultar_agenda?modo=exclui&idEmpreend={{a.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}"><img src="../static/imgs/icons8-lixeira-24.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Excluir</span>
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>        
+                    <td>
+                        <div class="tooltip">
+                            <a
+                                href="/consultar_agenda?modo=consulta&idEmpreend={{a.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}"><img
+                                    src="../static/imgs/icons8-pesquisar-48.png"
+                                    style="width: 24px; height: 24px;" /></a>
+                            <span class="tooltiptext">consultar</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="tooltip">
+                            <a href="/editar_agenda?idEmpreend={{a.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}"><img
+                                    src="../static/imgs/icons8-editar-32.png" style="width: 24px; height: 24px;" /></a>
+                            <span class="tooltiptext">Editar</span>
+                        </div>
+                    </td>
+                    <td>
+                        <div class="tooltip">
+                            <a
+                                href="/consultar_agenda?modo=exclui&idEmpreend={{a.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}"><img
+                                    src="../static/imgs/icons8-lixeira-24.png" style="width: 24px; height: 24px;" /></a>
+                            <span class="tooltiptext">Excluir</span>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
         </table>
     </div>
-    <div>    
-        <form action="/abrir_cad_agenda" method="POST" style="border: 0px;" id="formListaAgendas" method="POST">   
-            <div> 
-                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />      
-                <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" />     
+    <div>
+        <form action="/abrir_cad_agenda" method="POST" style="border: 0px;" id="formListaAgendas" method="POST">
+            <div>
+                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />
+                <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" />
                 <button type="submit">Novo</button>
-                <button type="button" onclick="document.getElementById('formListaAgendas').action = '/home'; document.getElementById('formListaAgendas').method = 'GET'; document.getElementById('formListaAgendas').submit();"  style="bottom: 10; right: 10;">Voltar</button>
+                <button type="button"
+                    onclick="document.getElementById('formListaAgendas').action = '/home'; document.getElementById('formListaAgendas').method = 'GET'; document.getElementById('formListaAgendas').submit();"
+                    style="bottom: 10; right: 10;">Voltar</button>
             </div>
         </form>
     </div>
     {% else %}
-    <div>    
-        <form action="/abrir_cad_agenda" method="POST" style="border: 0px" id="formListaAgendas" method="POST">   
-             <div> 
-                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" /> 
-                <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" />           
+    <div>
+        <form action="/abrir_cad_agenda" method="POST" style="border: 0px" id="formListaAgendas" method="POST">
+            <div>
+                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />
+                <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" />
                 <button type="submit">Novo</button>
-                <button type="button" onclick="document.getElementById('formListaAgendas').action = '/home'; document.getElementById('formListaAgendas').method = 'GET'; document.getElementById('formListaAgendas').submit();"  style="bottom: 10; right: 10;">Voltar</button>
+                <button type="button"
+                    onclick="document.getElementById('formListaAgendas').action = '/home'; document.getElementById('formListaAgendas').method = 'GET'; document.getElementById('formListaAgendas').submit();"
+                    style="bottom: 10; right: 10;">Voltar</button>
             </div>
         </form>
     </div>

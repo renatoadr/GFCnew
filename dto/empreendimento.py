@@ -9,14 +9,14 @@ class empreendimento:
     __idEmpreend = -1
     __nmEmpreend = ""
     __apelido = ""
-    __nmBanco = "" 
-    __nmIncorp = "" 
+    __nmBanco = ""
+    __nmIncorp = ""
     __nmConstrutor = ""
     __logradouro = ""
     __bairro = ""
     __cidade = ""
-    __estado = "" 
-    __cep = "" 
+    __estado = ""
+    __cep = ""
     __nmEngenheiro = ""
     __vlPlanoEmp = 0
     __indiceGarantia = 0
@@ -54,6 +54,8 @@ class empreendimento:
         return self.__indiceGarantia
     def getPrevisaoEntrega(self):
         return self.__previsaoEntrega
+    def getEnderecoCompleto(self):
+        return f"{self.__logradouro}, {self.__bairro} - {self.__cidade}/{self.__estado} - {self.__cep}"
 
     #Setters
 

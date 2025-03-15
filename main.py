@@ -82,15 +82,59 @@ if __name__ == 'main' or __name__ == '__main__':
   init(app)
   app.run()
 
+
+@app.route('/m')
+def mlogin():
+    if session.get('m_logged_in') == True:
+        return redirect('/mobile/home')
+    return render_template("mobile/login.html")
+
+@app.route('/login_m', methods=['POST'])
+def valida_login_m():
+
+    email = request.form.get('email')
+    senha = request.form.get('senha')
+    usuC = usuarioController ()
+    usu = usuC.consultarAcesso(email, senha)
+#    print ('++++++++++++++++++>>>>', usu)
+
+    if  usu:                       # encontrou usuário e senha corretos
+#        print ('++++++++++++++++++>>>>', idUsuario)
+#        print ('++++++++++++++++++>>>>', uApelidos)
+
+        session['m_logged_in'] = True
+        session['m_email'] = email
+        session['nome'] = usu.getNmUsuario()
+        session['m_user_id'] = usu.getIdUsuario()
+
+        return redirect('/mobile/home')
+    else:
+        session['m_logged_in'] = False
+        return redirect(url_for("/m", mensagem='Falha no login, verifique o usuário e a senha'))
+
+@app.route('/mobile/home')
+def home_m():
+  idUsuario = session.get('m_user_id')
+  if idUsuario is None:
+      redirect('/m')
+
+  usuC = usuarioController ()
+  uApelidos = usuC.consultarApelidos(idUsuario)
+  return render_template("mobile/home.html", apelidos=uApelidos)
+
+@app.route('/logout_m')
+def logout_m():
+    session.pop('m_email', None)
+    session.pop('m_logged_in', None)
+    session.pop('nome', None)
+    session.pop('m_user_id', None)
+    return redirect("/m")
+
 @app.route('/')
 def login():
     if session.get('logged_in') == True:
         return redirect('/home')
     return render_template("login.html")
-
-@app.route('/m')
-def mlogin():
-    return render_template("mobile/login.html")
 
 @app.route('/login', methods=['POST'])
 def valida_login():
@@ -110,39 +154,23 @@ def valida_login():
         session['logged_in'] = False
         return render_template("login.html", mensagem='Falha no login, verifique o usuário e a senha')
 
-@app.route('/login_m', methods=['POST'])
-def valida_login_m():
-
-    email = request.form.get('email')
-    senha = request.form.get('senha')
-    usuC = usuarioController ()
-    usu = usuC.consultarAcesso(email, senha)
-#    print ('++++++++++++++++++>>>>', usu)
-
-    if  usu:                       # encontrou usuário e senha corretos
-        idUsuario = usu.getIdUsuario()
-        uApelidos = usuC.consultarApelidos(idUsuario)
-
-#        print ('++++++++++++++++++>>>>', idUsuario)
-#        print ('++++++++++++++++++>>>>', uApelidos)
-
-        session['logged_in'] = True
-        session['email'] = email
-        return render_template("mobile/home.html", apelidos=uApelidos)
-    else:
-        session['logged_in'] = False
-        return render_template("mobile/login.html", mensagem='Falha no login, verifique o usuário e a senha')
-
 @app.route('/lista_relatorios', methods=['GET'])
 def lista_relatorios():
-
-    apelido = request.args.get('apelido')
+  apelido = request.args.get('apelido')
 #    print('==========lista_relatorios==========', apelido)
-    gerC = geralController (app)
-    diretorio = "c://GFC//Relatorios"
-    arqS = gerC.listar_arquivos_com_prefixo(diretorio, apelido)
+  gerC = geralController (app)
+  diretorio = "c://GFC//Relatorios"
+  arqS = gerC.listar_arquivos_com_prefixo(diretorio, apelido)
 #    print ('=========== lista de arquivos   ', arqS)
-    return render_template("mobile/download.html", arquivos=arqS)
+  return render_template("mobile/download.html", arquivos=arqS)
+
+@app.route('/logout')
+def logout():
+  session.pop('email', None)
+  session.pop('logged_in', None)
+  session.pop('nome', None)
+  return redirect("/")
+
 
 def protectedPage():
     if 'logged_in' not in session:
@@ -237,18 +265,6 @@ def salvar_empreend():
     empc = empreendimentoController()
     empc.salvarEmpreendimento(empreend)
     return redirect("/home")
-
-@app.route('/logout')
-def logout():
-    session.pop('email', None)
-    session.pop('logged_in', None)
-    return redirect("/")
-
-@app.route('/logout_m')
-def logout_m():
-    session.pop('email', None)
-    session.pop('logged_in', None)
-    return render_template("mobile/login.html")
 
 ################ GASTOS ###############################
 
@@ -2324,9 +2340,7 @@ def format_datetime(value):
     return converter.converterFloatToCurrency(value)
   return value
 
-if __name__ == '__main__':
-  init(app)
-  app.run()
+
 #app.run(host="192.168.0.11",port=5000)
 #app.run(host="177.195.148.38",port=80)
 

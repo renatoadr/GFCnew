@@ -10,7 +10,7 @@
 </head>
 
 <body>
-  {% include 'menu.html' %}
+  {% include 'fractials/menu.html' %}
   <main>
     <div class="container-fluid">
       <div class="row">
@@ -32,8 +32,7 @@
               </form>
             </div>
             <div class="col-4 d-flex justify-content-end align-items-center">
-              <a href="/tratar_orcamentos"
-                type="submit" class="btn btn-outline-dark">
+              <a href="/tratar_orcamentos" type="submit" class="btn btn-outline-dark">
                 <i class="fa-solid fa-caret-left"></i>
                 Voltar
               </a>
@@ -78,8 +77,8 @@
                   <td>{{'--' if m.getFinanceiroPercentual() is none else m.getFinanceiroPercentual()|to_currency }}</td>
                   <td>{{'--' if m.getFinanceiroSaldo() is none else m.getFinanceiroSaldo()|to_currency }}</td>
                   <td>
-                    <a href="/editar_item_orcamento?idOrcamento={{m.getIdOrcamento()}}"
-                      data-bs-toggle="tooltip" data-bs-title="Editar">
+                    <a href="/editar_item_orcamento?idOrcamento={{m.getIdOrcamento()}}" data-bs-toggle="tooltip"
+                      data-bs-title="Editar">
                       <i class="fa-solid fa-pencil text-warning"></i>
                     </a>
                   </td>

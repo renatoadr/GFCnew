@@ -16,7 +16,7 @@ body {
 }
 
 main {
-  min-height: 100vh;
+  min-height: 82vh;
 }
 
 .login-bg {
@@ -142,4 +142,9 @@ main {
 
 .font-small {
   font-size: 13px;
+}
+
+#login_m {
+  min-height: 60vh;
+  background: #384f7C;
 }

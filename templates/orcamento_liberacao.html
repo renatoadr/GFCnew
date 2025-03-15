@@ -1,38 +1,41 @@
 <!-- Template: orcamento_liberacao -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GFC</title>
-    {% include 'fractials/head.html' %}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC</title>
+  {% include 'fractials/head.html' %}
 </head>
+
 <body>
-     {% include 'menu.html' %}
-     <main>
-      <div class="container">
-        <div class="row">
-          <div class="col-8">
-            <h2 class="title title-page">
-              <span><i class="fa-solid fa-scale-balanced"></i> Orçamentos por
-                data - Relatório Gráfico</span><strong>{{session.nmEmpreend}} - <span>{{session.dtCarga|to_date}}</span></strong>
-            </h2>
-          </div>
-          <div class="col-4 d-flex justify-content-end align-items-center">
-            <a href="/tratar_orcamentos"
-              type="submit" class="btn btn-outline-dark">
-              <i class="fa-solid fa-caret-left"></i>
-              Voltar
-            </a>
-          </div>
+  {% include 'fractials/menu.html' %}
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-8">
+          <h2 class="title title-page">
+            <span><i class="fa-solid fa-scale-balanced"></i> Orçamentos por
+              data - Relatório Gráfico</span><strong>{{session.nmEmpreend}} -
+              <span>{{session.dtCarga|to_date}}</span></strong>
+          </h2>
         </div>
-        <div class="row mt-3">
-          <div class="col-12">
-            <img src="/obter_grafico?grafNome={{ grafNome }}";/>
-          </div>
+        <div class="col-4 d-flex justify-content-end align-items-center">
+          <a href="/tratar_orcamentos" type="submit" class="btn btn-outline-dark">
+            <i class="fa-solid fa-caret-left"></i>
+            Voltar
+          </a>
         </div>
       </div>
-     </main>
-     {% include 'fractials/footer.html' %}
+      <div class="row mt-3">
+        <div class="col-12">
+          <img src="/obter_grafico?grafNome={{ grafNome }}" ; />
+        </div>
+      </div>
+    </div>
+  </main>
+  {% include 'fractials/footer.html' %}
 </body>
+
 </html>

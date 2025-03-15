@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,45 +8,56 @@
     <link rel="stylesheet" href="../static/css/style.css">
     <link rel="stylesheet" href="../static/css/tooltip.css">
 </head>
+
 <body>
-    {% include 'menu.html' %}
+    {% include 'fractials/menu.html' %}
     {% if cliente %}
 
-    <form action="/salvar_alteracao_cliente" style= "border: 0px; margin-top: 10em;" id="formAlterar"  method="POST">   
+    <form action="/salvar_alteracao_cliente" style="border: 0px; margin-top: 10em;" id="formAlterar" method="POST">
         <div>
             <label for="cpfCnpj">CPF / CNPJ:</label>
-            <input type="text" name="cpfCnpj" value="{{ cliente.getCpfCnpj() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} />
+            <input type="text" name="cpfCnpj" value="{{ cliente.getCpfCnpj() }}" {% if modo=='consulta' or
+                modo=='exclui' %} readonly {% endif %} />
         </div>
         <div>
             <label for="tpCpfCnpj">Tipo CPF/CNPJ:</label>
-            <input type="text" name="tpCpfCnpj" value="{{ cliente.getTpCpfCnpj() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} />
+            <input type="text" name="tpCpfCnpj" value="{{ cliente.getTpCpfCnpj() }}" {% if modo=='consulta' or
+                modo=='exclui' %} readonly {% endif %} />
         </div>
         <div>
             <label for="nmCliente">Nome do cliente:</label>
-            <input type="text" name="nmCliente" value="{{ cliente.getNmCliente() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} />
+            <input type="text" name="nmCliente" value="{{ cliente.getNmCliente() }}" {% if modo=='consulta' or
+                modo=='exclui' %} readonly {% endif %} />
         </div>
         <div>
             <label for="ddd">DDD:</label>
-            <input type="text" name="ddd" value="{{ cliente.getDdd() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} />
+            <input type="text" name="ddd" value="{{ cliente.getDdd() }}" {% if modo=='consulta' or modo=='exclui' %}
+                readonly {% endif %} />
         </div>
         <div>
-             <label for="tel">Telefone:</label>
-             <input type="text" name="tel" value="{{ cliente.getTel() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} /> 
+            <label for="tel">Telefone:</label>
+            <input type="text" name="tel" value="{{ cliente.getTel() }}" {% if modo=='consulta' or modo=='exclui' %}
+                readonly {% endif %} />
         </div>
         <div>
             <label for="email">Email:</label>
-            <input type="text" name="email" value="{{ cliente.getEmail() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} /> 
-       </div>
-        <div>           
-            <button {% if modo == 'consulta' or modo=='exclui' %} hidden {% endif %} type="submit">Salvar</button>
-            <button type="button" onclick="document.getElementById('formAlterar').action = '/tratar_clientes'; document.getElementById('formAlterar').method = 'GET'; document.getElementById('formAlterar').submit();"  style="bottom: 10; right: 10;">Cancelar</button>
-            <button {% if modo != 'exclui' %} hidden {% endif %} type="button" onclick="document.getElementById('formAlterar').action = '/excluir_cliente'; document.getElementById('formAlterar').method = 'GET'; document.getElementById('formAlterar').submit();"  style="bottom: 10; right: 10;">Confirmar exclusão</button>
+            <input type="text" name="email" value="{{ cliente.getEmail() }}" {% if modo=='consulta' or modo=='exclui' %}
+                readonly {% endif %} />
+        </div>
+        <div>
+            <button {% if modo=='consulta' or modo=='exclui' %} hidden {% endif %} type="submit">Salvar</button>
+            <button type="button"
+                onclick="document.getElementById('formAlterar').action = '/tratar_clientes'; document.getElementById('formAlterar').method = 'GET'; document.getElementById('formAlterar').submit();"
+                style="bottom: 10; right: 10;">Cancelar</button>
+            <button {% if modo !='exclui' %} hidden {% endif %} type="button"
+                onclick="document.getElementById('formAlterar').action = '/excluir_cliente'; document.getElementById('formAlterar').method = 'GET'; document.getElementById('formAlterar').submit();"
+                style="bottom: 10; right: 10;">Confirmar exclusão</button>
 
         </div>
-      </form>
+    </form>
 
-      {% else %}
-      <form action="/cadastrar_cliente" style= "border: 0px; margin-top: 10em;" id="formIncluir"  method="POST">   
+    {% else %}
+    <form action="/cadastrar_cliente" style="border: 0px; margin-top: 10em;" id="formIncluir" method="POST">
 
         <div>
             <label for="cpfCnpj">CPF / CNPJ:</label>
@@ -56,28 +68,31 @@
             <input type="text" name="tpCpfCnpj" />
         </div>
         <div>
-             <label for="nmCliente">Nome do cliente:</label>
-             <input type="text" name="nmCliente" /> 
+            <label for="nmCliente">Nome do cliente:</label>
+            <input type="text" name="nmCliente" />
         </div>
         <div>
             <label for="ddd">DDD:</label>
-            <input type="text" name="ddd" /> 
-       </div>
-        <div>
-             <label for="tel">Telefone:</label>
-             <input type="text" name="tel" /> 
+            <input type="text" name="ddd" />
         </div>
         <div>
-             <label for="email">Email:</label>
-             <input type="text" name="email" /> 
+            <label for="tel">Telefone:</label>
+            <input type="text" name="tel" />
         </div>
-        <div>          
+        <div>
+            <label for="email">Email:</label>
+            <input type="text" name="email" />
+        </div>
+        <div>
             <button type="submit">Salvar</button>
-            <button type="button" onclick="document.getElementById('formIncluir').action = '/tratar_clientes'; document.getElementById('formIncluir').method = 'GET'; document.getElementById('formIncluir').submit();"  style="bottom: 10; right: 10;">Cancelar</button>
+            <button type="button"
+                onclick="document.getElementById('formIncluir').action = '/tratar_clientes'; document.getElementById('formIncluir').method = 'GET'; document.getElementById('formIncluir').submit();"
+                style="bottom: 10; right: 10;">Cancelar</button>
         </div>
-      </form>
+    </form>
 
-      {% endif %}                                                               
+    {% endif %}
 
 </body>
+
 </html>

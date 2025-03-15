@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,89 +8,108 @@
     <link rel="stylesheet" href="../static/css/style.css">
     <link rel="stylesheet" href="../static/css/tooltip.css">
 </head>
-<body>
-    <div style="margin-top: 4em; text-align: center; font-size: 30px; "> 
-        <a style="font-size: 2ch">{{nmEmpreend}}</a>
-    </div>     
 
-    {% include 'menu.html' %}
+<body>
+    <div style="margin-top: 4em; text-align: center; font-size: 30px; ">
+        <a style="font-size: 2ch">{{nmEmpreend}}</a>
+    </div>
+
+    {% include 'fractials/menu.html' %}
     {% if unidade %}
 
-<!--    <p> modo={{modo}}</p> -->
+    <!--    <p> modo={{modo}}</p> -->
 
-    <form action="/salvar_alteracao_unidade" style= "border: 0px; margin-top: 3em;" id="formIncluirUnidade"  method="POST">   
+    <form action="/salvar_alteracao_unidade" style="border: 0px; margin-top: 3em;" id="formIncluirUnidade"
+        method="POST">
         <div>
             <label for="nmTorre">Torre:</label>
-            <input type="text" name="nmTorre" value="{{ nmTorre }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} />
+            <input type="text" name="nmTorre" value="{{ nmTorre }}" {% if modo=='consulta' or modo=='exclui' %} readonly
+                {% endif %} />
         </div>
         <div>
             <label for="unidade">Unidade:</label>
-            <input type="text" name="unidade" value="{{ unidade.getUnidade() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} />
+            <input type="text" name="unidade" value="{{ unidade.getUnidade() }}" {% if modo=='consulta' or
+                modo=='exclui' %} readonly {% endif %} />
         </div>
         <div>
-             <label for="mesVigencia">Mês:</label>
-             <input type="text" name="mesVigencia" value="{{ unidade.getMesVigencia() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} /> 
+            <label for="mesVigencia">Mês:</label>
+            <input type="text" name="mesVigencia" value="{{ unidade.getMesVigencia() }}" {% if modo=='consulta' or
+                modo=='exclui' %} readonly {% endif %} />
         </div>
         <div>
             <label for="anoVigencia">Ano:</label>
-            <input type="text" name="anoVigencia" value="{{ unidade.getAnoVigencia() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} /> 
-       </div>
+            <input type="text" name="anoVigencia" value="{{ unidade.getAnoVigencia() }}" {% if modo=='consulta' or
+                modo=='exclui' %} readonly {% endif %} />
+        </div>
         <div>
-             <label for="vlUnidade">Valor Unidade:</label>
-             <input type="text" name="vlUnidade" value="{{ unidade.getVlUnidade() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} /> 
+            <label for="vlUnidade">Valor Unidade:</label>
+            <input type="text" name="vlUnidade" value="{{ unidade.getVlUnidade() }}" {% if modo=='consulta' or
+                modo=='exclui' %} readonly {% endif %} />
         </div>
         <div>
             <label for="status">Status:</label>
-            <input type="text" name="status" value="{{ unidade.getStatus() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} /> 
+            <input type="text" name="status" value="{{ unidade.getStatus() }}" {% if modo=='consulta' or modo=='exclui'
+                %} readonly {% endif %} />
         </div>
         <div>
-             <label for="cpfComprador">Comprador:</label>
-             <input type="text" name="cpfComprador" value="{{ unidade.getNmComprador() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} /> 
+            <label for="cpfComprador">Comprador:</label>
+            <input type="text" name="cpfComprador" value="{{ unidade.getNmComprador() }}" {% if modo=='consulta' or
+                modo=='exclui' %} readonly {% endif %} />
         </div>
         <div>
-             <label for="vlPago">Valor pago:</label>
-             <input type="text" name="vlPago" value="{{ unidade.getVlPago() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} />
+            <label for="vlPago">Valor pago:</label>
+            <input type="text" name="vlPago" value="{{ unidade.getVlPago() }}" {% if modo=='consulta' or modo=='exclui'
+                %} readonly {% endif %} />
         </div>
         <div>
-             <label for="dtOcorrencia">Data ocorrencia:</label>
-             <input type="date" name="dtOcorrencia" value="{{ unidade.getDtOcorrencia() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} />
+            <label for="dtOcorrencia">Data ocorrencia:</label>
+            <input type="date" name="dtOcorrencia" value="{{ unidade.getDtOcorrencia() }}" {% if modo=='consulta' or
+                modo=='exclui' %} readonly {% endif %} />
         </div>
         <div>
             <label for="financiado">Financiado:</label>
-            <input type="text" name="financiado" value="{{ unidade.getFinanciado() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} />
+            <input type="text" name="financiado" value="{{ unidade.getFinanciado() }}" {% if modo=='consulta' or
+                modo=='exclui' %} readonly {% endif %} />
         </div>
         <div>
             <label for="vlChaves">Valor das chaves:</label>
-            <input type="text" name="vlChaves" value="{{ unidade.getVlChaves() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} />
+            <input type="text" name="vlChaves" value="{{ unidade.getVlChaves() }}" {% if modo=='consulta' or
+                modo=='exclui' %} readonly {% endif %} />
         </div>
         <div>
             <label for="vlPreChaves">Valor pré-chaves:</label>
-            <input type="text" name="vlPreChaves" value="{{ unidade.getVlPreChaves() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} />
+            <input type="text" name="vlPreChaves" value="{{ unidade.getVlPreChaves() }}" {% if modo=='consulta' or
+                modo=='exclui' %} readonly {% endif %} />
         </div>
         <div>
             <label for="vlPosChaves">Valor pós-chaves:</label>
-            <input type="text" name="vlPosChaves" value="{{ unidade.getVlPosChaves() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} />
+            <input type="text" name="vlPosChaves" value="{{ unidade.getVlPosChaves() }}" {% if modo=='consulta' or
+                modo=='exclui' %} readonly {% endif %} />
         </div>
-        <div>        
-            <input type="hidden" name="idEmpreend" value="{{ unidade.getIdEmpreend() }}" />         
-            <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" /> 
-            <button {% if modo == 'consulta' or modo=='exclui' %} hidden {% endif %} type="submit">Salvar</button>
-            <button type="button" onclick="document.getElementById('formIncluirUnidade').action = '/tratar_unidades'; document.getElementById('formIncluirUnidade').method = 'GET'; document.getElementById('formIncluirUnidade').submit();"  style="bottom: 10; right: 10;">Cancelar</button>
-            <button {% if modo != 'exclui' %} hidden {% endif %} type="button" onclick="document.getElementById('formIncluirUnidade').action = '/excluir_unidade'; document.getElementById('formIncluirUnidade').method = 'GET'; document.getElementById('formIncluirUnidade').submit();"  style="bottom: 10; right: 10;">Confirmar exclusão</button>
+        <div>
+            <input type="hidden" name="idEmpreend" value="{{ unidade.getIdEmpreend() }}" />
+            <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" />
+            <button {% if modo=='consulta' or modo=='exclui' %} hidden {% endif %} type="submit">Salvar</button>
+            <button type="button"
+                onclick="document.getElementById('formIncluirUnidade').action = '/tratar_unidades'; document.getElementById('formIncluirUnidade').method = 'GET'; document.getElementById('formIncluirUnidade').submit();"
+                style="bottom: 10; right: 10;">Cancelar</button>
+            <button {% if modo !='exclui' %} hidden {% endif %} type="button"
+                onclick="document.getElementById('formIncluirUnidade').action = '/excluir_unidade'; document.getElementById('formIncluirUnidade').method = 'GET'; document.getElementById('formIncluirUnidade').submit();"
+                style="bottom: 10; right: 10;">Confirmar exclusão</button>
 
         </div>
-      </form>
+    </form>
 
-      {% else %}
-      <form action="/cadastrar_unidade" style= "border: 0px; margin-top: 3em;" id="formIncluir"  method="POST">   
+    {% else %}
+    <form action="/cadastrar_unidade" style="border: 0px; margin-top: 3em;" id="formIncluir" method="POST">
 
         <div>
             <p>listatorre = {{listaTorres}}</p>
             <label for="idTorre">Torre:</label>
             <select id="idTorre" name="idTorre">
                 {{listaTorres}}
-                {% for t in listaTorres %}           
-                    <option value="{{ t.getIdTorre() }}">{{ t.getIdTorre() }}</option>
+                {% for t in listaTorres %}
+                <option value="{{ t.getIdTorre() }}">{{ t.getIdTorre() }}</option>
                 {% endfor %}
             </select>
         </div>
@@ -98,39 +118,39 @@
             <input type="text" name="unidade" />
         </div>
         <div>
-             <label for="mesVigencia">Mês:</label>
-             <input type="text" name="mesVigencia" /> 
+            <label for="mesVigencia">Mês:</label>
+            <input type="text" name="mesVigencia" />
         </div>
         <div>
             <label for="anoVigencia">Ano:</label>
-            <input type="text" name="anoVigencia" /> 
-       </div>
+            <input type="text" name="anoVigencia" />
+        </div>
         <div>
-             <label for="vlUnidade">Valor unidade:</label>
-             <input type="text" name="vlUnidade" /> 
+            <label for="vlUnidade">Valor unidade:</label>
+            <input type="text" name="vlUnidade" />
         </div>
         <div>
             <p>Status:</p>
-                <input type="radio" id="distrato" name="status" value="Distrato">
-                <label for="distrato">Distrato</label><br>
-                <input type="radio" id="estoque" name="status" value="Estoque">
-                <label for="estoque">Estoque</label><br>
-                <input type="radio" id="quitado" name="status" value="Quitado">
-                <label for="quitado">Quitado</label>
-                <input type="radio" id="vendido" name="status" value="Vendido">
-                <label for="vendido">Vendido</label>
+            <input type="radio" id="distrato" name="status" value="Distrato">
+            <label for="distrato">Distrato</label><br>
+            <input type="radio" id="estoque" name="status" value="Estoque">
+            <label for="estoque">Estoque</label><br>
+            <input type="radio" id="quitado" name="status" value="Quitado">
+            <label for="quitado">Quitado</label>
+            <input type="radio" id="vendido" name="status" value="Vendido">
+            <label for="vendido">Vendido</label>
         </div>
         <div>
-             <label for="cpfComprador">Comprador:</label>
-             <input type="text" name="cpfComprador" /> 
+            <label for="cpfComprador">Comprador:</label>
+            <input type="text" name="cpfComprador" />
         </div>
         <div>
-             <label for="vlPago">Valor pago:</label>
-             <input type="text" name="vlPago" />
+            <label for="vlPago">Valor pago:</label>
+            <input type="text" name="vlPago" />
         </div>
         <div>
-             <label for="dtOcorrencia">Data ocorrencia:</label>
-             <input type="date" name="dtOcorrencia" />
+            <label for="dtOcorrencia">Data ocorrencia:</label>
+            <input type="date" name="dtOcorrencia" />
         </div>
         <div>
             <label for="financiado">Financiado:</label>
@@ -148,13 +168,16 @@
             <label for="vlPosChaves">Valor pós-chaves:</label>
             <input type="text" name="vlPosChaves" />
         </div>
-        <div>          
+        <div>
             <button type="submit">Salvar</button>
-            <button type="button" onclick="document.getElementById('formIncluir').action = '/tratar_unidades'; document.getElementById('formIncluir').method = 'GET'; document.getElementById('formIncluir').submit();"  style="bottom: 10; right: 10;">Cancelar</button>
+            <button type="button"
+                onclick="document.getElementById('formIncluir').action = '/tratar_unidades'; document.getElementById('formIncluir').method = 'GET'; document.getElementById('formIncluir').submit();"
+                style="bottom: 10; right: 10;">Cancelar</button>
         </div>
-      </form>
+    </form>
 
-      {% endif %}                                                               
+    {% endif %}
 
 </body>
+
 </html>

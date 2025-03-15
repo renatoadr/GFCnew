@@ -1,37 +1,58 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GFC</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/tooltip.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Mobile Home</title>
+  {% include 'fractials/head.html' %}
 </head>
+
 <body>
 
-{% include 'mobile/menu.html' %}
-    <div style="margin-top: 10em;">
-        <table border="1" align="center" style="font-family: Arial; border-spacing: 1px; border-color: white; background-color: #e7e7e7;"" >
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th colspan="1"></th>
-            </tr>
-        </thead>        
-        <tbody>
-            {% for e in apelidos %}     
-            <tr>
-                <td>{{ e.getApelido() }}</td>
-
-                <td><div class="tooltip">
-                        <a href="/lista_relatorios?apelido={{e.getApelido()}}"><img src="../static/imgs/icons8-dedo-indicador-e-o-polegar-50.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Selecionar Empreendimento</span>
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>        
-        </table>
+  {% include 'fractials/menu.html' %}
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <h2 class="title">Empreendimentos</h2>
+        </div>
+      </div>
     </div>
+    <div class="row">
+      <div class="col-12">
+        {% for e in apelidos %}
+
+        <a href="/lista_relatorios?apelido={{e.getApelido()}}" class="text-decoration-none">
+
+          <div class="card text-bg-light mb-5 m-auto" style="max-width: 18rem;">
+            <div class="card-header text-bg-secondary text-center">{{ e.getApelido() }}</div>
+            <div class="card-body">
+              <h5 class="card-title">
+                <span class="font-small text-info-emphasis mt-3 d-inline-block">Nome: </span>
+                <br>{{ e.getNmEmpreend() }}
+              </h5>
+              <p class="card-text">
+                <span class="font-small text-info-emphasis mt-3 d-inline-block">Endereço: </span> <br>{{
+                e.getEnderecoCompleto() }}<br>
+                <span class="font-small text-info-emphasis mt-3 d-inline-block">Engenheiro: </span> <br>{{
+                e.getNmEngenheiro()
+                }}<br>
+                <span class="font-small text-info-emphasis mt-3 d-inline-block">Construtor: </span> <br>{{
+                e.getNmConstrutor()
+                }}<br>
+                <span class="font-small text-info-emphasis mt-3 d-inline-block">Incorporador: </span> <br>{{
+                e.getNmIncorp() }}
+              </p>
+            </div>
+          </div>
+
+        </a>
+        {% endfor %}
+      </div>
+    </div>
+  </main>
+  {% include 'fractials/footer.html' %}
 </body>
+
 </html>

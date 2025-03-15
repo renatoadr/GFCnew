@@ -11,7 +11,7 @@
 </head>
 
 <body>
-  {% include 'menu.html' %}
+  {% include 'fractials/menu.html' %}
   <main>
     <div class="container">
       <div class="row">
@@ -64,14 +64,14 @@
                 <td>{{ m.getAnoVigencia() }}</td>
                 <td>{{ m.getDtCarga() }}</td>
                 <td>
-                  <a href="/consultar_orcamento_data?dtCarga={{m.getDtCarga()}}"
-                    data-bs-toggle="tooltip" data-bs-title="Consultar">
+                  <a href="/consultar_orcamento_data?dtCarga={{m.getDtCarga()}}" data-bs-toggle="tooltip"
+                    data-bs-title="Consultar">
                     <i class="fa-solid fa-magnifying-glass-arrow-right"></i>
                   </a>
                 </td>
                 <td>
-                  <a href="/graf_orcamento_liberacao?dtCarga={{m.getDtCarga()}}&tipo=valor"
-                    data-bs-toggle="tooltip" data-bs-title="Gráficos">
+                  <a href="/graf_orcamento_liberacao?dtCarga={{m.getDtCarga()}}&tipo=valor" data-bs-toggle="tooltip"
+                    data-bs-title="Gráficos">
                     <i class="fa-solid fa-chart-pie"></i>
                   </a>
                 </td>
