@@ -58,6 +58,7 @@ import numpy as np
 import easygui
 import configparser
 import utils.converter as converter
+import re
 
 app = Flask(__name__)
 
@@ -132,9 +133,12 @@ def logout_m():
 
 @app.route('/')
 def login():
-    if session.get('logged_in') == True:
-        return redirect('/home')
-    return render_template("login.html")
+  if re.search('Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini', request.user_agent.string, re.IGNORECASE):
+    return redirect('/m')
+
+  if session.get('logged_in') == True:
+    return redirect('/home')
+  return render_template("login.html")
 
 @app.route('/login', methods=['POST'])
 def valida_login():
