@@ -5,6 +5,7 @@ from dto.orcamento import orcamento
 from utils.dbContext import MySql
 from datetime import datetime
 import pandas as pd
+from utils.converter import converterDateTimeToDateEnFormat
 
 class orcamentoController:
     __connection = None
@@ -108,7 +109,7 @@ class orcamentoController:
         m.setIdEmpreend(item['id_empreendimento'])
         m.setMesVigencia(item['mes_vigencia'])
         m.setAnoVigencia(item['ano_vigencia'])
-        m.setDtCarga(item['dt_carga'])
+        m.setDtCarga(converterDateTimeToDateEnFormat(item['dt_carga']))
         m.setItem(item['item'])
         m.setOrcadoValor(item['orcado_valor'])
         m.setFisicoValor(item['fisico_valor'])

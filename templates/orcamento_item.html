@@ -1,155 +1,140 @@
-<!--                                                                                                    orcamento_item.html-->
+<!-- Template: orcamento_item -->
+
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GFC</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/tooltip.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Orçamento por data cadastro</title>
+  {% include 'fractials/head.html' %}
 </head>
+
 <body>
-    <div style="margin-top: 4em; text-align: center; font-size: 30px; "> 
-        <a style="font-size: 2ch">{{nmEmpreend}}</a>
-    </div>     
+  {% include 'menu.html' %}
 
-    {% include 'menu.html' %}
-    {% if item %}
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-8">
+          <h2 class="title title-page">
+            <span><i class="fa-solid fa-scale-balanced"></i> Editar orçamento por
+              data</span><strong>{{session.nmEmpreend}} - <span>{{session.dtCarga|to_date}}</span></strong>
+          </h2>
+        </div>
+      </div>
 
-    <!--<p> modo={{modo}}</p>  --> 
+      {% if item %}
 
-    <form action="/salvar_item_orcamento" style= "border: 0px; margin-top: 3em;" id="formIncluirOrcamento"  method="POST">   
-        <div>
-            <label for="mesVigencia">Mês vigência:</label>
-            <input type="text" name="mesVigencia" value="{{ item.getMesVigencia() }}" readonly />
-        </div>
-        <div>
-            <label for="anoVigencia">Ano vigência:</label>
-            <input type="text" name="anoVigencia" value="{{ item.getAnoVigencia() }}" readonly />
-        </div>
-        <div>
-             <label for="dtCarga">Data carga:</label>
-             <input type="text" name="dtCarga" value="{{ item.getDtCarga() }}" readonly /> 
-        </div>
-        <div>
-            <label for="item">Item:</label>
-            <input type="text" name="item" value="{{ item.getItem() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} /> 
-       </div>
-        <div>
-             <label for="orcadoValor">Valor Orçado:</label>
-             <input type="text" name="orcadoValor" value="{{ item.getOrcadoValor() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} /> 
-        </div>
-        <div>
-            <label for="fisicoValor">Físico R$:</label>
-            <input type="text" name="fisicoValor" value="{{ item.getFisicoValor() }}" readonly /> 
-        </div>
-        <div>
-             <label for="fisicoPercentual">Físico %:</label>
-             <input type="text" name="fisicoPercentual" value="{{ item.getFisicoPercentual() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} /> 
-        </div>
-        <div>
-             <label for="fisicoSaldo">Físico saldo:</label>
-             <input type="text" name="fisicoSaldo" value="{{ item.getFisicoSaldo() }}" readonly />
-        </div>
-        <div>
-            <label for="financeiroValor">Financeiro R$:</label>
-            <input type="text" name="financeiroValor" value="{{ item.getFinanceiroValor() }}" {% if modo == 'consulta' or modo=='exclui' %} readonly {% endif %} /> 
-        </div>
-        <div>
-             <label for="financeiroPercentual">Financeiro %:</label>
-             <input type="text" name="financeiroPercentual" value="{{ item.getFinanceiroPercentual() }}" readonly /> 
-        </div>
-        <div>
-             <label for="financeiroSaldo">Financeiro saldo:</label>
-             <input type="text" name="financeiroSaldo" value="{{ item.getFinanceiroSaldo() }}" readonly />
-        </div>
-        <div>        
-            <input type="hidden" name="idOrcamento" value="{{ item.getIdOrcamento() }}" />   
-            <input type="hidden" name="idEmpreend" value="{{ item.getIdEmpreend() }}" />                     
-            <input type="hidden" name="dtCarga" value="{{ item.getDtCarga() }}" /> 
-<!--            <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" /> -->
-            <button {% if modo == 'consulta' or modo=='exclui' %} hidden {% endif %} type="submit">Salvar</button>
-            <button type="button" onclick="document.getElementById('formIncluirOrcamento').action = '/consultar_orcamento_data'; document.getElementById('formIncluirOrcamento').method = 'GET'; document.getElementById('formIncluirOrcamento').submit();"  style="bottom: 10; right: 10;">Cancelar</button>
-            <button {% if modo != 'exclui' %} hidden {% endif %} type="button" onclick="document.getElementById('formIncluirOrcamento').action = '/excluir_item_orcamento'; document.getElementById('formIncluirOrcamento').method = 'GET'; document.getElementById('formIncluirOrcamento').submit();"  style="bottom: 10; right: 10;">Confirmar exclusão</button>
+      <form action="/salvar_item_orcamento" id="formIncluirOrcamento" method="POST">
+        <input type="hidden" name="idOrcamento" value="{{ item.getIdOrcamento() }}" />
+        <input type="hidden" name="idEmpreend" value="{{ item.getIdEmpreend() }}" />
+        <input type="hidden" name="dtCarga" value="{{ item.getDtCarga() }}" />
 
+        <div class="row">
+          <div class="col-6">
+
+            <div class="form-floating mt-4">
+              <input type="text" name="item" id="item" class="form-control" placeholder="" {% if modo=='consulta' or
+                modo=='exclui' %} readonly {% endif %} value="{{ item.getItem() if item.getItem()}}" />
+              <label for="item">Item</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="number" name="mesVigencia" id="mesVigencia" class="form-control" placeholder="" readonly
+                value="{{ item.getMesVigencia() if item.getMesVigencia()}}" />
+              <label for="mesVigencia">Mês vigência</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="orcadoValor" id="orcadoValor" class="form-control money" placeholder="" {% if
+                modo=='consulta' or modo=='exclui' %} readonly {% endif %}
+                value="{{ item.getOrcadoValor() if item.getOrcadoValor()}}" />
+              <label for="orcadoValor">Valor Orçado</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="fisicoValor" id="fisicoValor" class="form-control money" placeholder="" readonly
+                value="{{ item.getFisicoValor() if item.getFisicoValor()}}" />
+              <label for="fisicoValor">Físico (R$)</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="financeiroSaldo" id="financeiroSaldo" class="form-control money" placeholder=""
+                readonly value="{{ item.getFinanceiroSaldo() if item.getFinanceiroSaldo()}}" />
+              <label for="financeiroSaldo">Financeiro saldo</label>
+            </div>
+          </div>
+
+          <div class="col-6">
+
+            <div class="form-floating mt-4">
+              <input type="date" name="dtCarga" id="dtCarga" class="form-control" placeholder="" readonly
+                value="{{ item.getDtCarga() if item.getDtCarga()}}" />
+              <label for="dtCarga">Data carga</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="number" name="anoVigencia" id="anoVigencia" class="form-control" placeholder="" readonly
+                value="{{ item.getAnoVigencia() if item.getAnoVigencia()}}" />
+              <label for="anoVigencia">Ano vigência</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="fisicoSaldo" id="fisicoSaldo" class="form-control money" placeholder="" readonly
+                value="{{ item.getFisicoSaldo() if item.getFisicoSaldo() }}" />
+              <label for="fisicoSaldo">Físico saldo</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="financeiroValor" id="financeiroValor" class="form-control money" placeholder=""
+                {% if modo=='consulta' or modo=='exclui' %} readonly {% endif %}
+                value="{{ item.getFinanceiroValor() if item.getFinanceiroValor() }}" />
+              <label for="financeiroValor">Financeiro (R$)</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="financeiroPercentual" id="financeiroPercentual" class="form-control money"
+                placeholder="" readonly value="{{ item.getFinanceiroPercentual() if item.getFinanceiroPercentual()}}" />
+              <label for="financeiroPercentual">Financeiro (%)</label>
+            </div>
+
+          </div>
         </div>
+
+        <div class="d-flex mt-5 justify-content-center gap-5">
+          <a href="/consultar_orcamento_data" class="btn btn-secondary w-25">Cancelar</a>
+          {% if modo == 'exclui' %}
+          <a href="/excluir_item_orcamento" class="btn btn-danger w-25">Excluir Registro</a>
+          {% endif %}
+          {% if modo != 'consulta' and modo != 'exclui' %}
+          <button type="submit" class="btn btn-success w-25">Salvar</button>
+          {% endif %}
+        </div>
+
       </form>
 
-      {% else %}
-<!--      <form action="/cadastrar_unidade" style= "border: 0px; margin-top: 3em;" id="formIncluir"  method="POST">   
-
-        <div>
-            <p>listatorre = {{listaTorres}}</p>
-            <label for="idTorre">Torre:</label>
-            <select id="idTorre" name="idTorre">
-                {{listaTorres}}
-                {% for t in listaTorres %}           
-                    <option value="{{ t.getIdTorre() }}">{{ t.getIdTorre() }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div>
-            <label for="unidade">Unidade:</label>
-            <input type="text" name="unidade" />
-        </div>
-        <div>
-             <label for="mesVigencia">Mês:</label>
-             <input type="text" name="mesVigencia" /> 
-        </div>
-        <div>
-            <label for="anoVigencia">Ano:</label>
-            <input type="text" name="anoVigencia" /> 
-       </div>
-        <div>
-             <label for="vlUnidade">Valor unidade:</label>
-             <input type="text" name="vlUnidade" /> 
-        </div>
-        <div>
-            <p>Status:</p>
-                <input type="radio" id="distrato" name="status" value="Distrato">
-                <label for="distrato">Distrato</label><br>
-                <input type="radio" id="estoque" name="status" value="Estoque">
-                <label for="estoque">Estoque</label><br>
-                <input type="radio" id="quitado" name="status" value="Quitado">
-                <label for="quitado">Quitado</label>
-                <input type="radio" id="vendido" name="status" value="Vendido">
-                <label for="vendido">Vendido</label>
-        </div>
-        <div>
-             <label for="cpfComprador">Comprador:</label>
-             <input type="text" name="cpfComprador" /> 
-        </div>
-        <div>
-             <label for="vlPago">Valor pago:</label>
-             <input type="text" name="vlPago" />
-        </div>
-        <div>
-             <label for="dtOcorrencia">Data ocorrencia:</label>
-             <input type="date" name="dtOcorrencia" />
-        </div>
-        <div>
-            <label for="financiado">Financiado:</label>
-            <input type="text" name="financiado" />
-        </div>
-        <div>
-            <label for="vlChaves">Valor das chaves:</label>
-            <input type="text" name="vlChaves" />
-        </div>
-        <div>
-            <label for="vlPreChaves">Valor pré-chaves:</label>
-            <input type="text" name="vlPreChaves" />
-        </div>
-        <div>
-            <label for="vlPosChaves">Valor pós-chaves:</label>
-            <input type="text" name="vlPosChaves" />
-        </div>
-        <div>          
-            <button type="submit">Salvar</button>
-            <button type="button" onclick="document.getElementById('formIncluir').action = '/tratar_unidades'; document.getElementById('formIncluir').method = 'GET'; document.getElementById('formIncluir').submit();"  style="bottom: 10; right: 10;">Cancelar</button>
-        </div>
-      </form>
--->
-      {% endif %}                                                               
-
+      {% endif %}
+    </div>
+  </main>
+  {% include 'fractials/footer.html' %}
+  <script>
+    const requireds = GFC.getRequiredFields("formIncluirOrcamento")
+    $(function () {
+      $("#formIncluirOrcamento").validate({
+        rules: requireds.rules,
+        messages: requireds.messages,
+        errorClass: 'is-invalid',
+        errorElement: 'span',
+        highlight: function (element, errorClass, validClass) {
+          setTimeout(function () {
+            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
+            $(element).addClass(errorClass)
+          }, 50)
+        },
+      });
+    });
+  </script>
 </body>
+
 </html>

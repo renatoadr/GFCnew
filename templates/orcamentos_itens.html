@@ -1,78 +1,113 @@
-<!--                                                                                                               orcamentos_items.html-->
+<!-- Template: orcamentos_itens -->
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=0.1">
-    <title>GFC</title>
-    <link rel="stylesheet" href="../static/css/style.css"> 
-    <link rel="stylesheet" href="../static/css/tooltip.css"> 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=0.1">
+  <title>GFC - Orçamento por Data</title>
+  {% include 'fractials/head.html' %}
 </head>
+
 <body>
-    {% include 'menu.html' %}
-    {% if orcamentos %}
-    <div style="margin-top: 10em; height: 600px; overflow-y:auto;"> 
-        <table border="1" align="center" style="font-family: Arial; font-size: 13px; margin-top: 5em; border-spacing: 1px; border-color: white; background-color: #e7e7e7;" >
-        <thead>
-            <tr>
-                <th> Mes vigêcia </th>
-                <th> Ano vigência </th>
-                <th>Data carga</th>
-                <th>Item</th>
-                <th> Orcado </th>
-                <th> Físico R$ </th>
-                <th> Físico % </th>
-                <th> Físico saldo </th>
-                <th> Financeiro R$ </th>
-                <th> Financeiro % </th>
-                <th> Financeiro saldo </th>
-           </tr>
-        </thead>        
-        <tbody>
-            {% for m in orcamentos %}            
-            <tr>
-                <td>{{ m.getMesVigencia() }}</td>
-                <td>{{ m.getAnoVigencia() }}</td>
-                <td>{{ m.getDtCarga() }}</td>
-                <td>{{ m.getItem() }}</td>
-                <td>{{ m.getOrcadoValor() }}</td>
-                <td>{{ m.getFisicoValor() }}</td>
-                <td>{{ m.getFisicoPercentual() }}</td>
-                <td>{{ m.getFisicoSaldo() }}</td>
-                <td>{{ m.getFinanceiroValor() }}</td>
-                <td>{{ m.getFinanceiroPercentual() }}</td>
-                <td>{{ m.getFinanceiroSaldo() }}</td>
-                <td>
-                    <div class="tooltip">
-                        <a href="/editar_item_orcamento?idOrcamento={{m.getIdOrcamento()}}"><img src="../static/imgs/icons8-editar-32.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Editar</span>
-                    </div>
-                </td>
-                <td>
-                    <div class="tooltip">                                                    
-                        <a href="/excluir_item_orcamento?idOrcamento={{m.getIdOrcamento()}}&idEmpreend={{m.getIdEmpreend()}}&dtCarga={{m.getDtCarga()}}&modo=exclui"><img src="../static/imgs/icons8-lixeira-24.png" style="width: 24px; height: 24px;"/></a>
-                        <span class="tooltiptext">Excluir</span>
-                    </div>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>        
-        </table>
-    </div> 
-    <div>    
-        <form action="/abrir_cad_orcamento" method="POST" style="border: 0px;" id="formListaOrcamentosItens"  method="POST">   
-            <div> 
-                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />          
-                <button type="submit">Novo</button>
-                <button type="button" onclick="document.getElementById('formListaOrcamentosItens').action = '/tratar_orcamentos'; document.getElementById('formListaOrcamentosItens').method = 'GET'; document.getElementById('formListaOrcamentosItens').submit();"  style="bottom: 10; right: 10;">Voltar</button>
+  {% include 'menu.html' %}
+  <main>
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-8">
+          <h2 class="title title-page">
+            <span><i class="fa-solid fa-scale-balanced"></i> Orçamentos por
+              data</span><strong>{{session.nmEmpreend}} - <span>{{session.dtCarga|to_date}}</span></strong>
+          </h2>
+        </div>
+        <div class="col-4">
+          <div class="row h-100">
+            <div class="col-4 offset-4 d-flex justify-content-end align-items-center">
+              <form action="/abrir_cad_orcamento">
+                <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}" />
+                <button type="submit" class="btn btn-primary">
+                  <i class="fa-solid fa-plus-circle"></i>
+                  Novo
+                </button>
+              </form>
             </div>
-        </form>
+            <div class="col-4 d-flex justify-content-end align-items-center">
+              <a href="/tratar_orcamentos"
+                type="submit" class="btn btn-outline-dark">
+                <i class="fa-solid fa-caret-left"></i>
+                Voltar
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <div class="table-responsive">
+            <table class="table table-striped font-small">
+              <thead class="table-light">
+                <tr class="text-center">
+                  <th>Mes vigêcia</th>
+                  <th>Ano vigência</th>
+                  <th>Data carga</th>
+                  <th>Item</th>
+                  <th>Orcado</th>
+                  <th>Físico R$</th>
+                  <th>Físico %</th>
+                  <th>Físico saldo</th>
+                  <th>Financeiro R$</th>
+                  <th>Financeiro %</th>
+                  <th>Financeiro saldo</th>
+                  <th colspan="2">Ações</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% if orcamentos %}
+                {% for m in orcamentos %}
+                <tr class="text-center">
+                  <td>{{'--' if m.getMesVigencia() is none else m.getMesVigencia() }}</td>
+                  <td>{{'--' if m.getAnoVigencia() is none else m.getAnoVigencia() }}</td>
+                  <td>{{'--' if m.getDtCarga() is none else m.getDtCarga()|to_date}}</td>
+                  <td>{{'--' if m.getItem() is none else m.getItem() }}</td>
+                  <td>{{'--' if m.getOrcadoValor() is none else m.getOrcadoValor()|to_currency }}</td>
+                  <td>{{'--' if m.getFisicoValor() is none else m.getFisicoValor()|to_currency }}</td>
+                  <td>{{'--' if m.getFisicoPercentual() is none else m.getFisicoPercentual()|to_currency }}</td>
+                  <td>{{'--' if m.getFisicoSaldo() is none else m.getFisicoSaldo()|to_currency }}</td>
+                  <td>{{'--' if m.getFinanceiroValor() is none else m.getFinanceiroValor()|to_currency }}</td>
+                  <td>{{'--' if m.getFinanceiroPercentual() is none else m.getFinanceiroPercentual()|to_currency }}</td>
+                  <td>{{'--' if m.getFinanceiroSaldo() is none else m.getFinanceiroSaldo()|to_currency }}</td>
+                  <td>
+                    <a href="/editar_item_orcamento?idOrcamento={{m.getIdOrcamento()}}"
+                      data-bs-toggle="tooltip" data-bs-title="Editar">
+                      <i class="fa-solid fa-pencil text-warning"></i>
+                    </a>
+                  </td>
+                  <td>
+                    <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir">
+                      <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
+                        data-modal-exclude-title="Orçamento"
+                        data-modal-exclude-action="/excluir_item_orcamento?idOrcamento={{m.getIdOrcamento()}}&modo=exclui"
+                        data-modal-exclude-text="Deseja realmente excluir o item <strong>{{ m.getItem() }}</strong>?"></i>
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+                {% else %}
+                <tr>
+                  <td colspan="13" class="text-center">
+                    Não existem orçamentos cadastrados.
+                  </td>
+                </tr>
+                {% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
     </div>
-
-    {% else %}
-    <h1>Não há Unidades cadastradas no empreendimento.</h1>
-    {% endif %}
-
+  </main>
+  {% include 'fractials/footer.html' %}
 </body>
 
 </html>

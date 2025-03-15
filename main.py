@@ -44,6 +44,7 @@ from reportlab.lib.utils import ImageReader
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter, inch
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
+from utils.CtrlSessao import IdEmpreend, DtCarga, NmEmpreend
 
 # from reportlab.platypus.tables import Table, TableStyle
 
@@ -56,7 +57,7 @@ import locale
 import numpy as np
 import easygui
 import configparser
-
+import utils.converter as converter
 
 app = Flask(__name__)
 
@@ -77,8 +78,14 @@ def init(app):
     except:
         print ("Couldn't read configs from: ", config_location)
 
+if __name__ == 'main' or __name__ == '__main__':
+  init(app)
+  app.run()
+
 @app.route('/')
 def login():
+    if session.get('logged_in') == True:
+        return redirect('/home')
     return render_template("login.html")
 
 @app.route('/m')
@@ -95,12 +102,10 @@ def valida_login():
     # print ('++++++++++++++++++>>>>', usu)
 
     if  usu:                       # encontrou usuário e senha corretos
-        empc = empreendimentoController ()
-        emps = empc.consultarEmpreendimentos ()
         session['logged_in'] = True
         session['email'] = email
         session['nome'] = usu.getNmUsuario()
-        return render_template("home.html", empreends=emps)
+        return redirect('/home')
     else:
         session['logged_in'] = False
         return render_template("login.html", mensagem='Falha no login, verifique o usuário e a senha')
@@ -179,17 +184,15 @@ def efetuar_cad_empreend():
     empreend.setBairro (request.form.get('bairro'))
     empreend.setCidade (request.form.get('cidade'))
     empreend.setEstado (request.form.get('estado'))
-    empreend.setCep (request.form.get('cep'))
+    empreend.setCep (request.form.get('cep').replace('-', ''))
     empreend.setNmEngenheiro (request.form.get('nmEngenheiro'))
-    empreend.setVlPlanoEmp (request.form.get('vlPlanoEmp'))
-    empreend.setIndiceGarantia (request.form.get('indiceGarantia'))
+    empreend.setVlPlanoEmp (converter.converterStrToFloat(request.form.get('vlPlanoEmp')))
+    empreend.setIndiceGarantia (converter.converterStrToFloat(request.form.get('indiceGarantia')))
     empreend.setPrevisaoEntrega (request.form.get('previsaoEntrega'))
 
     empc = empreendimentoController()
     empc.inserirEmpreendimento(empreend)
-    emps = empc.consultarEmpreendimentos ()
-    print('passei aqui')
-    return render_template("home.html", empreends=emps)
+    return redirect("/home")
 
 @app.route('/excluir_empreend')
 def excluir_empreend():
@@ -215,7 +218,6 @@ def abrir_edicao_empreend():
 
 @app.route('/salvar_empreend', methods=['POST'])
 def salvar_empreend():
-
     empreend = empreendimento ()
     empreend.setIdEmpreend (int(request.form.get('idEmpreendimento')))
     empreend.setNmEmpreend (request.form.get('nmEmpreendimento'))
@@ -226,22 +228,21 @@ def salvar_empreend():
     empreend.setBairro (request.form.get('bairro'))
     empreend.setCidade (request.form.get('cidade'))
     empreend.setEstado (request.form.get('estado'))
-    empreend.setCep (request.form.get('cep'))
+    empreend.setCep (request.form.get('cep').replace('-', ''))
     empreend.setNmEngenheiro (request.form.get('nmEngenheiro'))
-    empreend.setVlPlanoEmp (request.form.get('vlPlanoEmp'))
-    empreend.setIndiceGarantia (request.form.get('indiceGarantia'))
+    empreend.setVlPlanoEmp (converter.converterStrToFloat(request.form.get('vlPlanoEmp')))
+    empreend.setIndiceGarantia (converter.converterStrToFloat(request.form.get('indiceGarantia')))
     empreend.setPrevisaoEntrega (request.form.get('previsaoEntrega'))
 
     empc = empreendimentoController()
     empc.salvarEmpreendimento(empreend)
-    emps = empc.consultarEmpreendimentos ()
-    return render_template("home.html", empreends=emps)
+    return redirect("/home")
 
 @app.route('/logout')
 def logout():
     session.pop('email', None)
     session.pop('logged_in', None)
-    return render_template("login.html")
+    return redirect("/")
 
 @app.route('/logout_m')
 def logout_m():
@@ -723,7 +724,6 @@ def abrir_edicao_cliente():
     return render_template("cliente.html", cliente=cliente)
 
 
-
 @app.route('/cadastrar_cliente', methods=['POST'])
 def cadastrar_cliente():
 
@@ -818,7 +818,6 @@ def excluir_cliente():
 
 @app.route('/tratar_orcamentos')
 def tratar_orcamentos():
-
 # ---- teste de sessão
     temp = protectedPage()
 
@@ -830,6 +829,19 @@ def tratar_orcamentos():
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
+    if (not IdEmpreend().has() or not NmEmpreend().has()) and (idEmpreend is None or nmEmpreend is None):
+      return redirect('/home')
+
+    if idEmpreend:
+      IdEmpreend().set(idEmpreend)
+    else:
+      idEmpreend = IdEmpreend().get()
+
+    if nmEmpreend:
+      NmEmpreend().set(nmEmpreend)
+    else:
+      nmEmpreend = NmEmpreend().get()
+
     print('-----tratar_orcamentos----')
     print(idEmpreend, nmEmpreend)
 
@@ -837,16 +849,24 @@ def tratar_orcamentos():
     medS = medC.consultarOrcamentos(idEmpreend)
 
     if len(medS) == 0:
-        return render_template("lista_orcamentos.html", idEmpreend=idEmpreend, mensagem="Medição não Cadastrada, importar o arquivo Excel!!!", orcamentos=medS)
+        return render_template("lista_orcamentos.html", mensagem="Medição não Cadastrada, importar o arquivo Excel!!!", orcamentos=medS)
     else:
-        return render_template("lista_orcamentos.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend, orcamentos=medS)
+        return render_template("lista_orcamentos.html", orcamentos=medS)
 
 @app.route('/consultar_orcamento_data')
 def consultar_orcamento_data():
 
 #    modo = request.args.get("modo")
-    idEmpreend = request.args.get("idEmpreend")
+    idEmpreend = IdEmpreend().get()
     dtCarga = request.args.get("dtCarga")
+
+    if dtCarga is None and not DtCarga().has():
+      return redirect('/tratar_orcamentos')
+    elif dtCarga is None:
+      dtCarga = DtCarga().get()
+    else:
+      DtCarga().set(dtCarga)
+
 
     print('------ consultar_orcamento_data ------')
 #    print(modo)
@@ -858,7 +878,10 @@ def consultar_orcamento_data():
     print('------ consultar_orcamento_data fim --------')
 #    print(modo)
 
-    return render_template("orcamentos_itens.html", orcamentos=medS, idEmpreend=idEmpreend)
+    return render_template(
+        "orcamentos_itens.html",
+        orcamentos=medS
+      )
 
 @app.route('/importar_orcamentos')
 def importar_orcamentos():
@@ -904,6 +927,7 @@ def upload_arquivo_orcamentos():
 def editar_item_orcamento():
 
     idOrc = request.args.get("idOrcamento")
+
     print('------ editar_item_orcamanto --------')
     print (idOrc)
     orcC = orcamentoController ()
@@ -911,33 +935,29 @@ def editar_item_orcamento():
     print('item    ', item)
     return render_template("Orcamento_item.html", item=item)
 
-
 @app.route('/excluir_item_orcamento')
 def excluir_item_orcamento():
+  idOrc = request.args.get("idOrcamento")
+  idEmpreend = IdEmpreend().get()
+  dtCarga = DtCarga().get()
+  print ('idEmpreend, dtCarga  ==>',   idEmpreend, dtCarga)
 
-    idOrc = request.args.get("idOrcamento")
-    idEmpreend = request.args.get("idEmpreend")
-    dtCarga = request.args.get("dtCarga")
-    print ('idEmpreend, dtCarga  ==>',   idEmpreend, dtCarga)
+  print('------ excluir_item_orcamanto --------')
+  print (idOrc)
+  orcC = orcamentoController ()
+  orcC.excluirItemOrcamento(idOrc)
+  print('------ excluir_item_orcamanto --- consultar_orcamento_data ------')
+  print (idEmpreend, dtCarga)
 
-    print('------ excluir_item_orcamanto --------')
-    print (idOrc)
-    orcC = orcamentoController ()
-    orcC.excluirItemOrcamento(idOrc)
-    print('------ excluir_item_orcamanto --- consultar_orcamento_data ------')
-    print (idEmpreend, dtCarga)
-    orcS = orcC.consultarOrcamentoPelaData (idEmpreend, dtCarga)
+  print('------ excluir_item_orcamanto --- consultar_orcamento_data fim --------')
 
-    print('------ excluir_item_orcamanto --- consultar_orcamento_data fim --------')
-
-    return render_template("orcamentos_itens.html", orcamentos=orcS, idEmpreend=idEmpreend)
+  return redirect('/consultar_orcamento_data')
 
 @app.route('/excluir_orcamento')
 def excluir_orcamento():
 
-    idEmpreend = request.args.get("idEmpreend")
-    nmEmpreend = request.args.get("nmEmpreend")
-    dtCarga = request.args.get("dtCarga")
+    idEmpreend = session.get("idEmpreend")
+    dtCarga = session.get("dtCarga")
     print ('idEmpreend, dtCarga  ==>',   idEmpreend, dtCarga)
 
     print('------ excluir_orcamanto --------')
@@ -947,14 +967,17 @@ def excluir_orcamento():
     orcS = orcC.consultarOrcamentos(idEmpreend)
 
     if len(orcS) == 0:
-        return render_template("lista_orcamentos.html", idEmpreend=idEmpreend, mensagem="Medição não Cadastrada, importar o arquivo Excel!!!", orcamentos=orcS)
+        return render_template("lista_orcamentos.html", mensagem="Medição não Cadastrada, importar o arquivo Excel!!!", orcamentos=orcS)
     else:
-        return render_template("lista_orcamentos.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend, orcamentos=orcS)
-
-    return
+        return render_template("lista_orcamentos.html", orcamentos=orcS)
 
 @app.route('/salvar_item_orcamento', methods=['POST'])
 def salvar_item_orcamento():
+    valorOrcado = converter.converterStrToFloat(request.form.get('orcadoValor'))
+    fisicoPercent = converter.converterStrToFloat(request.form.get('fisicoPercentual'), 1)
+    valorFinanceiro = converter.converterStrToFloat(request.form.get('financeiroValor'))
+    financeiroPercentual = valorFinanceiro / valorOrcado * 100
+    fisicoValor = valorOrcado * fisicoPercent / 100
 
     item = orcamento ()
     item.setIdOrcamento (request.form.get('idOrcamento'))
@@ -963,15 +986,13 @@ def salvar_item_orcamento():
     item.setAnoVigencia (request.form.get('anoVigencia'))
     item.setDtCarga (request.form.get('dtCarga'))
     item.setItem (request.form.get('item'))
-    item.setOrcadoValor (request.form.get('orcadoValor'))
-    item.setFisicoPercentual (request.form.get('fisicoPercentual'))
-    item.setFinanceiroValor (request.form.get('financeiroValor'))
-    financeiroPercentual = float(request.form.get('financeiroValor')) / float(request.form.get('orcadoValor')) * 100
+    item.setOrcadoValor (valorOrcado)
+    item.setFisicoPercentual (fisicoPercent)
+    item.setFinanceiroValor (valorFinanceiro)
     item.setFinanceiroPercentual (financeiroPercentual)
-    item.setFinanceiroSaldo (float(request.form.get('orcadoValor')) - float(request.form.get('financeiroValor')))
-    fisicoValor = float(request.form.get('orcadoValor')) * float(request.form.get('fisicoPercentual')) / 100
+    item.setFinanceiroSaldo (valorOrcado - valorFinanceiro)
     item.setFisicoValor (fisicoValor)
-    item.setFisicoSaldo (float(request.form.get('orcadoValor')) - fisicoValor)
+    item.setFisicoSaldo (valorOrcado - fisicoValor)
 
     print (request.form.get('idOrcamento'))
     print (request.form.get('idEmpreend'))
@@ -1162,13 +1183,12 @@ def obter_grafico():
     print (grafNome)
     return send_file(grafNome, mimetype='image/png')
 
-
 @app.route('/graf_orcamento_liberacao', methods=['GET'])
 def graf_orcamento_liberacao():
 
     tipo = request.args.get("tipo")
-    idEmpreend = request.args.get("idEmpreend")
-    dtCarga = request.args.get("dtCarga")
+    idEmpreend = IdEmpreend().get()
+    dtCarga = DtCarga().get()
 
     medC = orcamentoController ()
     medS = medC.consultarOrcamentoPelaData (idEmpreend, dtCarga)
@@ -1181,9 +1201,9 @@ def graf_orcamento_liberacao():
     for m in medS:
         index.append(m.getItem())
         if tipo == "valor":
-            fisico.append(float(m.getFisicoValor()))
-            financeiro.append(float(m.getFinanceiroValor()))
-            orcado.append(float(m.getOrcadoValor()))
+            fisico.append(float(0 if m.getFisicoValor() is None else m.getFisicoValor()))
+            financeiro.append(float(0 if m.getFinanceiroValor() is None else m.getFinanceiroValor()))
+            orcado.append(float(0 if m.getOrcadoValor() is None else m.getOrcadoValor()))
         else:
             fisico.append(float(m.getFisicoPercentual()))
             financeiro.append(float(m.getFinanceiroPercentual()))
@@ -2252,7 +2272,6 @@ def gerar_relatorio():
 
 @app.route('/upload_fotos')
 def upload_fotos():
-
     return render_template("upload_fotos.html")
 
 @app.route('/upload_arquivo_fotos', methods=['POST'])
@@ -2290,8 +2309,24 @@ def download_arquivo():
     print ('+++++++++++++', arquivo)
     return send_from_directory(diretorio, arquivo, as_attachment=True)
 
-init(app)
-app.run()
+########## FILTROS PARA TEMPLATE #########
+@app.template_filter('to_date')
+def format_datetime(value):
+  if value is not None and value != '--' and isinstance(value, datetime):
+    return value.strftime('%d/%m/%Y')
+  elif isinstance(value, str):
+    return converter.converterStrDateTimeToDateFormat(value)
+  return value
+
+@app.template_filter('to_currency')
+def format_datetime(value):
+  if value is not None and value != '--' and converter.isNumber(value):
+    return converter.converterFloatToCurrency(value)
+  return value
+
+if __name__ == '__main__':
+  init(app)
+  app.run()
 #app.run(host="192.168.0.11",port=5000)
 #app.run(host="177.195.148.38",port=80)
 

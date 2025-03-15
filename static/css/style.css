@@ -7,11 +7,16 @@ body {
   font-size: 16px;
   color: #333;
 }
+
 #footerPage {
   width: 100%;
   padding: 8px 0;
   background: #333;
   margin-top: 80px;
+}
+
+main {
+  min-height: 100vh;
 }
 
 .login-bg {
@@ -82,7 +87,59 @@ body {
 }
 
 .title {
-  border-left: #384f7C 6px solid;
   padding: 6px 0 6px 18px;
   margin: 50px 0;
+  position: relative;
+}
+
+.title::before {
+  content: '';
+  width: 6px;
+  height: 35px;
+  background: #384f7C;
+  display: block;
+  position: absolute;
+  left: -6px;
+  bottom: 0;
+}
+
+.title::after {
+  content: "";
+  background: #384f7C;
+  height: 6px;
+  width: 50px;
+  display: block;
+  transform: translate(-24px, 10px);
+}
+
+.title-page {
+  line-height: 1;
+}
+
+.title-page > span {
+  color: #7D6838;
+  font-size: 20px;
+  font-weight: 400;
+  display: block;
+  margin-bottom: 5px;
+}
+
+.title-page span svg {
+  font-size: 16px;
+}
+
+.title-page strong {
+  display: block;
+}
+
+.form-control[readonly] {
+  background-color: var(--bs-secondary-bg);
+  opacity: 1;
+}
+.form-floating>.form-control[readonly]~label::after {
+  background-color: var(--bs-secondary-bg);
+}
+
+.font-small {
+  font-size: 13px;
 }

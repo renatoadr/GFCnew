@@ -1,3 +1,5 @@
+<!-- Template: lista_orcamentos -->
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,90 +12,92 @@
 
 <body>
   {% include 'menu.html' %}
-
-  <div class="container">
-    <div class="row">
-      <div class="col-6">
-        <h2 class="title">Orçamentos - {{nmEmpreend}}</h2>
-      </div>
-      <div class="col-6">
-        <div class="row h-100">
-          <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
-            <form action="/importar_orcamentos">
-              <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />
-              <button type="submit" class="btn btn-primary">
-                <i class="fa-solid fa-file-arrow-up"></i>
-                Carregar Excel
-              </button>
-            </form>
-          </div>
-          <div class="col-3 d-flex justify-content-end align-items-center">
-            <form action="/home" method="POST">
-              <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />
-              <button type="submit" class="btn btn-outline-dark">
-                <i class="fa-solid fa-caret-left"></i>
-                Voltar
-              </button>
-            </form>
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <h2 class="title title-page">
+            <span><i class="fa-solid fa-scale-balanced"></i> Orçamentos</span><strong>{{session.nmEmpreend}}</strong>
+          </h2>
+        </div>
+        <div class="col-6">
+          <div class="row h-100">
+            <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
+              <form action="/importar_orcamentos">
+                <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}" />
+                <button type="submit" class="btn btn-primary">
+                  <i class="fa-solid fa-file-arrow-up"></i>
+                  Carregar Excel
+                </button>
+              </form>
+            </div>
+            <div class="col-3 d-flex justify-content-end align-items-center">
+              <form action="/home" method="POST">
+                <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}" />
+                <button type="submit" class="btn btn-outline-dark">
+                  <i class="fa-solid fa-home"></i>
+                  Início
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
 
-    <div class="row">
-      <div class="col-12">
-        <table class="table table-striped">
-          <thead class="table-light">
-            <tr class="text-center">
-              <th>Mes Vigência</th>
-              <th>Ano Vigência</th>
-              <th>Data Carga</th>
-              <th colspan="3">Ações</th>
-            </tr>
-          </thead>
-          <tbody>
-            {% if orcamentos %}
-            {% for m in orcamentos %}
-            <tr class="text-center">
-              <td>{{ m.getMesVigencia() }}</td>
-              <td>{{ m.getAnoVigencia() }}</td>
-              <td>{{ m.getDtCarga() }}</td>
-              <td>
-                <a href="/consultar_orcamento_data?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}"
-                  data-bs-toggle="tooltip" data-bs-title="Consultar">
-                  <i class="fa-solid fa-magnifying-glass-arrow-right"></i>
-                </a>
-              </td>
-              <td>
-                <a href="/graf_orcamento_liberacao?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}&tipo=valor"
-                  data-bs-toggle="tooltip" data-bs-title="Gráficos">
-                  <i class="fa-solid fa-chart-pie"></i>
-                </a>
-              </td>
-              <td>
-                <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Empreendimento">
-                  <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
-                    data-modal-exclude-title="Orçamento"
-                    data-modal-exclude-action="/excluir_orcamento?idEmpreend={{idEmpreend}}&dtCarga={{m.getDtCarga()}}"
-                    data-modal-exclude-text="Deseja realmente excluir o orçamento com a data <strong>{{m.getDtCarga()}}</strong>?"></i>
-                </a>
-              </td>
-            </tr>
-            {% endfor %}
-            {% else %}
-            <tr>
-              <td colspan="6" class="text-center">
-                Não existem orçamentos cadastrados.
-              </td>
-            </tr>
-            {% endif %}
-          </tbody>
-        </table>
+      <div class="row">
+        <div class="col-12">
+          <table class="table table-striped">
+            <thead class="table-light">
+              <tr class="text-center">
+                <th>Mes Vigência</th>
+                <th>Ano Vigência</th>
+                <th>Data Carga</th>
+                <th colspan="3">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if orcamentos %}
+              {% for m in orcamentos %}
+              <tr class="text-center">
+                <td>{{ m.getMesVigencia() }}</td>
+                <td>{{ m.getAnoVigencia() }}</td>
+                <td>{{ m.getDtCarga() }}</td>
+                <td>
+                  <a href="/consultar_orcamento_data?dtCarga={{m.getDtCarga()}}"
+                    data-bs-toggle="tooltip" data-bs-title="Consultar">
+                    <i class="fa-solid fa-magnifying-glass-arrow-right"></i>
+                  </a>
+                </td>
+                <td>
+                  <a href="/graf_orcamento_liberacao?dtCarga={{m.getDtCarga()}}&tipo=valor"
+                    data-bs-toggle="tooltip" data-bs-title="Gráficos">
+                    <i class="fa-solid fa-chart-pie"></i>
+                  </a>
+                </td>
+                <td>
+                  <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Empreendimento">
+                    <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
+                      data-modal-exclude-title="Orçamento"
+                      data-modal-exclude-action="/excluir_orcamento?dtCarga={{m.getDtCarga()}}"
+                      data-modal-exclude-text="Deseja realmente excluir o orçamento com a data <strong>{{m.getDtCarga()}}</strong>?"></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+              {% else %}
+              <tr>
+                <td colspan="6" class="text-center">
+                  Não existem orçamentos cadastrados.
+                </td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
-  </div>
-
+  </main>
   {% include 'fractials/footer.html' %}
 </body>
 

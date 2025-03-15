@@ -26,7 +26,7 @@
 
           <div class="form-floating">
             <input type="text" name="idEmpreendimento" id="idEmpreendimento" class="form-control" placeholder=""
-              readonly value="{{ empreend.getIdEmpreend() if empreend}}" disabled />
+              readonly value="{{ empreend.getIdEmpreend() if empreend}}" />
             <label for="idEmpreendimento">Codigo do Empreendimento</label>
           </div>
 
@@ -86,8 +86,10 @@
           </div>
 
           <div class="form-floating mt-4">
-            <input type="text" name="nmBanco" id="nmBanco" class="form-control" placeholder=""
-              value="{{ empreend.getNmBanco() if empreend}}" />
+            <select type="text" name="nmBanco" id="nmBanco" class="form-control" placeholder=""
+              value="{{ empreend.getNmBanco() if empreend}}">
+              <option>Selecione o banco</option>
+            </select>
             <label for="nmBanco">Banco</label>
           </div>
 
@@ -132,21 +134,11 @@
 
   {% include 'fractials/footer.html' %}
   <script>
-    const inputNames = Array.from(document.querySelectorAll('#formEmpreendimento input')).map(item => item.name)
-    const names = inputNames.slice(1)
-    const rules = names.reduce(function (mount, name) {
-      mount[name] = 'required';
-      return mount;
-    }, {});
-    const messages = names.reduce(function (mount, name) {
-      mount[name] = 'Este campo é obrigatório';
-      return mount;
-    }, {});
-
+    const requireds = GFC.getRequiredFilds("formEmpreendimento")
     $(function () {
       $("#formEmpreendimento").validate({
-        rules,
-        messages,
+        rules: requireds.rules,
+        messages: requireds.messages,
         errorClass: 'is-invalid',
         errorElement: 'span',
         highlight: function (element, errorClass, validClass) {
@@ -167,6 +159,10 @@
         setTimeout(function () {
           $('#cidade').val(document.querySelector('#cidade').getAttribute('value'));
         }, 500);
+      }, 500);
+
+      setTimeout(function () {
+        $('#nmBanco').val(document.querySelector('#nmBanco').getAttribute('value'));
       }, 500);
     });
   </script>

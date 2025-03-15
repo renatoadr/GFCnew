@@ -46,6 +46,15 @@ $(function(){
     },
   });
 
+  $.getJSON('https://brasilapi.com.br/api/banks/v1', function(data) {
+    const listaBancos = data.sort(function (ba, bb) {
+      return ba.name < bb.name ? -1 : 1
+    });
+    for (let banco of listaBancos) {
+      $('#nmBanco').append(`<option value="${banco.name}">${banco.name}</option>`);
+    }
+  });
+
   $.getJSON('http://servicodados.ibge.gov.br/api/v1/localidades/estados', function (data) {
     listaEstados = data.sort(function (da, db) {
       return da.sigla < db.sigla ? -1 : 1

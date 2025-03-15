@@ -34,7 +34,11 @@
 </header>
 
 {% if mensagem %}
-<div style="margin-top: 6em; font-family:Arial; text-align: left; font-size: 20px" class="smoothbox">
-  <p> {{mensagem}} </p>
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-12">
+      <p class="alert alert-warning text-center"> {{mensagem}} </p>
+    </div>
+  </div>
 </div>
 {% endif %}
