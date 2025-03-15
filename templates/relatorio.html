@@ -1,0 +1,71 @@
+<!--                                                relatorio.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GFC</title>
+    <link rel="stylesheet" href="../static/style.css">
+    <link rel="stylesheet" href="../static/tooltip.css">
+</head>
+<body>
+    <div style="margin-top: 4em; text-align: center; font-size: 30px; "> 
+        <a style="font-size: 2ch">{{nmEmpreend}}</a>
+    </div>     
+
+    {% include 'menu.html' %}
+
+        <form action="/gerar_relatorio" style= "border: 0px; margin-top: 3em;" id="formRelatorio"  method="GET">   
+
+            <div>
+                <label for="mes">Mes:</label>
+                <select id="mes" name="mes">
+                    {% for mes in listaMes %}           
+                        <option value="{{ mes  }}">{{ mes }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="ano">Ano:</label>
+                <select id="ano" name="ano">
+                    {% for ano in listaAno %}           
+                        <option value="{{ ano  }}">{{ ano }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <div>          
+                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />         
+                <input type="hidden" name="apelido" value="{{ apelido }}" />         
+                <input type="hidden" name="mobile" value=False> 
+                <button type="submit">Salvar</button>
+                <button type="button" onclick="document.getElementById('formRelatorio').action = '/home'; document.getElementById('formRelatorio').method = 'GET'; document.getElementById('formRelatorio').submit();"  style="bottom: 10; right: 10;">Cancelar</button>
+            </div>
+        </form>
+     
+        <table border="1" align="center" style="font-family: Arial; border-spacing: 1px; border-color: white; background-color: #e7e7e7;"" >
+        <thead>
+            <tr>
+                <th>Nome</th>
+                <th colspan="10"></th>
+            </tr>
+        </thead>        
+        <tbody>
+            
+            {% for e in arquivos %}            
+            <tr>
+                <td>{{ e }}</td>
+                
+                <td><div class="tooltip">
+                        <a href="/download_arquivo?arquivo={{e}}"><img src="../static/icons8-download-80.png" style="width: 24px; height: 24px;"/></a>
+                        <span class="tooltiptext">Download</span>
+                    </div>
+                </td>
+            </tr>
+            {% endfor %}
+            
+        </tbody>        
+        </table>
+    </div>
+</body>
+</html>

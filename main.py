@@ -130,14 +130,25 @@ def valida_login_m():
 @app.route('/lista_relatorios', methods=['GET'])
 def lista_relatorios():
 
+    idEmpreend = request.args.get('idEmpreend')
     apelido = request.args.get('apelido') 
-#    print('==========lista_relatorios==========', apelido)
+    mobile  = request.form.get('mobile', 'false').lower() == 'true'
+
+    print('==========lista_relatorios==========', apelido)
+    print(apelido, mobile)
+    print('==========lista_relatorios==========', apelido)
+
     gerC = geralController (app)
     diretorio = "c://GFC//Relatorios" 
     arqS = gerC.listar_arquivos_com_prefixo(diretorio, apelido)
 #    print ('=========== lista de arquivos   ', arqS)
-    return render_template("mobile/download.html", arquivos=arqS)
- 
+    if mobile:
+        return render_template("mobile/download.html", arquivos=arqS)
+    else:
+        meses = ['  ','01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+        anos = ['    ','2025', '2026', '2027', '2028', '2029', '2030']
+        return render_template("relatorio.html", arquivos=arqS, listaMes = meses, listaAno = anos, apelido=apelido, idEmpreend=idEmpreend)
+
 def protectedPage():
     if 'logged_in' not in session:
 #        print('opcao1')
@@ -2214,36 +2225,75 @@ def gerar_relatorio():
 #    doc = SimpleDocTemplate(UPLOAD_FOLDER + "\\Relatorio_20241209.pdf", pagesize=letter)
     grafC = graficoController (app)
 
-    idEmpreend = str(55)            ###### preciso montar esse informação
-    mes = "01"
-    ano = "2025"
-    
-    diretorio = grafC.montaDir(idEmpreend, mes, ano)
-    grafC.criaDir(diretorio)
+    idEmpreend = request.args.get("idEmpreend")
+    apelido    = request.args.get("apelido")
+    mes        = request.args.get("mes")
+    ano        = request.args.get("ano")
+  
+    dirRelatorio = grafC.montaDir(idEmpreend, mes, ano, relatorio = True)
+    grafC.criaDir(dirRelatorio)
+    nomePdf = apelido + "-" + ano + "-" + mes + ".pdf"
+    c = canvas.Canvas(dirRelatorio + nomePdf)
 
-    c = canvas.Canvas(diretorio + "Relatorio.pdf")
+    diretorio = grafC.montaDir(idEmpreend, mes, ano)
+    fazer um criadir e testar se o diretório existe
     
-    grafC.pdfPag1(c, diretorio)
+    pagina = 1
+    grafC.pdfPag1(c, diretorio, pagina)
     c.showPage()
-    grafC.pdfPag2(c, diretorio)
+    pagina += 1
+    grafC.pdfPag2(c, diretorio, pagina)
     c.showPage()
-    grafC.pdfPag3(c, diretorio)
+    pagina += 1
+    grafC.pdfPag3(c, diretorio, pagina)
     c.showPage()
-    grafC.pdfPag4(c, diretorio)
+    pagina += 1
+    grafC.pdfPag4(c, diretorio, pagina)
     c.showPage()
-    grafC.pdfPag5(c, diretorio)
+    pagina += 1
+    grafC.pdfPag5(c, diretorio, pagina)
     c.showPage()
-    grafC.pdfPag6(c, diretorio)
+    pagina += 1
+    grafC.pdfPag6(c, diretorio, pagina)
     c.showPage()
-    grafC.pdfPag7(c, diretorio)
+    pagina += 1
+    grafC.pdfPag7(c, diretorio, pagina)
     c.showPage()
-    grafC.pdfPag8(c, diretorio)
-    c.showPage()
-    grafC.pdfPag9(c, diretorio)
-    c.showPage()
+    if os.path.isfile(diretorio+"foto_1.jpeg"):
+        pagina += 1
+        grafC.pdfPag8(c, diretorio, pagina)
+        c.showPage()
+        if os.path.isfile(diretorio+"foto_7.jpeg"):
+            pagina += 1
+            grafC.pdfPag9(c, diretorio, pagina)
+            c.showPage()
+            if os.path.isfile(diretorio+"foto_13.jpeg"):
+                pagina += 1
+                grafC.pdfPag10(c, diretorio, pagina)
+                c.showPage()     
+                if os.path.isfile(diretorio+"foto_19.jpeg"):
+                    pagina += 1
+                    grafC.pdfPag11(c, diretorio, pagina)
+                    c.showPage()
+    pagina += 1
+    grafC.pdfPag12(c, diretorio, pagina)
+    c.showPage()    
     c.save()    
 
-    return
+#    grafNome = diretorio + "Relatorio.pdf"
+
+#    plt.savefig(grafNome)
+
+#    plt.savefig(grafNome, bbox_inches='tight')
+
+    gerC = geralController (app)
+    diretorio = "c://GFC//Relatorios" 
+    arqS = gerC.listar_arquivos_com_prefixo(diretorio, apelido)
+
+    meses = ['  ','01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
+    anos = ['    ','2025', '2026', '2027', '2028', '2029', '2030']
+    return render_template("relatorio.html", arquivos=arqS, listaMes = meses, listaAno = anos, apelido=apelido, idEmpreend=idEmpreend)
+
 
 ############ FOTOS ######################
 
