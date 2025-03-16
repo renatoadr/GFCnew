@@ -165,7 +165,8 @@ class orcamentoController:
         print (linha, l)
 
         while linha < l:
-            mesVigencia = str(tabela.at[linha, 'Mês'])
+
+            mesVigencia = str(tabela.at[linha, 'Mês']).zfill(2)
             anoVigencia = str(tabela.at[linha, 'Ano'])
             item        = str(tabela.at[linha, 'Descrição'])
             orcado      = float(tabela.at[linha, 'Orçado'])

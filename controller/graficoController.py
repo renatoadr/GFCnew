@@ -329,14 +329,138 @@ class graficoController:
 
     def criaDir(self, diretorio):
 # Criar diretórios 
-        print('criando um diretório')
-        print(diretorio)
 
         if not os.path.exists(diretorio):
             os.makedirs(diretorio)
             print(f"Diretorio '{diretorio}' criado com sucesso.")
+
         else:
             print(f"Diretorio '{diretorio}' já existe.")
+
         return
-     
-        
+
+    def verificaDir(self, diretorio):
+# Criar diretórios 
+
+        if not os.path.exists(diretorio):
+            print(f"Diretorio '{diretorio}' não existe.")
+            return False
+        else:
+            print(f"Diretorio '{diretorio}' já existe.")
+            return True
+
+    def verificaArqRelatorio(self, diretorio):
+
+        listaErro = []
+#   Primeira Página 
+
+        foto = "c:\\Desafios JavaScript\\gfc\\static\\franca.jpg" 
+        if not os.path.isfile(foto):
+            listaErro.append('1ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "maquete.png"
+        if not os.path.isfile(foto):
+            listaErro.append('1ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "foto_3D_1.png" 
+        if not os.path.isfile(foto):
+            listaErro.append('1ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "foto_3.jpeg"
+        if not os.path.isfile(foto):
+            listaErro.append('1ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "foto_3D_3.png" 
+        if not os.path.isfile(foto):
+            listaErro.append('1ª pag - ' + foto + ' não encontrado')
+        foto = "c:\\Desafios JavaScript\\gfc\\static\\legenda 2.png" 
+        if not os.path.isfile(foto):
+            listaErro.append('1ª pag - ' + foto + ' não encontrado')
+
+#   Segunda Página    
+        foto = diretorio + "tab_prev_realizado.png"
+        if not os.path.isfile(foto):
+            listaErro.append('2ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "graf_progresso_obra.png"
+        if not os.path.isfile(foto):
+            listaErro.append('2ª pag - ' + foto + ' não encontrado')
+
+#   Terceira Página    
+        foto = diretorio + "tab_acomp_financeiro.png"
+        if not os.path.isfile(foto):
+            listaErro.append('3ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "graf_orcamento_liberacao_valor.png"
+        if not os.path.isfile(foto):
+            listaErro.append('3ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "tab_orcamento_liberacao.png"
+        if not os.path.isfile(foto):
+            listaErro.append('3ª pag - ' + foto + ' não encontrado')
+
+#   Quarta Página    
+        foto = diretorio + "tab_notas.png"
+        if not os.path.isfile(foto):
+            listaErro.append('4ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "graf_indices_garantia_I.png"
+        if not os.path.isfile(foto):
+            listaErro.append('4ª pag - ' + foto + ' não encontrado')
+
+#   Quinta Página    
+        foto = diretorio + "graf_indices_garantia_II.png"
+        if not os.path.isfile(foto):
+            listaErro.append('5ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "graf_chaves.png"
+        if not os.path.isfile(foto):
+            listaErro.append('5ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "graf_vendas.png"
+        if not os.path.isfile(foto):
+            listaErro.append('5ª pag - ' + foto + ' não encontrado')
+
+#   Sexta Página    
+        foto = diretorio + "tab_conta_corrente.png"
+        if not os.path.isfile(foto):
+            listaErro.append('6ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "tab_pontos_atencao_geral.png"
+        if not os.path.isfile(foto):
+            listaErro.append('6ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "tab_pontos_atencao_obra.png"
+        if not os.path.isfile(foto):
+            listaErro.append('6ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "tab_pontos_atencao_documentos.png"
+        if not os.path.isfile(foto):
+            listaErro.append('6ª pag - ' + foto + ' não encontrado')
+#   Setima Página    
+        foto = diretorio + "foto_3D_1.png"
+        if not os.path.isfile(foto):
+            listaErro.append('7ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "foto_3D_2.png"
+        if not os.path.isfile(foto):
+            listaErro.append('7ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "foto_3D_3.png"
+        if not os.path.isfile(foto):
+            listaErro.append('7ª pag - ' + foto + ' não encontrado')
+        foto = "c:\\Desafios JavaScript\\gfc\\static\\legenda 2.png" 
+        if not os.path.isfile(foto):
+            listaErro.append('7ª pag - ' + foto + ' não encontrado')
+
+#   Oitava Página    
+        foto = diretorio + "foto_1.jpeg"
+        if not os.path.isfile(foto):
+            listaErro.append('8ª pag - ' + foto + ' não encontrado')
+
+#   Nona Página    
+#        foto = diretorio + "foto_7.jpeg"
+#        if not os.path.isfile(foto):
+#            listaErro.append('9ª pag - ' + foto + ' não encontrado')
+#
+#   Décima Página    
+#        foto = diretorio + "foto_13.jpeg"
+#        if not os.path.isfile(foto):
+#            listaErro.append('10ª pag - ' + foto + ' não encontrado')
+#
+#   Décima Primeira Página    
+#        foto = diretorio + "foto_19.jpeg"
+#        if not os.path.isfile(foto):
+#            listaErro.append('11ª pag - ' + foto + ' não encontrado')
+
+#   Décima Segunda Página    
+        foto = diretorio + "consideracoes_finais.png"
+        if not os.path.isfile(foto):
+            listaErro.append('12ª pag - ' + foto + ' não encontrado')
+
+        return listaErro

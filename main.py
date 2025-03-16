@@ -117,9 +117,6 @@ def valida_login_m():
         idUsuario = usu.getIdUsuario() 
         uApelidos = usuC.consultarApelidos(idUsuario)
 
-#        print ('++++++++++++++++++>>>>', idUsuario)
-#        print ('++++++++++++++++++>>>>', uApelidos)
-
         session['logged_in'] = True
         session['email'] = email
         return render_template("mobile/home.html", apelidos=uApelidos)
@@ -133,10 +130,6 @@ def lista_relatorios():
     idEmpreend = request.args.get('idEmpreend')
     apelido = request.args.get('apelido') 
     mobile  = request.form.get('mobile', 'false').lower() == 'true'
-
-    print('==========lista_relatorios==========', apelido)
-    print(apelido, mobile)
-    print('==========lista_relatorios==========', apelido)
 
     gerC = geralController (app)
     diretorio = "c://GFC//Relatorios" 
@@ -910,7 +903,7 @@ def upload_arquivo_orcamentos():
         mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."    
     return render_template("erro.html", mensagem=mensagem)
 
-@app.route('/editar_item_orcamento')
+@app.route('/editar_item_orcamento', methods=['POST'])
 def editar_item_orcamento():
    
     idOrc = request.args.get("idOrcamento") 
@@ -1007,6 +1000,28 @@ def salvar_item_orcamento():
     print('------ salvar_item_orcamento --- fim --------')
 
     return render_template("orcamentos_itens.html", orcamentos=orcS, idEmpreend=request.form.get('idEmpreend'))
+
+@app.route('/incluir_item_orcamento', methods=['POST'])
+def incluir_item_orcamento():
+    orc = orcamento ()
+    orc.setIdEmpreend (request.form.get('idEmpreend'))
+    orc.setMesVigencia (request.form.get('MesVigencia'))
+    orc.setAnoVigencia (request.form.get('anoVigencia'))
+    orc.setDtCarga (request.form.get('dtCarga'))
+    orc.setItem (request.form.get('item'))
+    orc.setOrcadoValor (request.form.get('orcadoValor'))
+    orc.setFisicoValor (request.form.get('fisicoValor'))
+    orc.setFisicoPercentual (request.form.get('fisicoPercentual'))
+    orc.setFisicoSaldo (request.form.get('fisicoSaldo'))
+    orc.setFinanceiroValor (request.form.get('financeiroValor'))
+    orc.setFinanceiroPercentual (request.form.get('financeiroPercentual'))
+    orc.setFinanceiroSaldo (request.form.get('financeiroSaldo'))
+    
+    orcC = orcamentoController()
+#    empc.inserirEmpreendimento(empreend)
+#    emps = empc.consultarEmpreendimentos ()
+    print('passei aqui')
+    return render_template("home.html", empreends='emps')
 
 ############ AGENDA ######################
 
@@ -2222,7 +2237,6 @@ def tab_orcamento_liberacao():
 @app.route('/gerar_relatorio', methods=['GET'])
 def gerar_relatorio():
 
-#    doc = SimpleDocTemplate(UPLOAD_FOLDER + "\\Relatorio_20241209.pdf", pagesize=letter)
     grafC = graficoController (app)
 
     idEmpreend = request.args.get("idEmpreend")
@@ -2230,70 +2244,79 @@ def gerar_relatorio():
     mes        = request.args.get("mes")
     ano        = request.args.get("ano")
   
+    # monta o diretório onde estão os gráficos e fotos
+    diretorio = grafC.montaDir(idEmpreend, mes, ano)
+    erros = grafC.verificaArqRelatorio(diretorio) 
+
+    # monta o diretório onde ficam todos os relatórios
     dirRelatorio = grafC.montaDir(idEmpreend, mes, ano, relatorio = True)
     grafC.criaDir(dirRelatorio)
     nomePdf = apelido + "-" + ano + "-" + mes + ".pdf"
-    c = canvas.Canvas(dirRelatorio + nomePdf)
 
-    diretorio = grafC.montaDir(idEmpreend, mes, ano)
-    fazer um criadir e testar se o diretório existe
-    
-    pagina = 1
-    grafC.pdfPag1(c, diretorio, pagina)
-    c.showPage()
-    pagina += 1
-    grafC.pdfPag2(c, diretorio, pagina)
-    c.showPage()
-    pagina += 1
-    grafC.pdfPag3(c, diretorio, pagina)
-    c.showPage()
-    pagina += 1
-    grafC.pdfPag4(c, diretorio, pagina)
-    c.showPage()
-    pagina += 1
-    grafC.pdfPag5(c, diretorio, pagina)
-    c.showPage()
-    pagina += 1
-    grafC.pdfPag6(c, diretorio, pagina)
-    c.showPage()
-    pagina += 1
-    grafC.pdfPag7(c, diretorio, pagina)
-    c.showPage()
-    if os.path.isfile(diretorio+"foto_1.jpeg"):
-        pagina += 1
-        grafC.pdfPag8(c, diretorio, pagina)
-        c.showPage()
-        if os.path.isfile(diretorio+"foto_7.jpeg"):
-            pagina += 1
-            grafC.pdfPag9(c, diretorio, pagina)
+    if grafC.verificaDir(diretorio) == False:
+        # Verifica se o diretório de graficos e fotos foi criado 
+        mensagem="Não existem dados para o relatório"
+    else:
+        # Verifica se existem graficos e fotos para o relatório
+        if  len(erros) > 0:
+            mensagem = '' 
+            for n in erros:
+                mensagem =  mensagem + ' # ' + n 
+        else:
+            c = canvas.Canvas(dirRelatorio + nomePdf)
+
+            pagina = 1
+            grafC.pdfPag1(c, diretorio, pagina)
             c.showPage()
-            if os.path.isfile(diretorio+"foto_13.jpeg"):
+            pagina += 1
+            grafC.pdfPag2(c, diretorio, pagina)
+            c.showPage()
+            pagina += 1
+            grafC.pdfPag3(c, diretorio, pagina)
+            c.showPage()
+            pagina += 1
+            grafC.pdfPag4(c, diretorio, pagina)
+            c.showPage()
+            pagina += 1
+            grafC.pdfPag5(c, diretorio, pagina)
+            c.showPage()
+            pagina += 1
+            grafC.pdfPag6(c, diretorio, pagina)
+            c.showPage()
+            pagina += 1
+            grafC.pdfPag7(c, diretorio, pagina)
+            c.showPage()
+            if os.path.isfile(diretorio+"foto_1.jpeg"):
                 pagina += 1
-                grafC.pdfPag10(c, diretorio, pagina)
-                c.showPage()     
-                if os.path.isfile(diretorio+"foto_19.jpeg"):
+                grafC.pdfPag8(c, diretorio, pagina)
+                c.showPage()
+                if os.path.isfile(diretorio+"foto_7.jpeg"):
                     pagina += 1
-                    grafC.pdfPag11(c, diretorio, pagina)
+                    grafC.pdfPag9(c, diretorio, pagina)
                     c.showPage()
-    pagina += 1
-    grafC.pdfPag12(c, diretorio, pagina)
-    c.showPage()    
-    c.save()    
+                    if os.path.isfile(diretorio+"foto_13.jpeg"):
+                        pagina += 1
+                        grafC.pdfPag10(c, diretorio, pagina)
+                        c.showPage()     
+                        if os.path.isfile(diretorio+"foto_19.jpeg"):
+                            pagina += 1
+                            grafC.pdfPag11(c, diretorio, pagina)
+                            c.showPage()
 
-#    grafNome = diretorio + "Relatorio.pdf"
+            pagina += 1
+            grafC.pdfPag12(c, diretorio, pagina)
+            c.showPage()    
+            c.save()    
+            mensagem="RELATORIO GERADO COM SUCESSO"
 
-#    plt.savefig(grafNome)
-
-#    plt.savefig(grafNome, bbox_inches='tight')
 
     gerC = geralController (app)
-    diretorio = "c://GFC//Relatorios" 
-    arqS = gerC.listar_arquivos_com_prefixo(diretorio, apelido)
+    arqS = gerC.listar_arquivos_com_prefixo(dirRelatorio, apelido)
 
     meses = ['  ','01', '02', '03', '04', '05', '06', '07', '08', '09', '10', '11', '12']
     anos = ['    ','2025', '2026', '2027', '2028', '2029', '2030']
-    return render_template("relatorio.html", arquivos=arqS, listaMes = meses, listaAno = anos, apelido=apelido, idEmpreend=idEmpreend)
 
+    return render_template("relatorio.html", arquivos=arqS, listaMes = meses, listaAno = anos, apelido=apelido, idEmpreend=idEmpreend, mensagem=mensagem)
 
 ############ FOTOS ######################
 
