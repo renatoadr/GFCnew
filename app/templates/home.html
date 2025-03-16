@@ -1,0 +1,136 @@
+<!--                                                  home.html -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Home</title>
+  {% include 'fractials/head.html' %}
+</head>
+
+<body>
+  {% include 'fractials/menu.html' %}
+
+  <div class="container">
+    <div class="row">
+      <div class="col-6">
+        <h2 class="title">Empreendimentos</h2>
+      </div>
+      <div class="col-6 d-flex justify-content-end align-items-center">
+        <form action="/abrir_cad_empreend" id="formListaEmpreend">
+          <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />
+          <button type="submit" class="btn btn-primary">
+            <i class="fa-solid fa-circle-plus"></i>
+            Novo Empreendimento
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-12">
+        <table class="table table-striped">
+          <thead class="table-light">
+            <tr>
+              <th>Nome</th>
+              <th colspan="10" class="text-center">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% if empreends %}
+            {% for e in empreends %}
+            <tr>
+              <td>{{ e.getNmEmpreend() }}</td>
+              <td>
+                <a href="/abrir_edicao_empreend?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
+                  data-bs-title="Editar Empreendimento">
+                  <i class="fa-solid fa-pencil text-warning"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Empreendimento">
+                  <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
+                    data-modal-exclude-title="Empreendimento"
+                    data-modal-exclude-action="/excluir_empreend?idEmpreend={{e.getIdEmpreend()}}"
+                    data-modal-exclude-text="Deseja realmente excluir o empreendimento <strong>{{ e.getNmEmpreend() }}</strong>?"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/importar_gastos?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
+                  data-bs-title="Importar Gastos">
+                  <i class="fa-solid fa-file-arrow-up"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/tratar_gastos?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Gastos">
+                  <i class="fa-solid fa-money-bill-trend-up"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/tratar_torres?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Torres">
+                  <i class="fa-solid fa-building"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/tratar_clientes?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Clientes">
+                  <i class="fa-solid fa-users"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/tratar_orcamentos?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Orçamentos">
+                  <i class="fa-solid fa-scale-balanced"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/criar_documentacao?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
+                  data-bs-title="Documentação">
+                  <i class="fa-solid fa-file-lines"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/criar_graficos?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
+                  data-bs-title="Gráficos">
+                  <i class="fa-solid fa-chart-pie"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/tratar_agendas?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Agenda">
+                  <i class="fa-solid fa-calendar-days"></i>
+                </a>
+              </td>
+
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+              <td colspan="11" class="text-center">
+                Não existem empreendimentos cadastrados.
+              </td>
+            </tr>
+            {% endif %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+
+  {% include 'fractials/footer.html' %}
+</body>
+
+</html>
