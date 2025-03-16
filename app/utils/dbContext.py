@@ -3,7 +3,7 @@ import os
 
 class MySql:
     message = ""
-    DB_NAME = 'db_gfc'
+    DB_NAME = os.getenv('DB_NAME')
 
     try:
 
