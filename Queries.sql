@@ -4,7 +4,6 @@ Use db_gfc;
 /*create table tb_empreendimentos (
 	id_empreendimento int not null auto_increment,
     nm_empreendimento varchar(100),
-    apelido varchar(10),
     nm_banco varchar(100),
 	nm_incorporador varchar(100),
 	nm_construtor varchar(100),
@@ -21,11 +20,10 @@ Use db_gfc;
 */
 
 /*create table tb_usuarios (
-    id_usuario int not null auto_increment,
     email varchar(50),
     senha varchar(12),
     nm_usuario varchar(100),
-    tp_acesso  varchar (15),     					-- visitante/usario/administrador
+    tp_usuario  varchar (15),     					-- visitante/usario/administrador
 */
 
 /*create table tb_torres (
@@ -71,13 +69,13 @@ primary key (id_empreendimento, dt_evento));
     ano_vigencia varchar(4),
     dt_carga datetime,
     item varchar(50),
-	orcado_valor decimal (15,2),
-	fisico_valor decimal (15,2),
     fisico_percentual decimal (5,2),
+	fisico_valor decimal (15,2),
     fisico_saldo decimal (15,2),
-	financeiro_valor decimal (15,2),
     financeiro_percentual decimal (5,2),
+	financeiro_valor decimal (15,2),
     financeiro_saldo decimal (15,2),
+	orcado_valor decimal (15,2),
     primary key (id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, item));
 */
 
@@ -130,6 +128,15 @@ primary key (id_empreendimento, dt_evento));
     observacao varchar(100),
     primary key(id_empreendimento, mes_vigencia, ano_vigencia, descricao));	
 */
+    
+/* create table tb_documentos ( 		-- Obrigações Formais 
+	id_empreendimento int,
+    doc_fiscal varchar(15),				-- SRF/INSS - Trabalhista - Municipal - Estadual - FGTS 
+    status varchar(10), 				-- pendente/negativa/positiva
+    dt_validade date,
+    primary key(id_empreendimento, doc_fiscal, status))	
+*/
+
 /*
  create table tb_notas (
 	id_empreendimento int,
@@ -146,48 +153,26 @@ primary key (id_empreendimento, dt_evento));
 	id_empreendimento int,
     mes_vigencia varchar(2),
     ano_vigencia varchar(4),
-    nr_medicao varchar(3),
+    nr_medicao int,
     perc_previsto_acumulado decimal (5,2),
 	perc_realizado_acumulado decimal (5,2),
     perc_previsto_periodo decimal (5,2),
     primary key (id_empreendimento, nr_medicao, mes_vigencia, ano_vigencia))
-*/ 
-/*
-  Create table tb_pontos_atencao (
-  	id_empreendimento int,
+ */ 
+ /*
+ create table tb_conta (
+	id_empreendimento int,
     mes_vigencia varchar(2),
     ano_vigencia varchar(4),
-	tipo varchar(5),         -- geral/obra
-    historico varchar(50),
-    Status varchar(10),      -- Normal/Atenção/Verificar
-    Observacao varchar(50),
-    primary key (id_empreendimento, mes_vigencia, ano_vigencia, tipo, historico));
-*/
-/*
-  Create table tb_financeiro (
-  	id_empreendimento int,
-    mes_vigencia varchar(2),
-    ano_vigencia varchar(4),
-    ordem int,
-    historico varchar(50),
-    perc_financeiro decimal (5,2),
-    vl_financeiro decimal (15,2),
-    primary key (id_empreendimento, mes_vigencia, ano_vigencia, ordem));
-*/
-/*
-  Create table tb_inadimplencias (
-  	id_empreendimento int,
-    mes_vigencia varchar(2),
-    ano_vigencia varchar(4),
-    ordem int,
-    periodo varchar(10),
-    qt_unidades int,
-    primary key (id_empreendimento, mes_vigencia, ano_vigencia, ordem));
-*/
-/*
-Create table tb_usuario_empreendimento (
-id_usuario int,
-id_empreendimento int,
-primary key (id_usuário, id_empreendimento));
-*/
--- drop table tb_documentos;    
+	vl_liberacao decimal (15,2),
+    vl_material_estoque decimal (15,2),
+    vl_aporte_construtora decimal (15,2),
+    vl_receita_recebiveis decimal (15,2), 
+    vl_pagto_obra decimal (15,2),
+    vl_pagto_rh decimal (15,2),
+    vl_diferencas decimal (15,2),
+	vl_saldo decimal (15,2),
+	primary key (id_empreendimento, mes_vigencia, ano_vigencia))
+   */
+   
+-- drop table tb_pagto_fornecedores;    

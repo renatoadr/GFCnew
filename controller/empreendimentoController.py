@@ -56,6 +56,7 @@ class empreendimentoController:
             e = empreendimento()
             e.setIdEmpreend(x[0])
             e.setNmEmpreend(x[1])
+            e.setApelido(x[2])
             listaEmps.append(e)
 
         cursor.close()

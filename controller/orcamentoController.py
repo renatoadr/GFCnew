@@ -166,14 +166,21 @@ class orcamentoController:
         print (linha, l)
 
         while linha < l:
-            mesVigencia = str(tabela.at[linha, 'Mês'])
+
+            mesVigencia = str(tabela.at[linha, 'Mês']).zfill(2)
             anoVigencia = str(tabela.at[linha, 'Ano'])
             item        = str(tabela.at[linha, 'Descrição'])
             orcado      = float(tabela.at[linha, 'Orçado'])
             fisicoP     = float(tabela.at[linha, 'Físico %'])
             financR     = float(tabela.at[linha, 'Financeiro R$'])
-            financP     = (financR/orcado) * 100
-            fisicoR     = orcado * (fisicoP/100)
+            if financR > 0:
+                financP = (financR/orcado) * 100
+            else:
+                financP = 0
+            if fisicoP > 0:    
+                fisicoR = orcado * (fisicoP/100)
+            else:
+                fisicoR = 0 
             fisicoS     = orcado-fisicoR
             financS     = orcado-financR
 

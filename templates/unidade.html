@@ -1,3 +1,4 @@
+<!--                                              unidade.html-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -17,10 +18,7 @@
     {% include 'fractials/menu.html' %}
     {% if unidade %}
 
-    <!--    <p> modo={{modo}}</p> -->
-
-    <form action="/salvar_alteracao_unidade" style="border: 0px; margin-top: 3em;" id="formIncluirUnidade"
-        method="POST">
+    <form action="/salvar_alteracao_unidade" style= "border: 0px; margin-top: 3em;" id="formIncluirUnidade"  method="POST">
         <div>
             <label for="nmTorre">Torre:</label>
             <input type="text" name="nmTorre" value="{{ nmTorre }}" {% if modo=='consulta' or modo=='exclui' %} readonly
