@@ -23,13 +23,11 @@
         <div class="col-6">
           <div class="row h-100">
             <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
-              <form action="/importar_orcamentos">
-                <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}" />
-                <button type="submit" class="btn btn-primary">
-                  <i class="fa-solid fa-file-arrow-up"></i>
-                  Carregar Excel
-                </button>
-              </form>
+              <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUploadExcel"
+                data-action-process="/upload_arquivo_orcamentos">
+                <i class="fa-solid fa-file-arrow-up"></i>
+                Carregar Excel
+              </button>
             </div>
             <div class="col-3 d-flex justify-content-end align-items-center">
               <form action="/home" method="POST">
@@ -70,8 +68,8 @@
                   </a>
                 </td>
                 <td>
-                  <a href="/graf_orcamento_liberacao?dtCarga={{m.getDtCarga()}}&tipo=valor" data-bs-toggle="tooltip"
-                    data-bs-title="Gráficos">
+                  <a href="/graf_orcamento_liberacao?dtCarga={{m.getDtCarga()}}&mesV={{m.getMesVigencia()}}&anoV={{m.getAnoVigencia()}}&tipo=valor"
+                    data-bs-toggle="tooltip" data-bs-title="Gráficos">
                     <i class="fa-solid fa-chart-pie"></i>
                   </a>
                 </td>

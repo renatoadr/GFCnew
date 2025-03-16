@@ -1,4 +1,5 @@
 import mysql.connector as m
+import os
 
 class MySql:
     message = ""
@@ -9,10 +10,9 @@ class MySql:
         @staticmethod
         def connect ():
             connection = m.connect(
-                host="localhost",
-                user="root",
-                #password="BIM@db2024"
-                password=""
+                host=os.getenv('DB_HOST'),
+                user=os.getenv('DB_USER'),
+                password=os.getenv('DB_PASS')
             )
 
             if connection.is_connected():

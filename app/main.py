@@ -79,14 +79,6 @@ def init(app):
     except:
         print ("Couldn't read configs from: ", config_location)
 
-if 'main' in __name__:
-  init(app)
-  app.run()
-  #app.run(host="192.168.0.11",port=5000)
-  #app.run(host="177.195.148.38",port=80)
-  #app.run(host='2804:14d:32a2:8564:a16e:bd9f:ad8b:9c76',port=80)
-
-
 @app.route('/m')
 def mlogin():
     if session.get('m_logged_in') == True:
@@ -914,13 +906,6 @@ def consultar_orcamento_data():
         orcamentos=medS
       )
 
-@app.route('/importar_orcamentos')
-def importar_orcamentos():
-    idEmpreend = request.args.get("idEmpreend")
-    print('--------------- importar_orcamentos ---------------')
-    print(idEmpreend)
-    return render_template("upload_orcamentos.html", idEmpreend=idEmpreend)
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
@@ -947,9 +932,8 @@ def upload_arquivo_orcamentos():
             orcC = orcamentoController ()
             print (caminhoArq, '   ', idEmpreend)
             orcC.carregar_orcamentos(caminhoArq, idEmpreend)
-            orcS = orcC.consultarOrcamentos (idEmpreend)
 
-            return render_template("lista_orcamentos.html", idEmpreend=idEmpreend, orcamentos=orcS)
+            return redirect("/tratar_orcamentos")
     else:
         mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
     return render_template("erro.html", mensagem=mensagem)
@@ -2423,3 +2407,10 @@ def format_datetime(value):
   if value is not None and value != '--' and converter.isNumber(value):
     return converter.converterFloatToCurrency(value)
   return value
+
+if __name__ == "__main__" or __name__ == "main":
+  init(app)
+  app.run()
+  #app.run(host="192.168.0.11",port=5000)
+  #app.run(host="177.195.148.38",port=80)
+  #app.run(host='2804:14d:32a2:8564:a16e:bd9f:ad8b:9c76',port=80)

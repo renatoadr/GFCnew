@@ -17,6 +17,12 @@ $(function(){
     $("#modalExcludeConfirm").attr("data-bs-exclude-exec-action", action)
   });
 
+  $('#modalUploadExcel').on('show.bs.modal', event => {
+    const button = event.relatedTarget
+    const action = button.getAttribute('data-action-process')
+    $("#formUploadExcel").attr('action', action)
+  });
+
    $('#modalExcludeConfirm').on('click', event => {
     const action = event.currentTarget.getAttribute('data-bs-exclude-exec-action')
     if (action) {
@@ -80,5 +86,28 @@ $(function(){
         $('#cidade').append(`<option value="${cidade.nome}">${cidade.nome}</option>`);
       }
     });
+  });
+
+  $( "#formUploadExcel" ).validate({
+    rules: {
+      file: {
+        required: true,
+        accept: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel"
+      },
+    },
+    messages: {
+      file: {
+        required: "Este campo é obrigatório",
+        accept: 'Só é aceito arquivo excel'
+      },
+    },
+    errorClass: 'is-invalid',
+    errorElement: 'span',
+    highlight: function (element, errorClass, validClass) {
+      setTimeout(function () {
+        $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
+        $(element).addClass(errorClass)
+      }, 50)
+    },
   });
 });
