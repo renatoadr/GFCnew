@@ -19,37 +19,30 @@
           <h2 class="title">Empreendimentos</h2>
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-12">
-        {% for e in apelidos %}
-
-        <a href="/lista_relatorios?apelido={{e.getApelido()}}" class="text-decoration-none">
-
-          <div class="card text-bg-light mb-5 m-auto" style="max-width: 18rem;">
-            <div class="card-header text-bg-secondary text-center">{{ e.getApelido() }}</div>
-            <div class="card-body">
-              <h5 class="card-title">
-                <span class="font-small text-info-emphasis mt-3 d-inline-block">Nome: </span>
-                <br>{{ e.getNmEmpreend() }}
-              </h5>
-              <p class="card-text">
-                <span class="font-small text-info-emphasis mt-3 d-inline-block">Endereço: </span> <br>{{
-                e.getEnderecoCompleto() }}<br>
-                <span class="font-small text-info-emphasis mt-3 d-inline-block">Engenheiro: </span> <br>{{
-                e.getNmEngenheiro()
-                }}<br>
-                <span class="font-small text-info-emphasis mt-3 d-inline-block">Construtor: </span> <br>{{
-                e.getNmConstrutor()
-                }}<br>
-                <span class="font-small text-info-emphasis mt-3 d-inline-block">Incorporador: </span> <br>{{
-                e.getNmIncorp() }}
-              </p>
-            </div>
-          </div>
-
-        </a>
-        {% endfor %}
+      <div class="row">
+        <div class="col-12">
+          <table class="table table-striped">
+            <thead class="table-light">
+              <tr>
+                <th>Nome</th>
+                <th class="text-center">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for e in apelidos %}
+              <tr>
+                <td>{{ e.getApelido() }}</td>
+                <td class="text-center">
+                  <a href="/lista_relatorios?apelido={{e.getApelido()}}"
+                    class="text-decoration-none text-primary-emphasis">
+                    <i class="fa-solid fa-magnifying-glass-arrow-right"></i> Visualizar Relatórios
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </main>

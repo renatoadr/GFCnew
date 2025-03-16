@@ -34,7 +34,7 @@
           <thead class="table-light">
             <tr>
               <th>Nome</th>
-              <th colspan="10" class="text-center">Ações</th>
+              <th colspan="11" class="text-center">Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -75,7 +75,14 @@
               <td>
                 <a href="/tratar_torres?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
                   data-bs-toggle="tooltip" data-bs-title="Torres">
-                  <i class="fa-solid fa-building"></i>
+                  <i class="fa-solid fa-hotel"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/tratar_unidades?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Unidades">
+                  <i class="fa-solid fa-building-un"></i>
                 </a>
               </td>
 
@@ -96,14 +103,21 @@
               <td>
                 <a href="/criar_documentacao?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
                   data-bs-title="Documentação">
-                  <i class="fa-solid fa-file-lines"></i>
+                  <i class="fa-solid fa-book"></i>
                 </a>
               </td>
 
-              <td>
+              <!-- <td>
                 <a href="/criar_graficos?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
                   data-bs-title="Gráficos">
                   <i class="fa-solid fa-chart-pie"></i>
+                </a>
+              </td> -->
+
+              <td>
+                <a href="/lista_relatorios?idEmpreend={{e.getIdEmpreend()}}&napelido=None" data-bs-toggle="tooltip"
+                  data-bs-title="Relatórios">
+                  <i class="fa-solid fa-file-contract"></i>
                 </a>
               </td>
 
@@ -118,7 +132,7 @@
             {% endfor %}
             {% else %}
             <tr>
-              <td colspan="11" class="text-center">
+              <td colspan="12" class="text-center">
                 Não existem empreendimentos cadastrados.
               </td>
             </tr>

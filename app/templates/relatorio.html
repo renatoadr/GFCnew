@@ -1,80 +1,97 @@
-<!--                                                relatorio.html  -->
+<!-- Template: relatorio  -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GFC</title>
-  <link rel="stylesheet" href="../static/style.css">
-  <link rel="stylesheet" href="../static/tooltip.css">
+  <title>GFC - Relatórios</title>
+  {% include 'fractials/head.html' %}
 </head>
 
 <body>
-  <div style="margin-top: 4em; text-align: center; font-size: 30px; ">
-    <a style="font-size: 2ch">{{nmEmpreend}}</a>
-  </div>
-
   {% include 'fractials/menu.html' %}
 
-  <form action="/gerar_relatorio" style="border: 0px; margin-top: 3em;" id="formRelatorio" method="GET">
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <h2 class="title title-page">
+            <span><i class="fa-solid fa-file-contract"></i> Relatórios</span><strong>{{session.nmEmpreend}}</strong>
+          </h2>
+        </div>
+      </div>
 
-    <div>
-      <label for="mes">Mes:</label>
-      <select id="mes" name="mes">
-        {% for mes in listaMes %}
-        <option value="{{ mes  }}">{{ mes }}</option>
-        {% endfor %}
-      </select>
-    </div>
-    <div>
-      <label for="ano">Ano:</label>
-      <select id="ano" name="ano">
-        {% for ano in listaAno %}
-        <option value="{{ ano  }}">{{ ano }}</option>
-        {% endfor %}
-      </select>
-    </div>
+      <form action="/gerar_relatorio" id="formRelatorio" method="GET"
+        class="mt-3 mb-5 p-3 pt-2 bg-light border border-dark-subtle rounded-4">
+        <legend class="text-black-50 mb-3 h6">Filtro</legend>
+        <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />
+        <input type="hidden" name="apelido" value="{{ apelido }}" />
+        <input type="hidden" name="mobile" value="False">
 
-    <div>
-      <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />
-      <input type="hidden" name="apelido" value="{{ apelido }}" />
-      <input type="hidden" name="mobile" value=False>
-      <button type="submit">Gerar relatório</button>
-      <button type="button"
-        onclick="document.getElementById('formRelatorio').action = '/home'; document.getElementById('formRelatorio').method = 'GET'; document.getElementById('formRelatorio').submit();"
-        style="bottom: 10; right: 10;">Cancelar</button>
-    </div>
-  </form>
+        <div class="row">
 
-  <table border="1" align="center"
-    style="font-family: Arial; border-spacing: 1px; border-color: white; background-color: #e7e7e7;"" >
-        <thead>
-            <tr>
-                <th>Nome</th>
-                <th colspan=" 10">
-    </th>
-    </tr>
-    </thead>
-    <tbody>
-
-      {% for e in arquivos %}
-      <tr>
-        <td>{{ e }}</td>
-
-        <td>
-          <div class="tooltip">
-            <a href="/download_arquivo?arquivo={{e}}"><img src="../static/icons8-download-80.png"
-                style="width: 24px; height: 24px;" /></a>
-            <span class="tooltiptext">Download</span>
+          <div class="col-lg-4 col-md-12">
+            <div class="form-floating">
+              <select name="mes" id="mes" class="form-control">
+                {% for mes in listaMes %}
+                <option value="{{ mes  }}">{{ mes }}</option>
+                {% endfor %}
+              </select>
+              <label for="mes">Mês</label>
+            </div>
           </div>
-        </td>
-      </tr>
-      {% endfor %}
 
-    </tbody>
-  </table>
-  </div>
+          <div class="col-lg-5 col-md-12 mt-3 mt-lg-0">
+            <div class="form-floating">
+              <select name="ano" id="ano" class="form-control">
+                {% for ano in listaAno %}
+                <option value="{{ ano  }}">{{ ano }}</option>
+                {% endfor %}
+              </select>
+              <label for="ano">Ano</label>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-12 mt-3  mt-lg-0 d-flex justify-content-center">
+            <button type="submit" class="btn btn-primary d-block w-100">Visualizar relatórios</button>
+          </div>
+        </div>
+      </form>
+
+      <div class="row">
+        <div class="col-12">
+          <table class="table table-striped">
+            <thead class="table-light">
+              <tr>
+                <th>Nome</th>
+                <th class="text-center">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% if arquivos %}
+              {% for e in arquivos %}
+              <tr>
+                <td>{{ e }}</td>
+                <td class="text-center">
+                  <a href="/download_arquivo?arquivo={{e}}" class="text-decoration-none text-primary-emphasis">
+                    <i class="fa-solid fa-download"></i> Baixar Relatório
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+              {% else %}
+              <tr>
+                <td colspan="2" class="text-center">Não há relatórios para o período informado</td>
+              </tr>
+              {% endif %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
 </body>
 
 </html>

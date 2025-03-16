@@ -1,48 +1,45 @@
-<!--                                       mobile download.html-->
+<!-- Template: mobile/download -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GFC</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/tooltip.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - </title>
+  {% include 'fractials/head.html' %}
 </head>
 
 <body>
-
-    {% include 'fractials/menu.html' %}
-
-    <div style="margin-top: 10em;">
-        <table border="1" align="center"
-            style="font-family: Arial; border-spacing: 1px; border-color: white; background-color: #e7e7e7;"" >
-        <thead>
-            <tr>
+  {% include 'fractials/menu.html' %}
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <table class="table table-striped">
+            <thead class="table-light">
+              <tr>
                 <th>Nome</th>
-                <th colspan=" 10">
-            </th>
-            </tr>
+                <th class="text-center">Ações</th>
+              </tr>
             </thead>
             <tbody>
-
-                {% for e in arquivos %}
-                <tr>
-                    <td>{{ e }}</td>
-
-                    <td>
-                        <div class="tooltip">
-                            <a href="/download_arquivo?arquivo={{e}}"><img src="../static/imgs/icons8-download-80.png"
-                                    style="width: 24px; height: 24px;" /></a>
-                            <span class="tooltiptext">Download</span>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
-
+              {% for e in arquivos %}
+              <tr>
+                <td>{{ e }}</td>
+                <td class="text-center">
+                  <a href="/download_arquivo?arquivo={{e}}" class="text-decoration-none text-primary-emphasis">
+                    <i class="fa-solid fa-download"></i> Baixar Relatório
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
             </tbody>
-        </table>
+          </table>
+        </div>
+      </div>
     </div>
+  </main>
+  {% include 'fractials/footer.html' %}
 </body>
 
 </html>
