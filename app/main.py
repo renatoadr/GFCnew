@@ -64,6 +64,7 @@ app = Flask(__name__)
 
 app.secret_key = "gfc001"
 
+
 def init(app):
     config = configparser.ConfigParser()
     try:
@@ -275,21 +276,6 @@ def salvar_empreend():
 
 ################ GASTOS ###############################
 
-@app.route('/importar_gastos')
-def abrir_form_upload_gastos():
-
-# ---- teste de sessão
-    temp = protectedPage()
-
-    if temp != None:
-        print ('protectedPage()')
-        return temp
-#---- fim teste de sessão
-
-    idEmpreend = request.args.get("idEmpreend")
-    print(idEmpreend)
-    return render_template("upload_gastos.html", idEmpreend=idEmpreend)
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
@@ -315,7 +301,7 @@ def upload_file():
             empc = empreendimentoController()
             emps = empc.consultarEmpreendimentos ()
 
-            return render_template("home.html", empreends=emps)
+            return redirect("/home")
     else:
         mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
     return render_template("erro.html", mensagem=mensagem)
@@ -376,28 +362,23 @@ def carregar_gastos(caminhoArq, idEmpreend):
 def tratarunidades():
 
 # ---- teste de sessão
-    temp = protectedPage()
+  temp = protectedPage()
 
-    if temp != None:
-        print ('protectedPage()')
-        return temp
+  if temp != None:
+    print ('protectedPage()')
+    return temp
 #---- fim teste de sessão
 
-    idEmpreend = request.args.get("idEmpreend")
-    nmEmpreend = request.args.get("nmEmpreend")
+  idEmpreend = IdEmpreend().get()
+  unidC = unidadeController ()
+  unidS = unidC.consultarUnidades (idEmpreend)
 
-    print('-----tratar_unidades----')
-    print(idEmpreend, nmEmpreend)
+  if len(unidS) == 0:
+    return render_template("lista_unidades.html",  mensagem="Unidade não Cadastrada!!!", unidades=unidS)
+  else:
+    return render_template("lista_unidades.html", unidades=unidS)
 
-    unidC = unidadeController ()
-    unidS = unidC.consultarUnidades (idEmpreend)
-
-    if len(unidS) == 0:
-        return render_template("lista_unidades.html", idEmpreend=idEmpreend, mensagem="Unidade não Cadastrada!!!", unidades=unidS)
-    else:
-        return render_template("lista_unidades.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend, unidades=unidS)
-
-@app.route('/abrir_cad_unidade', methods=['POST'])
+@app.route('/abrir_cad_unidade')
 def abrir_cad_unidade():
 
     idEmpreend = request.form.get("idEmpreend")
@@ -429,9 +410,6 @@ def abrir_edicao_unidade():
 
 @app.route('/cadastrar_unidade', methods=['POST'])
 def cadastrar_unidade():
-
-    print('passei aqui 1')
-
     un = unidade ()
     un.setIdTorre (request.form.get('idTorre'))
     un.setIdEmpreend (request.form.get('idEmpreend'))
@@ -446,15 +424,9 @@ def cadastrar_unidade():
     un.setFinanciado (request.form.get('financiado'))
     un.setVlChaves (request.form.get('vlChaves'))
 
-    print(request.form.get('vlChaves'))
-    print('passei aqui 2')
-
     unid = unidadeController()
     unid.inserirUnidade(un)
-    idEmpreend = request.form.get('idEmpreend')
-    unids = unid.consultarUnidades (idEmpreend)
-    print('passei aqui')
-    return render_template("lista_unidades.html", unidades=unids)
+    return redirect("/tratar_unidades")
 
 @app.route('/editar_unidade')
 def editar_unidade():
@@ -523,19 +495,11 @@ def consultar_unidade():
 
 @app.route('/excluir_unidade')
 def excluir_unidade():
-
     idUnidade = request.args.get('idUnidade')
-    idEmpreend = request.args.get('idEmpreend')
-    nmEmpreend = request.args.get('nmEmpreend')
-
-    print('--------------excluir_unidade -------------')
-    print (idUnidade, idEmpreend)
-
     unidc = unidadeController()
     unidc.excluirUnidade(idUnidade)
-    unids = unidc.consultarUnidades (idEmpreend)
 
-    return render_template("lista_unidades.html", nmEmpreend=nmEmpreend, unidades=unids)
+    return redirect("/tratar_unidades")
 
 
 ############ TORRES ######################
@@ -554,6 +518,19 @@ def tratartorres():
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
+    if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
+        redirect('/home')
+
+    if idEmpreend is None and IdEmpreend().has():
+      idEmpreend = IdEmpreend().get()
+    else:
+      IdEmpreend().set(idEmpreend)
+
+    if nmEmpreend is None and NmEmpreend().has():
+      nmEmpreend = NmEmpreend().get()
+    else:
+      NmEmpreend().set(nmEmpreend)
+
     print('-----tratar_torres----')
     print(idEmpreend,nmEmpreend)
 
@@ -561,20 +538,13 @@ def tratartorres():
     torreS = torreC.consultarTorres (idEmpreend)
 
     if len(torreS) == 0:
-        return render_template("lista_torres.html", idEmpreend=idEmpreend, mensagem="Torre não cadastrada!!!", nmEmpreend=nmEmpreend, torreS=torreS)
+        return render_template("lista_torres.html", mensagem="Torre não cadastrada!!!", torreS=torreS)
     else:
-        return render_template("lista_torres.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend, torreS=torreS)
+        return render_template("lista_torres.html", torreS=torreS)
 
-@app.route('/abrir_cad_torre', methods=['POST'])
+@app.route('/abrir_cad_torre')
 def abrir_cad_torre():
-
-    idEmpreend = request.form.get("idEmpreend")
-    nmEmpreend = request.form.get("nmEmpreend")
-
-    print('-----------abrir_cad_torre-----------')
-    print(idEmpreend)
-
-    return render_template("torre.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend)
+  return render_template("torre.html")
 
 #@app.route('/abrir_edicao_torre', methods=['POST'])
 #def abrir_edicao_torre():
@@ -590,24 +560,15 @@ def abrir_cad_torre():
 
 @app.route('/cadastrar_torre', methods=['POST'])
 def cadastrar_torre():
-
-    print('passei aqui 1')
-    nmEmpreend = request.form.get('nmEmpreend')
-
     t = torre ()
-    t.setIdEmpreend (request.form.get('idEmpreend'))
+    t.setIdEmpreend (IdEmpreend().get())
     t.setNmTorre (request.form.get('nmTorre'))
     t.setQtUnidade (request.form.get('qtUnidade'))
-
-    print('passei aqui 2')
 
     torreC = torreController()
     torreC.inserirTorre(t)
 
-    idEmpreend = request.form.get('idEmpreend')
-    torreS = torreC.consultarTorres (idEmpreend)
-    print('passei aqui')
-    return render_template("lista_torres.html", torreS=torreS, nmEmpreend=nmEmpreend)
+    return redirect("/tratar_torres")
 
 @app.route('/editar_torre')
 def editar_torre():
@@ -627,67 +588,38 @@ def editar_torre():
 
 @app.route('/salvar_alteracao_torre', methods=['POST'])
 def salvar_alteracao_torre():
-
     print('------- salvar_alteracao_torre INICIO --------')
-    nmEmpreend = request.form.get("nmEmpreend")
 
     t = torre ()
     t.setIdTorre (request.form.get('idTorre'))
-    t.setIdEmpreend (request.form.get('idEmpreend'))
+    t.setIdEmpreend (IdEmpreend().get())
     t.setNmTorre (request.form.get('nmTorre'))
     t.setQtUnidade (request.form.get('qtUnidade'))
 
     print('------- salvar_alteracao_torre --------')
-    idEmpreend = request.form.get('idEmpreend')
-    print(idEmpreend)
 
     torreC = torreController()
     torreC.salvarTorre(t)
 
-    torreS = torreC.consultarTorres (idEmpreend)
-    return render_template("lista_torres.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend, torreS=torreS)
+    return redirect("/tratar_torres")
 
-@app.route('/consultar_torre')
-def consultar_torre():
-
-    modo = request.args.get("modo")
-    idT = request.args.get("idTorre")
-    idEmpreend = request.args.get("idEmpreend")
-    nmEmpreend = request.args.get("nmEmpreend")
-
-
-    print('------ consultar_torre --------')
-    print(modo, idT,idEmpreend,nmEmpreend)
-
-    torrec = torreController ()
-    torre = torrec.consultarTorrePeloId (idT)
-    print(torre)
-
-    print('------ consultar_torre --------')
-    print(modo)
-
-    return render_template("torre.html", torre=torre, modo=modo, idEmpreend=idEmpreend, nmEmpreend=nmEmpreend)
 
 @app.route('/excluir_torre')
 def excluir_torre():
 
     idTorre = request.args.get('idTorre')
-    idEmpreend = request.args.get('idEmpreend')
-    nmEmpreend = request.args.get('nmEmpreend')
 
     print('--------------excluir_torre -------------')
-    print (idTorre, idEmpreend)
+    print (idTorre)
 
     torreC = torreController()
     torreC.excluirTorre(idTorre)
-    torreS = torreC.consultarTorres (idEmpreend)
+    torreS = torreC.consultarTorres (IdEmpreend().get())
 
     if len(torreS) == 0:
-        empc = empreendimentoController ()
-        emps = empc.consultarEmpreendimentos ()
-        return render_template("home.html", empreends=emps)
+        return redirect("/home")
     else:
-        return render_template("lista_torres.html", torreS=torreS, idEmpreend=idEmpreend, nmEmpreend=nmEmpreend)
+        return redirect("/tratar_torres")
 
 ############ CLIENTES ######################
 
@@ -839,6 +771,10 @@ def excluir_cliente():
 
 ############ ORÇAMENTOS ######################
 
+@app.route('/abrir_cad_orcamento')
+def criar_orcamento():
+    return render_template("Orcamento_item.html", item=None)
+
 @app.route('/tratar_orcamentos')
 def tratar_orcamentos():
 # ---- teste de sessão
@@ -938,7 +874,7 @@ def upload_arquivo_orcamentos():
         mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
     return render_template("erro.html", mensagem=mensagem)
 
-@app.route('/editar_item_orcamento', methods=['POST'])
+@app.route('/editar_item_orcamento')
 def editar_item_orcamento():
 
     idOrc = request.args.get("idOrcamento")
@@ -2166,7 +2102,7 @@ def tab_prev_realizado():
 @app.route('/tab_orcamento_liberacao')
 def tab_orcamento_liberacao():
 
-    idEmpreend = request.args.get("idEmpreend")
+    idEmpreend = IdEmpreend().get()
     dtCarga = request.args.get("dtCarga")
     mes = request.args.get("mesV")
     ano = request.args.get("anoV")

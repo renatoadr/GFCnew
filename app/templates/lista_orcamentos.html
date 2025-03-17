@@ -24,19 +24,17 @@
           <div class="row h-100">
             <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
               <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUploadExcel"
-                data-action-process="/upload_arquivo_orcamentos">
+                data-action-process="/upload_arquivo_orcamentos"
+                data-desc="Informe o arquivo com os dados de orçamentos">
                 <i class="fa-solid fa-file-arrow-up"></i>
                 Carregar Excel
               </button>
             </div>
             <div class="col-3 d-flex justify-content-end align-items-center">
-              <form action="/home" method="POST">
-                <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}" />
-                <button type="submit" class="btn btn-outline-dark">
-                  <i class="fa-solid fa-home"></i>
-                  Início
-                </button>
-              </form>
+              <a href="/home" class="btn btn-outline-dark">
+                <i class="fa-solid fa-home"></i>
+                Início
+              </a>
             </div>
           </div>
         </div>
@@ -51,7 +49,7 @@
                 <th>Mes Vigência</th>
                 <th>Ano Vigência</th>
                 <th>Data Carga</th>
-                <th colspan="3">Ações</th>
+                <th colspan="4">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -74,6 +72,12 @@
                   </a>
                 </td>
                 <td>
+                  <a href="/tab_orcamento_liberacao?dtCarga={{m.getDtCarga()}}&mesV={{m.getMesVigencia()}}&anoV={{m.getAnoVigencia()}}&tipo=valor"
+                    data-bs-toggle="tooltip" data-bs-title="Tabela">
+                    <i class="fa-solid fa-table"></i>
+                  </a>
+                </td>
+                <td>
                   <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Empreendimento">
                     <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
                       data-modal-exclude-title="Orçamento"
@@ -85,7 +89,7 @@
               {% endfor %}
               {% else %}
               <tr>
-                <td colspan="6" class="text-center">
+                <td colspan="7" class="text-center">
                   Não existem orçamentos cadastrados.
                 </td>
               </tr>

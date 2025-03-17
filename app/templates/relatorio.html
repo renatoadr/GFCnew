@@ -15,10 +15,16 @@
   <main>
     <div class="container">
       <div class="row">
-        <div class="col-12">
+        <div class="col-6">
           <h2 class="title title-page">
             <span><i class="fa-solid fa-file-contract"></i> Relatórios</span><strong>{{session.nmEmpreend}}</strong>
           </h2>
+        </div>
+        <div class="col-6 d-flex justify-content-end align-items-center">
+          <button type="button" id="backHistory" class="btn btn-outline-dark">
+            <i class="fa-solid fa-caret-left"></i>
+            Voltar
+          </button>
         </div>
       </div>
 
@@ -91,7 +97,7 @@
       </div>
     </div>
   </main>
-
+  {% include 'fractials/footer.html' %}
 </body>
 
 </html>

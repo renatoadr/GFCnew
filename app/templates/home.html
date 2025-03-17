@@ -18,13 +18,10 @@
         <h2 class="title">Empreendimentos</h2>
       </div>
       <div class="col-6 d-flex justify-content-end align-items-center">
-        <form action="/abrir_cad_empreend" id="formListaEmpreend">
-          <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />
-          <button type="submit" class="btn btn-primary">
-            <i class="fa-solid fa-circle-plus"></i>
-            Novo Empreendimento
-          </button>
-        </form>
+        <a href="/abrir_cad_empreend" class="btn btn-primary">
+          <i class="fa-solid fa-circle-plus"></i>
+          Novo Empreendimento
+        </a>
       </div>
     </div>
 
@@ -59,9 +56,10 @@
               </td>
 
               <td>
-                <a href="/importar_gastos?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
-                  data-bs-title="Importar Gastos">
-                  <i class="fa-solid fa-file-arrow-up"></i>
+                <a href="#" data-bs-toggle="tooltip" data-bs-title="Importar Gastos">
+                  <i class="fa-solid fa-file-arrow-up" data-bs-toggle="modal" data-bs-target="#modalUploadExcel"
+                    data-action-process="/upload_arquivo_gastos"
+                    data-desc="Informe o arquivo com os dados dos gastos"></i>
                 </a>
               </td>
 

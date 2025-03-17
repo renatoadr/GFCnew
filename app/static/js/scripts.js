@@ -8,27 +8,33 @@ $(function(){
   })
 
   $('#modalExclude').on('show.bs.modal', event => {
-    const button = event.relatedTarget
-    const action = button.getAttribute('data-modal-exclude-action')
-    const text = button.getAttribute('data-modal-exclude-text')
-    const title = button.getAttribute('data-modal-exclude-title')
-    $("#modalExcludeText").html(text)
-    $("#modalExcludeTitle").html(title)
-    $("#modalExcludeConfirm").attr("data-bs-exclude-exec-action", action)
+    const button = event.relatedTarget;
+    const action = button.getAttribute('data-modal-exclude-action');
+    const text = button.getAttribute('data-modal-exclude-text');
+    const title = button.getAttribute('data-modal-exclude-title');
+    $("#modalExcludeText").html(text);
+    $("#modalExcludeTitle").html(title);
+    $("#modalExcludeConfirm").attr("data-bs-exclude-exec-action", action);
   });
 
   $('#modalUploadExcel').on('show.bs.modal', event => {
-    const button = event.relatedTarget
-    const action = button.getAttribute('data-action-process')
-    $("#formUploadExcel").attr('action', action)
+    const button = event.relatedTarget;
+    const action = button.getAttribute('data-action-process');
+    const text = button.getAttribute('data-desc');
+    $("#formUploadExcel").attr('action', action);
+    $("#modalUploadExceldesc").html(text);
   });
 
    $('#modalExcludeConfirm').on('click', event => {
-    const action = event.currentTarget.getAttribute('data-bs-exclude-exec-action')
+    const action = event.currentTarget.getAttribute('data-bs-exclude-exec-action');
     if (action) {
       const link = $(`<a href="${action}"></a>`);
       link[0].click();
     }
+  });
+
+  $('#backHistory').click(function() {
+    history.back();
   });
 
   $('.money').mask('#.##0,00', {reverse: true});

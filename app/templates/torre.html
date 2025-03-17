@@ -1,65 +1,78 @@
+<!-- Template: torre -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GFC</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/tooltip.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Torre Cadastro</title>
+  {% include 'fractials/head.html' %}
 
 </head>
 
 <body>
-    <div style="margin-top: 4em; text-align: center; font-size: 30px; ">
-        <a style="font-size: 2ch">{{nmEmpreend}}</a>
+  {% include 'fractials/menu.html' %}
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-8">
+          <h2 class="title title-page">
+            <span><i class="fa-solid fa-hotel"></i> Cadastrar Torre</span><strong>{{session.nmEmpreend}}</strong>
+          </h2>
+        </div>
+      </div>
+
+      <form action="{{'/salvar_alteracao_torre' if torre else '/cadastrar_torre'}}" id="formAlterarTorre" method="POST">
+        <input type="hidden" name="idTorre" value="{{ torre.getIdTorre() if torre }}" />
+        <div class="row">
+
+          <div class="col-7">
+            <div class="form-floating">
+              <input type="text" name="nmTorre" id="nmTorre" class="form-control" placeholder=""
+                value="{{ torre.getNmTorre() if torre }}" />
+              <label for="nmTorre">Nome da torre</label>
+            </div>
+          </div>
+
+          <div class="col-5">
+            <div class="form-floating">
+              <input type="number" name="qtUnidade" id="qtUnidade" class="form-control" placeholder=""
+                value="{{ torre.getQtUnidade() if torre }}" />
+              <label for="qtUnidade">Quantidade de unidades</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row d-flex mt-5 justify-content-center">
+          <div class="col-3">
+            <a href="/tratar_torres" class="btn btn-secondary w-100">Cancelar</a>
+          </div>
+          <div class="col-3">
+            <button type="submit" class="btn btn-success w-100">{{ 'Salvar' if torre else 'Criar' }}</button>
+          </div>
+        </div>
+      </form>
+
     </div>
-    {% include 'fractials/menu.html' %}
-    {% if torre %}
-    <form action="/salvar_alteracao_torre" style="border: 0px; margin-top: 3em;" id="formAlterarTorre" method="POST">
-        <div>
-            <label for="nmTorre">Nome da torre:</label>
-            <input type="text" name="nmTorre" value="{{ torre.getNmTorre() }}" {% if modo=='consulta' or modo=='exclui'
-                %} readonly {% endif %} />
-        </div>
-        <div>
-            <label for="qtUnidade">Quantidade de unidades:</label>
-            <input type="text" name="qtUnidade" value="{{ torre.getQtUnidade() }}" {% if modo=='consulta' or
-                modo=='exclui' %} readonly {% endif %} />
-        </div>
-        <div>
-            <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />
-            <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" />
-            <input type="hidden" name="idTorre" value="{{ torre.getIdTorre() }}" />
-            <button {% if modo=='consulta' or modo=='exclui' %} hidden {% endif %} type="submit">Salvar</button>
-            <button type="button"
-                onclick="document.getElementById('formAlterarTorre').action = '/tratar_torres'; document.getElementById('formAlterarTorre').method = 'GET'; document.getElementById('formAlterarTorre').submit();"
-                style="bottom: 10; right: 10;">Cancelar</button>
-            <button {% if modo !='exclui' %} hidden {% endif %} type="button"
-                onclick="document.getElementById('formAlterarTorre').action = '/excluir_torre'; document.getElementById('formAlterarTorre').method = 'GET'; document.getElementById('formAlterarTorre').submit();"
-                style="bottom: 10; right: 10;">Confirmar exclusão</button>
-        </div>
-    </form>
-    {% else %}
-    <form action="/cadastrar_torre" style="border: 0px; margin-top: 3em;" id="formIncluirTorre" method="POST">
-        <div>
-            <label for="nmTorre">Nome da torre:</label>
-            <input type="text" name="nmTorre" />
-        </div>
-        <div>
-            <label for="qtUnidade">Quantidade de unidades:</label>
-            <input type="text" name="qtUnidade" />
-        </div>
-        <div>
-            <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />
-            <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" />
-            <button type="submit">Salvar</button>
-            <button type="button"
-                onclick="document.getElementById('formIncluirTorre').action = '/tratar_torres'; document.getElementById('formIncluirTorre').method = 'GET'; document.getElementById('formIncluirTorre').submit();"
-                style="bottom: 10; right: 10;">Cancelar</button>
-        </div>
-    </form>
-    {% endif %}
+  </main>
+  {% include 'fractials/footer.html' %}
+  <script>
+    const requireds = GFC.getRequiredFields("formAlterarTorre")
+    $(function () {
+      $("#formAlterarTorre").validate({
+        rules: requireds.rules,
+        messages: requireds.messages,
+        errorClass: 'is-invalid',
+        errorElement: 'span',
+        highlight: function (element, errorClass, validClass) {
+          setTimeout(function () {
+            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
+            $(element).addClass(errorClass)
+          }, 50)
+        },
+      });
+    });
+  </script>
 </body>
 
 </html>

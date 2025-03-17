@@ -1,91 +1,88 @@
+<!-- Template: lista_torres -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GFC</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/tooltip.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Torres</title>
+  {% include 'fractials/head.html' %}
 </head>
 
 <body>
+  {% include 'fractials/menu.html' %}
 
-    {% include 'fractials/menu.html' %}
-    {% if torreS %}
-    <div style="margin-top: 4em; text-align: center; font-size: 30px; ">
-        <a style="font-size: 2ch">{{nmEmpreend}}</a>
-        <table border="1" align="center"
-            style="font-family: Arial; font-size: 13px; margin-top: 2%; border-spacing: 1px; border-color: white; background-color: #e7e7e7;">
-            <thead>
-                <tr>
-                    <th>Nome Torre</th>
-                    <th>Qtde Unidades</th>
-                    <th colspan="3"></th>
-                </tr>
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <h2 class="title title-page">
+            <span><i class="fa-solid fa-hotel"></i> Torres</span><strong>{{session.nmEmpreend}}</strong>
+          </h2>
+        </div>
+        <div class="col-6">
+          <div class="row h-100">
+            <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
+              <a href="/abrir_cad_torre" class="btn btn-primary">
+                <i class="fa-solid fa-circle-plus"></i>
+                Nova Torre
+              </a>
+            </div>
+            <div class="col-3 d-flex justify-content-end align-items-center">
+              <a href="/home" class="btn btn-outline-dark">
+                <i class="fa-solid fa-home"></i>
+                Início
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <table class="table table-striped">
+            <thead class="table-light">
+              <tr>
+                <th>Nome da Torre</th>
+                <th class="text-center">Quantidade de Unidades</th>
+                <th colspan="2" class="text-center">Ações</th>
+              </tr>
             </thead>
             <tbody>
-                {% for t in torreS %}
-                <tr>
-                    <td>{{ t.getNmTorre() }}</td>
-                    <td>{{ t.getQtUnidade() }}</td>
-                    <td>
-                        <div class="tooltip">
-                            <a
-                                href="/consultar_torre?idTorre={{t.getIdTorre()}}&modo=consulta&idEmpreend={{t.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}"><img
-                                    src="../static/imgs/icons8-pesquisar-48.png"
-                                    style="width: 24px; height: 24px;" /></a>
-                            <span class="tooltiptext">consultar</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="tooltip">
-                            <a
-                                href="/editar_torre?idTorre={{t.getIdTorre()}}&idEmpreend={{t.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}"><img
-                                    src="../static/imgs/icons8-editar-32.png" style="width: 24px; height: 24px;" /></a>
-                            <span class="tooltiptext">Editar</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="tooltip">
-                            <a
-                                href="/consultar_torre?idTorre={{t.getIdTorre()}}&modo=exclui&idEmpreend={{t.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}"><img
-                                    src="../static/imgs/icons8-lixeira-24.png" style="width: 24px; height: 24px;" /></a>
-                            <span class="tooltiptext">Excluir</span>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
+              {% if torreS %}
+              {% for t in torreS %}
+              <tr>
+                <td>{{ t.getNmTorre() }}</td>
+                <td class="text-center">{{ t.getQtUnidade() }}</td>
+                <td class="text-center">
+                  <a href="/editar_torre?idTorre={{t.getIdTorre()}}" data-bs-toggle="tooltip"
+                    data-bs-title="Editar Torre">
+                    <i class="fa-solid fa-pencil text-warning"></i>
+                  </a>
+                </td>
+                <td class="text-center">
+                  <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Torre">
+                    <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
+                      data-modal-exclude-title="Torre"
+                      data-modal-exclude-action="/excluir_torre?idTorre={{t.getIdTorre()}}"
+                      data-modal-exclude-text="Deseja realmente excluir a torre <strong>{{t.getNmTorre()}}</strong>?"></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+              {% else %}
+              <tr>
+                <td colspan="4" class="text-center">
+                  Não existem torres cadastradas.
+                </td>
+              </tr>
+              {% endif %}
             </tbody>
-        </table>
+          </table>
+        </div>
+      </div>
     </div>
-    <div>
-        <form action="/abrir_cad_torre" method="POST" style="border: 0px;" id="formListaTorres" method="POST">
-            <div>
-                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />
-                <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" />
-                <button type="submit">Novo</button>
-                <button type="button"
-                    onclick="document.getElementById('formListaTorres').action = '/home'; document.getElementById('formListaTorres').method = 'GET'; document.getElementById('formListaTorres').submit();"
-                    style="bottom: 10; right: 10;">Voltar</button>
-            </div>
-        </form>
-    </div>
-    {% else %}
-    <div>
-        <form action="/abrir_cad_torre" method="POST" style="border: 0px" id="formListaTorres" method="POST">
-            <div>
-                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />
-                <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" />
-                <button type="submit">Novo</button>
-                <button type="button"
-                    onclick="document.getElementById('formListaTorres').action = '/home'; document.getElementById('formListaTorres').method = 'GET'; document.getElementById('formListaTorres').submit();"
-                    style="bottom: 10; right: 10;">Voltar</button>
-            </div>
-        </form>
-    </div>
-    {% endif %}
-
+  </main>
+  {% include 'fractials/footer.html' %}
 </body>
 
 </html>

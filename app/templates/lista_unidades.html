@@ -1,107 +1,115 @@
-<!--                                             lista_unidades.html-->
+<!-- Template: lista_unidades -->
 
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GFC</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/tooltip.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Unidades</title>
+  {% include 'fractials/head.html' %}
 </head>
 
 <body>
-    {% include 'fractials/menu.html' %}
-    {% if unidades %}
-    <div style="margin-top: 4em; text-align: center; font-size: 30px; ">
-        <a style="font-size: 2ch">{{nmEmpreend}}</a>
-        <table border="1" align="center"
-            style="font-family: Arial; font-size: 13px; margin-top: 2%; border-spacing: 1px; border-color: white; background-color: #e7e7e7;">
-            <thead>
-                <tr>
-                    <th>Torre</th>
-                    <th>Unidade</th>
-                    <th colspan="5"></th>
-                </tr>
+  {% include 'fractials/menu.html' %}
+
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <h2 class="title title-page">
+            <span><i class="fa-solid fa-building-un"></i> Unidades</span><strong>{{session.nmEmpreend}}</strong>
+          </h2>
+        </div>
+        <div class="col-6">
+          <div class="row h-100">
+            <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
+              <a href="/abrir_cad_unidade" class="btn btn-primary">
+                <i class="fa-solid fa-circle-plus"></i>
+                Nova Unidade
+              </a>
+            </div>
+            <div class="col-3 d-flex justify-content-end align-items-center">
+              <a href="/home" class="btn btn-outline-dark">
+                <i class="fa-solid fa-home"></i>
+                Início
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <table class="table table-striped">
+            <thead class="table-light">
+              <tr>
+                <th>Torre</th>
+                <th class="text-center">Unidade</th>
+                <th colspan="5" class="text-center">Ações</th>
+              </tr>
             </thead>
             <tbody>
-                {% for u in unidades %}
-                <tr>
-                    <td>{{ u.getNmTorre() }}</td>
-                    <td>{{ u.getUnidade() }}</td>
-                    <td>
-                        <div class="tooltip">
-                            <a
-                                href="/consultar_unidade?idUnidade={{u.getIdUnidade()}}&modo=consulta&idEmpreend={{u.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}&nmTorre={{u.getNmTorre()}}"><img
-                                    src="../static/imgs/icons8-pesquisar-48.png"
-                                    style="width: 24px; height: 24px;" /></a>
-                            <span class="tooltiptext">consultar</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="tooltip">
-                            <a href="/editar_unidade?idUnidade={{u.getIdUnidade()}}"><img
-                                    src="../static/imgs/icons8-editar-32.png" style="width: 24px; height: 24px;" /></a>
-                            <span class="tooltiptext">Editar</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="tooltip">
-                            <a
-                                href="/consultar_unidade?idUnidade={{u.getIdUnidade()}}&modo=exclui&idEmpreend={{u.getIdEmpreend()}}&nmEmpreend={{nmEmpreend}}&nmTorre={{u.getNmTorre()}}"><img
-                                    src="../static/imgs/icons8-lixeira-24.png" style="width: 24px; height: 24px;" /></a>
-                            <span class="tooltiptext">Excluir</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="tooltip">
-                            <a href="/importar_unidades?unidade={{u.getUnidade()}}"><img
-                                    src="../static/imgs/icons8-importar-arquivo-48.png"
-                                    style="width: 24px; height: 24px;" /></a>
-                            <span class="tooltiptext">Importar Gastos</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="tooltip">
-                            <a href="/criar_graficos?unidade={{u.getUnidade()}}"><img
-                                    src="../static/imgs/icons8-increase-80.png"
-                                    style="width: 24px; height: 24px;" /></a>
-                            <span class="tooltiptext">Gráficos</span>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
+              {% if unidades %}
+              {% for u in unidades %}
+              <tr>
+                <td>{{ u.getNmTorre() }}</td>
+                <td>{{ u.getUnidade() }}</td>
+                <td>
+                  <a href="/consultar_unidade?idUnidade={{u.getIdUnidade()}}&modo=consulta" data-bs-toggle="tooltip"
+                    data-bs-title="Consultar">
+                    <i class="fa-solid fa-magnifying-glass-arrow-right"></i>
+                  </a>
+                </td>
+                <td class="text-center">
+                  <a href="/editar_unidade?idUnidade={{u.getIdUnidade()}}" data-bs-toggle="tooltip"
+                    data-bs-title="Editar nUidade">
+                    <i class="fa-solid fa-pencil text-warning"></i>
+                  </a>
+                </td>
+                <td class="text-center">
+                  <a href="/editar_unidade?idUnidade={{u.getIdUnidade()}}" data-bs-toggle="tooltip"
+                    data-bs-title="Editar nUidade">
+                    <i class="fa-solid fa-pencil text-warning"></i>
+                  </a>
+                </td>
+                <td>
+                  <a href="/criar_graficos?unidade={{u.getUnidade()}}" data-bs-toggle="tooltip"
+                    data-bs-title="Gráficos">
+                    <i class="fa-solid fa-chart-pie"></i>
+                  </a>
+                </td>
+                <td>
+                  <a href="#" data-bs-toggle="tooltip" data-bs-title="Importar Gastos">
+                    <i class="fa-solid fa-file-arrow-up" data-bs-toggle="modal" data-bs-target="#modalUploadExcel"
+                      data-action-process="/upload_arquivo_gastos?unidade={{u.getUnidade()}}"
+                      data-desc="Informe o arquivo com os dados dos gastos"></i>
+                  </a>
+                </td>
+                <td class="text-center">
+                  <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Torre">
+                    <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
+                      data-modal-exclude-title="Unidade"
+                      data-modal-exclude-action="/excluir_unidade?idUnidade={{u.getIdUnidade()}}"
+                      data-modal-exclude-text="Deseja realmente excluir essa unidade <strong>{{u.getUnidade()}}</strong>?"></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+              {% else %}
+              <tr>
+                <td colspan="7" class="text-center">
+                  Não existem unidades cadastradas.
+                </td>
+              </tr>
+              {% endif %}
             </tbody>
-        </table>
+          </table>
+        </div>
+      </div>
     </div>
-    <div>
-        <form action="/abrir_cad_unidade" method="POST" style="border: 0px;" id="formListaUnidades">
-            <div>
-                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />
-                <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" />
-                <button type="submit">Novo</button>
-                <button type="button"
-                    onclick="document.getElementById('formListaUnidades').action = '/home'; document.getElementById('formListaUnidades').method = 'GET'; document.getElementById('formListaUnidades').submit();"
-                    style="bottom: 10; right: 10;">Voltar</button>
-            </div>
-        </form>
-    </div>
-    {% else %}
-    <div>
-        <form action="/abrir_cad_unidade" method="POST" style="border: 0px;" id="formListaUnidades" method="POST">
-            <div>
-                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />
-                <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" />
-                <button type="submit">Novo</button>
-                <button type="button"
-                    onclick="document.getElementById('formListaUnidades').action = '/home'; document.getElementById('formListaUnidades').method = 'GET'; document.getElementById('formListaUnidades').submit();"
-                    style="bottom: 10; right: 10;">Voltar</button>
-            </div>
-        </form>
-    </div>
-    {% endif %}
-
+  </main>
+  {% include 'fractials/footer.html' %}
 </body>
 
 </html>
