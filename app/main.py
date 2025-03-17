@@ -963,12 +963,7 @@ def salvar_item_orcamento():
     orcC = orcamentoController()
     orcC.salvarItemOrcamento(item)
 
-    print (request.form.get('idEmpreend'), request.form.get('dtCarga'))
-    orcS = orcC.consultarOrcamentoPelaData (request.form.get('idEmpreend'), request.form.get('dtCarga'))
-
-    print('------ salvar_item_orcamento --- fim --------')
-
-    return render_template("orcamentos_itens.html", orcamentos=orcS, idEmpreend=request.form.get('idEmpreend'))
+    return redirect("/consultar_orcamento_data")
 
 @app.route('/incluir_item_orcamento', methods=['POST'])
 def incluir_item_orcamento():
