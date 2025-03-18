@@ -1,4 +1,5 @@
 from datetime import datetime
+import re
 
 def converterStrToFloat(value, default = 0):
     if value is None:
@@ -13,6 +14,9 @@ def converterDateTimeToDateEnFormat(stringdatetime):
 
 def converterFloatToCurrency(value):
    return '{:20,.2f}'.format(float(value)).replace('.', '_').replace(',', '.').replace('_', ',')
+
+def removeAlpha(value):
+   return re.sub(r"\D+", "", value)
 
 def isNumber(value):
     try:

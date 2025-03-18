@@ -1,181 +1,254 @@
-<!--                                              unidade.html-->
+<!-- Template: unidade -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GFC</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/tooltip.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Cadastro Unidade</title>
+  {% include 'fractials/head.html' %}
 </head>
 
 <body>
-    <div style="margin-top: 4em; text-align: center; font-size: 30px; ">
-        <a style="font-size: 2ch">{{nmEmpreend}}</a>
-    </div>
+  {% include 'fractials/menu.html' %}
 
-    {% include 'fractials/menu.html' %}
-    {% if unidade %}
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-8">
+          <h2 class="title title-page">
+            <span><i class="fa-solid fa-building-un"></i> {{'Editar' if unidade else 'Criar'}}
+              unidade</span><strong>{{session.nmEmpreend}}</strong>
+          </h2>
+        </div>
+      </div>
 
-    <form action="/salvar_alteracao_unidade" style= "border: 0px; margin-top: 3em;" id="formIncluirUnidade"  method="POST">
-        <div>
-            <label for="nmTorre">Torre:</label>
-            <input type="text" name="nmTorre" value="{{ nmTorre }}" {% if modo=='consulta' or modo=='exclui' %} readonly
-                {% endif %} />
-        </div>
-        <div>
-            <label for="unidade">Unidade:</label>
-            <input type="text" name="unidade" value="{{ unidade.getUnidade() }}" {% if modo=='consulta' or
-                modo=='exclui' %} readonly {% endif %} />
-        </div>
-        <div>
-            <label for="mesVigencia">Mês:</label>
-            <input type="text" name="mesVigencia" value="{{ unidade.getMesVigencia() }}" {% if modo=='consulta' or
-                modo=='exclui' %} readonly {% endif %} />
-        </div>
-        <div>
-            <label for="anoVigencia">Ano:</label>
-            <input type="text" name="anoVigencia" value="{{ unidade.getAnoVigencia() }}" {% if modo=='consulta' or
-                modo=='exclui' %} readonly {% endif %} />
-        </div>
-        <div>
-            <label for="vlUnidade">Valor Unidade:</label>
-            <input type="text" name="vlUnidade" value="{{ unidade.getVlUnidade() }}" {% if modo=='consulta' or
-                modo=='exclui' %} readonly {% endif %} />
-        </div>
-        <div>
-            <label for="status">Status:</label>
-            <input type="text" name="status" value="{{ unidade.getStatus() }}" {% if modo=='consulta' or modo=='exclui'
-                %} readonly {% endif %} />
-        </div>
-        <div>
-            <label for="cpfComprador">Comprador:</label>
-            <input type="text" name="cpfComprador" value="{{ unidade.getNmComprador() }}" {% if modo=='consulta' or
-                modo=='exclui' %} readonly {% endif %} />
-        </div>
-        <div>
-            <label for="vlPago">Valor pago:</label>
-            <input type="text" name="vlPago" value="{{ unidade.getVlPago() }}" {% if modo=='consulta' or modo=='exclui'
-                %} readonly {% endif %} />
-        </div>
-        <div>
-            <label for="dtOcorrencia">Data ocorrencia:</label>
-            <input type="date" name="dtOcorrencia" value="{{ unidade.getDtOcorrencia() }}" {% if modo=='consulta' or
-                modo=='exclui' %} readonly {% endif %} />
-        </div>
-        <div>
-            <label for="financiado">Financiado:</label>
-            <input type="text" name="financiado" value="{{ unidade.getFinanciado() }}" {% if modo=='consulta' or
-                modo=='exclui' %} readonly {% endif %} />
-        </div>
-        <div>
-            <label for="vlChaves">Valor das chaves:</label>
-            <input type="text" name="vlChaves" value="{{ unidade.getVlChaves() }}" {% if modo=='consulta' or
-                modo=='exclui' %} readonly {% endif %} />
-        </div>
-        <div>
-            <label for="vlPreChaves">Valor pré-chaves:</label>
-            <input type="text" name="vlPreChaves" value="{{ unidade.getVlPreChaves() }}" {% if modo=='consulta' or
-                modo=='exclui' %} readonly {% endif %} />
-        </div>
-        <div>
-            <label for="vlPosChaves">Valor pós-chaves:</label>
-            <input type="text" name="vlPosChaves" value="{{ unidade.getVlPosChaves() }}" {% if modo=='consulta' or
-                modo=='exclui' %} readonly {% endif %} />
-        </div>
-        <div>
-            <input type="hidden" name="idEmpreend" value="{{ unidade.getIdEmpreend() }}" />
-            <input type="hidden" name="nmEmpreend" value="{{ nmEmpreend }}" />
-            <button {% if modo=='consulta' or modo=='exclui' %} hidden {% endif %} type="submit">Salvar</button>
-            <button type="button"
-                onclick="document.getElementById('formIncluirUnidade').action = '/tratar_unidades'; document.getElementById('formIncluirUnidade').method = 'GET'; document.getElementById('formIncluirUnidade').submit();"
-                style="bottom: 10; right: 10;">Cancelar</button>
-            <button {% if modo !='exclui' %} hidden {% endif %} type="button"
-                onclick="document.getElementById('formIncluirUnidade').action = '/excluir_unidade'; document.getElementById('formIncluirUnidade').method = 'GET'; document.getElementById('formIncluirUnidade').submit();"
-                style="bottom: 10; right: 10;">Confirmar exclusão</button>
+      <form action="{{'/salvar_alteracao_unidade' if unidade else '/cadastrar_unidade'}}" method="post"
+        id="formIncluirUnidade">
+        <input type="hidden" name="idUnidade" value="{{unidade.getIdUnidade() if unidade}}">
 
-        </div>
-    </form>
-
-    {% else %}
-    <form action="/cadastrar_unidade" style="border: 0px; margin-top: 3em;" id="formIncluir" method="POST">
-
-        <div>
-            <p>listatorre = {{listaTorres}}</p>
-            <label for="idTorre">Torre:</label>
-            <select id="idTorre" name="idTorre">
-                {{listaTorres}}
+        <div class="row">
+          <div class="col-6">
+            <div class="form-floating mt-4">
+              <select type="text" name="idTorre" id="idTorre" class="form-control" placeholder=""
+                value="{{ unidade.getIdTorre() if unidade }}">
                 {% for t in listaTorres %}
-                <option value="{{ t.getIdTorre() }}">{{ t.getIdTorre() }}</option>
+                <option value="{{ t.getIdTorre() }}" {% if unidade and unidade.getIdTorre()==t.getIdTorre() %} selected
+                  {% endif %}>{{ t.getNmTorre() }}</option>
                 {% endfor %}
-            </select>
-        </div>
-        <div>
-            <label for="unidade">Unidade:</label>
-            <input type="text" name="unidade" />
-        </div>
-        <div>
-            <label for="mesVigencia">Mês:</label>
-            <input type="text" name="mesVigencia" />
-        </div>
-        <div>
-            <label for="anoVigencia">Ano:</label>
-            <input type="text" name="anoVigencia" />
-        </div>
-        <div>
-            <label for="vlUnidade">Valor unidade:</label>
-            <input type="text" name="vlUnidade" />
-        </div>
-        <div>
-            <p>Status:</p>
-            <input type="radio" id="distrato" name="status" value="Distrato">
-            <label for="distrato">Distrato</label><br>
-            <input type="radio" id="estoque" name="status" value="Estoque">
-            <label for="estoque">Estoque</label><br>
-            <input type="radio" id="quitado" name="status" value="Quitado">
-            <label for="quitado">Quitado</label>
-            <input type="radio" id="vendido" name="status" value="Vendido">
-            <label for="vendido">Vendido</label>
-        </div>
-        <div>
-            <label for="cpfComprador">Comprador:</label>
-            <input type="text" name="cpfComprador" />
-        </div>
-        <div>
-            <label for="vlPago">Valor pago:</label>
-            <input type="text" name="vlPago" />
-        </div>
-        <div>
-            <label for="dtOcorrencia">Data ocorrencia:</label>
-            <input type="date" name="dtOcorrencia" />
-        </div>
-        <div>
-            <label for="financiado">Financiado:</label>
-            <input type="text" name="financiado" />
-        </div>
-        <div>
-            <label for="vlChaves">Valor das chaves:</label>
-            <input type="text" name="vlChaves" />
-        </div>
-        <div>
-            <label for="vlPreChaves">Valor pré-chaves:</label>
-            <input type="text" name="vlPreChaves" />
-        </div>
-        <div>
-            <label for="vlPosChaves">Valor pós-chaves:</label>
-            <input type="text" name="vlPosChaves" />
-        </div>
-        <div>
-            <button type="submit">Salvar</button>
-            <button type="button"
-                onclick="document.getElementById('formIncluir').action = '/tratar_unidades'; document.getElementById('formIncluir').method = 'GET'; document.getElementById('formIncluir').submit();"
-                style="bottom: 10; right: 10;">Cancelar</button>
-        </div>
-    </form>
+              </select>
+              <label for="idTorre">Torre</label>
+            </div>
 
-    {% endif %}
+            <div class="form-floating mt-4">
+              <input type="text" name="unidade" id="unidade" class="form-control 4num" placeholder=""
+                value="{{ unidade.getUnidade() if unidade }}" {% if modo=='consulta' %} readonly {% endif %} />
+              <label for="unidade">Unidade</label>
+            </div>
 
+            <div class="row">
+              <div class="col-6">
+                <div class="form-floating mt-4">
+                  <input type="text" name="mesVigencia" id="mesVigencia" class="form-control 2num" placeholder=""
+                    value="{{ unidade.getMesVigencia() if unidade }}" {% if modo=='consulta' %} readonly {% endif %} />
+                  <label for="mesVigencia">Mês</label>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-floating mt-4">
+                  <input type="text" name="anoVigencia" id="anoVigencia" class="form-control 4num" placeholder=""
+                    value="{{ unidade.getAnoVigencia() if unidade }}" {% if modo=='consulta' %} readonly {% endif %} />
+                  <label for="anoVigencia">Ano</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="cpfComprador" id="cpfComprador" class="form-control cpf" placeholder=""
+                value="{{ unidade.getCpfComprador() if unidade }}" maxlength="15" {% if modo=='consulta' %} readonly {%
+                endif %} />
+              <label for="cpfComprador">Comprador</label>
+            </div>
+            <div class="form-floating mt-4">
+              <input type="text" name="vlUnidade" id="vlUnidade" class="form-control money" placeholder=""
+                value="{{ unidade.getVlUnidade() if unidade }}" maxlength="18" {% if modo=='consulta' %} readonly {%
+                endif %} />
+              <label for="vlUnidade">Valor Unidade</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="vlPago" id="vlPago" class="form-control money" placeholder=""
+                value="{{ unidade.getVlPago() if unidade }}" maxlength="18" {% if modo=='consulta' %} readonly {% endif
+                %} />
+              <label for="vlPago">Valor pago</label>
+            </div>
+
+          </div>
+          <div class="col-6">
+            <div class="">
+              <label class="d-block mt-4 mb-2">Status</label>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="status" id="distrato" value="Distrato" {% if
+                  modo=='consulta' %} readonly {% endif %} {% if unidade and unidade.getStatus()=='Distrato' %} checked
+                  {% endif %} />
+                <label class="form-check-label" for="distrato">
+                  Distrato
+                </label>
+              </div>
+
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="status" id="estoque" value="Estoque" {% if
+                  modo=='consulta' %} readonly {% endif %} {% if unidade and unidade.getStatus()=='Estoque' %} checked
+                  {% endif %} />
+                <label class="form-check-label" for="estoque">
+                  Estoque
+                </label>
+              </div>
+
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="status" id="quitado" value="Quitado" {% if
+                  modo=='consulta' %} readonly {% endif %} {% if unidade and unidade.getStatus()=='Quitado' %} checked
+                  {% endif %} />
+                <label class="form-check-label" for="quitado">
+                  Quitado
+                </label>
+              </div>
+
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="status" id="vendido" value="Vendido" {% if
+                  modo=='consulta' %} readonly {% endif %} {% if unidade and unidade.getStatus()=='Vendido' %} checked
+                  {% endif %} />
+                <label class="form-check-label" for="vendido">
+                  Vendido
+                </label>
+              </div>
+              <label class="is-invalid invalid-feedback" id="error-status">Este campo é obrigatório</label>
+            </div>
+            <div class="form-floating mt-4">
+              <input type="date" name="dtOcorrencia" id="dtOcorrencia" class="form-control" placeholder=""
+                value="{{ unidade.getDtOcorrencia() if unidade }}" {% if modo=='consulta' %} readonly {% endif %} />
+              <label for="dtOcorrencia">Data ocorrencia</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="financiado" id="financiado" class="form-control money" placeholder=""
+                value="{{ unidade.getFinanciado() if unidade }}" maxlength="3" {% if modo=='consulta' %} readonly {%
+                endif %} />
+              <label for="financiado">Financiado</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="vlChaves" id="vlChaves" class="form-control money" placeholder=""
+                value="{{ unidade.getVlChaves() if unidade }}" maxlength="20" {% if modo=='consulta' %} readonly {%
+                endif %} />
+              <label for="vlChaves">Valor das chaves</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="vlPreChaves" id="vlPreChaves" class="form-control money" placeholder=""
+                value="{{ unidade.getVlPreChaves() if unidade }}" maxlength="20" {% if modo=='consulta' %} readonly {%
+                endif %} />
+              <label for="vlPreChaves">Valor pré-chaves</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="vlPosChaves" id="vlPosChaves" class="form-control money" placeholder=""
+                value="{{ unidade.getVlPosChaves() if unidade }}" maxlength="20" {% if modo=='consulta' %} readonly {%
+                endif %} />
+              <label for="vlPosChaves">Valor pós-chaves</label>
+            </div>
+
+          </div>
+        </div>
+        <div class="row mt-5 justify-content-center">
+          <div class="col-3">
+            <a href="/tratar_unidades" class="btn btn-secondary w-100">Cancelar</a>
+          </div>
+          {% if modo != 'consulta' %}
+          <div class="col-3">
+            <button type="submit" class="btn btn-success w-100">{{'Salvar' if unidade else 'Criar'}}</button>
+          </div>
+          {% endif %}
+        </div>
+      </form>
+    </div>
+  </main>
+
+  {% include 'fractials/footer.html' %}
+  <script>
+    const requireds = GFC.getRequiredFields("formIncluirUnidade")
+    const remove = (field) => {
+      delete requireds.rules[field];
+      delete requireds.messages[field];
+    }
+    remove('status')
+
+    requireds.rules.cpfComprador = {
+      cpf: true,
+      required: true
+    }
+    requireds.rules.unidade = {
+      required: true,
+      min: 1,
+      max: 9999
+    }
+    requireds.rules.mesVigencia = {
+      required: true,
+      min: 1,
+      max: 12
+    }
+    requireds.rules.anoVigencia = {
+      required: true,
+      min: 1990,
+      max: 3000
+    }
+    requireds.messages.unidade = {
+      required: GFC_MESSAGES.REQUIRED,
+      min: GFC_MESSAGES.MIN(1),
+      max: GFC_MESSAGES.MAX(9999),
+    }
+    requireds.messages.mesVigencia = {
+      required: GFC_MESSAGES.REQUIRED,
+      min: GFC_MESSAGES.MIN(1),
+      max: GFC_MESSAGES.MAX(12),
+    }
+    requireds.messages.anoVigencia = {
+      required: GFC_MESSAGES.REQUIRED,
+      min: GFC_MESSAGES.MIN(1990),
+      max: GFC_MESSAGES.MAX(3000),
+    }
+
+    requireds.messages.cpfComprador = {
+      required: GFC_MESSAGES.REQUIRED
+    }
+
+    $('input[name="status"]').change(function () {
+      $('#error-status').hide();
+      $('input[name="status"]').removeClass('is-invalid');
+    })
+    $(function () {
+      $("#formIncluirUnidade").validate({
+        rules: requireds.rules,
+        messages: requireds.messages,
+        errorClass: 'is-invalid',
+        errorElement: 'span',
+        submitHandler: function (form) {
+          if (form.status.value === '') {
+            $('#error-status').show();
+            $('input[name="status"]').addClass('is-invalid');
+          } else {
+            form.submit();
+          }
+        },
+        highlight: function (element, errorClass, validClass) {
+          setTimeout(function () {
+            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
+            $(element).addClass(errorClass)
+          }, 50)
+        },
+      });
+    });
+  </script>
 </body>
 
 </html>

@@ -44,8 +44,8 @@
           <table class="table table-striped">
             <thead class="table-light">
               <tr>
-                <th>Torre</th>
-                <th class="text-center">Unidade</th>
+                <th class="w-50">Torre</th>
+                <th class="text-center w-25">Unidade</th>
                 <th colspan="5" class="text-center">Ações</th>
               </tr>
             </thead>
@@ -54,8 +54,8 @@
               {% for u in unidades %}
               <tr>
                 <td>{{ u.getNmTorre() }}</td>
-                <td>{{ u.getUnidade() }}</td>
-                <td>
+                <td class="text-center">{{ u.getUnidade() }}</td>
+                <td class="text-center">
                   <a href="/consultar_unidade?idUnidade={{u.getIdUnidade()}}&modo=consulta" data-bs-toggle="tooltip"
                     data-bs-title="Consultar">
                     <i class="fa-solid fa-magnifying-glass-arrow-right"></i>
@@ -63,23 +63,17 @@
                 </td>
                 <td class="text-center">
                   <a href="/editar_unidade?idUnidade={{u.getIdUnidade()}}" data-bs-toggle="tooltip"
-                    data-bs-title="Editar nUidade">
+                    data-bs-title="Editar Unidade">
                     <i class="fa-solid fa-pencil text-warning"></i>
                   </a>
                 </td>
                 <td class="text-center">
-                  <a href="/editar_unidade?idUnidade={{u.getIdUnidade()}}" data-bs-toggle="tooltip"
-                    data-bs-title="Editar nUidade">
-                    <i class="fa-solid fa-pencil text-warning"></i>
-                  </a>
-                </td>
-                <td>
                   <a href="/criar_graficos?unidade={{u.getUnidade()}}" data-bs-toggle="tooltip"
                     data-bs-title="Gráficos">
                     <i class="fa-solid fa-chart-pie"></i>
                   </a>
                 </td>
-                <td>
+                <td class="text-center">
                   <a href="#" data-bs-toggle="tooltip" data-bs-title="Importar Gastos">
                     <i class="fa-solid fa-file-arrow-up" data-bs-toggle="modal" data-bs-target="#modalUploadExcel"
                       data-action-process="/upload_arquivo_gastos?unidade={{u.getUnidade()}}"
@@ -91,7 +85,7 @@
                     <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
                       data-modal-exclude-title="Unidade"
                       data-modal-exclude-action="/excluir_unidade?idUnidade={{u.getIdUnidade()}}"
-                      data-modal-exclude-text="Deseja realmente excluir essa unidade <strong>{{u.getUnidade()}}</strong>?"></i>
+                      data-modal-exclude-text="Deseja realmente excluir essa unidade <strong>{{u.getUnidade()}}</strong> da tore <strong>{{u.getNmTorre()}}</strong>?"></i>
                   </a>
                 </td>
               </tr>

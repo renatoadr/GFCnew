@@ -14,27 +14,41 @@ class unidadeController:
 
     def inserirUnidade(self, unidade):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()       
-   
-#        query =  "INSERT INTO " + MySql.DB_NAME + ".tb_unidades ( id_empreendimento, id_torre, unidade, mes_vigencia, ano_vigencia, vl_unidade, status, nm_comprador, vl_pago,  dt_ocorrencia, financiado, vl_chaves ) VALUES (" +  str(unidade.getIdEmpreend()) + ", " + str(unidade.getIdTorre()) + ", '" +  unidade.getUnidade() + "', '" +  unidade.getMesVigencia() + "', '" +  unidade.getAnoVigencia() + "', " +   str(unidade.getVlUnidade()) + ", '" + unidade.getStatus() + "', '" +  unidade.getNmComprador() + "', " + str(unidade.getVlPago()) + ", '" + unidade.getDtOcorrencia() + "', '" +  unidade.getFinanciado() + "', " + str(unidade.getVlChaves()) + ")"
+        cursor = self.__connection.cursor()
 
-        query =  "INSERT INTO " + MySql.DB_NAME + ".tb_unidades ( id_empreendimento, id_torre, unidade, mes_vigencia, ano_vigencia, vl_unidade, status, nm_comprador, vl_pago, dt_ocorrencia, financiado, vl_chaves) VALUES (" + str(unidade.getIdEmpreend()) + ", " + str(unidade.getIdTorre()) + ", '" +  unidade.getUnidade() + "', '" + unidade.getMesVigencia() + "', '" +  unidade.getAnoVigencia() +  "', " + unidade.getVlUnidade()  + ", '" + unidade.getStatus() + "', '" + unidade.getNmComprador() + "', " + unidade.getVlPago()  + ", '" + unidade.getDtOcorrencia() + "', '" +  unidade.getFinanciado() + "', " + unidade.getVlChaves() + ")"
-                                                                                                                                                          
+        query =  "INSERT INTO " + MySql.DB_NAME + """.tb_unidades ( id_empreendimento, id_torre, unidade, mes_vigencia, ano_vigencia, vl_unidade, status, cpf_comprador, vl_pago, dt_ocorrencia, financiado, vl_chaves, vl_pre_chaves, vl_pos_chaves) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+
         print('++++++++++++++++++++++')
         print(query)
         print('++++++++++++++++++++++')
 
-        cursor.execute(query)
+        cursor.execute(query, (
+            unidade.getIdEmpreend(),
+            unidade.getIdTorre(),
+            unidade.getUnidade(),
+            unidade.getMesVigencia(),
+            unidade.getAnoVigencia(),
+            unidade.getVlUnidade(),
+            unidade.getStatus(),
+            unidade.getCpfComprador(),
+            unidade.getVlPago(),
+            unidade.getDtOcorrencia(),
+            unidade.getFinanciado(),
+            unidade.getVlChaves(),
+            unidade.getVlPreChaves(),
+            unidade.getVlPosChaves(),
+          )
+        )
 
-        self.__connection.commit()     
-        print(cursor.rowcount,"Unidade cadastrada com sucesso")     
+        self.__connection.commit()
+        print(cursor.rowcount,"Unidade cadastrada com sucesso")
         cursor.close()
         MySql.close(self.__connection)
 
 
     def consultarUnidades(self, idEmpreend):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor(dictionary=True)   
+        cursor = self.__connection.cursor(dictionary=True)
 
         print('---consultarUnidades--')
         print(idEmpreend)
@@ -44,12 +58,12 @@ class unidadeController:
         print('-----------------')
         print(query)
         print('-----------------')
-      
+
         cursor.execute(query)
 
         lista = cursor.fetchall()
         listaunids = []
-        
+
 #        idTorreAnterior = -1
 #        torreC = torreController ()
 
@@ -60,7 +74,7 @@ class unidadeController:
             u.setIdTorre(x['id_torre'])
 #            idTorreAtual = u.getIdTorre()
 #            print ('----> ', idTorreAnterior, idTorreAtual)
- 
+
 #            if idTorreAnterior != idTorreAtual:
 #               print('entrei para consultar o id_torre== ', idTorreAtual )
 #               nmTorre = torreC.consultarNomeTorre (idTorreAtual)
@@ -69,23 +83,23 @@ class unidadeController:
             u.setNmTorre(x['nm_torre'])
             u.setUnidade(x['unidade'])
             listaunids.append(u)
-                
+
         cursor.close()
         MySql.close(self.__connection)
         return listaunids
 
     def consultarUnidadePeloId(self, idUnidade):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor(dictionary=True)   
+        cursor = self.__connection.cursor(dictionary=True)
 
         print('+++++++++ consultarUnidadePeloId ++++++++++++++++++')
-        
+
         query =  "select id_unidade, id_empreendimento, id_torre, unidade, mes_vigencia, ano_vigencia, vl_unidade, status, cpf_comprador, vl_pago, dt_ocorrencia, financiado, vl_chaves, vl_pre_chaves, vl_pos_chaves from " + MySql.DB_NAME + ".tb_unidades where id_unidade = " + str(idUnidade)
-    
+
         print(query)
 
         cursor.execute(query)
-       
+
         linha = cursor.fetchone()
         print('+++++++++++++++++++++++++++')
         print (linha)
@@ -102,15 +116,15 @@ class unidadeController:
         linhaU.setAnoVigencia(linha['ano_vigencia'])
         linhaU.setVlUnidade(linha['vl_unidade'])
         linhaU.setStatus(linha['status'])
-        linhaU.setNmComprador(linha['cpf_comprador'])
+        linhaU.setCpfComprador(linha['cpf_comprador'])
         linhaU.setVlPago(linha['vl_pago'])
         linhaU.setDtOcorrencia(linha['dt_ocorrencia'])
         linhaU.setFinanciado(linha['financiado'])
         linhaU.setVlChaves(linha['vl_chaves'])
-        linhaU.setVlChaves(linha['vl_pre_chaves'])
-        linhaU.setVlChaves(linha['vl_pos_chaves'])
+        linhaU.setVlPreChaves(linha['vl_pre_chaves'])
+        linhaU.setVlPosChaves(linha['vl_pos_chaves'])
 
-        print('------------------------')       
+        print('------------------------')
         print(linhaU.getIdUnidade())
         print('------------------------')
         cursor.close()
@@ -120,16 +134,16 @@ class unidadeController:
 
     def consultarUnidadeChaves(self, idEmpreend):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()   
+        cursor = self.__connection.cursor()
 
         print('+++++++++ consultarUnidadeChaves ++++++++++++++++++')
-        
+
         query = "select count(id_unidade), sum(vl_chaves), sum(vl_pre_chaves), sum(vl_pos_chaves) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + idEmpreend + " and status != 'distrato'"
-    
+
         print(query)
 
         cursor.execute(query)
-       
+
         linha = cursor.fetchone()
         print('+++++++++++++++++++++++++++')
 
@@ -141,7 +155,7 @@ class unidadeController:
         linhaU.setTtPreChaves(linha[2])
         linhaU.setTtPosChaves(linha[3])
 
-        print('------------------------')       
+        print('------------------------')
         print(linhaU.getQtUnidade(), linhaU.getTtChaves(), linhaU.getTtPreChaves(), linhaU.getTtPosChaves())
         print('------------------------')
         cursor.close()
@@ -151,24 +165,24 @@ class unidadeController:
 
     def consultarUnidadeVendas(self, idEmpreend):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()   
+        cursor = self.__connection.cursor()
 
         print('+++++++++ consultarUnidadeVendas ++++++++++++++++++')
-        
-        query =  "select status, count(id_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status != 'distrato' group by status" 
+
+        query =  "select status, count(id_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status != 'distrato' group by status"
         print(query)
-        
+
         cursor.execute(query)
 
         lista = cursor.fetchall()
         listaVendas = []
-        
+
         for x in lista:
             u = unidade()
             u.setStatus(x[0])
             u.setTtStatus(x[1])
             listaVendas.append(u)
-                
+
         cursor.close()
 
         MySql.close(self.__connection)
@@ -177,26 +191,26 @@ class unidadeController:
 
     def consultarUnidadeRecebibeis(self, idEmpreend):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()   
+        cursor = self.__connection.cursor()
 
         print('+++++++++ consultarUnidadeRecebibeis ++++++++++++++++++')
-        
+
         query = "select status, sum(vl_pago), sum(vl_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status in ('vendido', 'estoque') group  by status"
 
         print(query)
-        
+
         cursor.execute(query)
 
         lista = cursor.fetchall()
         listaVendas = []
-        
+
         for x in lista:
             u = unidade()
             u.setStatus(x[0])
             u.setTtVenda(x[1])
             u.setTtEstoque(x[2])
             listaVendas.append(u)
-                
+
         cursor.close()
 
         MySql.close(self.__connection)
@@ -205,45 +219,60 @@ class unidadeController:
 
     def salvarUnidade(self,unidade):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()   
+        cursor = self.__connection.cursor()
 
-        query =  "update " + MySql.DB_NAME + ".tb_unidades set " + \
-        "id_torre = '" + unidade.getIdTorre() + "', " + \
-        "id_empreendimento = '" + unidade.getIdEmpreend() + \
-        "', " + "unidade = '" + unidade.getUnidade() + "', " + \
-        "mes_vigencia = '" + unidade.getMesVigencia() + "', " + \
-        "ano_vigencia = '" + unidade.getAnoVigencia() + "', " + \
-        "vl_unidade = '" + unidade.getVlUnidade() + "', " + \
-        "status = '" + unidade.getStatus() + "', " + \
-        "cpf_comprador = '" + unidade.getCpfComprador() + "', " + \
-        "vl_pago = '" + unidade.getVlPago() + "', " + \
-        "dt_ocorrencia = '" + unidade.getDtOcorrencia() + "', " + \
-        "financiado = '" + unidade.getFinanciado() + "', " + \
-        "vl_chaves = '" + unidade.getVlChaves() + "' " + \
-        "vl_pre_chaves = '" + unidade.getVlPreChaves() + "' " + \
-        "vl_pos_chaves = '" + unidade.getVlPosChaves() + "' " + \
-        "where id_unidade = " + str(unidade.getIdUnidade())
+        query =  "UPDATE " + MySql.DB_NAME + """.tb_unidades SET
+        id_torre = %s,
+        id_empreendimento = %s,
+        unidade = %s,
+        mes_vigencia = %s,
+        ano_vigencia = %s,
+        vl_unidade = %s,
+        status = %s,
+        cpf_comprador = %s,
+        vl_pago = %s,
+        dt_ocorrencia = %s,
+        financiado = %s,
+        vl_chaves = %s,
+        vl_pre_chaves = %s,
+        vl_pos_chaves = %s
+        WHERE id_unidade = %s; """
 
         print (query)
-        cursor.execute(query)
+        cursor.execute(query, (
+          unidade.getIdTorre(),
+          unidade.getIdEmpreend(),
+          unidade.getUnidade(),
+          unidade.getMesVigencia(),
+          unidade.getAnoVigencia(),
+          unidade.getVlUnidade(),
+          unidade.getStatus(),
+          unidade.getCpfComprador(),
+          unidade.getVlPago(),
+          unidade.getDtOcorrencia(),
+          unidade.getFinanciado(),
+          unidade.getVlChaves(),
+          unidade.getVlPreChaves(),
+          unidade.getVlPosChaves(),
+          unidade.getIdUnidade()
+        ))
 
-        self.__connection.commit()     
-        print(cursor.rowcount,"Unidade atualizada com sucesso")     
+        self.__connection.commit()
+        print(cursor.rowcount,"Unidade atualizada com sucesso")
         cursor.close()
         MySql.close(self.__connection)
 
     def excluirUnidade(self,idUnidade):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()   
+        cursor = self.__connection.cursor()
 
 #        print (emp)
 
-        query =  "delete from " + MySql.DB_NAME + ".tb_unidades" + " where id_unidade = " + str(idUnidade) 
+        query =  "delete from " + MySql.DB_NAME + ".tb_unidades" + " where id_unidade = " + str(idUnidade)
         print (query)
 
         cursor.execute(query)
-        self.__connection.commit()   
+        self.__connection.commit()
         cursor.close()
         MySql.close(self.__connection)
-     
- 
+

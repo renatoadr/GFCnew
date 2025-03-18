@@ -380,49 +380,27 @@ def tratarunidades():
 
 @app.route('/abrir_cad_unidade')
 def abrir_cad_unidade():
-
-    idEmpreend = request.form.get("idEmpreend")
-    idTorre = 10                                   # precisa colocar uma lista de torres para escolher
-    print('-----------abrir_cad_unidade-----------')
-    print(idTorre,idEmpreend)
-
-    t1 = torre()
-    t1.setIdTorre (1)
-    t2 = torre()
-    t2.setIdTorre (10)
-    listaTorres = [t1,t2]
-    print (len(listaTorres))
-    print (listaTorres)
-
-    return render_template("unidade.html", idEmpreend=idEmpreend, idTorre=idTorre, listaTorres=listaTorres)
-
-@app.route('/abrir_edicao_unidade')
-def abrir_edicao_unidade():
-
-    idUnidade = request.args.get("idUnidade")
-    print('----------- abrir_edicao_unidade')
-    print (idUnidade)
-    unidc = unidadeController ()
-    unid = unidc.consultarUnidadePeloId (idUnidade)
-
-    print(unid)
-    return render_template("unidade.html", unidade=unidade)
+    ctrlTorre = torreController()
+    listaTorres = ctrlTorre.consultarTorres(IdEmpreend().get())
+    return render_template("unidade.html", listaTorres=listaTorres)
 
 @app.route('/cadastrar_unidade', methods=['POST'])
 def cadastrar_unidade():
     un = unidade ()
     un.setIdTorre (request.form.get('idTorre'))
-    un.setIdEmpreend (request.form.get('idEmpreend'))
+    un.setIdEmpreend (IdEmpreend().get())
     un.setUnidade (request.form.get('unidade'))
     un.setMesVigencia (request.form.get('mesVigencia'))
     un.setAnoVigencia (request.form.get('anoVigencia'))
-    un.setVlUnidade (request.form.get('vlUnidade'))
+    un.setVlUnidade (converter.converterStrToFloat(request.form.get('vlUnidade')))
     un.setStatus (request.form.get('status'))
-    un.setNmComprador (request.form.get('nmComprador'))
-    un.setVlPago (request.form.get('vlPago'))
+    un.setCpfComprador (converter.removeAlpha(request.form.get('cpfComprador')))
+    un.setVlPago (converter.converterStrToFloat(request.form.get('vlPago')))
     un.setDtOcorrencia (request.form.get('dtOcorrencia'))
     un.setFinanciado (request.form.get('financiado'))
-    un.setVlChaves (request.form.get('vlChaves'))
+    un.setVlChaves (converter.converterStrToFloat(request.form.get('vlChaves')))
+    un.setVlPreChaves (converter.converterStrToFloat(request.form.get('vlPreChaves')))
+    un.setVlPosChaves (converter.converterStrToFloat(request.form.get('vlPosChaves')))
 
     unid = unidadeController()
     unid.inserirUnidade(un)
@@ -430,15 +408,14 @@ def cadastrar_unidade():
 
 @app.route('/editar_unidade')
 def editar_unidade():
-
+    ctrlTorre = torreController()
+    listaTorres = ctrlTorre.consultarTorres(IdEmpreend().get())
     idUni = request.args.get("idUnidade")
     print('------ editar_unidade --------')
     print (idUni)
     unidc = unidadeController ()
     unidade = unidc.consultarUnidadePeloId (idUni)
-
-    print(unidade)
-    return render_template("unidade.html", unidade=unidade)
+    return render_template("unidade.html", unidade=unidade, listaTorres=listaTorres)
 
 @app.route('/salvar_alteracao_unidade', methods=['POST'])
 def salvar_alteracao_unidade():
@@ -446,19 +423,21 @@ def salvar_alteracao_unidade():
     print('------- salvar_alteracao_unidade INICIO --------')
 
     un = unidade ()
-    un.setIdUnidade (request.form.get('idUnidade'))
+    un.setIdUnidade(request.form.get('idUnidade'))
     un.setIdTorre (request.form.get('idTorre'))
-    un.setIdEmpreend (request.form.get('idEmpreend'))
+    un.setIdEmpreend (IdEmpreend().get())
     un.setUnidade (request.form.get('unidade'))
     un.setMesVigencia (request.form.get('mesVigencia'))
     un.setAnoVigencia (request.form.get('anoVigencia'))
-    un.setVlUnidade (request.form.get('vlUnidade'))
+    un.setVlUnidade (converter.converterStrToFloat(request.form.get('vlUnidade')))
     un.setStatus (request.form.get('status'))
-    un.setNmComprador (request.form.get('nmComprador'))
-    un.setVlPago (request.form.get('vlPago'))
+    un.setCpfComprador (converter.removeAlpha(request.form.get('cpfComprador')))
+    un.setVlPago (converter.converterStrToFloat(request.form.get('vlPago')))
     un.setDtOcorrencia (request.form.get('dtOcorrencia'))
     un.setFinanciado (request.form.get('financiado'))
-    un.setVlChaves (request.form.get('vlChaves'))
+    un.setVlChaves (converter.converterStrToFloat(request.form.get('vlChaves')))
+    un.setVlPreChaves (converter.converterStrToFloat(request.form.get('vlPreChaves')))
+    un.setVlPosChaves (converter.converterStrToFloat(request.form.get('vlPosChaves')))
 
     print('------- salvar_alteracao_unidade --------')
     idEmpreend = request.form.get('idEmpreend')
@@ -469,16 +448,15 @@ def salvar_alteracao_unidade():
 
     print(idEmpreend)
 
-    unids = unidc.consultarUnidades (idEmpreend)
-    return render_template("lista_unidades.html", idEmpreend=idEmpreend, unidades=unids)
+    return redirect("/tratar_unidades")
 
 @app.route('/consultar_unidade')
 def consultar_unidade():
 
+    ctrlTorre = torreController()
+    listaTorres = ctrlTorre.consultarTorres(IdEmpreend().get())
     modo = request.args.get("modo")
     idUni = request.args.get("idUnidade")
-    nmEmpreend = request.args.get("nmEmpreend")
-    nmTorre = request.args.get("nmTorre")
 
     print('------ consultar_unidade --------')
     print(modo)
@@ -491,14 +469,13 @@ def consultar_unidade():
     print('------ consultar_unidade --------')
     print(modo)
 
-    return render_template("unidade.html", unidade=unidade, nmEmpreend=nmEmpreend, nmTorre=nmTorre, modo=modo)
+    return render_template("unidade.html", unidade=unidade,  listaTorres=listaTorres, modo=modo)
 
 @app.route('/excluir_unidade')
 def excluir_unidade():
     idUnidade = request.args.get('idUnidade')
     unidc = unidadeController()
     unidc.excluirUnidade(idUnidade)
-
     return redirect("/tratar_unidades")
 
 

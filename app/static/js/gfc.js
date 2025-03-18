@@ -1,3 +1,11 @@
+window.GFC_MESSAGES = (function() {
+  return {
+    REQUIRED: 'Este campo é obrigatório',
+    MIN: (minValue) => `Este campo não é válido. O valor mínimo é ${minValue}`,
+    MAX: (minValue) => `Este campo não é válido. O valor máximo é ${minValue}`
+  }
+})();
+
 window.GFC = (function() {
 const getRequiredFields = function(idForm) {
    const inputNames = Array.from(
@@ -26,3 +34,4 @@ return {
 }
 
 })();
+
