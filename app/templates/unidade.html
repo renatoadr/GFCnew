@@ -31,7 +31,7 @@
           <div class="col-6">
             <div class="form-floating mt-4">
               <select type="text" name="idTorre" id="idTorre" class="form-control" placeholder=""
-                value="{{ unidade.getIdTorre() if unidade }}">
+                value="{{ unidade.getIdTorre() if unidade }}" {% if modo=='consulta' %} readonly {% endif %}>
                 {% for t in listaTorres %}
                 <option value="{{ t.getIdTorre() }}" {% if unidade and unidade.getIdTorre()==t.getIdTorre() %} selected
                   {% endif %}>{{ t.getNmTorre() }}</option>
@@ -42,7 +42,8 @@
 
             <div class="form-floating mt-4">
               <input type="text" name="unidade" id="unidade" class="form-control 4num" placeholder=""
-                value="{{ unidade.getUnidade() if unidade }}" {% if modo=='consulta' %} readonly {% endif %} />
+                value="{{ unidade.getUnidade() if unidade }}" maxlength="5" {% if modo=='consulta' %} readonly {% endif
+                %} />
               <label for="unidade">Unidade</label>
             </div>
 
@@ -50,14 +51,16 @@
               <div class="col-6">
                 <div class="form-floating mt-4">
                   <input type="text" name="mesVigencia" id="mesVigencia" class="form-control 2num" placeholder=""
-                    value="{{ unidade.getMesVigencia() if unidade }}" {% if modo=='consulta' %} readonly {% endif %} />
+                    value="{{ unidade.getMesVigencia() if unidade }}" maxlength="2" {% if modo=='consulta' %} readonly
+                    {% endif %} />
                   <label for="mesVigencia">Mês</label>
                 </div>
               </div>
               <div class="col-6">
                 <div class="form-floating mt-4">
                   <input type="text" name="anoVigencia" id="anoVigencia" class="form-control 4num" placeholder=""
-                    value="{{ unidade.getAnoVigencia() if unidade }}" {% if modo=='consulta' %} readonly {% endif %} />
+                    value="{{ unidade.getAnoVigencia() if unidade }}" maxlength="4" {% if modo=='consulta' %} readonly
+                    {% endif %} />
                   <label for="anoVigencia">Ano</label>
                 </div>
               </div>
@@ -89,7 +92,7 @@
               <label class="d-block mt-4 mb-2">Status</label>
               <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="status" id="distrato" value="Distrato" {% if
-                  modo=='consulta' %} readonly {% endif %} {% if unidade and unidade.getStatus()=='Distrato' %} checked
+                  modo=='consulta' %} disabled {% endif %} {% if unidade and unidade.getStatus()=='Distrato' %} checked
                   {% endif %} />
                 <label class="form-check-label" for="distrato">
                   Distrato
@@ -98,7 +101,7 @@
 
               <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="status" id="estoque" value="Estoque" {% if
-                  modo=='consulta' %} readonly {% endif %} {% if unidade and unidade.getStatus()=='Estoque' %} checked
+                  modo=='consulta' %} disabled {% endif %} {% if unidade and unidade.getStatus()=='Estoque' %} checked
                   {% endif %} />
                 <label class="form-check-label" for="estoque">
                   Estoque
@@ -107,7 +110,7 @@
 
               <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="status" id="quitado" value="Quitado" {% if
-                  modo=='consulta' %} readonly {% endif %} {% if unidade and unidade.getStatus()=='Quitado' %} checked
+                  modo=='consulta' %} disabled {% endif %} {% if unidade and unidade.getStatus()=='Quitado' %} checked
                   {% endif %} />
                 <label class="form-check-label" for="quitado">
                   Quitado
@@ -116,7 +119,7 @@
 
               <div class="form-check form-check-inline">
                 <input class="form-check-input" type="radio" name="status" id="vendido" value="Vendido" {% if
-                  modo=='consulta' %} readonly {% endif %} {% if unidade and unidade.getStatus()=='Vendido' %} checked
+                  modo=='consulta' %} disabled {% endif %} {% if unidade and unidade.getStatus()=='Vendido' %} checked
                   {% endif %} />
                 <label class="form-check-label" for="vendido">
                   Vendido
@@ -131,7 +134,7 @@
             </div>
 
             <div class="form-floating mt-4">
-              <input type="text" name="financiado" id="financiado" class="form-control money" placeholder=""
+              <input type="text" name="financiado" id="financiado" class="form-control perc" placeholder=""
                 value="{{ unidade.getFinanciado() if unidade }}" maxlength="3" {% if modo=='consulta' %} readonly {%
                 endif %} />
               <label for="financiado">Financiado</label>
@@ -176,76 +179,78 @@
 
   {% include 'fractials/footer.html' %}
   <script>
-    const requireds = GFC.getRequiredFields("formIncluirUnidade")
-    const remove = (field) => {
-      delete requireds.rules[field];
-      delete requireds.messages[field];
-    }
-    remove('status')
-
-    requireds.rules.cpfComprador = {
-      cpf: true,
-      required: true
-    }
-    requireds.rules.unidade = {
-      required: true,
-      min: 1,
-      max: 9999
-    }
-    requireds.rules.mesVigencia = {
-      required: true,
-      min: 1,
-      max: 12
-    }
-    requireds.rules.anoVigencia = {
-      required: true,
-      min: 1990,
-      max: 3000
-    }
-    requireds.messages.unidade = {
-      required: GFC_MESSAGES.REQUIRED,
-      min: GFC_MESSAGES.MIN(1),
-      max: GFC_MESSAGES.MAX(9999),
-    }
-    requireds.messages.mesVigencia = {
-      required: GFC_MESSAGES.REQUIRED,
-      min: GFC_MESSAGES.MIN(1),
-      max: GFC_MESSAGES.MAX(12),
-    }
-    requireds.messages.anoVigencia = {
-      required: GFC_MESSAGES.REQUIRED,
-      min: GFC_MESSAGES.MIN(1990),
-      max: GFC_MESSAGES.MAX(3000),
-    }
-
-    requireds.messages.cpfComprador = {
-      required: GFC_MESSAGES.REQUIRED
-    }
-
-    $('input[name="status"]').change(function () {
-      $('#error-status').hide();
-      $('input[name="status"]').removeClass('is-invalid');
-    })
     $(function () {
-      $("#formIncluirUnidade").validate({
-        rules: requireds.rules,
-        messages: requireds.messages,
-        errorClass: 'is-invalid',
-        errorElement: 'span',
-        submitHandler: function (form) {
-          if (form.status.value === '') {
-            $('#error-status').show();
-            $('input[name="status"]').addClass('is-invalid');
-          } else {
-            form.submit();
-          }
-        },
-        highlight: function (element, errorClass, validClass) {
-          setTimeout(function () {
-            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
-            $(element).addClass(errorClass)
-          }, 50)
-        },
+      const requireds = GFC.getRequiredFields("formIncluirUnidade")
+      const remove = (field) => {
+        delete requireds.rules[field];
+        delete requireds.messages[field];
+      }
+      remove('status')
+
+      requireds.rules.cpfComprador = {
+        cpf: true,
+        required: true
+      }
+      requireds.rules.unidade = {
+        required: true,
+        min: 1,
+        max: 9999
+      }
+      requireds.rules.mesVigencia = {
+        required: true,
+        min: 1,
+        max: 12
+      }
+      requireds.rules.anoVigencia = {
+        required: true,
+        min: 1990,
+        max: 3000
+      }
+      requireds.messages.unidade = {
+        required: GFC_MESSAGES.REQUIRED,
+        min: GFC_MESSAGES.MIN(1),
+        max: GFC_MESSAGES.MAX(9999),
+      }
+      requireds.messages.mesVigencia = {
+        required: GFC_MESSAGES.REQUIRED,
+        min: GFC_MESSAGES.MIN(1),
+        max: GFC_MESSAGES.MAX(12),
+      }
+      requireds.messages.anoVigencia = {
+        required: GFC_MESSAGES.REQUIRED,
+        min: GFC_MESSAGES.MIN(1990),
+        max: GFC_MESSAGES.MAX(3000),
+      }
+
+      requireds.messages.cpfComprador = {
+        required: GFC_MESSAGES.REQUIRED
+      }
+
+      $('input[name="status"]').change(function () {
+        $('#error-status').hide();
+        $('input[name="status"]').removeClass('is-invalid');
+      })
+      $(function () {
+        $("#formIncluirUnidade").validate({
+          rules: requireds.rules,
+          messages: requireds.messages,
+          errorClass: 'is-invalid',
+          errorElement: 'span',
+          submitHandler: function (form) {
+            if (form.status.value === '') {
+              $('#error-status').show();
+              $('input[name="status"]').addClass('is-invalid');
+            } else {
+              form.submit();
+            }
+          },
+          highlight: function (element, errorClass, validClass) {
+            setTimeout(function () {
+              $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
+              $(element).addClass(errorClass)
+            }, 50)
+          },
+        });
       });
     });
   </script>

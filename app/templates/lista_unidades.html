@@ -46,7 +46,7 @@
               <tr>
                 <th class="w-50">Torre</th>
                 <th class="text-center w-25">Unidade</th>
-                <th colspan="5" class="text-center">Ações</th>
+                <th colspan="4" class="text-center">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -68,12 +68,6 @@
                   </a>
                 </td>
                 <td class="text-center">
-                  <a href="/criar_graficos?unidade={{u.getUnidade()}}" data-bs-toggle="tooltip"
-                    data-bs-title="Gráficos">
-                    <i class="fa-solid fa-chart-pie"></i>
-                  </a>
-                </td>
-                <td class="text-center">
                   <a href="#" data-bs-toggle="tooltip" data-bs-title="Importar Gastos">
                     <i class="fa-solid fa-file-arrow-up" data-bs-toggle="modal" data-bs-target="#modalUploadExcel"
                       data-action-process="/upload_arquivo_gastos?unidade={{u.getUnidade()}}"
@@ -92,7 +86,7 @@
               {% endfor %}
               {% else %}
               <tr>
-                <td colspan="7" class="text-center">
+                <td colspan="6" class="text-center">
                   Não existem unidades cadastradas.
                 </td>
               </tr>

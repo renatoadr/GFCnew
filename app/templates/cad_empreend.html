@@ -32,41 +32,52 @@
 
           <div class="form-floating mt-4">
             <input type="text" name="nmEmpreendimento" id="nmEmpreendimento" class="form-control" placeholder=""
-              value="{{ empreend.getNmEmpreend() if empreend}}" />
+              value="{{ empreend.getNmEmpreend() if empreend}}" maxlength="100" />
             <label for="nmEmpreendimento">Nome</label>
           </div>
 
           <div class="form-floating mt-4">
+            <input type="text" name="apelido" id="apelido" class="form-control" placeholder=""
+              value="{{ empreend.getApelido() if empreend}}" maxlength="10" />
+            <label for="apelido">Apelido</label>
+          </div>
+
+          <div class="form-floating mt-4">
             <input type="text" name="cep" id="cep" class="form-control cep" placeholder=""
-              value="{{ empreend.getCep() if empreend}}" />
+              value="{{ empreend.getCep() if empreend}}" maxlength="9" />
             <label for="cep">CEP</label>
           </div>
 
-          <div class="form-floating mt-4">
-            <select type="text" name="estado" id="estado" class="form-control" placeholder=""
-              value="{{ empreend.getEstado() if empreend}}">
-              <option value="">Selecione o estado</option>
-            </select>
-            <label for="estado">Estado</label>
-          </div>
-
-          <div class="form-floating mt-4">
-            <select type="text" name="cidade" id="cidade" class="form-control" placeholder=""
-              value="{{ empreend.getCidade() if empreend}}">
-              <option value="">Selecione a cidade</option>
-            </select>
-            <label for="cidade">Cidade</label>
+          <div class="row">
+            <div class="col-5">
+              <div class="form-floating mt-4">
+                <select type="text" name="estado" id="estado" class="form-control" placeholder=""
+                  value="{{ empreend.getEstado() if empreend}}">
+                  <option value="">Selecione o estado</option>
+                </select>
+                <label for="estado">Estado</label>
+              </div>
+            </div>
+            <div class="col-7">
+              <div class="form-floating mt-4">
+                <select type="text" name="cidade" id="cidade" class="form-control" placeholder=""
+                  value="{{ empreend.getCidade() if empreend}}">
+                  <option value="">Selecione a cidade</option>
+                </select>
+                <label for="cidade">Cidade</label>
+              </div>
+            </div>
           </div>
 
           <div class="form-floating mt-4">
             <input type="text" name="logradouro" id="logradouro" class="form-control" placeholder=""
-              value="{{ empreend.getLogradouro() if empreend}}" />
+              value="{{ empreend.getLogradouro() if empreend}}" maxlength="100" />
             <label for="logradouro">Endereço</label>
           </div>
 
           <div class="form-floating mt-4">
             <input type="text" name="bairro" id="bairro" class="form-control" placeholder=""
-              value="{{ empreend.getBairro() if empreend}}" />
+              value="{{ empreend.getBairro() if empreend}}" maxlength="50" />
             <label for="bairro">Bairro</label>
           </div>
 
@@ -75,13 +86,13 @@
         <div class="col-6">
           <div class="form-floating">
             <input type="text" name="nmIncorp" id="nmIncorp" class="form-control" placeholder=""
-              value="{{ empreend.getNmIncorp() if empreend}}" />
+              value="{{ empreend.getNmIncorp() if empreend}}" maxlength="100" />
             <label for="nmIncorp">Incorporador</label>
           </div>
 
           <div class="form-floating mt-4">
             <input type="text" name="nmConstrutor" id="nmConstrutor" class="form-control" placeholder=""
-              value="{{ empreend.getNmConstrutor() if empreend}}" />
+              value="{{ empreend.getNmConstrutor() if empreend}}" maxlength="100" />
             <label for="nmConstrutor">Construtora</label>
           </div>
 
@@ -95,19 +106,19 @@
 
           <div class="form-floating mt-4">
             <input type="text" name="nmEngenheiro" id="nmEngenheiro" class="form-control" placeholder=""
-              value="{{ empreend.getNmEngenheiro() if empreend}}" />
+              value="{{ empreend.getNmEngenheiro() if empreend}}" maxlength="100" />
             <label for="nmEngenheiro">Nome do engenheiro</label>
           </div>
 
           <div class="form-floating mt-4">
             <input type="text" name="vlPlanoEmp" id="vlPlanoEmp" class="form-control money" placeholder=""
-              value="{{ empreend.getVlPlanoEmp() if empreend}}" />
+              value="{{ empreend.getVlPlanoEmp() if empreend}}" maxlength="16" />
             <label for="vlPlanoEmp">Valor do Plano Empresário</label>
           </div>
 
           <div class="form-floating mt-4">
-            <input type="text" name="indiceGarantia" id="indiceGarantia" class="form-control money" placeholder=""
-              value="{{ empreend.getIndiceGarantia() if empreend}}" />
+            <input type="text" name="indiceGarantia" id="indiceGarantia" class="form-control percent" placeholder=""
+              value="{{ empreend.getIndiceGarantia() if empreend}}" maxlength="6" />
             <label for="indiceGarantia">Indice de Garantia Contratado</label>
           </div>
 
@@ -135,6 +146,16 @@
   {% include 'fractials/footer.html' %}
   <script>
     const requireds = GFC.getRequiredFields("formEmpreendimento")
+    requireds.messages.indiceGarantia = {
+      required: GFC_MESSAGES.REQUIRED,
+      minf: GFC_MESSAGES.MIN('0,01'),
+      maxf: GFC_MESSAGES.MAX(100),
+    }
+    requireds.rules.indiceGarantia = {
+      required: true,
+      minf: 0.01,
+      maxf: 100
+    }
     $(function () {
       $("#formEmpreendimento").validate({
         rules: requireds.rules,

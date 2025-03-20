@@ -9,6 +9,9 @@ def converterStrToFloat(value, default = 0):
 def converterStrDateTimeToDateFormat(stringdatetime):
     return format(datetime.strptime(stringdatetime, "%Y-%m-%d %H:%M:%S"), "%d/%m/%Y")
 
+def converterStrDateTimeFormatBr(stringdatetime):
+    return format(datetime.strptime(stringdatetime, "%Y-%m-%d %H:%M:%S"), "%d/%m/%Y %H:%M:%S")
+
 def converterDateTimeToDateEnFormat(stringdatetime):
     return format(stringdatetime, "%Y-%m-%d")
 
@@ -17,6 +20,9 @@ def converterFloatToCurrency(value):
 
 def removeAlpha(value):
    return re.sub(r"\D+", "", value)
+
+def removeCaractersNotDigit(value):
+   return re.sub(r"^\d+", "", value)
 
 def isNumber(value):
     try:

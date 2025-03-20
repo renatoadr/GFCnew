@@ -12,38 +12,38 @@ class clienteController:
 
     def inserirCliente(self, cliente):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()       
-   
+        cursor = self.__connection.cursor()
+
         query =  "INSERT INTO " + MySql.DB_NAME + ".tb_clientes ( cpf_cnpj, tp_cpf_cnpj, nm_cliente, ddd, tel, email ) VALUES ('" + cliente.getCpfCnpj() + "', '" + cliente.getTpCpfCnpj() + "', '" + cliente.getNmCliente() + "', '" + cliente.getDdd() + "', '" + cliente.getTel() + "', '" + cliente.getEmail() + "')"
-                                                                                                                                                          
+
         print('++++++++++++++++++++++')
         print(query)
         print('++++++++++++++++++++++')
 
         cursor.execute(query)
 
-        self.__connection.commit()     
-        print(cursor.rowcount,"Cliente cadastrado com sucesso")     
+        self.__connection.commit()
+        print(cursor.rowcount,"Cliente cadastrado com sucesso")
         cursor.close()
         MySql.close(self.__connection)
 
 
     def consultarClientes(self):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()   
+        cursor = self.__connection.cursor()
 
         print('---consultarTorres--')
- 
+
         query =  "select * from " + MySql.DB_NAME + ".tb_clientes"
 
         print('-----------------')
         print(query)
         print('-----------------')
-        
+
         cursor.execute(query)
 
         lista = cursor.fetchall()
-        
+
         listaClientes = []
 
         for x in lista:
@@ -55,17 +55,17 @@ class clienteController:
             t.setTel(x[4])
             t.setEmail(x[5])
             listaClientes.append(t)
-            
+
         cursor.close()
         MySql.close(self.__connection)
         return listaClientes
 
     def consultarClientePeloId(self, idCli):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor(dictionary=True)   
+        cursor = self.__connection.cursor(dictionary=True)
 
-        query =  "select cpf_cnpj, tp_cpf_cnpj, nm_cliente, ddd, tel, email from " + MySql.DB_NAME + ".tb_clientes where cpf_cnpj = '" + idCli + "'" 
-    
+        query =  "select cpf_cnpj, tp_cpf_cnpj, nm_cliente, ddd, tel, email from " + MySql.DB_NAME + ".tb_clientes where cpf_cnpj = '" + idCli + "'"
+
         print(query)
 
         cursor.execute(query)
@@ -83,8 +83,8 @@ class clienteController:
         linhaC.setDdd(linha['ddd'])
         linhaC.setTel(linha['tel'])
         linhaC.setEmail(linha['email'])
-        
-        print('------------------------')       
+
+        print('------------------------')
         print(linhaC.getCpfCnpj())
         print('------------------------')
         cursor.close()
@@ -94,28 +94,35 @@ class clienteController:
 
     def salvarCliente(self, cliente):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()   
+        cursor = self.__connection.cursor()
 
-        query =  "update " + MySql.DB_NAME + ".tb_clientes set " + "cpf_cnpj = '" + cliente.getCpfCnpj() + "', " + "tp_cpf_cnpj = '" + cliente.getTpCpfCnpj() + "', " + " nm_cliente = '" + cliente.getNmCliente() + "', " + "ddd = '" + cliente.getDdd() + "', " + "tel = '" + cliente.getTel() + "', " + "email = '" + cliente.getEmail() + "' " + " where cpf_cnpj = '" + cliente.getCpfCnpj() + "' "
+        query =  "UPDATE " + MySql.DB_NAME + """.tb_clientes SET cpf_cnpj = %s, tp_cpf_cnpj = %s, nm_cliente = %s, ddd = %s, tel = %s, email = %s WHERE cpf_cnpj = %s """
 
-        print (query)
-        cursor.execute(query)
+        cursor.execute(query, (
+            cliente.getCpfCnpj(),
+            cliente.getTpCpfCnpj(),
+            cliente.getNmCliente(),
+            cliente.getDdd(),
+            cliente.getTel(),
+            cliente.getEmail(),
+            cliente.getCpfCnpj()
+          )
+        )
 
-        self.__connection.commit()     
-        print(cursor.rowcount,"Torre atualizada com sucesso")     
+        self.__connection.commit()
+        print(cursor.rowcount,"Torre atualizada com sucesso")
         cursor.close()
         MySql.close(self.__connection)
 
     def excluirCliente(self,cliente):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()   
+        cursor = self.__connection.cursor()
 
-        query =  "delete from " + MySql.DB_NAME + ".tb_clientes" + " where cpf_cnpj = " + str(cliente) 
+        query =  "delete from " + MySql.DB_NAME + ".tb_clientes" + " where cpf_cnpj = " + str(cliente)
         print (query)
 
         cursor.execute(query)
-        self.__connection.commit()   
+        self.__connection.commit()
         cursor.close()
         MySql.close(self.__connection)
-     
- 
+

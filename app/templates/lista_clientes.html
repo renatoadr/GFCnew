@@ -1,85 +1,96 @@
+<!-- Template: lista_cliente -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GFC</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/tooltip.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Listagem de clientes</title>
+  {% include 'fractials/head.html' %}
 </head>
 
 <body>
-    {% include 'fractials/menu.html' %}
-    {% if clienteS %}
-    <div style="margin-top: 10em;">
-        <table border="1" align="center"
-            style="font-family: Arial; border-spacing: 1px; border-color: white; background-color: #e7e7e7;"" >
-        <thead>
-            <tr>
+  {% include 'fractials/menu.html' %}
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <h2 class="title title-page">
+            <i class="fa-solid fa-users"></i> Clientes
+          </h2>
+        </div>
+        <div class="col-6">
+          <div class="row h-100">
+            <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
+              <a href="/abrir_cad_cliente" class="btn btn-primary">
+                <i class="fa-solid fa-circle-plus"></i>
+                Novo Cliente
+              </a>
+            </div>
+            <div class="col-3 d-flex justify-content-end align-items-center">
+              <a href="/home" class="btn btn-outline-dark">
+                <i class="fa-solid fa-home"></i>
+                Início
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <table class="table table-striped">
+            <thead class="table-light">
+              <tr>
                 <th>CPF / CNPJ</th>
-                <th>Tipo (CPF/CNPJ)</th>
+                <th class="text-center">Tipo (CPF/CNPJ)</th>
                 <th>Nome do Cliente</th>
-                <th>DDD</th>
+                <th class="text-center">DDD</th>
                 <th>Telefone</th>
                 <th>Email</th>
-                <th colspan=" 3">
-            </th>
-            </tr>
+                <th colspan="2">Ações</th>
+              </tr>
             </thead>
             <tbody>
-                {% for c in clienteS %}
-                <tr>
-                    <td>{{ c.getCpfCnpj() }}</td>
-                    <td>{{ c.getTpCpfCnpj() }}</td>
-                    <td>{{ c.getNmCliente() }}</td>
-                    <td>{{ c.getDdd() }}</td>
-                    <td>{{ c.getTel() }}</td>
-                    <td>{{ c.getEmail() }}</td>
-                    <td>
-                        <div class="tooltip">
-                            <a
-                                href="/consultar_cliente?cpfCnpj={{c.getCpfCnpj()}}&modo=consulta&idEmpreend={{idEmpreend}}"><img
-                                    src="../static/imgs/icons8-pesquisar-48.png"
-                                    style="width: 24px; height: 24px;" /></a>
-                            <span class="tooltiptext">consultar</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="tooltip">
-                            <a href="/editar_cliente?cpfCnpj={{c.getCpfCnpj()}}"><img
-                                    src="../static/imgs/icons8-editar-32.png" style="width: 24px; height: 24px;" /></a>
-                            <span class="tooltiptext">Editar</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="tooltip">
-                            <a href="/excluir_cliente?cpfCnpj={{c.getCpfCnpj()}}&modo=exclui&idEmpreend={{idEmpreend}}"><img
-                                    src="../static/imgs/icons8-lixeira-24.png" style="width: 24px; height: 24px;" /></a>
-                            <span class="tooltiptext">Excluir</span>
-                        </div>
-                    </td>
-                </tr>
-                {% endfor %}
+              {% if clienteS %}
+              {% for c in clienteS %}
+              <tr>
+                <td>{{ c.getCpfCnpj()|to_cpf_cnpj }}</td>
+                <td class="text-center">{{ c.getTpCpfCnpj() }}</td>
+                <td>{{ c.getNmCliente() }}</td>
+                <td class="text-center">{{ c.getDdd() }}</td>
+                <td>{{ c.getTel()|to_cel_tel }}</td>
+                <td>{{ c.getEmail() }}</td>
+                <td>
+                  <a href="/editar_cliente?cpfCnpj={{c.getCpfCnpj()}}" data-bs-toggle="tooltip" data-bs-title="Editar">
+                    <i class="fa-solid fa-pencil text-warning"></i>
+                  </a>
+                </td>
+                <td>
+                  <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir">
+                    <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
+                      data-modal-exclude-title="Orçamento"
+                      data-modal-exclude-action="/excluir_cliente?cpfCnpj={{c.getCpfCnpj()}}"
+                      data-modal-exclude-text="Deseja realmente excluir o cliente <strong>{{c.getNmCliente()}}</strong>?"></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+              {% else %}
+              <tr>
+                <td colspan="8" class="text-center">
+                  Não existem clientes cadastrados.
+                </td>
+              </tr>
+              {% endif %}
             </tbody>
-        </table>
+          </table>
+        </div>
+      </div>
     </div>
-    <div>
-        <form action="/abrir_cad_cliente" method="POST" style="border: 0px;" id="formListaClientes" method="POST">
-            <div>
-                <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}" />
-                <button type="submit">Novo</button>
-                <button type="button"
-                    onclick="document.getElementById('formListaClientes').action = '/home'; document.getElementById('formListaClientes').method = 'GET'; document.getElementById('formListaClientes').submit();"
-                    style="bottom: 10; right: 10;">Voltar</button>
-            </div>
-        </form>
-    </div>
+  </main>
 
-    {% else %}
-    <h1>Não há Torres cadastradas no empreendimento.</h1>
-    {% endif %}
-
+  {% include 'fractials/footer.html' %}
 </body>
 
 </html>

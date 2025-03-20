@@ -20,7 +20,7 @@ class orcamentoController:
         print('---consultarorcamentos---')
         print(idEmpreend)
 
-        query =  "select mes_vigencia, ano_vigencia, dt_carga from " + MySql.DB_NAME + ".tb_orcamentos where id_empreendimento = " +  str (idEmpreend) + " group by mes_vigencia, ano_vigencia, dt_carga"
+        query =  "select * from " + MySql.DB_NAME + ".tb_orcamentos where id_empreendimento = " +  str (idEmpreend) + " group by mes_vigencia, ano_vigencia, dt_carga"
 
         print('-----------------')
         print(query)
@@ -34,9 +34,11 @@ class orcamentoController:
 
         for x in lista:
             m = orcamento()
-            m.setMesVigencia(x[0])
-            m.setAnoVigencia(x[1])
-            m.setDtCarga(x[2])
+            m.setIdOrcamento(x[0])
+            m.setIdEmpreend(x[1])
+            m.setMesVigencia(x[2])
+            m.setAnoVigencia(x[3])
+            m.setDtCarga(x[4])
             listaOrcamentos.append(m)
 
         cursor.close()
@@ -109,7 +111,7 @@ class orcamentoController:
         m.setIdEmpreend(item['id_empreendimento'])
         m.setMesVigencia(item['mes_vigencia'])
         m.setAnoVigencia(item['ano_vigencia'])
-        m.setDtCarga(converterDateTimeToDateEnFormat(item['dt_carga']))
+        m.setDtCarga(item['dt_carga'])
         m.setItem(item['item'])
         m.setOrcadoValor(item['orcado_valor'])
         m.setFisicoValor(item['fisico_valor'])
@@ -136,12 +138,24 @@ class orcamentoController:
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
-        query =  "INSERT INTO " + MySql.DB_NAME + \
-                ".tb_orcamentos (id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, item, orcado_valor, fisico_valor, fisico_percentual, fisico_saldo, financeiro_valor, financeiro_percentual, financeiro_saldo) \
-                VALUES ('" + str(orcamento.getIdEmpreend ()) + ", '" + orcamento.getMesVigencia () + "', '" + orcamento.getAnoVigencia () + "', '" + orcamento.getDtCarga () + "', '" + orcamento.getItem () + "', " + str(orcamento.getOrcadoValor()) + ", " + str(orcamento.getFisicoPercentual ()) + ", " + str(orcamento.getFisicoValor ()) + ", " + str(orcamento.getFisicoSaldo ()) + ", " + str(orcamento.getFinanceiroPercentual ()) + ", " + str(orcamento.getFinanceiroValor ()) + ", " + str(orcamento.getFinanceiroSaldo ()) + ")"
+        query =  "INSERT INTO " + MySql.DB_NAME + """.tb_orcamentos (id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, item, orcado_valor, fisico_valor, fisico_percentual, fisico_saldo, financeiro_valor, financeiro_percentual, financeiro_saldo)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
         print (query)
-        cursor.execute(query)
+        cursor.execute(query, (
+          orcamento.getIdEmpreend (),
+          orcamento.getMesVigencia (),
+          orcamento.getAnoVigencia (),
+          orcamento.getDtCarga (),
+          orcamento.getItem (),
+          orcamento.getOrcadoValor(),
+          orcamento.getFisicoPercentual (),
+          orcamento.getFisicoValor (),
+          orcamento.getFisicoSaldo (),
+          orcamento.getFinanceiroPercentual (),
+          orcamento.getFinanceiroValor (),
+          orcamento.getFinanceiroSaldo ()
+        ))
 
         self.__connection.commit()
         print(cursor.rowcount,"Orçamento cadastrado com sucesso")
@@ -177,10 +191,10 @@ class orcamentoController:
                 financP = (financR/orcado) * 100
             else:
                 financP = 0
-            if fisicoP > 0:    
+            if fisicoP > 0:
                 fisicoR = orcado * (fisicoP/100)
             else:
-                fisicoR = 0 
+                fisicoR = 0
             fisicoS     = orcado-fisicoR
             financS     = orcado-financR
 

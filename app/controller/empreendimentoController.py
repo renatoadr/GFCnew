@@ -15,10 +15,11 @@ class empreendimentoController:
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
-        query =  "INSERT INTO " + MySql.DB_NAME + """.tb_empreendimentos (nm_empreendimento, logradouro, bairro, cidade, estado, cep, nm_incorporador, nm_construtor, nm_banco, nm_engenheiro, vl_plano_empresario, indice_garantia, previsao_entrega) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        query =  "INSERT INTO " + MySql.DB_NAME + """.tb_empreendimentos (apelido, nm_empreendimento, logradouro, bairro, cidade, estado, cep, nm_incorporador, nm_construtor, nm_banco, nm_engenheiro, vl_plano_empresario, indice_garantia, previsao_entrega) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
         print (query)
         cursor.execute(query, (
+          empreend.getApelido(),
           empreend.getNmEmpreend(),
           empreend.getLogradouro(),
           empreend.getBairro(),
@@ -67,9 +68,7 @@ class empreendimentoController:
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor(dictionary=True)
 
-        query =  "select id_empreendimento, nm_empreendimento, logradouro, bairro, cidade, estado, cep,\
-              nm_incorporador, nm_construtor, nm_banco, nm_engenheiro, vl_plano_empresario, indice_garantia, previsao_entrega\
-              from " + MySql.DB_NAME + ".tb_empreendimentos where id_empreendimento = " + idEmpreend
+        query =  "select * from " + MySql.DB_NAME + ".tb_empreendimentos where id_empreendimento = " + idEmpreend
 
         print(query)
 
@@ -83,6 +82,7 @@ class empreendimentoController:
         print('+++++++++++++++++++++++++++')
 
         linhaE = empreendimento()
+        linhaE.setApelido('' if linha['apelido'] is None else linha['apelido'] )
         linhaE.setIdEmpreend(linha['id_empreendimento'])
         linhaE.setNmEmpreend(linha['nm_empreendimento'])
         linhaE.setNmBanco(linha['nm_banco'])
@@ -141,6 +141,7 @@ class empreendimentoController:
         # "where id_empreendimento = " + empreend.getIdEmpreend()
 
         query =  """update """ + MySql.DB_NAME + """.tb_empreendimentos set
+         apelido = %s,
          nm_empreendimento = %s,
          logradouro = %s,
          bairro = %s,
@@ -158,6 +159,7 @@ class empreendimentoController:
 
         print (query)
         cursor.execute(query, (
+          empreend.getApelido(),
           empreend.getNmEmpreend(),
           empreend.getLogradouro(),
           empreend.getBairro(),

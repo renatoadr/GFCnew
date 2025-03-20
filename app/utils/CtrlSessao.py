@@ -36,3 +36,7 @@ class DtCarga(CtrlSessao):
   def __init__(self):
     super().__init__('dtCarga')
 
+class IdOrca(CtrlSessao):
+  def __init__(self):
+    super().__init__('idOrca')
+

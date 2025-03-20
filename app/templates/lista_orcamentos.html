@@ -60,8 +60,8 @@
                 <td>{{ m.getAnoVigencia() }}</td>
                 <td>{{ m.getDtCarga() }}</td>
                 <td>
-                  <a href="/consultar_orcamento_data?dtCarga={{m.getDtCarga()}}" data-bs-toggle="tooltip"
-                    data-bs-title="Consultar">
+                  <a href="/consultar_orcamento_data?idOrca={{m.getIdOrcamento()}}&dtCarga={{m.getDtCarga()}}"
+                    data-bs-toggle="tooltip" data-bs-title="Consultar">
                     <i class="fa-solid fa-magnifying-glass-arrow-right"></i>
                   </a>
                 </td>

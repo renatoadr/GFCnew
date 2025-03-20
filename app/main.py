@@ -44,7 +44,7 @@ from reportlab.lib.utils import ImageReader
 from reportlab.lib.units import inch
 from reportlab.lib.pagesizes import letter, inch
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
-from utils.CtrlSessao import IdEmpreend, DtCarga, NmEmpreend
+from utils.CtrlSessao import IdEmpreend, DtCarga, NmEmpreend, IdOrca
 
 # from reportlab.platypus.tables import Table, TableStyle
 
@@ -59,6 +59,7 @@ import easygui
 import configparser
 import utils.converter as converter
 import re
+import random
 
 app = Flask(__name__)
 
@@ -192,7 +193,7 @@ def protectedPage():
 ################ EMPREENDIMENTOS ###############################
 
 @app.route('/home', methods=['POST','GET'])
-def abrir_home(empreends=None):
+def abrir_home():
 
 # ---- teste de sessão
     temp = protectedPage()
@@ -213,6 +214,7 @@ def abrir_cad_empreend():
 @app.route('/efetuar_cad_empreend', methods=['POST'])
 def efetuar_cad_empreend():
     empreend = empreendimento ()
+    empreend.setApelido(request.form.get('apelido'))
     empreend.setNmEmpreend (request.form.get('nmEmpreendimento'))
     empreend.setNmBanco (request.form.get('nmBanco'))
     empreend.setNmIncorp (request.form.get('nmIncorp'))
@@ -221,7 +223,7 @@ def efetuar_cad_empreend():
     empreend.setBairro (request.form.get('bairro'))
     empreend.setCidade (request.form.get('cidade'))
     empreend.setEstado (request.form.get('estado'))
-    empreend.setCep (request.form.get('cep').replace('-', ''))
+    empreend.setCep (converter.removeAlpha(request.form.get('cep')))
     empreend.setNmEngenheiro (request.form.get('nmEngenheiro'))
     empreend.setVlPlanoEmp (converter.converterStrToFloat(request.form.get('vlPlanoEmp')))
     empreend.setIndiceGarantia (converter.converterStrToFloat(request.form.get('indiceGarantia')))
@@ -255,6 +257,7 @@ def abrir_edicao_empreend():
 @app.route('/salvar_empreend', methods=['POST'])
 def salvar_empreend():
     empreend = empreendimento ()
+    empreend.setApelido(request.form.get('apelido'))
     empreend.setIdEmpreend (int(request.form.get('idEmpreendimento')))
     empreend.setNmEmpreend (request.form.get('nmEmpreendimento'))
     empreend.setNmBanco (request.form.get('nmBanco'))
@@ -264,7 +267,7 @@ def salvar_empreend():
     empreend.setBairro (request.form.get('bairro'))
     empreend.setCidade (request.form.get('cidade'))
     empreend.setEstado (request.form.get('estado'))
-    empreend.setCep (request.form.get('cep').replace('-', ''))
+    empreend.setCep (converter.removeAlpha(request.form.get('cep')))
     empreend.setNmEngenheiro (request.form.get('nmEngenheiro'))
     empreend.setVlPlanoEmp (converter.converterStrToFloat(request.form.get('vlPlanoEmp')))
     empreend.setIndiceGarantia (converter.converterStrToFloat(request.form.get('indiceGarantia')))
@@ -369,12 +372,28 @@ def tratarunidades():
     return temp
 #---- fim teste de sessão
 
-  idEmpreend = IdEmpreend().get()
+  idEmpreend = request.args.get('idEmpreend')
+  nmEmpreend = request.args.get('nmEmpreend')
+
+  if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
+      return redirect('/home')
+
+  if idEmpreend is None:
+    idEmpreend = IdEmpreend().get()
+  else:
+    IdEmpreend().set(idEmpreend)
+
+  if nmEmpreend is None:
+    nmEmpreend = NmEmpreend().get()
+  else:
+    NmEmpreend().set(nmEmpreend)
+
   unidC = unidadeController ()
   unidS = unidC.consultarUnidades (idEmpreend)
 
+
   if len(unidS) == 0:
-    return render_template("lista_unidades.html",  mensagem="Unidade não Cadastrada!!!", unidades=unidS)
+    return render_template("lista_unidades.html",  mensagem="Unidade não Cadastrada.", unidades=unidS)
   else:
     return render_template("lista_unidades.html", unidades=unidS)
 
@@ -611,125 +630,54 @@ def tratarclientes():
         return temp
 #---- fim teste de sessão
 
-    idEmpreend = request.args.get("idEmpreend")
-    nmEmpreend = request.args.get("nmEmpreend")
-
-    print('-----tratar_clientes----')
-    print(idEmpreend)
-
     cliC = clienteController ()
     cliS = cliC.consultarClientes ()
 
     if len(cliS) == 0:
-        return render_template("lista_clientes.html", idEmpreend=idEmpreend, mensagem="Cliente não Cadastrado!!!", clienteS=cliS)
+        return render_template("lista_clientes.html", clienteS=cliS)
     else:
-        return render_template("lista_clientes.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend, clienteS=cliS)
+        return render_template("lista_clientes.html", clienteS=cliS)
 
-@app.route('/abrir_cad_cliente', methods=['POST'])
+@app.route('/abrir_cad_cliente')
 def abrir_cad_cliente():
-
-    idEmpreend = request.form.get("idEmpreend")
-    idTorre = 10                                   # precisa colocar uma lista de torres para escolher
-    print('-----------abrir_cad_cliente-----------')
-    print(idTorre,idEmpreend)
-
-    t1 = torre()
-    t1.setIdTorre (1)
-    t2 = torre()
-    t2.setIdTorre (10)
-    listaTorres = [t1,t2]
-    print (len(listaTorres))
-    print (listaTorres)
-
-    return render_template("cliente.html", idEmpreend=idEmpreend, idTorre=idTorre, listaTorres=listaTorres)
-
-@app.route('/abrir_edicao_cliente')
-def abrir_edicao_cliente():
-
-    idUnidade = request.args.get("idUnidade")
-    print('----------- abrir_edicao_cliente ----------------')
-    print (idUnidade)
-    unidc = clienteController ()
-    unid = unidc.consultarUnidadePeloId (idUnidade)
-
-    print(unid)
-    return render_template("cliente.html", cliente=cliente)
-
+    return render_template("cliente.html")
 
 @app.route('/cadastrar_cliente', methods=['POST'])
 def cadastrar_cliente():
+  cli = cliente ()
+  cli.setCpfCnpj (converter.removeAlpha(request.form.get('cpfCnpj')))
+  cli.setTpCpfCnpj (request.form.get('tpCpfCnpj'))
+  cli.setNmCliente (request.form.get('nmCliente'))
+  cli.setDdd (request.form.get('ddd'))
+  cli.setTel (converter.removeAlpha(request.form.get('tel')))
+  cli.setEmail (request.form.get('email'))
 
-    print('passei aqui 1')
+  cliC = clienteController()
+  cliC.inserirCliente(cli)
 
-    cli = cliente ()
-    cli.setCpfCnpj (request.form.get('cpfCnpj'))
-    cli.setTpCpfCnpj (request.form.get('tpCpfCnpj'))
-    cli.setNmCliente (request.form.get('nmCliente'))
-    cli.setDdd (request.form.get('ddd'))
-    cli.setTel (request.form.get('tel'))
-    cli.setEmail (request.form.get('email'))
-
-    print('passei aqui 2')
-
-    cliC = clienteController()
-    cliC.inserirCliente(cli)
-
-    cliS = cliC.consultarClientes ()
-    print('passei aqui')
-    return render_template("lista_clientes.html", clienteS=cliS)
+  return redirect("/tratar_clientes")
 
 @app.route('/editar_cliente')
 def editar_cliente():
-
-    idCli = request.args.get("cpfCnpj")
-    print('------ editar_cliente --------')
-    print (idCli)
-    cliC = clienteController ()
-    cliente = cliC.consultarClientePeloId (idCli)
-
-    print(cliente)
-    return render_template("cliente.html", cliente=cliente)
+  idCli = request.args.get("cpfCnpj")
+  cliC = clienteController ()
+  cliente = cliC.consultarClientePeloId (idCli)
+  return render_template("cliente.html", cliente=cliente)
 
 @app.route('/salvar_alteracao_cliente', methods=['POST'])
 def salvar_alteracao_cliente():
+  cli = cliente ()
+  cli.setCpfCnpj (converter.removeAlpha(request.form.get('cpfCnpj')))
+  cli.setTpCpfCnpj (request.form.get('tpCpfCnpj'))
+  cli.setNmCliente (request.form.get('nmCliente'))
+  cli.setDdd (request.form.get('ddd'))
+  cli.setTel (converter.removeAlpha(request.form.get('tel')))
+  cli.setEmail (request.form.get('email'))
 
-    print('------- salvar_alteracao_cliente INICIO --------')
+  cliC = clienteController()
+  cliC.salvarCliente(cli)
 
-    cli = cliente ()
-    cli.setCpfCnpj (request.form.get('cpfCnpj'))
-    cli.setTpCpfCnpj (request.form.get('tpCpfCnpj'))
-    cli.setNmCliente (request.form.get('nmCliente'))
-    cli.setDdd (request.form.get('ddd'))
-    cli.setTel (request.form.get('tel'))
-    cli.setEmail (request.form.get('email'))
-
-    print('------- salvar_alteracao_cliente --------')
-
-    cliC = clienteController()
-    cliC.salvarCliente(cli)
-
-    cliS = cliC.consultarClientes ()
-
-    return render_template("lista_clientes.html", clienteS=cliS)
-
-@app.route('/consultar_cliente')
-def consultar_cliente():
-
-    modo = request.args.get("modo")
-    idCli = request.args.get("cpfCnpj")
-    idEmpreend = request.args.get("idEmpreend")
-
-    print('------ consultar_cliente --------')
-    print(modo, idCli, idEmpreend)
-
-    cliC = clienteController ()
-    cliente = cliC.consultarClientePeloId (idCli)
-    print(cliente)
-
-    print('------ consultar_cliente fim --------')
-    print(modo)
-
-    return render_template("cliente.html", cliente=cliente, modo=modo, idEmpreend=idEmpreend)
+  return redirect("/tratar_clientes")
 
 @app.route('/excluir_cliente')
 def excluir_cliente():
@@ -750,7 +698,19 @@ def excluir_cliente():
 
 @app.route('/abrir_cad_orcamento')
 def criar_orcamento():
-    return render_template("Orcamento_item.html", item=None)
+    medC = orcamentoController ()
+    med = medC.consultarOrcamentoPeloId(IdOrca().get())
+    dtCarga = med.getDtCarga()
+    ano = med.getAnoVigencia()
+    mes = med.getMesVigencia()
+    return render_template(
+        "Orcamento_item.html",
+        item=None,
+        dtCarga=dtCarga,
+        anoVig=ano,
+        mesVig=mes,
+        idEmpreend=IdEmpreend().get()
+      )
 
 @app.route('/tratar_orcamentos')
 def tratar_orcamentos():
@@ -803,7 +763,7 @@ def consultar_orcamento_data():
     else:
       DtCarga().set(dtCarga)
 
-
+    IdOrca().set(request.args.get('idOrca'))
     print('------ consultar_orcamento_data ------')
 #    print(modo)
     print (idEmpreend, dtCarga)
@@ -917,26 +877,12 @@ def salvar_item_orcamento():
     item.setOrcadoValor (valorOrcado)
     item.setFisicoPercentual (fisicoPercent)
     item.setFinanceiroValor (valorFinanceiro)
+
     item.setFinanceiroPercentual (financeiroPercentual)
     item.setFinanceiroSaldo (valorOrcado - valorFinanceiro)
     item.setFisicoValor (fisicoValor)
     item.setFisicoSaldo (valorOrcado - fisicoValor)
 
-    print (request.form.get('idOrcamento'))
-    print (request.form.get('idEmpreend'))
-    print (request.form.get('mesVigencia'))
-    print (request.form.get('anoVigencia'))
-    print (request.form.get('dtCarga'))
-    print (request.form.get('item'))
-    print (request.form.get('orcadoValor'))
-    print (request.form.get('fisicoValor'))
-    print (request.form.get('fisicoPercentual'))
-    print (request.form.get('fisicoSaldo'))
-    print (request.form.get('financeiroValor'))
-    print (request.form.get('financeiroPercentual'))
-    print (request.form.get('financeiroSaldo'))
-#    print (item)
-#
     orcC = orcamentoController()
     orcC.salvarItemOrcamento(item)
 
@@ -944,25 +890,33 @@ def salvar_item_orcamento():
 
 @app.route('/incluir_item_orcamento', methods=['POST'])
 def incluir_item_orcamento():
-    orc = orcamento ()
-    orc.setIdEmpreend (request.form.get('idEmpreend'))
-    orc.setMesVigencia (request.form.get('MesVigencia'))
-    orc.setAnoVigencia (request.form.get('anoVigencia'))
-    orc.setDtCarga (request.form.get('dtCarga'))
-    orc.setItem (request.form.get('item'))
-    orc.setOrcadoValor (request.form.get('orcadoValor'))
-    orc.setFisicoValor (request.form.get('fisicoValor'))
-    orc.setFisicoPercentual (request.form.get('fisicoPercentual'))
-    orc.setFisicoSaldo (request.form.get('fisicoSaldo'))
-    orc.setFinanceiroValor (request.form.get('financeiroValor'))
-    orc.setFinanceiroPercentual (request.form.get('financeiroPercentual'))
-    orc.setFinanceiroSaldo (request.form.get('financeiroSaldo'))
+    valorOrcado = converter.converterStrToFloat(request.form.get('orcadoValor'))
+    fisicoPercent = converter.converterStrToFloat(request.form.get('fisicoPercentual'), 1)
+    valorFinanceiro = converter.converterStrToFloat(request.form.get('financeiroValor'))
+    financeiroPercentual = valorFinanceiro / valorOrcado * 100
+    fisicoValor = valorOrcado * fisicoPercent / 100
+
+    item = orcamento ()
+    item.setIdOrcamento (request.form.get('idOrcamento'))
+    item.setIdEmpreend (request.form.get('idEmpreend'))
+    item.setMesVigencia (request.form.get('mesVigencia'))
+    item.setAnoVigencia (request.form.get('anoVigencia'))
+    item.setDtCarga (request.form.get('dtCarga'))
+    item.setItem (request.form.get('item'))
+    item.setOrcadoValor (valorOrcado)
+    item.setFisicoPercentual (fisicoPercent)
+    item.setFinanceiroValor (valorFinanceiro)
+
+    item.setFinanceiroPercentual (financeiroPercentual)
+    item.setFinanceiroSaldo (valorOrcado - valorFinanceiro)
+    item.setFisicoValor (fisicoValor)
+    item.setFisicoSaldo (valorOrcado - fisicoValor)
 
     orcC = orcamentoController()
-#    empc.inserirEmpreendimento(empreend)
-#    emps = empc.consultarEmpreendimentos ()
+    orcC.inserirOrcamento(item)
+
     print('passei aqui')
-    return render_template("home.html", empreends='emps')
+    return redirect("/consultar_orcamento_data")
 
 ############ AGENDA ######################
 
@@ -1132,7 +1086,7 @@ def graf_orcamento_liberacao():
 
     tipo = request.args.get("tipo")
     idEmpreend = IdEmpreend().get()
-    dtCarga = DtCarga().get()
+    dtCarga = request.args.get("dtCarga")
     mes = request.args.get("mesV")
     ano = request.args.get("anoV")
     print ('==============>', mes, ano)
@@ -1178,7 +1132,7 @@ def graf_orcamento_liberacao():
 
     plt.savefig(grafNome, bbox_inches='tight')
 
-    return render_template("orcamento_liberacao.html", grafNome=grafNome)
+    return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1,100000))
 
 @app.route('/graf_progresso_obra', methods=['GET'])
 def graf_progresso_obra():
@@ -2098,19 +2052,19 @@ def tab_orcamento_liberacao():
     for m in medS:
         dd = []
         dd.append(m.getItem())
-        somaOrcadoValor += m.getOrcadoValor()
+        somaOrcadoValor += 0 if m.getOrcadoValor() is None else m.getOrcadoValor()
         dd.append(geral.formataNumero(m.getOrcadoValor()))
         dd.append(' ')
-        somaFisicoValor += m.getFisicoValor()
+        somaFisicoValor += 0 if m.getFisicoValor() is None else m.getFisicoValor()
         dd.append(geral.formataNumero(m.getFisicoValor()))
         dd.append(geral.formataNumero(m.getFisicoPercentual()))
-        somaFisicoSaldo += m.getFisicoSaldo()
+        somaFisicoSaldo += 0 if m.getFisicoSaldo() is None else m.getFisicoSaldo()
         dd.append(geral.formataNumero(m.getFisicoSaldo()))
         dd.append(' ')
-        somaFinanceiroValor += m.getFinanceiroValor()
+        somaFinanceiroValor += 0 if m.getFinanceiroValor() is None else m.getFinanceiroValor()
         dd.append(geral.formataNumero(m.getFinanceiroValor()))
         dd.append(geral.formataNumero(m.getFinanceiroPercentual()))
-        somaFinanceiroSaldo += m.getFinanceiroSaldo()
+        somaFinanceiroSaldo += 0 if m.getFinanceiroSaldo() is None else m.getFinanceiroSaldo()
         dd.append(geral.formataNumero(m.getFinanceiroSaldo()))
         data.append(dd)
 
@@ -2172,7 +2126,7 @@ def tab_orcamento_liberacao():
 
 #    plt.savefig(grafNome, bbox_inches='tight')
 
-    return render_template("orcamento_liberacao.html", grafNome=grafNome)
+    return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 ############ PDF ######################
 
@@ -2310,11 +2264,44 @@ def format_datetime(value):
     return converter.converterStrDateTimeToDateFormat(value)
   return value
 
+@app.template_filter('to_datetime')
+def format_datetime(value):
+  if value is not None and value != '--' and isinstance(value, datetime):
+    return value.strftime('%d/%m/%Y %H:%M:%S')
+  elif isinstance(value, str):
+    return converter.converterStrDateTimeFormatBr(value)
+  return value
+
 @app.template_filter('to_currency')
 def format_datetime(value):
   if value is not None and value != '--' and converter.isNumber(value):
     return converter.converterFloatToCurrency(value)
   return value
+
+@app.template_filter('to_cpf_cnpj')
+def format_cpf(value):
+  if value is  None or value == '--' or not isinstance(value, str):
+    return value
+  elif len(value) == 11:
+    cpf = value.zfill(11)
+    return f'{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}'
+  elif len(value) == 14:
+    cnpj = value.zfill(14)
+    return f'{cnpj[:2]}.{cnpj[2:5]}.{cnpj[5:8]}/{cnpj[8:12]}-{cnpj[12:]}'
+  return value
+
+@app.template_filter('to_cel_tel')
+def format_tel_cel(value):
+  if value is  None or value == '--' or not isinstance(value, str):
+    return value
+  elif len(value) == 8 or len(value) == 9:
+    tel = value.zfill(len(value))
+    return f'{tel[:4]}-{tel[4:]}' if len(value) == 8 else f'{tel[:5]}-{tel[5:]}'
+  elif len(value) == 10 or len(value) == 11:
+    telCp = value.zfill(len(value))
+    return f'({telCp[:2]}) {telCp[2:6]}-{telCp[6:]}' if len(value) == 10 else f'({telCp[:2]}) {telCp[2:7]}-{telCp[7:]}'
+  return value
+
 
 if __name__ == "__main__" or __name__ == "main":
   init(app)

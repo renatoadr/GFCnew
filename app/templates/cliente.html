@@ -1,98 +1,195 @@
+<!-- Template: cliente -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GFC</title>
-    <link rel="stylesheet" href="../static/css/style.css">
-    <link rel="stylesheet" href="../static/css/tooltip.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Cadastro Cliente</title>
+  {% include 'fractials/head.html' %}
 </head>
 
 <body>
-    {% include 'fractials/menu.html' %}
-    {% if cliente %}
+  {% include 'fractials/menu.html' %}
 
-    <form action="/salvar_alteracao_cliente" style="border: 0px; margin-top: 10em;" id="formAlterar" method="POST">
-        <div>
-            <label for="cpfCnpj">CPF / CNPJ:</label>
-            <input type="text" name="cpfCnpj" value="{{ cliente.getCpfCnpj() }}" {% if modo=='consulta' or
-                modo=='exclui' %} readonly {% endif %} />
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <h2 class="title title-page">
+            <i class="fa-solid fa-users"></i> {{ 'Editar' if cliente else 'Cadastrar' }} Cliente
+          </h2>
         </div>
-        <div>
-            <label for="tpCpfCnpj">Tipo CPF/CNPJ:</label>
-            <input type="text" name="tpCpfCnpj" value="{{ cliente.getTpCpfCnpj() }}" {% if modo=='consulta' or
-                modo=='exclui' %} readonly {% endif %} />
-        </div>
-        <div>
-            <label for="nmCliente">Nome do cliente:</label>
-            <input type="text" name="nmCliente" value="{{ cliente.getNmCliente() }}" {% if modo=='consulta' or
-                modo=='exclui' %} readonly {% endif %} />
-        </div>
-        <div>
-            <label for="ddd">DDD:</label>
-            <input type="text" name="ddd" value="{{ cliente.getDdd() }}" {% if modo=='consulta' or modo=='exclui' %}
-                readonly {% endif %} />
-        </div>
-        <div>
-            <label for="tel">Telefone:</label>
-            <input type="text" name="tel" value="{{ cliente.getTel() }}" {% if modo=='consulta' or modo=='exclui' %}
-                readonly {% endif %} />
-        </div>
-        <div>
-            <label for="email">Email:</label>
-            <input type="text" name="email" value="{{ cliente.getEmail() }}" {% if modo=='consulta' or modo=='exclui' %}
-                readonly {% endif %} />
-        </div>
-        <div>
-            <button {% if modo=='consulta' or modo=='exclui' %} hidden {% endif %} type="submit">Salvar</button>
-            <button type="button"
-                onclick="document.getElementById('formAlterar').action = '/tratar_clientes'; document.getElementById('formAlterar').method = 'GET'; document.getElementById('formAlterar').submit();"
-                style="bottom: 10; right: 10;">Cancelar</button>
-            <button {% if modo !='exclui' %} hidden {% endif %} type="button"
-                onclick="document.getElementById('formAlterar').action = '/excluir_cliente'; document.getElementById('formAlterar').method = 'GET'; document.getElementById('formAlterar').submit();"
-                style="bottom: 10; right: 10;">Confirmar exclusão</button>
+      </div>
 
-        </div>
-    </form>
+      <form action="{{'/salvar_alteracao_cliente' if cliente else '/cadastrar_cliente' }}" method="post"
+        id="formCliente">
+        <div class="row">
+          <div class="col-6">
 
-    {% else %}
-    <form action="/cadastrar_cliente" style="border: 0px; margin-top: 10em;" id="formIncluir" method="POST">
+            <div class="row">
+              <div class="col-6">
+                <div class="form-floating">
+                  <select type="text" name="tpCpfCnpj" id="tpCpfCnpj" class="form-control" placeholder=""
+                    value="{{ cliente.getTpCpfCnpj() if cliente}}">
+                    <option value="">Selecione</option>
+                    <option value="CPF" {% if cliente and cliente.getTpCpfCnpj()=='CPF' %} selected {% endif %}>Físico
+                    </option>
+                    <option value="CNPJ" {% if cliente and cliente.getTpCpfCnpj()=='CNPJ' %} selected {% endif %}>
+                      Jurídico</option>
+                  </select>
+                  <label for="tpCpfCnpj">Tipo de cliente</label>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-floating">
+                  <input type="text" name="cpfCnpj" id="cpfCnpj" disabled class="form-control" placeholder=""
+                    value="{{ cliente.getCpfCnpj() if cliente}}" maxlength="15" />
+                  <label for="cpfCnpj">Selecione o tipo</label>
+                </div>
+              </div>
+            </div>
 
-        <div>
-            <label for="cpfCnpj">CPF / CNPJ:</label>
-            <input type="text" name="cpfCnpj" />
-        </div>
-        <div>
-            <label for="tpCpfCnpj">Tipo CPF/CNPJ:</label>
-            <input type="text" name="tpCpfCnpj" />
-        </div>
-        <div>
-            <label for="nmCliente">Nome do cliente:</label>
-            <input type="text" name="nmCliente" />
-        </div>
-        <div>
-            <label for="ddd">DDD:</label>
-            <input type="text" name="ddd" />
-        </div>
-        <div>
-            <label for="tel">Telefone:</label>
-            <input type="text" name="tel" />
-        </div>
-        <div>
-            <label for="email">Email:</label>
-            <input type="text" name="email" />
-        </div>
-        <div>
-            <button type="submit">Salvar</button>
-            <button type="button"
-                onclick="document.getElementById('formIncluir').action = '/tratar_clientes'; document.getElementById('formIncluir').method = 'GET'; document.getElementById('formIncluir').submit();"
-                style="bottom: 10; right: 10;">Cancelar</button>
-        </div>
-    </form>
+            <div class="row">
+              <div class="col-3">
 
-    {% endif %}
+                <div class="form-floating mt-4">
+                  <input type="text" name="ddd" id="ddd" class="form-control 2num" placeholder=""
+                    value="{{ cliente.getDdd() if cliente}}" maxlength="2" />
+                  <label for="ddd">DDD</label>
+                </div>
 
+              </div>
+              <div class="col-9">
+
+                <div class="form-floating mt-4">
+                  <input type="text" name="tel" id="tel" class="form-control tel" placeholder=""
+                    value="{{ cliente.getTel() if cliente}}" maxlength="9" />
+                  <label for="tel">Telefone</label>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+          <div class="col-6">
+
+            <div class="form-floating ">
+              <input type="text" name="nmCliente" id="nmCliente" class="form-control" placeholder=""
+                value="{{ cliente.getNmCliente() if cliente}}" maxlength="100" />
+              <label for="nmCliente">Nome do cliente</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="email" name="email" id="email" class="form-control email" placeholder=""
+                value="{{ cliente.getEmail() if cliente}}" maxlength="50" />
+              <label for="email">Email</label>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="row mt-5 justify-content-center d-flex">
+          <div class="col-3">
+            <a href="/tratar_clientes" class="btn btn-secondary w-100">Cancelar</a>
+          </div>
+          <div class="col-3 offset-1">
+            <button type="submit" class="btn btn-success w-100" id="submit" disabled>{{ 'Salvar' if cliente else
+              'Criar' }}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  {% include 'fractials/footer.html' %}
+  <script>
+    $(function () {
+      $("#submit").removeAttr('disabled');
+      $('#tpCpfCnpj').change(function (evt) {
+        let tipo = evt.currentTarget.value;
+        let ipt = $('#cpfCnpj');
+        let label = $('label[for="cpfCnpj"]');
+        label.text(tipo);
+
+        if (tipo === 'CPF') {
+          ipt.addClass('cpf');
+          ipt.removeClass('cnpj');
+          ipt.attr('maxlength', 15);
+          $('.cpf').mask('000.000.000-00', { reverse: true });
+        } else {
+          ipt.removeClass('cpf');
+          ipt.addClass('cnpj');
+          ipt.attr('maxlength', 18);
+          $('.cnpj').mask('00.000.000/0000-00', { reverse: true });
+        }
+        $('#cpfCnpj-error').hide();
+        ipt.removeClass('is-invalid');
+        ipt.removeAttr('disabled');
+        ipt.val('');
+      })
+      const requireds = GFC.getRequiredFields("formCliente")
+      requireds.rules.cnpj = {
+        required: true,
+        cnpj: true
+      }
+      requireds.rules.ddd = {
+        required: true,
+        minlength: 2
+      }
+      requireds.rules.email = {
+        required: true,
+        email: true
+      }
+      requireds.rules.tel = {
+        required: true,
+        minlength: 9
+      }
+      requireds.rules.cpf = {
+        required: true,
+        cpf: true
+      }
+      requireds.messages.cpfCnpj = {
+        required: GFC_MESSAGES.REQUIRED,
+        cnpj: GFC_MESSAGES.CNPJ,
+        cpf: GFC_MESSAGES.CPF
+      }
+      requireds.messages.ddd = {
+        required: GFC_MESSAGES.REQUIRED,
+        minlength: GFC_MESSAGES.MIN_LENGTH(2)
+      }
+      requireds.messages.tel = {
+        required: GFC_MESSAGES.REQUIRED,
+        minlength: GFC_MESSAGES.MIN_LENGTH(9)
+      }
+      requireds.messages.email = {
+        required: GFC_MESSAGES.REQUIRED,
+        email: GFC_MESSAGES.EMAIL
+      }
+      $(function () {
+        $("#formCliente").validate({
+          rules: requireds.rules,
+          messages: requireds.messages,
+          errorClass: 'is-invalid',
+          errorElement: 'span',
+          highlight: function (element, errorClass, validClass) {
+            setTimeout(function () {
+              $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
+              $(element).addClass(errorClass)
+            }, 50)
+          },
+        });
+      });
+    })
+  </script>
+  {% if cliente %}
+  <script>
+    $(function () {
+      $('#tpCpfCnpj').trigger('change');
+      $('#cpfCnpj').val("{{cliente.getCpfCnpj()}}");
+    });
+  </script>
+  {% endif %}
 </body>
 
 </html>

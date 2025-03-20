@@ -1,31 +1,3 @@
-jQuery.validator.addMethod("cpf", function(value, element) {
-   value = jQuery.trim(value);
-
-    value = value.replace('.','');
-    value = value.replace('.','');
-    cpf = value.replace('-','');
-    while(cpf.length < 11) cpf = "0"+ cpf;
-    var expReg = /^0+$|^1+$|^2+$|^3+$|^4+$|^5+$|^6+$|^7+$|^8+$|^9+$/;
-    var a = [];
-    var b = new Number;
-    var c = 11;
-    for (i=0; i<11; i++){
-        a[i] = cpf.charAt(i);
-        if (i < 9) b += (a[i] * --c);
-    }
-    if ((x = b % 11) < 2) { a[9] = 0 } else { a[9] = 11-x }
-    b = 0;
-    c = 11;
-    for (y=0; y<10; y++) b += (a[y] * c--);
-    if ((x = b % 11) < 2) { a[10] = 0; } else { a[10] = 11-x; }
-
-    var retorno = true;
-    if ((cpf.charAt(9) != a[9]) || (cpf.charAt(10) != a[10]) || cpf.match(expReg)) retorno = false;
-
-    return this.optional(element) || retorno;
-
-}, "Informe um CPF válido");
-
 $(function(){
   let listaEstados = [];
 
@@ -65,10 +37,45 @@ $(function(){
     history.back();
   });
 
+  $(".percent").mask("##0,00", {
+    reverse: true,
+    onChange: function(val, evt, el, opt) {
+      let fval = parseFloat(val.replace(',', '.'))
+      if (!isNaN(fval) && fval > 100) {
+        el.val(100)
+      }
+    }
+  });
+
+  $(".perc").mask("##0", {
+    reverse: true,
+    onChange: function(val, evt, el, opt) {
+      let fval = parseFloat(val.replace(',', '.'))
+      if (!isNaN(fval) && fval > 100) {
+        el.val(100)
+      }
+    }
+  });
+
   $('.money').mask('#.##0,00', {reverse: true});
+
   $('.4num').mask('9999', {reverse: true});
+
   $('.2num').mask('99', {reverse: true});
+
   $('.cpf').mask('000.000.000-00', {reverse: true});
+
+  $('.cnpj').mask('00.000.000/0000-00', {reverse: true});
+
+  $('.tel').mask("Z0000-0000", {
+    translation: {
+      'Z': {
+        pattern: /[0-9]/, optional: true
+      }
+    },
+    reverse: true
+  });
+
   $('.cep').mask('00000-000', {
     onChange: function(cep) {
       $("#logradouro").val('');
@@ -87,6 +94,12 @@ $(function(){
         }, 500);
       });
     },
+  });
+
+  $('.email').mask("A", {
+    translation: {
+        "A": { pattern: /[\w@\-.+]/, recursive: true }
+    }
   });
 
   $.getJSON('https://brasilapi.com.br/api/banks/v1', function(data) {

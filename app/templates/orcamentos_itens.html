@@ -64,7 +64,7 @@
                 <tr class="text-center">
                   <td>{{'--' if m.getMesVigencia() is none else m.getMesVigencia() }}</td>
                   <td>{{'--' if m.getAnoVigencia() is none else m.getAnoVigencia() }}</td>
-                  <td>{{'--' if m.getDtCarga() is none else m.getDtCarga()|to_date}}</td>
+                  <td>{{'--' if m.getDtCarga() is none else m.getDtCarga()|to_datetime}}</td>
                   <td>{{'--' if m.getItem() is none else m.getItem() }}</td>
                   <td>{{'--' if m.getOrcadoValor() is none else m.getOrcadoValor()|to_currency }}</td>
                   <td>{{'--' if m.getFisicoValor() is none else m.getFisicoValor()|to_currency }}</td>
