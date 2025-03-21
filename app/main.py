@@ -1,7 +1,7 @@
 #!python3
 
 #from array import array
-from flask import Flask, request, render_template, redirect, url_for, flash, send_file, session, send_from_directory, jsonify
+from flask import Flask, request, render_template, redirect, url_for, send_file, session, send_from_directory, jsonify
 from controller.empreendimentoController import empreendimentoController
 from controller.gastoController import gastoController
 from controller.unidadeController import unidadeController
@@ -65,7 +65,6 @@ app = Flask(__name__)
 
 app.secret_key = "gfc001"
 
-
 def init(app):
     config = configparser.ConfigParser()
     try:
@@ -80,6 +79,9 @@ def init(app):
         print ("Succesfully read configs from: ", config_location)
     except:
         print ("Couldn't read configs from: ", config_location)
+
+def is_logged():
+  return session['logged_in'] == True
 
 @app.route('/m')
 def mlogin():
@@ -693,6 +695,16 @@ def excluir_cliente():
     cliS = cliC.consultarClientes ()
 
     return render_template("lista_clientes.html", clienteS=cliS)
+
+########## API #########
+@app.route('/api/clientes')
+def get_clientes():
+  if not is_logged():
+    return jsonify([])
+  cliC = clienteController()
+  cliS = cliC.consultarClientes()
+  newList = list(map(lambda it: it.to_json(), cliS))
+  return jsonify(newList)
 
 ############ ORÇAMENTOS ######################
 
@@ -2303,7 +2315,7 @@ def format_tel_cel(value):
   return value
 
 
-if __name__ == "__main__" or __name__ == "main":
+if __name__ == "__main__":
   init(app)
   app.run()
   #app.run(host="192.168.0.11",port=5000)

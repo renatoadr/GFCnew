@@ -104,10 +104,20 @@
             <label for="nmBanco">Banco</label>
           </div>
 
-          <div class="form-floating mt-4">
-            <input type="text" name="nmEngenheiro" id="nmEngenheiro" class="form-control" placeholder=""
-              value="{{ empreend.getNmEngenheiro() if empreend}}" maxlength="100" />
-            <label for="nmEngenheiro">Nome do engenheiro</label>
+          <div class="row mt-4">
+            <div class="col-9">
+              <div class="form-floating ">
+                <input type="text" name="nmEngenheiro" id="nmEngenheiro" class="form-control" placeholder=""
+                  value="{{ empreend.getNmEngenheiro() if empreend}}" maxlength="100" />
+                <label for="nmEngenheiro">Nome do engenheiro</label>
+              </div>
+            </div>
+            <div class="col-3">
+              <button type="button" class="btn btn-primary btn-sm text-center">
+                <i class="fa-solid fa-user-plus mr-2"></i>
+                Associar engenheiro
+              </button>
+            </div>
           </div>
 
           <div class="form-floating mt-4">

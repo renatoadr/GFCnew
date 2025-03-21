@@ -98,6 +98,7 @@ class clienteController:
 
         query =  "UPDATE " + MySql.DB_NAME + """.tb_clientes SET cpf_cnpj = %s, tp_cpf_cnpj = %s, nm_cliente = %s, ddd = %s, tel = %s, email = %s WHERE cpf_cnpj = %s """
 
+        print (query)
         cursor.execute(query, (
             cliente.getCpfCnpj(),
             cliente.getTpCpfCnpj(),

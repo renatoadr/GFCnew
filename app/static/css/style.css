@@ -148,3 +148,14 @@ main {
   min-height: 60vh;
   background: #384f7C;
 }
+
+.autocomplete {
+  width: 100%;
+  height: auto;
+
+}
+
+.autocomplete ul {
+  height: 200px;
+  overflow-y: auto;
+}
