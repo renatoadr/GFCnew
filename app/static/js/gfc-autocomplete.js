@@ -78,8 +78,19 @@ $(function() {
     const nameReceiver = button.getAttribute('data-input-name-receiver');
     const docReceiver = button.getAttribute('data-input-doc-receiver');
     const initialClient = button.getAttribute('data-initial-selected');
-    $('#modalAssociarClienteConfirmar').attr('data-input-name-receiver', nameReceiver);
-    $('#modalAssociarClienteConfirmar').attr('data-input-doc-receiver', docReceiver);
+    const url = new URL(location.href);
+    const modo = url.searchParams.get('modo') || '';
+
+    if (modo.toLowerCase() === 'consulta') {
+      $('#modalAssociarClienteConfirmar').hide();
+      $("#atcplt-inpu").attr('readonly', true);
+    } else {
+      $('#modalAssociarClienteConfirmar').show();
+      $('#modalAssociarClienteConfirmar').attr('data-input-name-receiver', nameReceiver);
+      $('#modalAssociarClienteConfirmar').attr('data-input-doc-receiver', docReceiver);
+      $("#atcplt-inpu").removeAttr('readonly');
+    }
+
     if (initialClient && initialClient !== 'None' && /\d+/.test(initialClient)) {
       $.getJSON('/api/cliente/'+initialClient, function(data) {
         openDataClient(data)
