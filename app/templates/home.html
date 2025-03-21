@@ -59,15 +59,15 @@
               </td>
 
               <td>
-                <a href="/importar_gastos?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
-                  data-bs-title="Importar Gastos">
+                <a href="/tratar_garantias?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
+                  data-bs-title="Garantias">
                   <i class="fa-solid fa-file-arrow-up"></i>
                 </a>
               </td>
 
               <td>
-                <a href="/tratar_gastos?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
-                  data-bs-toggle="tooltip" data-bs-title="Gastos">
+                <a href="/tratar_contas?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Conta Corrente">
                   <i class="fa-solid fa-money-bill-trend-up"></i>
                 </a>
               </td>
@@ -101,18 +101,25 @@
               </td>
 
               <td>
-                <a href="/criar_documentacao?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
-                  data-bs-title="Documentação">
-                  <i class="fa-solid fa-book"></i>
+                <a href="/tratar_medicoes?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Medições">
+                  <i class="fa-solid fa-scale-balanced"></i>
                 </a>
               </td>
 
-              <!-- <td>
-                <a href="/criar_graficos?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
-                  data-bs-title="Gráficos">
-                  <i class="fa-solid fa-chart-pie"></i>
+              <td>
+                <a href="/tratar_notas?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Notas">
+                  <i class="fa-solid fa-scale-balanced"></i>
                 </a>
-              </td> -->
+              </td>
+
+              <td>
+                <a href="/tratar_certidoes?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
+                  data-bs-title="Certidões">
+                  <i class="fa-solid fa-book"></i>
+                </a>
+              </td>
 
               <td>
                 <a href="/lista_relatorios?idEmpreend={{e.getIdEmpreend()}}&napelido=None" data-bs-toggle="tooltip"

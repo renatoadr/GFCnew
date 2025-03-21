@@ -1,39 +1,42 @@
 #!python3
 
 #from array import array
+
 from flask import Flask, request, render_template, redirect, url_for, flash, send_file, session, send_from_directory, jsonify
-from controller.empreendimentoController import empreendimentoController
-from controller.gastoController import gastoController
-from controller.unidadeController import unidadeController
-from controller.torreController import torreController
-from controller.clienteController import clienteController
-from controller.orcamentoController import orcamentoController
 from controller.agendaController import agendaController
+from controller.certidaoController import certidaoController
+from controller.clienteController import clienteController
+from controller.contaController import contaController
+from controller.empreendimentoController import empreendimentoController
+from controller.financeiroController import financeiroController
 from controller.graficoController import graficoController
 from controller.geralController import geralController
-from controller.notaController import notaController
-from controller.medicaoController import medicaoController
-from controller.contaController import contaController
-from controller.pontoController import pontoController
-from controller.financeiroController import financeiroController
 from controller.inadimplenciaController import inadimplenciaController
+from controller.medicaoController import medicaoController
+from controller.notaController import notaController
+from controller.orcamentoController import orcamentoController
+from controller.pontoController import pontoController
+from controller.torreController import torreController
+from controller.unidadeController import unidadeController
 from controller.usuarioController import usuarioController
+
 from datetime import datetime
-from dto.empreendimento import empreendimento
-from dto.gasto import gasto
-from dto.unidade import unidade
-from dto.torre import torre
-from dto.cliente import cliente
-from dto.orcamento import orcamento
 from dto.agenda import agenda
-from dto.inadimpencia import inadimpencia
+#from dto.documento import documento
+from dto.empreendimento import empreendimento
+from dto.unidade import unidade
+from dto.certidao import certidao
+from dto.cliente import cliente
+from dto.conta import conta
 from dto.geral import geral
 #from dto.grafico import grafico
-from dto.nota import nota
-from dto.medicao import medicao
-from dto.conta import conta
-from dto.ponto import ponto
 from dto.financeiro import financeiro
+from dto.inadimpencia import inadimpencia
+from dto.torre import torre
+from dto.orcamento import orcamento
+from dto.medicao import medicao
+from dto.nota import nota
+from dto.ponto import ponto
 from dto.usuario import usuario
 from werkzeug.utils import secure_filename
 from matplotlib import pyplot as plt
@@ -273,10 +276,12 @@ def salvar_empreend():
     empc.salvarEmpreendimento(empreend)
     return redirect("/home")
 
-################ GASTOS ###############################
+################ GARANTIAS ###############################
 
-@app.route('/importar_gastos')
-def abrir_form_upload_gastos():
+################ CERTIDOES ###############################
+
+@app.route('/tratar_certidoes')
+def tratar_certidoes():
 
 # ---- teste de sessão
     temp = protectedPage()
@@ -287,88 +292,42 @@ def abrir_form_upload_gastos():
 #---- fim teste de sessão
 
     idEmpreend = request.args.get("idEmpreend")
-    print(idEmpreend)
-    return render_template("upload_gastos.html", idEmpreend=idEmpreend)
+    nmEmpreend = request.args.get("nmEmpreend")
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+    print('-----tratar_certidoes---')
+    print('tratar_certidoes ',idEmpreend)
 
-@app.route('/upload_arquivo_gastos', methods=['POST'])
-def upload_file():
-    # check if the post request has the file part
-    if 'file' not in request.files:
-        mensagem = "Erro no upload do arquivo. No file part."
-        return render_template("erro.html", mensagem=mensagem)
-    file = request.files['file']
-    if file:
-        if file.filename == '':
-            mensagem = "Erro no upload do arquivo. Nome do arquivo='" + file.filename + "'."
-        elif not allowed_file(file.filename):
-            mensagem = "Erro no upload do arquivo. Arquivo='" + file.filename + "' não possui uma das extensões permitidas."
-        else:
-            filename = secure_filename(file.filename)
-            caminhoArq = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(caminhoArq)
+    certC = certidaoController ()
+    certS = certC.consultarCertidoes (idEmpreend)
 
-            carregar_gastos(caminhoArq, request.form.get('idEmpreendimento'))
+    print('-----tratar_certidoes 2 ---')
+    print('tratar_certidoes ',idEmpreend)
 
-            empc = empreendimentoController()
-            emps = empc.consultarEmpreendimentos ()
-
-            return render_template("home.html", empreends=emps)
+    if len(certS) == 0:
+        return render_template("certidoes.html", idEmpreend=idEmpreend, mensagem="Certidões não Cadastradas!!!",  nmEmpreend=nmEmpreend, certidoes=certS)
     else:
-        mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
-    return render_template("erro.html", mensagem=mensagem)
+        return render_template("certidoes.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend, certidoes=certS)
 
-#@app.route('/importar_gastos', methods=['POST'])
-def carregar_gastos(caminhoArq, idEmpreend):
+@app.route('/efetuar_cad_certidoes', methods=['POST'])
+def efetuar_cad_certidoes():
+    cert = certidao ()
+    print ('/efetuar_cad_certidoes ', request.form.get('idEmpreend'))
+    cert.setIdEmpreend (request.form.get('idEmpreend'))
+    cert.setEstadualStatus (request.form.get('estadualStatus'))
+    cert.setEstadualValidade (request.form.get('estadualValidade'))
+    cert.setFgtsStatus (request.form.get('fgtsStatus'))
+    cert.setFgtsValidade (request.form.get('fgtsValidade'))
+    cert.setMunicipalStatus (request.form.get('municipalStatus'))
+    cert.setMunicipalValidade (request.form.get('municipalValidade'))
+    cert.setSrfInssStatus (request.form.get('inssStatus'))
+    cert.setSrfInssValidade (request.form.get('srfInssValidade'))
+    cert.setTrabalhistaStatus (request.form.get('trabalhistaStatus'))
+    cert.setTrabalhistaValidade (request.form.get('trabalhistaValidade'))
 
-    tabela = pd.read_excel(caminhoArq)
+    certC = certidaoController()
+    certC.inserirCertidoes(cert)
+    return redirect("/tratar_certidoes")
 
-    l, c = tabela.shape
-    linha = 0
-
-    g = gasto()
-    dtTime = datetime.now()
-    dateTime = dtTime.strftime("%Y-%m-%d %H:%M:%S")
-
- #   print (idEmpreend)
-
-    while linha < l:
-        dtEvento = tabela.at[linha, 'Data']
-        vlMedicao = tabela.at[linha, 'Medição']
-        vlCompras = tabela.at[linha, 'Compras']
-        vlRhAdm = tabela.at[linha, 'Rh/ADM']
-
-        datetime_object = datetime.strptime(str(dtEvento), "%Y-%m-%d %H:%M:%S")
-
-        dtEvento = datetime_object.date().isoformat()
-        mes = tabela.at[linha, 'mês']
-
-        print(g)
-
-        g.setIdGasto (dateTime)
-        g.setIdEmpreend (idEmpreend)
-        g.setDtEvento (dtEvento)
-
-        if vlMedicao > 0:
-            g.setVlMedicao (vlMedicao)
-        else:
-            g.setVlMedicao (0)
-
-        if vlCompras > 0:
-            g.setVlCompras (vlCompras)
-        else:
-            g.setVlCompras (0)
-
-        if vlRhAdm > 0:
-            g.setVlRhAdm (vlRhAdm)
-        else:
-            g.setVlRhAdm (0)
-
-        gastoc = gastoController()
-        gastoc.inserirGasto(g)
-        linha += 1
 
 ############ UNIDADES ######################
 
@@ -575,18 +534,6 @@ def abrir_cad_torre():
     print(idEmpreend)
 
     return render_template("torre.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend)
-
-#@app.route('/abrir_edicao_torre', methods=['POST'])
-#def abrir_edicao_torre():
-#
-#    idUnidade = request.form.get("idUnidade")
-#    print('----------- abrir_edicao_torre')
-#    print (idUnidade)
-#    unidc = torreController ()
-#    unid = unidc.consultarUnidadePeloId (idUnidade)
-#
-#    print(unid)
-#    return render_template("torre.html", torre=torre)
 
 @app.route('/cadastrar_torre', methods=['POST'])
 def cadastrar_torre():
@@ -901,10 +848,7 @@ def consultar_orcamento_data():
     print('------ consultar_orcamento_data fim --------')
 #    print(modo)
 
-    return render_template(
-        "orcamentos_itens.html",
-        orcamentos=medS
-      )
+    return render_template("orcamentos_itens.html", orcamentos=medS)
 
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
@@ -926,19 +870,19 @@ def upload_arquivo_orcamentos():
             caminhoArq = os.path.join(app.config['UPLOAD_FOLDER'], filename)
             file.save(caminhoArq)
 
-            idEmpreend = request.form.get("idEmpreend")
+#            idEmpreend = request.form.get("idEmpreend")
             print ('-------------- upload_arquivo_orcamentos ----------------')
-
-            orcC = orcamentoController ()
+            idEmpreend = 56
+            orcC = medicaoController ()
             print (caminhoArq, '   ', idEmpreend)
-            orcC.carregar_orcamentos(caminhoArq, idEmpreend)
+            orcC.carregar_medicoes(caminhoArq, idEmpreend)
 
             return redirect("/tratar_orcamentos")
     else:
         mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
     return render_template("erro.html", mensagem=mensagem)
 
-@app.route('/editar_item_orcamento', methods=['POST'])
+@app.route('/editar_item_orcamento', methods=['GET'])
 def editar_item_orcamento():
 
     idOrc = request.args.get("idOrcamento")
@@ -1034,27 +978,269 @@ def salvar_item_orcamento():
 
     return render_template("orcamentos_itens.html", orcamentos=orcS, idEmpreend=request.form.get('idEmpreend'))
 
-@app.route('/incluir_item_orcamento', methods=['POST'])
-def incluir_item_orcamento():
+@app.route('/cadastrar_item_orcamento', methods=['GET'])
+def cadastrar_item_orcamento():
     orc = orcamento ()
-    orc.setIdEmpreend (request.form.get('idEmpreend'))
-    orc.setMesVigencia (request.form.get('MesVigencia'))
-    orc.setAnoVigencia (request.form.get('anoVigencia'))
-    orc.setDtCarga (request.form.get('dtCarga'))
-    orc.setItem (request.form.get('item'))
-    orc.setOrcadoValor (request.form.get('orcadoValor'))
-    orc.setFisicoValor (request.form.get('fisicoValor'))
-    orc.setFisicoPercentual (request.form.get('fisicoPercentual'))
-    orc.setFisicoSaldo (request.form.get('fisicoSaldo'))
-    orc.setFinanceiroValor (request.form.get('financeiroValor'))
-    orc.setFinanceiroPercentual (request.form.get('financeiroPercentual'))
-    orc.setFinanceiroSaldo (request.form.get('financeiroSaldo'))
+    orc.setIdEmpreend (request.args.get('idEmpreend'))
+    orc.setMesVigencia (request.args.get('MesVigencia'))
+    orc.setAnoVigencia (request.args.get('anoVigencia'))
+    orc.setDtCarga (request.args.get('dtCarga'))
+    orc.setItem (request.args.get('item'))
+    orc.setOrcadoValor (request.args.get('orcadoValor'))
+    orc.setFisicoValor (request.args.get('fisicoValor'))
+    orc.setFisicoPercentual (request.args.get('fisicoPercentual'))
+    orc.setFisicoSaldo (request.args.get('fisicoSaldo'))
+    orc.setFinanceiroValor (request.args.get('financeiroValor'))
+    orc.setFinanceiroPercentual (request.args.get('financeiroPercentual'))
+    orc.setFinanceiroSaldo (request.args.get('financeiroSaldo'))
 
     orcC = orcamentoController()
 #    empc.inserirEmpreendimento(empreend)
 #    emps = empc.consultarEmpreendimentos ()
     print('passei aqui')
     return render_template("home.html", empreends='emps')
+
+############ NOTAS ######################
+
+@app.route('/upload_arquivo_notas', methods=['POST'])
+def upload_arquivo_notas():
+    # check if the post request has the file part
+    if 'file' not in request.files:
+        mensagem = "Erro no upload do arquivo. No file part."
+        return render_template("erro.html", mensagem=mensagem)
+    file = request.files['file']
+    if file:
+        if file.filename == '':
+            mensagem = "Erro no upload do arquivo. Nome do arquivo='" + file.filename + "'."
+        elif not allowed_file(file.filename):
+            mensagem = "Erro no upload do arquivo. Arquivo='" + file.filename + "' não possui uma das extensões permitidas."
+        else:
+            filename = secure_filename(file.filename)
+            caminhoArq = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(caminhoArq)
+
+#            idEmpreend = request.args.get("idEmpreend")
+            idEmpreend = request.form.get("idEmpreend")
+
+            print ('-------------- upload_arquivo_notas ----------------')
+
+            notC = notaController ()
+            print (caminhoArq, '   ', idEmpreend)
+            notC.carregar_notas(caminhoArq, idEmpreend)
+
+            return redirect("/tratar_notas")
+    else:
+        mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
+    return render_template("erro.html", mensagem=mensagem)
+
+@app.route('/tratar_notas')
+def tratar_notas():
+# ---- teste de sessão
+    temp = protectedPage()
+
+    if temp != None:
+        print ('protectedPage()')
+        return temp
+#---- fim teste de sessão
+
+    idEmpreend = request.args.get("idEmpreend")
+    nmEmpreend = request.args.get("nmEmpreend")
+
+    if (not IdEmpreend().has() or not NmEmpreend().has()) and (idEmpreend is None or nmEmpreend is None):
+      return redirect('/home')
+
+    if idEmpreend:
+      IdEmpreend().set(idEmpreend)
+    else:
+      idEmpreend = IdEmpreend().get()
+
+    if nmEmpreend:
+      NmEmpreend().set(nmEmpreend)
+    else:
+      nmEmpreend = NmEmpreend().get()
+
+    print('-----tratar_notas----')
+    print(idEmpreend, nmEmpreend)
+
+    notC = notaController ()
+    notS = notC.consultarNotas(idEmpreend)
+
+    if len(notS) == 0:
+        return render_template("lista_notas.html", mensagem="Nota não Cadastrada, importar o arquivo Excel!!!", notas=notS)
+    else:
+        return render_template("lista_notas.html", notas=notS)
+
+############ CONTA CORRENTE ######################
+
+@app.route('/upload_arquivo_contas', methods=['POST'])
+def upload_arquivo_contas():
+    # check if the post request has the file part
+    if 'file' not in request.files:
+        mensagem = "Erro no upload do arquivo. No file part."
+        return render_template("erro.html", mensagem=mensagem)
+    file = request.files['file']
+    if file:
+        if file.filename == '':
+            mensagem = "Erro no upload do arquivo. Nome do arquivo='" + file.filename + "'."
+        elif not allowed_file(file.filename):
+            mensagem = "Erro no upload do arquivo. Arquivo='" + file.filename + "' não possui uma das extensões permitidas."
+        else:
+            filename = secure_filename(file.filename)
+            caminhoArq = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(caminhoArq)
+
+#            idEmpreend = request.args.get("idEmpreend")
+            idEmpreend = request.form.get("idEmpreend")
+
+            print ('-------------- upload_arquivo_contas ----------------')
+
+            notC = contaController ()
+            print (caminhoArq, '   ', idEmpreend)
+            notC.carregar_contas(caminhoArq, idEmpreend)
+
+            return redirect("/tratar_contas")
+    else:
+        mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
+    return render_template("erro.html", mensagem=mensagem)
+
+@app.route('/tratar_contas')
+def tratar_contas():
+# ---- teste de sessão
+    temp = protectedPage()
+
+    if temp != None:
+        print ('protectedPage()')
+        return temp
+#---- fim teste de sessão
+
+    idEmpreend = request.args.get("idEmpreend")
+    nmEmpreend = request.args.get("nmEmpreend")
+
+    if (not IdEmpreend().has() or not NmEmpreend().has()) and (idEmpreend is None or nmEmpreend is None):
+      return redirect('/home')
+
+    if idEmpreend:
+      IdEmpreend().set(idEmpreend)
+    else:
+      idEmpreend = IdEmpreend().get()
+
+    if nmEmpreend:
+      NmEmpreend().set(nmEmpreend)
+    else:
+      nmEmpreend = NmEmpreend().get()
+
+    print('-----tratar_contas----')
+    print(idEmpreend, nmEmpreend)
+
+    contC = contaController ()
+    contS = contC.consultarContas(idEmpreend)
+
+    if len(contS) == 0:
+        return render_template("lista_contas.html", mensagem="Conta não Cadastrada, importar o arquivo Excel!!!", contas=contS)
+    else:
+        return render_template("lista_contas.html", contas=contS)
+
+
+############ MEDIÇÕES ######################
+
+@app.route('/tratar_medicoes')
+def tratar_medicoes():
+# ---- teste de sessão
+    temp = protectedPage()
+
+    if temp != None:
+        print ('protectedPage()')
+        return temp
+#---- fim teste de sessão
+
+    idEmpreend = request.args.get("idEmpreend")
+    nmEmpreend = request.args.get("nmEmpreend")
+
+    if (not IdEmpreend().has() or not NmEmpreend().has()) and (idEmpreend is None or nmEmpreend is None):
+      return redirect('/home')
+
+    if idEmpreend:
+      IdEmpreend().set(idEmpreend)
+    else:
+      idEmpreend = IdEmpreend().get()
+
+    if nmEmpreend:
+      NmEmpreend().set(nmEmpreend)
+    else:
+      nmEmpreend = NmEmpreend().get()
+
+    print('-----tratar_medicoes----')
+    print(idEmpreend, nmEmpreend)
+
+    medC = medicaoController ()
+    medS = medC.consultarMedicoes(idEmpreend)
+
+    if len(medS) == 0:
+        return render_template("lista_medicoes.html", mensagem="Medição não Cadastrada, importar o arquivo Excel!!!", medicoes=medS)
+    else:
+        return render_template("lista_medicoes.html", medicoes=medS)
+
+@app.route('/consultar_medicao_data')
+def consultar_medicao_data():
+
+#    modo = request.args.get("modo")
+    idEmpreend = IdEmpreend().get()
+    dtCarga = request.args.get("dtCarga")
+
+    if dtCarga is None and not DtCarga().has():
+      return redirect('/tratar_medicoes')
+    elif dtCarga is None:
+      dtCarga = DtCarga().get()
+    else:
+      DtCarga().set(dtCarga)
+
+
+    print('------ consultar_medicao_data ------')
+#    print(modo)
+    print (idEmpreend, dtCarga)
+
+    medC = medicaoController ()
+    medS = medC.consultarMedicaoPelaData (idEmpreend, dtCarga)
+
+    print('------ consultar_medicao_data fim --------')
+#    print(modo)
+
+    return render_template("medicao_itens.html", medicoes=medS)
+
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
+
+@app.route('/upload_arquivo_medicoes', methods=['GET', 'POST'])
+def upload_arquivo_medicoes():
+    # check if the post request has the file part
+    if 'file' not in request.files:
+        mensagem = "Erro no upload do arquivo. No file part."
+        return render_template("erro.html", mensagem=mensagem)
+    file = request.files['file']
+    if file:
+        if file.filename == '':
+            mensagem = "Erro no upload do arquivo. Nome do arquivo='" + file.filename + "'."
+        elif not allowed_file(file.filename):
+            mensagem = "Erro no upload do arquivo. Arquivo='" + file.filename + "' não possui uma das extensões permitidas."
+        else:
+            filename = secure_filename(file.filename)
+            caminhoArq = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file.save(caminhoArq)
+
+#            idEmpreend = request.args.get("idEmpreend")
+            idEmpreend = request.form.get("idEmpreend")
+
+            print ('-------------- upload_arquivo_medicoes ----------------')
+
+            orcC = medicaoController ()
+            print (caminhoArq, '   ', idEmpreend)
+            orcC.carregar_medicoes(caminhoArq, idEmpreend)
+
+            return redirect("/tratar_medicoes")
+    else:
+        mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
+    return render_template("erro.html", mensagem=mensagem)
+
 
 ############ AGENDA ######################
 
@@ -1820,8 +2006,8 @@ def tab_conta_corrente():
 
     plt.savefig(grafNome)
 
-@app.route('/tab_pontos_atencao_geral')
-def tab_pontos_atencao_geral():
+@app.route('/tab_garantias_geral')
+def tab_garantias_geral():
 
 #    tipo = request.args.get("tipo")
 #    idEmpreend = request.args.get("idEmpreend")
@@ -1885,12 +2071,12 @@ def tab_pontos_atencao_geral():
 
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'tab_pontos_atencao_geral.png'
+    grafNome = diretorio + 'tab_garantias_geral.png'
 
     plt.savefig(grafNome)
 
-@app.route('/tab_pontos_atencao_obra')
-def tab_pontos_atencao_obra():
+@app.route('/tab_garantias_obra')
+def tab_garantias_obra():
 
 #    tipo = request.args.get("tipo")
 #    idEmpreend = request.args.get("idEmpreend")
@@ -1954,12 +2140,12 @@ def tab_pontos_atencao_obra():
 
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'tab_pontos_atencao_obra.png'
+    grafNome = diretorio + 'tab_garantias_obra.png'
 
     plt.savefig(grafNome)
 
-@app.route('/tab_pontos_atencao_documentos')
-def tab_pontos_atencao_documentos():
+@app.route('/tab_certidoes')
+def tab_garantias_certidoes():
 
 #    tipo = request.args.get("tipo")
 #    idEmpreend = request.args.get("idEmpreend")
@@ -2023,7 +2209,7 @@ def tab_pontos_atencao_documentos():
 
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'tab_pontos_atencao_documentos.png'
+    grafNome = diretorio + 'tab_certidoes.png'
 
     plt.savefig(grafNome)
 
