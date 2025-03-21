@@ -3,7 +3,6 @@
 #from array import array
 from flask import Flask, request, render_template, redirect, url_for, send_file, session, send_from_directory, jsonify
 from controller.empreendimentoController import empreendimentoController
-from controller.gastoController import gastoController
 from controller.unidadeController import unidadeController
 from controller.torreController import torreController
 from controller.clienteController import clienteController
@@ -191,7 +190,6 @@ def logout():
   session.pop('nome', None)
   return redirect("/")
 
-
 def protectedPage():
     if 'logged_in' not in session:
 #        print('opcao1')
@@ -286,8 +284,6 @@ def salvar_empreend():
     empc = empreendimentoController()
     empc.salvarEmpreendimento(empreend)
     return redirect("/home")
-
-################ GARANTIAS ###############################
 
 ################ CERTIDOES ###############################
 
@@ -770,9 +766,6 @@ def consultar_orcamento_data():
 
     return render_template("orcamentos_itens.html", orcamentos=medS)
 
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
-
 @app.route('/upload_arquivo_orcamentos', methods=['POST'])
 def upload_arquivo_orcamentos():
     # check if the post request has the file part
@@ -909,247 +902,8 @@ def incluir_item_orcamento():
     print('passei aqui')
     return redirect("/consultar_orcamento_data")
 
-############ NOTAS ######################
-
-@app.route('/upload_arquivo_notas', methods=['POST'])
-def upload_arquivo_notas():
-    # check if the post request has the file part
-    if 'file' not in request.files:
-        mensagem = "Erro no upload do arquivo. No file part."
-        return render_template("erro.html", mensagem=mensagem)
-    file = request.files['file']
-    if file:
-        if file.filename == '':
-            mensagem = "Erro no upload do arquivo. Nome do arquivo='" + file.filename + "'."
-        elif not allowed_file(file.filename):
-            mensagem = "Erro no upload do arquivo. Arquivo='" + file.filename + "' não possui uma das extensões permitidas."
-        else:
-            filename = secure_filename(file.filename)
-            caminhoArq = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(caminhoArq)
-
-#            idEmpreend = request.args.get("idEmpreend")
-            idEmpreend = request.form.get("idEmpreend")
-
-            print ('-------------- upload_arquivo_notas ----------------')
-
-            notC = notaController ()
-            print (caminhoArq, '   ', idEmpreend)
-            notC.carregar_notas(caminhoArq, idEmpreend)
-
-            return redirect("/tratar_notas")
-    else:
-        mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
-    return render_template("erro.html", mensagem=mensagem)
-
-@app.route('/tratar_notas')
-def tratar_notas():
-# ---- teste de sessão
-    temp = protectedPage()
-
-    if temp != None:
-        print ('protectedPage()')
-        return temp
-#---- fim teste de sessão
-
-    idEmpreend = request.args.get("idEmpreend")
-    nmEmpreend = request.args.get("nmEmpreend")
-
-    if (not IdEmpreend().has() or not NmEmpreend().has()) and (idEmpreend is None or nmEmpreend is None):
-      return redirect('/home')
-
-    if idEmpreend:
-      IdEmpreend().set(idEmpreend)
-    else:
-      idEmpreend = IdEmpreend().get()
-
-    if nmEmpreend:
-      NmEmpreend().set(nmEmpreend)
-    else:
-      nmEmpreend = NmEmpreend().get()
-
-    print('-----tratar_notas----')
-    print(idEmpreend, nmEmpreend)
-
-    notC = notaController ()
-    notS = notC.consultarNotas(idEmpreend)
-
-    if len(notS) == 0:
-        return render_template("lista_notas.html", mensagem="Nota não Cadastrada, importar o arquivo Excel!!!", notas=notS)
-    else:
-        return render_template("lista_notas.html", notas=notS)
-
-############ CONTA CORRENTE ######################
-
-@app.route('/upload_arquivo_contas', methods=['POST'])
-def upload_arquivo_contas():
-    # check if the post request has the file part
-    if 'file' not in request.files:
-        mensagem = "Erro no upload do arquivo. No file part."
-        return render_template("erro.html", mensagem=mensagem)
-    file = request.files['file']
-    if file:
-        if file.filename == '':
-            mensagem = "Erro no upload do arquivo. Nome do arquivo='" + file.filename + "'."
-        elif not allowed_file(file.filename):
-            mensagem = "Erro no upload do arquivo. Arquivo='" + file.filename + "' não possui uma das extensões permitidas."
-        else:
-            filename = secure_filename(file.filename)
-            caminhoArq = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(caminhoArq)
-
-#            idEmpreend = request.args.get("idEmpreend")
-            idEmpreend = request.form.get("idEmpreend")
-
-            print ('-------------- upload_arquivo_contas ----------------')
-
-            notC = contaController ()
-            print (caminhoArq, '   ', idEmpreend)
-            notC.carregar_contas(caminhoArq, idEmpreend)
-
-            return redirect("/tratar_contas")
-    else:
-        mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
-    return render_template("erro.html", mensagem=mensagem)
-
-@app.route('/tratar_contas')
-def tratar_contas():
-# ---- teste de sessão
-    temp = protectedPage()
-
-    if temp != None:
-        print ('protectedPage()')
-        return temp
-#---- fim teste de sessão
-
-    idEmpreend = request.args.get("idEmpreend")
-    nmEmpreend = request.args.get("nmEmpreend")
-
-    if (not IdEmpreend().has() or not NmEmpreend().has()) and (idEmpreend is None or nmEmpreend is None):
-      return redirect('/home')
-
-    if idEmpreend:
-      IdEmpreend().set(idEmpreend)
-    else:
-      idEmpreend = IdEmpreend().get()
-
-    if nmEmpreend:
-      NmEmpreend().set(nmEmpreend)
-    else:
-      nmEmpreend = NmEmpreend().get()
-
-    print('-----tratar_contas----')
-    print(idEmpreend, nmEmpreend)
-
-    contC = contaController ()
-    contS = contC.consultarContas(idEmpreend)
-
-    if len(contS) == 0:
-        return render_template("lista_contas.html", mensagem="Conta não Cadastrada, importar o arquivo Excel!!!", contas=contS)
-    else:
-        return render_template("lista_contas.html", contas=contS)
-
-
-############ MEDIÇÕES ######################
-
-@app.route('/tratar_medicoes')
-def tratar_medicoes():
-# ---- teste de sessão
-    temp = protectedPage()
-
-    if temp != None:
-        print ('protectedPage()')
-        return temp
-#---- fim teste de sessão
-
-    idEmpreend = request.args.get("idEmpreend")
-    nmEmpreend = request.args.get("nmEmpreend")
-
-    if (not IdEmpreend().has() or not NmEmpreend().has()) and (idEmpreend is None or nmEmpreend is None):
-      return redirect('/home')
-
-    if idEmpreend:
-      IdEmpreend().set(idEmpreend)
-    else:
-      idEmpreend = IdEmpreend().get()
-
-    if nmEmpreend:
-      NmEmpreend().set(nmEmpreend)
-    else:
-      nmEmpreend = NmEmpreend().get()
-
-    print('-----tratar_medicoes----')
-    print(idEmpreend, nmEmpreend)
-
-    medC = medicaoController ()
-    medS = medC.consultarMedicoes(idEmpreend)
-
-    if len(medS) == 0:
-        return render_template("lista_medicoes.html", mensagem="Medição não Cadastrada, importar o arquivo Excel!!!", medicoes=medS)
-    else:
-        return render_template("lista_medicoes.html", medicoes=medS)
-
-@app.route('/consultar_medicao_data')
-def consultar_medicao_data():
-
-#    modo = request.args.get("modo")
-    idEmpreend = IdEmpreend().get()
-    dtCarga = request.args.get("dtCarga")
-
-    if dtCarga is None and not DtCarga().has():
-      return redirect('/tratar_medicoes')
-    elif dtCarga is None:
-      dtCarga = DtCarga().get()
-    else:
-      DtCarga().set(dtCarga)
-
-
-    print('------ consultar_medicao_data ------')
-#    print(modo)
-    print (idEmpreend, dtCarga)
-
-    medC = medicaoController ()
-    medS = medC.consultarMedicaoPelaData (idEmpreend, dtCarga)
-
-    print('------ consultar_medicao_data fim --------')
-#    print(modo)
-
-    return render_template("medicao_itens.html", medicoes=medS)
-
 def allowed_file(filename):
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
-
-@app.route('/upload_arquivo_medicoes', methods=['GET', 'POST'])
-def upload_arquivo_medicoes():
-    # check if the post request has the file part
-    if 'file' not in request.files:
-        mensagem = "Erro no upload do arquivo. No file part."
-        return render_template("erro.html", mensagem=mensagem)
-    file = request.files['file']
-    if file:
-        if file.filename == '':
-            mensagem = "Erro no upload do arquivo. Nome do arquivo='" + file.filename + "'."
-        elif not allowed_file(file.filename):
-            mensagem = "Erro no upload do arquivo. Arquivo='" + file.filename + "' não possui uma das extensões permitidas."
-        else:
-            filename = secure_filename(file.filename)
-            caminhoArq = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-            file.save(caminhoArq)
-
-#            idEmpreend = request.args.get("idEmpreend")
-            idEmpreend = request.form.get("idEmpreend")
-
-            print ('-------------- upload_arquivo_medicoes ----------------')
-
-            orcC = medicaoController ()
-            print (caminhoArq, '   ', idEmpreend)
-            orcC.carregar_medicoes(caminhoArq, idEmpreend)
-
-            return redirect("/tratar_medicoes")
-    else:
-        mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
-    return render_template("erro.html", mensagem=mensagem)
-
 
 ############ NOTAS ######################
 
@@ -1357,9 +1111,6 @@ def consultar_medicao_data():
 #    print(modo)
 
     return render_template("medicao_itens.html", medicoes=medS)
-
-def allowed_file(filename):
-    return '.' in filename and filename.rsplit('.', 1)[1].lower() in app.config['ALLOWED_EXTENSIONS']
 
 @app.route('/upload_arquivo_medicoes', methods=['GET', 'POST'])
 def upload_arquivo_medicoes():
@@ -1430,18 +1181,6 @@ def abrir_cad_agenda():
     print(idEmpreend)
 
     return render_template("agenda.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend)
-
-#@app.route('/abrir_edicao_agenda', methods=['POST'])
-#def abrir_edicao_agenda():
-#
-#    idUnidade = request.form.get("idUnidade")
-#    print('----------- abrir_edicao_agenda')
-#    print (idUnidade)
-#    unidc = agendaController ()
-#    unid = unidc.consultarUnidadePeloId (idUnidade)
-#
-#    print(unid)
-#    return render_template("agenda.html", agenda=agenda)
 
 @app.route('/cadastrar_agenda', methods=['POST'])
 def cadastrar_agenda():
@@ -1554,7 +1293,6 @@ def obter_grafico():
     print ('------------ obter_grafico -------------')
     print (grafNome)
     return send_file(grafNome, mimetype='image/png')
-
 
 @app.route('/graf_orcamento_liberacao', methods=['GET'])
 def graf_orcamento_liberacao():
