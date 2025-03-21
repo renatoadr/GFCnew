@@ -70,16 +70,15 @@
               </td>
 
               <td>
-                <a href="#" data-bs-toggle="tooltip" data-bs-title="Importar Gastos">
-                  <i class="fa-solid fa-file-arrow-up" data-bs-toggle="modal" data-bs-target="#modalUploadExcel"
-                    data-action-process="/upload_arquivo_gastos"
-                    data-desc="Informe o arquivo com os dados dos gastos"></i>
+                <a href="/tratar_garantias?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
+                  data-bs-title="Garantias">
+                  <i class="fa-solid fa-file-arrow-up"></i>
                 </a>
               </td>
 
               <td>
-                <a href="/tratar_gastos?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
-                  data-bs-toggle="tooltip" data-bs-title="Gastos">
+                <a href="/tratar_contas?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Conta Corrente">
                   <i class="fa-solid fa-money-bill-trend-up"></i>
                 </a>
               </td>
@@ -112,8 +111,22 @@
               </td>
 
               <td>
-                <a href="/criar_documentacao?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
-                  data-bs-title="Documentação">
+                <a href="/tratar_medicoes?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Medições">
+                  <i class="fa-solid fa-scale-balanced"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/tratar_notas?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Notas">
+                  <i class="fa-solid fa-scale-balanced"></i>
+                </a>
+              </td>
+
+              <td>
+                <a href="/tratar_certidoes?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
+                  data-bs-title="Certidões">
                   <i class="fa-solid fa-book"></i>
                 </a>
               </td>
