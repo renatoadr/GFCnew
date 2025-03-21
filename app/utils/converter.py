@@ -21,9 +21,6 @@ def converterFloatToCurrency(value):
 def removeAlpha(value):
    return re.sub(r"\D+", "", value)
 
-def removeCaractersNotDigit(value):
-   return re.sub(r"^\d+", "", value)
-
 def isNumber(value):
     try:
       float(value)

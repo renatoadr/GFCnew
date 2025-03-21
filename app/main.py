@@ -226,7 +226,7 @@ def efetuar_cad_empreend():
     empreend.setCidade (request.form.get('cidade'))
     empreend.setEstado (request.form.get('estado'))
     empreend.setCep (converter.removeAlpha(request.form.get('cep')))
-    empreend.setNmEngenheiro (request.form.get('nmEngenheiro'))
+    empreend.setCpfCnpjEngenheiro (request.form.get('cpfCnpjEngenheiro'))
     empreend.setVlPlanoEmp (converter.converterStrToFloat(request.form.get('vlPlanoEmp')))
     empreend.setIndiceGarantia (converter.converterStrToFloat(request.form.get('indiceGarantia')))
     empreend.setPrevisaoEntrega (request.form.get('previsaoEntrega'))
@@ -270,7 +270,7 @@ def salvar_empreend():
     empreend.setCidade (request.form.get('cidade'))
     empreend.setEstado (request.form.get('estado'))
     empreend.setCep (converter.removeAlpha(request.form.get('cep')))
-    empreend.setNmEngenheiro (request.form.get('nmEngenheiro'))
+    empreend.setCpfCnpjEngenheiro (request.form.get('cpfCnpjEngenheiro'))
     empreend.setVlPlanoEmp (converter.converterStrToFloat(request.form.get('vlPlanoEmp')))
     empreend.setIndiceGarantia (converter.converterStrToFloat(request.form.get('indiceGarantia')))
     empreend.setPrevisaoEntrega (request.form.get('previsaoEntrega'))
@@ -701,8 +701,9 @@ def excluir_cliente():
 def get_clientes():
   if not is_logged():
     return jsonify([])
+  search = request.args.get('search')
   cliC = clienteController()
-  cliS = cliC.consultarClientes()
+  cliS = cliC.consultarClientes(search.lower())
   newList = list(map(lambda it: it.to_json(), cliS))
   return jsonify(newList)
 

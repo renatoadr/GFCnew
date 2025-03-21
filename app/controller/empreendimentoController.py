@@ -15,7 +15,7 @@ class empreendimentoController:
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
-        query =  "INSERT INTO " + MySql.DB_NAME + """.tb_empreendimentos (apelido, nm_empreendimento, logradouro, bairro, cidade, estado, cep, nm_incorporador, nm_construtor, nm_banco, nm_engenheiro, vl_plano_empresario, indice_garantia, previsao_entrega) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        query =  "INSERT INTO " + MySql.DB_NAME + """.tb_empreendimentos (apelido, nm_empreendimento, logradouro, bairro, cidade, estado, cep, nm_incorporador, nm_construtor, nm_banco, cpf_cnpj_engenheiro, vl_plano_empresario, indice_garantia, previsao_entrega) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
         print (query)
         cursor.execute(query, (
@@ -29,7 +29,7 @@ class empreendimentoController:
           empreend.getNmIncorp(),
           empreend.getNmConstrutor(),
           empreend.getNmBanco(),
-          empreend.getNmEngenheiro(),
+          empreend.getCpfCnpjEngenheiro(),
           empreend.getVlPlanoEmp(),
           empreend.getIndiceGarantia(),
           empreend.getPrevisaoEntrega()
@@ -68,11 +68,10 @@ class empreendimentoController:
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor(dictionary=True)
 
-        query =  "select * from " + MySql.DB_NAME + ".tb_empreendimentos where id_empreendimento = " + idEmpreend
-
+        query =  """SELECT emp.*, cli.nm_cliente  FROM """ + MySql.DB_NAME + """.tb_empreendimentos emp LEFT JOIN  db_gfc.tb_clientes cli ON emp.cpf_cnpj_engenheiro = cli.cpf_cnpj WHERE emp.id_empreendimento = %s;"""
         print(query)
 
-        cursor.execute(query)
+        cursor.execute(query, (idEmpreend,))
 
         linha = cursor.fetchone()
         print('+++++++++++++++++++++++++++')
@@ -93,7 +92,8 @@ class empreendimentoController:
         linhaE.setCidade(linha['cidade'])
         linhaE.setEstado(linha['estado'])
         linhaE.setCep(linha['cep'])
-        linhaE.setNmEngenheiro(linha['nm_engenheiro'])
+        linhaE.setNmEngenheiro(linha['nm_cliente'])
+        linhaE.setCpfCnpjEngenheiro(linha['cpf_cnpj_engenheiro'])
         linhaE.setVlPlanoEmp(linha['vl_plano_empresario'])
         linhaE.setIndiceGarantia(linha['indice_garantia'])
         linhaE.setPrevisaoEntrega(linha['previsao_entrega'])
@@ -124,22 +124,6 @@ class empreendimentoController:
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
-        # query =  "update " + MySql.DB_NAME + ".tb_empreendimentos set " + \
-        # "nm_empreendimento = '" + empreend.getNmEmpreend() + "', " + \
-        # "logradouro = '" + empreend.getLogradouro() + "', " + \
-        # "bairro = '" + empreend.getBairro() + "', " + \
-        # "cidade = '" + empreend.getCidade() + "', " + \
-        # "estado = '" + empreend.getEstado() + "', " + \
-        # "cep = '" + empreend.getCep() + "', " + \
-        # "nm_incorporador = '" + empreend.getNmIncorp() + "', " + \
-        # "nm_construtor = '" + empreend.getNmConstrutor() + "', " + \
-        # "nm_banco = '" + empreend.getNmBanco() + "', " + \
-        # "nm_engenheiro = '" + empreend.getNmEngenheiro() + "', " + \
-        # "vl_plano_empresario = " + empreend.getVlPlanoEmp() + ", " + \
-        # "indice_garantia = " + empreend.getIndiceGarantia() + ", " + \
-        # "previsao_entrega = '" + empreend.getPrevisaoEntrega() + "' " + \
-        # "where id_empreendimento = " + empreend.getIdEmpreend()
-
         query =  """update """ + MySql.DB_NAME + """.tb_empreendimentos set
          apelido = %s,
          nm_empreendimento = %s,
@@ -151,7 +135,7 @@ class empreendimentoController:
          nm_incorporador = %s,
          nm_construtor = %s,
          nm_banco = %s,
-         nm_engenheiro = %s,
+         cpf_cnpj_engenheiro = %s,
          vl_plano_empresario = %s,
          indice_garantia = %s,
          previsao_entrega = %s
@@ -169,7 +153,7 @@ class empreendimentoController:
           empreend.getNmIncorp(),
           empreend.getNmConstrutor(),
           empreend.getNmBanco(),
-          empreend.getNmEngenheiro(),
+          empreend.getCpfCnpjEngenheiro(),
           empreend.getVlPlanoEmp(),
           empreend.getIndiceGarantia(),
           empreend.getPrevisaoEntrega(),

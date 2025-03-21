@@ -21,6 +21,7 @@ class empreendimento:
     __vlPlanoEmp = 0
     __indiceGarantia = 0
     __previsaoEntrega  = ""
+    __cpfCnpjEngenheiro  = ""
 
     #Getters
 
@@ -54,6 +55,8 @@ class empreendimento:
         return self.__indiceGarantia
     def getPrevisaoEntrega(self):
         return self.__previsaoEntrega
+    def getCpfCnpjEngenheiro(self):
+        return self.__cpfCnpjEngenheiro
     def getEnderecoCompleto(self):
         return f"{self.__logradouro}, {self.__bairro} - {self.__cidade}/{self.__estado} - {self.__cep}"
 
@@ -89,4 +92,6 @@ class empreendimento:
        self.__indiceGarantia = param
     def setPrevisaoEntrega(self, param):
         self.__previsaoEntrega = param
+    def setCpfCnpjEngenheiro(self, param):
+      self.__cpfCnpjEngenheiro = param
 

@@ -28,14 +28,16 @@ class clienteController:
         MySql.close(self.__connection)
 
 
-    def consultarClientes(self):
+    def consultarClientes(self, search = None):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
         print('---consultarTorres--')
 
-        query =  "select * from " + MySql.DB_NAME + ".tb_clientes"
-
+        if search is None:
+          query =  "select * from " + MySql.DB_NAME + ".tb_clientes"
+        else:
+          query =  "select * from " + MySql.DB_NAME + ".tb_clientes where lower(nm_cliente) like '%" + search + "%' "
         print('-----------------')
         print(query)
         print('-----------------')

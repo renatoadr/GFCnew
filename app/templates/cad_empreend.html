@@ -107,15 +107,19 @@
           <div class="row mt-4">
             <div class="col-9">
               <div class="form-floating ">
-                <input type="text" name="nmEngenheiro" id="nmEngenheiro" class="form-control" placeholder=""
+                <input type="hidden" id="cpfCnpjEngenheiro" name="cpfCnpjEngenheiro"
+                  value="{{ empreend.getCpfCnpjEngenheiro() if empreend}}">
+                <input type="text" id="nmEngenheiro" class="form-control" placeholder=""
                   value="{{ empreend.getNmEngenheiro() if empreend}}" maxlength="100" />
                 <label for="nmEngenheiro">Nome do engenheiro</label>
               </div>
             </div>
             <div class="col-3">
-              <button type="button" class="btn btn-primary btn-sm text-center">
+              <button type="button" class="btn btn-primary btn-sm btn-associar" data-bs-toggle="modal"
+                data-bs-target="#modalAssociarCliente" data-input-doc-receiver="cpfCnpjEngenheiro"
+                data-input-name-receiver="nmEngenheiro">
                 <i class="fa-solid fa-user-plus mr-2"></i>
-                Associar engenheiro
+                Associar Cliente
               </button>
             </div>
           </div>

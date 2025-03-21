@@ -159,3 +159,13 @@ main {
   height: 200px;
   overflow-y: auto;
 }
+
+.btn-associar {
+  text-align: left;
+}
+
+.btn-associar svg {
+  font-size: 20px;
+  float: left;
+  margin: 9px 8px 0 8px;
+}

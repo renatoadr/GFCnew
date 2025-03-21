@@ -47,67 +47,65 @@
   </div>
 </div>
 
-<div class="modal fade show" style="display: block;" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-  id="modalAssociarCliente">
+<div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="modalAssociarCliente">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Associar Cliente</h5>
       </div>
-      <form action="" id="">
-        <div class="modal-body">
-          <div class="row">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12">
+            <div class="autocomplete" id="atcplt-box">
+              <div class="form-floating ">
+                <input type="search" id="atcplt-inpu" class="form-control" placeholder="Informe o nome do cliente" />
+                <label for="atcplt-inpu">Nome</label>
+              </div>
+              <ul class="list-group" id="atcplt-list" style="display: none;">
+                <a href="#" class="list-group-item list-group-item-action">A second link item</a>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div id="atcplt-dados" style="display: none;">
+          <div class="row mt-4">
             <div class="col-12">
-              <div class="autocomplete" id="atcplt-box">
-                <div class="form-floating ">
-                  <input type="search" id="atcplt-inpu" class="form-control" placeholder="Informe o nome do cliente" />
-                  <label for="atcplt-inpu">Nome</label>
-                </div>
-                <ul class="list-group" id="atcplt-list" style="display: none;">
-                  <a href="#" class="list-group-item list-group-item-action">A second link item</a>
-                </ul>
-              </div>
+              <h6>Dados do cliente</h6>
+              <hr>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-6">
+              <p class="m-0"><small>Nome</small></p>
+              <p class="m-0"><strong id="atcplt-nome">Frederico</strong></p>
+            </div>
+            <div class="col-6">
+              <p class="m-0"><small id="atcplt-docTipo">CPF</small></p>
+              <p class="m-0"><strong id="atcplt-doc">Frederico</strong></p>
             </div>
           </div>
 
-          <div id="atcplt-dados" style="display: none;">
-            <div class="row mt-4">
-              <div class="col-12">
-                <h6>Dados do cliente</h6>
-                <hr>
-              </div>
+          <div class="row mt-4">
+            <div class="col-6">
+              <p class="m-0"><small>Telefone</small></p>
+              <p class="m-0"><strong id="atcplt-tel">Frederico</strong></p>
             </div>
-            <div class="row">
-              <div class="col-6">
-                <p class="m-0"><small>Nome</small></p>
-                <p class="m-0"><strong>Frederico</strong></p>
-              </div>
-              <div class="col-6">
-                <p class="m-0"><small>CPF</small></p>
-                <p class="m-0"><strong>Frederico</strong></p>
-              </div>
+            <div class="col-6">
+              <p class="m-0"><small>Email</small></p>
+              <p class="m-0"><strong id="atcplt-email">Frederico</strong></p>
             </div>
-
-            <div class="row mt-4">
-              <div class="col-6">
-                <p class="m-0"><small>Telefone</small></p>
-                <p class="m-0"><strong>Frederico</strong></p>
-              </div>
-              <div class="col-6">
-                <p class="m-0"><small>Email</small></p>
-                <p class="m-0"><strong>Frederico</strong></p>
-              </div>
-            </div>
-
           </div>
+
         </div>
-        <div class="modal-footer">
-          <div class="d-flex gap-5 justify-content-center align-content-center w-100">
-            <button type="button" class="btn btn-secondary w-25" data-bs-dismiss="modal">Fechar</button>
-            <button type="submit" class="btn btn-success w-25">Confirmar</button>
-          </div>
+      </div>
+      <div class="modal-footer">
+        <div class="d-flex gap-5 justify-content-center align-content-center w-100">
+          <button type="button" class="btn btn-secondary w-25" data-bs-dismiss="modal">Fechar</button>
+          <button type="submit" class="btn btn-success w-25" id="modalAssociarClienteConfirmar"
+            disabled>Confirmar</button>
         </div>
-      </form>
+      </div>
     </div>
   </div>
 </div>
