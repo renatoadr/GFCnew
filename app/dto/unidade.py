@@ -10,14 +10,14 @@ class unidade:
     __idTorre = -1
     __nmTorre = ""       # esse campo não exite na tabela Unidades
     __idEmpreend = -1
-    __unidade = "" 
-    __mesVigencia = "" 
+    __unidade = ""
+    __mesVigencia = ""
     __anoVigencia = ""
     __vlUnidade = ""
     __status = ""
     __cpfComprador = ""
     __vlPago = 0
-    __dtOcorrencia = "" 
+    __dtOcorrencia = ""
     __financiado = ""
     __vlChaves = 0
     __vlPreChaves = 0
@@ -29,7 +29,8 @@ class unidade:
     __ttStatus = -1
     __ttEstoque = -1
     __ttVenda = -1
-    
+    __nmComprador = ''
+
     #Getters
 
     def getIdUnidade(self):
@@ -78,6 +79,8 @@ class unidade:
         return self.__ttEstoque
     def getTtVenda(self):
         return self.__ttVenda
+    def getNmComprador(self):
+        return self.__nmComprador
 
     #Setters
 
@@ -127,3 +130,5 @@ class unidade:
         self.__ttEstoque = param
     def setTtVenda(self, param):
         self.__ttVenda = param
+    def setNmComprador(self, param):
+        self.__nmComprador = param

@@ -415,7 +415,7 @@ def cadastrar_unidade():
     un.setAnoVigencia (request.form.get('anoVigencia'))
     un.setVlUnidade (converter.converterStrToFloat(request.form.get('vlUnidade')))
     un.setStatus (request.form.get('status'))
-    un.setCpfComprador (converter.removeAlpha(request.form.get('cpfComprador')))
+    un.setCpfComprador (request.form.get('cpfCnpjCliente'))
     un.setVlPago (converter.converterStrToFloat(request.form.get('vlPago')))
     un.setDtOcorrencia (request.form.get('dtOcorrencia'))
     un.setFinanciado (request.form.get('financiado'))
@@ -452,8 +452,7 @@ def salvar_alteracao_unidade():
     un.setAnoVigencia (request.form.get('anoVigencia'))
     un.setVlUnidade (converter.converterStrToFloat(request.form.get('vlUnidade')))
     un.setStatus (request.form.get('status'))
-    un.setCpfComprador (converter.removeAlpha(request.form.get('cpfComprador')))
-    un.setVlPago (converter.converterStrToFloat(request.form.get('vlPago')))
+    un.setCpfComprador (request.form.get('cpfCnpjCliente'))
     un.setDtOcorrencia (request.form.get('dtOcorrencia'))
     un.setFinanciado (request.form.get('financiado'))
     un.setVlChaves (converter.converterStrToFloat(request.form.get('vlChaves')))
@@ -697,8 +696,8 @@ def excluir_cliente():
     return render_template("lista_clientes.html", clienteS=cliS)
 
 ########## API #########
-@app.route('/api/clientes')
-def get_clientes():
+@app.route('/api/clientes', methods=['GET'])
+def get_clientes_api():
   if not is_logged():
     return jsonify([])
   search = request.args.get('search')
@@ -706,6 +705,14 @@ def get_clientes():
   cliS = cliC.consultarClientes(search.lower())
   newList = list(map(lambda it: it.to_json(), cliS))
   return jsonify(newList)
+
+@app.route('/api/cliente/<doc>', methods=['GET'])
+def get_cliente_api(doc):
+  if not is_logged():
+    return jsonify([])
+  cliC = clienteController()
+  cli = cliC.consultarClientePeloId(doc)
+  return jsonify(cli.to_json())
 
 ############ ORÇAMENTOS ######################
 

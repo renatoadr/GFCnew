@@ -16,7 +16,7 @@ class unidadeController:
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
-        query =  "INSERT INTO " + MySql.DB_NAME + """.tb_unidades ( id_empreendimento, id_torre, unidade, mes_vigencia, ano_vigencia, vl_unidade, status, cpf_comprador, vl_pago, dt_ocorrencia, financiado, vl_chaves, vl_pre_chaves, vl_pos_chaves) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        query =  "INSERT INTO " + MySql.DB_NAME + """.tb_unidades ( id_empreendimento, id_torre, unidade, mes_vigencia, ano_vigencia, vl_unidade, status, cpf_cnpj_comprador, vl_pago, dt_ocorrencia, financiado, vl_chaves, vl_pre_chaves, vl_pos_chaves) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
         print('++++++++++++++++++++++')
         print(query)
@@ -94,11 +94,11 @@ class unidadeController:
 
         print('+++++++++ consultarUnidadePeloId ++++++++++++++++++')
 
-        query =  "select id_unidade, id_empreendimento, id_torre, unidade, mes_vigencia, ano_vigencia, vl_unidade, status, cpf_comprador, vl_pago, dt_ocorrencia, financiado, vl_chaves, vl_pre_chaves, vl_pos_chaves from " + MySql.DB_NAME + ".tb_unidades where id_unidade = " + str(idUnidade)
+        query = """SELECT und.*, cli.nm_cliente  FROM """+ MySql.DB_NAME + """.tb_unidades und LEFT JOIN  db_gfc.tb_clientes cli ON und.cpf_cnpj_comprador = cli.cpf_cnpj WHERE id_unidade = %s """
 
         print(query)
 
-        cursor.execute(query)
+        cursor.execute(query, (idUnidade,))
 
         linha = cursor.fetchone()
         print('+++++++++++++++++++++++++++')
@@ -109,6 +109,7 @@ class unidadeController:
 
         linhaU = unidade()
         linhaU.setIdUnidade(linha['id_unidade'])
+        linhaU.setNmComprador(linha['nm_cliente'])
         linhaU.setIdTorre(linha['id_torre'])
         linhaU.setIdEmpreend(linha['id_empreendimento'])
         linhaU.setUnidade(linha['unidade'])
@@ -116,7 +117,7 @@ class unidadeController:
         linhaU.setAnoVigencia(linha['ano_vigencia'])
         linhaU.setVlUnidade(linha['vl_unidade'])
         linhaU.setStatus(linha['status'])
-        linhaU.setCpfComprador(linha['cpf_comprador'])
+        linhaU.setCpfComprador(linha['cpf_cnpj_comprador'])
         linhaU.setVlPago(linha['vl_pago'])
         linhaU.setDtOcorrencia(linha['dt_ocorrencia'])
         linhaU.setFinanciado(linha['financiado'])
@@ -229,7 +230,7 @@ class unidadeController:
         ano_vigencia = %s,
         vl_unidade = %s,
         status = %s,
-        cpf_comprador = %s,
+        cpf_cnpj_comprador = %s,
         vl_pago = %s,
         dt_ocorrencia = %s,
         financiado = %s,

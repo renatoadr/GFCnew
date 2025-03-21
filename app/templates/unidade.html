@@ -66,12 +66,28 @@
               </div>
             </div>
 
-            <div class="form-floating mt-4">
-              <input type="text" name="cpfComprador" id="cpfComprador" class="form-control cpf" placeholder=""
-                value="{{ unidade.getCpfComprador() if unidade }}" maxlength="15" {% if modo=='consulta' %} readonly {%
-                endif %} />
-              <label for="cpfComprador">Comprador</label>
+            <div class="row mt-4">
+              <div class="col-9">
+                <div class="form-floating ">
+                  <input type="hidden" id="cpfCnpjCliente" name="cpfCnpjCliente"
+                    value="{{ unidade.getCpfComprador() if unidade}}">
+                  <input type="text" name="nmComprador" id="nmComprador" class="form-control" placeholder=""
+                    value="{{ unidade.getNmComprador() if unidade }}" {% if modo=='consulta' %} readonly {% endif %} />
+                  <label for="nmComprador">Comprador</label>
+                </div>
+              </div>
+
+              <div class="col-3">
+                <button type="button" class="btn btn-primary btn-sm btn-associar" data-bs-toggle="modal"
+                  data-bs-target="#modalAssociarCliente" data-input-doc-receiver="cpfCnpjCliente"
+                  data-input-name-receiver="nmComprador"
+                  data-initial-selected="{{ unidade.getCpfComprador() if unidade}}">
+                  <i class="fa-solid fa-user-plus mr-2"></i>
+                  Associar Cliente
+                </button>
+              </div>
             </div>
+
             <div class="form-floating mt-4">
               <input type="text" name="vlUnidade" id="vlUnidade" class="form-control money" placeholder=""
                 value="{{ unidade.getVlUnidade() if unidade }}" maxlength="18" {% if modo=='consulta' %} readonly {%
@@ -187,10 +203,6 @@
       }
       remove('status')
 
-      requireds.rules.cpfComprador = {
-        cpf: true,
-        required: true
-      }
       requireds.rules.unidade = {
         required: true,
         min: 1,
@@ -220,10 +232,6 @@
         required: GFC_MESSAGES.REQUIRED,
         min: GFC_MESSAGES.MIN(1990),
         max: GFC_MESSAGES.MAX(3000),
-      }
-
-      requireds.messages.cpfComprador = {
-        required: GFC_MESSAGES.REQUIRED
       }
 
       $('input[name="status"]').change(function () {
