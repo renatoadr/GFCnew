@@ -6,11 +6,12 @@ class conta:
         pass
 
     #private members
+    __idconta = -1
     __idEmpreend = -1
     __mesVigencia = ""
     __anoVigencia = ""
+    __dtCarga = ""
     __vlLiberacao = -1
-    __vlMaterialEstoque = -1
     __vlAporteConstrutora = -1
     __vlReceitaRecebiveis = -1
     __vlPagtoObra = -1
@@ -20,16 +21,18 @@ class conta:
 
     #Getters
 
+    def getIdConta(self):
+        return self.__idConta
     def getIdEmpreend(self):
         return self.__idEmpreend
     def getMesVigencia(self):
         return self.__mesVigencia
     def getAnoVigencia(self):
         return self.__anoVigencia
+    def getDtCarga(self):
+        return self.__dtCarga
     def getVlLiberacao(self):
         return self.__vlLiberacao
-    def getVlMaterialEstoque(self):
-        return self.__vlMaterialEstoque
     def getVlAporteConstrutora(self):
         return self.__vlAporteConstrutora
     def getVlReceitaRecebiveis(self):
@@ -45,16 +48,18 @@ class conta:
      
     #Setters
 
+    def setIdConta(self, param):
+        self.__idConta = param
     def setIdEmpreend(self, param):
         self.__idEmpreend = param
     def setMesVigencia(self, param):
         self.__mesVigencia = param
     def setAnoVigencia(self, param):
         self.__anoVigencia = param
+    def setDtCarga(self, param):
+        self.__dtCarga = param
     def setVlLiberacao(self, param):
         self.__vlLiberacao = param
-    def setVlMaterialEstoque(self, param):
-        self.__vlMaterialEstoque = param
     def setVlAporteConstrutora(self, param):
         self.__vlAporteConstrutora = param
     def setVlReceitaRecebiveis(self, param):

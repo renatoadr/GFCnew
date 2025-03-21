@@ -10,7 +10,7 @@ class nota:
     __mesVigencia = ""
     __anoVigencia = ""
     __dtCarga = ""
-    __item = ""
+    __produto = ""
     __vlNotaFiscal = -1
     __vlEstoque = -1
     
@@ -24,8 +24,8 @@ class nota:
         return self.__anoVigencia
     def getDtCarga(self):
         return self.__dtCarga
-    def getItem(self):
-        return self.__item
+    def getProduto(self):
+        return self.__produto
     def getVlNotaFiscal(self):
         return self.__vlNotaFiscal
     def getVlEstoque(self):
@@ -41,8 +41,8 @@ class nota:
         self.__anoVigencia = param
     def setDtCarga(self, param):
         self.__dtCarga = param
-    def setItem(self, param):
-        self.__item = param
+    def setProduto(self, param):
+        self.__produto = param
     def setVlNotaFiscal(self, param):
         self.__vlNotaFiscal = param
     def setVlEstoque(self, param):

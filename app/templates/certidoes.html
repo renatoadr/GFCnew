@@ -1,0 +1,144 @@
+<!-- Template: certidoes.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Certidões</title>
+  {% include 'fractials/head.html' %}
+</head>
+
+<body>
+  {% include 'fractials/menu.html' %}
+
+  <div class="container">
+    <div class="row">
+      <div class="col-6">
+        <h2 class="title">{{ 'Editar' if certidoes else 'Criar' }} Certidoes</h2>
+      </div>
+    </div>
+
+    <form action="{{'/salvar_certidoes' if certidoes else '/efetuar_cad_certidoes'}}" method="POST"
+      id="formcertidoes">
+      <div class="row">
+        <div class="col-6">
+
+          <div class="form-floating mt-6">
+            <input type="text" name="estadualStatus" id="estadualStatus" class="form-control" placeholder=""
+              value="{{ certidoes.getEstadualStatus() if certidoes}}" />
+            <label for="estadualStatus">Estadual</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="text" name="fgtsStatus" id="fgtsStatus" class="form-control" placeholder=""
+              value="{{ certidoes.getFgtsStatus() if certidoes}}" />
+            <label for="fgtsStatus">FGTS</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="text" name="municipalStatus" id="municipalStatus" class="form-control" placeholder=""
+              value="{{ certidoes.getMunicipalStatus() if certidoes}}">
+            <label for="municipalStatus">Municipal</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="text" name="srfInssStatus" id="srfInssStatus" class="form-control" placeholder=""
+              value="{{ certidoes.getSrfInssStatus() if certidoes}}">
+            <label for="srfInssStatus">INSS</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="text" name="trabalhistaStatus" id="trabalhistaStatus" class="form-control" placeholder=""
+              value="{{ certidoes.getTrabalhistaStatus() if certidoes}}" />
+            <label for="logradouro">Trabalhista</label>
+          </div>
+
+        </div>
+
+        <div class="col-6">
+          <div class="form-floating">
+            <input type="date" name="estadualValidade" id="estadualValidade" class="form-control" placeholder=""
+              value="{{ certidoes.getEstadualValidade() if certidoes}}" />
+            <label for="estadualValidade">Validade</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="date" name="fgtsValidade" id="fgtsValidade" class="form-control" placeholder=""
+              value="{{ certidoes.getFgtsValidade() if certidoes}}" />
+            <label for="fgtsValidade">Validade</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="date" name="municipalValidade" id="municipalValidade" class="form-control" placeholder=""
+              value="{{ certidoes.getMunicipalValidade() if certidoes}}">
+            <label for="municipalValidade">Validade</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="date" name="srfInssValidade" id="srfInssValidade" class="form-control" placeholder=""
+              value="{{ certidoes.getSrfInssValidade() if certidoes}}" />
+            <label for="srfInssValidade">Validade</label>
+          </div>
+
+          <div class="form-floating mt-4">
+            <input type="date" name="trabalhistaValidade" id="trabalhistaValidade" class="form-control" placeholder=""
+              value="{{ certidoes.getTrabalhistaValidade() if certidoes}}" />
+            <label for="trabalhistaValidade">Validade</label>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="row mt-5 justify-content-center d-flex">
+        <div class="col-3">
+          <a href="/home" class="btn btn-secondary w-100">Cancelar</a>
+          <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}" />
+        </div>
+        <div class="col-3 offset-1">
+          <button type="submit" class="btn btn-success w-100">{{ 'Salvar' if certidoes else 'Criar' }}</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+  {% include 'fractials/footer.html' %}
+  <script>
+    const requireds = GFC.getRequiredFields("formcertidoes")
+    $(function () {
+      $("#formcertidoes").validate({
+        rules: requireds.rules,
+        messages: requireds.messages,
+        errorClass: 'is-invalid',
+        errorElement: 'span',
+        highlight: function (element, errorClass, validClass) {
+          setTimeout(function () {
+            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
+            $(element).addClass(errorClass)
+          }, 50)
+        },
+      });
+    });
+  </script>
+  {% if certidoes %}
+  <script>
+    $(function () {
+      setTimeout(function () {
+        $('#estado').val(document.querySelector('#estado').getAttribute('value'));
+        $('#estado').trigger('change')
+        setTimeout(function () {
+          $('#cidade').val(document.querySelector('#cidade').getAttribute('value'));
+        }, 500);
+      }, 500);
+
+      setTimeout(function () {
+        $('#nmBanco').val(document.querySelector('#nmBanco').getAttribute('value'));
+      }, 500);
+    });
+  </script>
+  {% endif %}
+</body>
+
+</html>
