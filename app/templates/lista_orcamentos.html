@@ -58,7 +58,7 @@
               <tr class="text-center">
                 <td>{{ m.getMesVigencia() }}</td>
                 <td>{{ m.getAnoVigencia() }}</td>
-                <td>{{ m.getDtCarga() }}</td>
+                <td>{{ m.getDtCarga()|to_datetime }}</td>
                 <td>
                   <a href="/consultar_orcamento_data?idOrca={{m.getIdOrcamento()}}&dtCarga={{m.getDtCarga()}}"
                     data-bs-toggle="tooltip" data-bs-title="Consultar">

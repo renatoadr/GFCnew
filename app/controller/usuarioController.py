@@ -65,7 +65,6 @@ class usuarioController:
             e.setApelido(x['apelido'])
             e.setNmConstrutor(x['nm_construtor'])
             e.setNmEmpreend(x['nm_empreendimento'])
-            e.setNmEngenheiro(x['nm_engenheiro'])
             e.setNmIncorp(x['nm_incorporador'])
             e.setLogradouro(x['logradouro'])
             e.setCidade(x['cidade'])

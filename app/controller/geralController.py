@@ -2,15 +2,13 @@
 # funções comuns a todos os módulos
 
 import os
-from flask import Flask, send_from_directory, jsonify
-from utils.dbContext import MySql
+from flask import send_from_directory
 
 class geralController:
     __connection = None
     app = None
 
-    def __init__(self, app):
-        self.app = app
+    def __init__(self):
         pass
 
     def formataNumero(self, num, moeda=None):
