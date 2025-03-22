@@ -1,5 +1,6 @@
 from flask import Blueprint, request, render_template, redirect
 from controller.certidaoController import certidaoController
+from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from utils.helper import protectedPage
 from dto.certidao import certidao
 
@@ -11,6 +12,8 @@ def tratar_certidoes():
 
   idEmpreend = request.args.get("idEmpreend")
   nmEmpreend = request.args.get("nmEmpreend")
+  IdEmpreend().set(idEmpreend)
+  NmEmpreend().set(nmEmpreend)
 
   print('-----tratar_certidoes---')
   print('tratar_certidoes ',idEmpreend)
@@ -22,9 +25,9 @@ def tratar_certidoes():
   print('tratar_certidoes ',idEmpreend)
 
   if len(certS) == 0:
-    return render_template("certidoes.html", idEmpreend=idEmpreend, mensagem="Certidões não Cadastradas!!!",  nmEmpreend=nmEmpreend, certidoes=certS)
+    return render_template("certidoes.html", mensagem="Certidões não Cadastradas!!!", certidoes=certS)
   else:
-    return render_template("certidoes.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend, certidoes=certS)
+    return render_template("certidoes.html", certidoes=certS)
 
 @cert_bp.route('/efetuar_cad_certidoes', methods=['POST'])
 def efetuar_cad_certidoes():

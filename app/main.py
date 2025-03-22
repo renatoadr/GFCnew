@@ -47,8 +47,7 @@ def init(app):
     config_location = "gfc.cfg"
     config.read(config_location)
     app.config['UPLOAD_FOLDER'] = config.get("config", "UPLOAD_FOLDER")
-    app.config['ALLOWED_EXTENSIONS'] = config.get(
-        "config", "ALLOWED_EXTENSIONS")
+    app.config['ALLOWED_EXTENSIONS'] = config.get("config", "ALLOWED_EXTENSIONS")
     app.config['BARRADIR'] = config.get("config", "BARRADIR")
     app.config['DIRSYS'] = config.get("config", "DIRSYS")
     print("Succesfully read configs from: ", config_location)

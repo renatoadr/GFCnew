@@ -23,7 +23,6 @@ class CtrlSessao:
   def clear(self):
     self.set(None)
 
-
 class IdEmpreend(CtrlSessao):
   def __init__(self):
     super().__init__('idEmpreend')

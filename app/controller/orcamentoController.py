@@ -20,7 +20,7 @@ class orcamentoController:
         print('---consultarorcamentos---')
         print(idEmpreend)
 
-        query =  "select * from " + MySql.DB_NAME + ".tb_orcamentos where id_empreendimento = " +  str (idEmpreend) + " group by mes_vigencia, ano_vigencia, dt_carga"
+        query =  "select mes_vigencia, ano_vigencia, dt_carga from " + MySql.DB_NAME + ".tb_orcamentos where id_empreendimento = " +  str (idEmpreend) + " group by mes_vigencia, ano_vigencia, dt_carga"
 
         print('-----------------')
         print(query)
@@ -34,11 +34,11 @@ class orcamentoController:
 
         for x in lista:
             m = orcamento()
-            m.setIdOrcamento(x[0])
-            m.setIdEmpreend(x[1])
-            m.setMesVigencia(x[2])
-            m.setAnoVigencia(x[3])
-            m.setDtCarga(x[4])
+#            m.setIdOrcamento(x[0])
+#            m.setIdEmpreend(x[1])
+            m.setMesVigencia(x[0])
+            m.setAnoVigencia(x[1])
+            m.setDtCarga(x[2])
             listaOrcamentos.append(m)
 
         cursor.close()
