@@ -117,7 +117,8 @@
             <div class="col-3">
               <button type="button" class="btn btn-primary btn-sm btn-associar" data-bs-toggle="modal"
                 data-bs-target="#modalAssociarCliente" data-input-doc-receiver="cpfCnpjEngenheiro"
-                data-input-name-receiver="nmEngenheiro">
+                data-input-name-receiver="nmEngenheiro"
+                data-initial-selected="{{ unidade.getCpfCnpjEngenheiro() if unidade}}">
                 <i class="fa-solid fa-user-plus mr-2"></i>
                 Associar Cliente
               </button>

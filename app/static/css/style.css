@@ -158,6 +158,35 @@ main {
 .autocomplete ul {
   height: 200px;
   overflow-y: auto;
+  width: 98%;
+  margin-left: 5px;
+  margin-top: -1px;
+}
+
+.autocomplete ul li {
+  background: #fafafa;
+}
+
+
+.autocomplete ul li:nth-child(2n) {
+  background: #f1f1f1;
+}
+
+.autocomplete ul li:hover {
+  background: var(--bs-list-group-active-bg);
+  color: #fff;
+}
+
+.autocomplete ul li:hover a {
+  color: #fff;
+}
+
+.autocomplete ul li a {
+  text-decoration: none;
+}
+
+.autocomplete ul li a:hover {
+  background: transparent;
 }
 
 .btn-associar {

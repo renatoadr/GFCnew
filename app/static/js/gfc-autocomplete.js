@@ -18,6 +18,7 @@ $(function() {
     $('#atcplt-nome').text(data.nome);
     $("#atcplt-dados").attr('data-client-selected', JSON.stringify(data)).show('slow');
     $('#modalAssociarClienteConfirmar').removeAttr('disabled');
+    $("#atcplt-inpu").val(data.nome);
   }
 
   function clearDataClient() {
@@ -29,22 +30,35 @@ $(function() {
     $('#atcplt-nome').text('');
   }
 
+  function strongSearch(item) {
+    let target = item.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    let source = val.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    let index = target.indexOf(source);
+    if (index > -1) {
+      let init = item.substring(0, index);
+      let middle = item.substring(index, index + val.length);
+      let end = item.substring(index + val.length)
+      return `${init}<strong>${middle}</strong>${end}`;
+    }
+    return item;
+  }
+
   function execSearch() {
     let val = $(this).val();
     let list = $("#atcplt-list");
-    if (val.length > 3) {
+    if (val.length >= 3) {
       $(this).attr('disabled');
       $.getJSON('/api/clientes?search=' + val, function(data) {
         list.empty();
-
         if (data.length > 0) {
           for(let item of data) {
-            let li = $('<li/>');
+            let li = $('<li class="list-group-item" />');
             let a = $('<a/>');
-            a.addClass('list-group-item list-group-item-action');
+            let nome = item.nome.split(' ').map(strongSearch.bind(null, val)).join(' ');
+            a.addClass('list-group-item-action');
             a.attr('data-client', JSON.stringify(item));
             a.attr('href', '#');
-            a.html(item.nome);
+            a.html(nome);
             li.append(a);
             list.append(li);
           }
@@ -70,7 +84,7 @@ $(function() {
     $('#modalAssociarClienteConfirmar').attr('disabled', true);
     clearDataClient();
     $("#atcplt-list").hide('slow');
-    timer = setTimeout(execSearch.bind(this), 650);
+    timer = setTimeout(execSearch.bind(this), 450);
   })
 
   $('#modalAssociarCliente').on('show.bs.modal', function(event) {
@@ -93,8 +107,7 @@ $(function() {
 
     if (initialClient && initialClient !== 'None' && /\d+/.test(initialClient)) {
       $.getJSON('/api/cliente/'+initialClient, function(data) {
-        openDataClient(data)
-        $("#atcplt-inpu").val(data.nome);
+        openDataClient(data);
       });
     }
   });
