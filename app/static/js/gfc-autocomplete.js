@@ -30,7 +30,7 @@ $(function() {
     $('#atcplt-nome').text('');
   }
 
-  function strongSearch(item) {
+  function strongSearch(val, item) {
     let target = item.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
     let source = val.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
     let index = target.indexOf(source);
