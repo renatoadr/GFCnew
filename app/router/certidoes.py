@@ -12,8 +12,19 @@ def tratar_certidoes():
 
   idEmpreend = request.args.get("idEmpreend")
   nmEmpreend = request.args.get("nmEmpreend")
-  IdEmpreend().set(idEmpreend)
-  NmEmpreend().set(nmEmpreend)
+
+  if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
+    redirect('/home')
+
+  if idEmpreend is None:
+    idEmpreend = IdEmpreend().get()
+  else:
+    IdEmpreend().set(idEmpreend)
+
+  if nmEmpreend is None:
+    nmEmpreend = NmEmpreend().get()
+  else:
+    NmEmpreend().set(nmEmpreend)
 
   print('-----tratar_certidoes---')
   print('tratar_certidoes ',idEmpreend)
@@ -56,7 +67,7 @@ def salvar_item_orcamento():
     item.setIdEmpreend (request.form.get('idEmpreend'))
     item.setEstadualStatus (request.form.get('estadualStatus'))
     item.setEstadualValidade (request.form.get('estadualValidade'))
-    item.setFgtsStatus (request.form.get('fgtsStatus')) 
+    item.setFgtsStatus (request.form.get('fgtsStatus'))
     item.setFgtsValidade (request.form.get('fgtsValidade'))
     item.setMunicipalStatus (request.form.get('municipalStatus'))
     item.setMunicipalValidade (request.form.get('municipalValidade'))
@@ -64,7 +75,7 @@ def salvar_item_orcamento():
     item.setSrfInssValidade (request.form.get('srfInssValidade'))
     item.setTrabalhistaStatus (request.form.get('trabalhistaStatus'))
     item.setTrabalhistaValidade (request.form.get('trabalhistaValidade'))
-    
+
     certC = certidaoController()
     certC.salvarCertidoes(item)
 
