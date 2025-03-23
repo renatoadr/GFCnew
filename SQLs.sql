@@ -2,24 +2,24 @@ Use db_gfc;
 
  select * from tb_empreendimentos;
 --  select * from tb_gastos;PRIMARY
-
--- select * from tb_unidades;
-  
+ select * from tb_unidades;
 -- select * from tb_medicoes where id_empreendimento = 55;
-select * from tb_medicoes;
--- select * from tb_torres; 
- select * from tb_clientes;
+ select * from tb_medicoes;
+ select * from tb_torres; 
+-- select * from tb_clientes;
 -- select * from tb_atividades;
 -- select * from tb_agendas_param;
 -- select * from tb_agendas_atividades;
 -- select * from tb_agendas;
- select * from tb_notas;
+-- select * from tb_notas;
 -- select * from tb_laudos;
- select * from tb_orcamentos;
+-- select * from tb_orcamentos;
 -- select * from tb_pontos_atencao;
 -- select * from tb_contas;
 -- select* from tb_financeiro;
 -- select * from tb_inadimplencias;
+-- select * from tb_certidoes ;
+-- select * from tb_garantias; 
  
 --  select mes_vigencia, ano_vigencia, dt_carga from tb_medicoes where id_empreendimento = 42
 --      group by mes_vigencia, ano_vigencia, dt_carga;
@@ -87,5 +87,6 @@ where id_empreendimento = 55 and (mes_vigencia => '11' and ano_vigencia => '2024
 -- select* from tb_usuario_empreendimento;
 -- select* from tb_usuarios
 -- select id_usuario, email, senha, tp_acesso, nm_usuario from db_gfc.tb_usuarios  where email = 'XXX' and senha = 'SSS';
-select mes_vigencia, ano_vigencia, dt_carga  from db_gfc.tb_notas where id_empreendimento = 39 group by mes_vigencia, ano_vigencia, dt_carga
+-- select mes_vigencia, ano_vigencia, dt_carga  from db_gfc.tb_notas where id_empreendimento = 39 group by mes_vigencia, ano_vigencia, dt_carga;
 
+-- select id_empreendimento, ano_vigencia, dt_carga from db_gfc.tb_orcamentos where id_empreendimento = 39 group by mes_vigencia, ano_vigencia, dt_carga 

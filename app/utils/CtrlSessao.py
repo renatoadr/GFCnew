@@ -39,3 +39,7 @@ class IdOrca(CtrlSessao):
   def __init__(self):
     super().__init__('idOrca')
 
+class IdMedicao(CtrlSessao):
+  def __init__(self):
+    super().__init__('idMedicao')
+

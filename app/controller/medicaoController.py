@@ -78,6 +78,35 @@ class medicaoController:
 
         return listaItens
 
+    def consultarMedicaoPeloId(self, idMedicao):
+        self.__connection = MySql.connect()
+        cursor = self.__connection.cursor(dictionary=True)   
+
+        query =  "select id_medicao, id_empreendimento, nr_medicao, mes_vigencia, ano_vigencia, dt_carga, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo from " + MySql.DB_NAME + ".tb_medicoes where id_medicao = " + str(idMedicao)
+    
+        print(query)
+
+        cursor.execute(query)
+
+        linha = cursor.fetchone()
+        
+        item = medicao()
+        item.setIdMedicao(linha['id_medicao'])
+        item.setIdEmpreend(linha['id_empreendimento'])
+        item.setNrMedicao(linha['nr_medicao'])
+        item.setMesVigencia(linha['mes_vigencia'])
+        item.setAnoVigencia(linha['ano_vigencia'])
+        item.setDtCarga(linha['dt_carga'])
+        item.setPercPrevistoAcumulado(linha['perc_previsto_acumulado'])
+        item.setPercRealizadoAcumulado(linha['perc_realizado_acumulado'])
+        item.setPercDiferenca(linha['perc_diferenca'])
+        item.setPercPrevistoPeriodo(linha['perc_previsto_periodo'])
+        
+        cursor.close()
+        MySql.close(self.__connection)
+
+        return item
+
     def carregar_medicoes(self, caminhoArq, idEmpreend):
 
         self.__connection = MySql.connect()

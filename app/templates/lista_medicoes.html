@@ -1,4 +1,4 @@
-<!-- Template: lista_Medicao.html -->
+<!-- Template: lista_Medicoes.html -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -67,10 +67,11 @@
                 <td>{{ m.getMesVigencia() }}</td>
                 <td>{{ m.getAnoVigencia() }}</td>
                 <td>{{ m.getPercPrevistoAcumulado() }}</td>
+                <td>{{ m.getPercRealizadoAcumulado() }}</td>
                 <td>{{ m.getPercDiferenca() }}</td>
                 <td>{{ m.getPercPrevistoPeriodo() }}</td>
                 <td>
-                  <a href="/consultar_medicao_data?dtCarga={{m.getDtCarga()}}" data-bs-toggle="tooltip"
+                  <a href="/consultar_medicao_pelo_id?idMedicao={{m.getIdMedicao()}}" data-bs-toggle="tooltip"
                     data-bs-title="Consultar">
                     <i class="fa-solid fa-magnifying-glass-arrow-right"></i>
                   </a>

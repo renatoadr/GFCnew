@@ -128,14 +128,6 @@ primary key (id_empreendimento, dt_evento));
     observacao varchar(100),
     primary key(id_empreendimento, mes_vigencia, ano_vigencia, descricao));	
 */
-    
-/* create table tb_documentos ( 		-- Obrigações Formais 
-	id_empreendimento int,
-    doc_fiscal varchar(15),				-- SRF/INSS - Trabalhista - Municipal - Estadual - FGTS 
-    status varchar(10), 				-- pendente/negativa/positiva
-    dt_validade date,
-    primary key(id_empreendimento, doc_fiscal, status))	
-*/
 
 /*
  create table tb_notas (
@@ -173,6 +165,22 @@ primary key (id_empreendimento, dt_evento));
     vl_diferencas decimal (15,2),
 	vl_saldo decimal (15,2),
 	primary key (id_empreendimento, mes_vigencia, ano_vigencia))
+   */
+   
+   /*
+ create table tb_certidoes (
+	id_empreendimento int,
+	estadual_status  varchar(8),         -- pendente/negativa/positiva
+    estadual_validade  date,
+    fgts_status  varchar(8),
+	fgts_validade date,
+    municipal_status  varchar(8),
+    municipal_validade  date,
+    srf_inss_status varchar(8),
+    srf_inss_validade date,
+    trabalhista_status  varchar(8),
+	trabalhista_validade date, 
+	primary key (id_empreendimento))
    */
    
 -- drop table tb_pagto_fornecedores;    

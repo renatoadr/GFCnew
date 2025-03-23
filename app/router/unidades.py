@@ -16,8 +16,10 @@ def tratarunidades():
 
   protectedPage()
 
-  idEmpreend = request.args.get('idEmpreend')
+  idEmpreend = request.args.get("idEmpreend")
+  IdEmpreend().set(idEmpreend)
   nmEmpreend = request.args.get('nmEmpreend')
+  NmEmpreend().set(nmEmpreend)
 
   if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
       return redirect('/home')
@@ -43,6 +45,10 @@ def tratarunidades():
 
 @unidade_bp.route('/abrir_cad_unidade')
 def abrir_cad_unidade():
+    
+#    idEmpreend = request.args.get("idEmpreend")
+#    IdEmpreend().set(idEmpreend)
+
     ctrlTorre = torreController()
     listaTorres = ctrlTorre.consultarTorres(IdEmpreend().get())
     return render_template("unidade.html", listaTorres=listaTorres)

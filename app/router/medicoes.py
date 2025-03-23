@@ -1,5 +1,5 @@
-from flask import Blueprint, request, render_template, redirect, current_app
-from utils.CtrlSessao import IdEmpreend, NmEmpreend, DtCarga
+from flask import Blueprint, request, render_template, redirect, session, current_app
+from utils.CtrlSessao import IdEmpreend, NmEmpreend, DtCarga, IdMedicao
 from controller.medicaoController import medicaoController
 from utils.helper import allowed_file, protectedPage
 from werkzeug.utils import secure_filename
@@ -11,8 +11,11 @@ medicoes_bp = Blueprint('medicoes', __name__)
 def tratar_medicoes():
     protectedPage()
 
+ #   idMedicao = request.args.get("idMedicao")
+ #   IdMedicao().set(idMedicao)
+
     idEmpreend = request.args.get("idEmpreend")
-    nmEmpreend = request.args.get("nmEmpreend")
+    nmEmpreend = request.args.get('nmEmpreend')
 
     if (not IdEmpreend().has() or not NmEmpreend().has()) and (idEmpreend is None or nmEmpreend is None):
         return redirect('/home')
@@ -38,33 +41,26 @@ def tratar_medicoes():
     else:
         return render_template("lista_medicoes.html", medicoes=medS)
 
+@medicoes_bp.route('/consultar_medicao_pelo_id')
+def consultar__medicao_pelo_id():
 
-@medicoes_bp.route('/consultar_medicao_data')
-def consultar_medicao_data():
+    idMedicao = request.args.get("idMedicao")
+    IdMedicao().set(idMedicao)
+#    idMedicao = IdMedicao().get()
 
-    #    modo = request.args.get("modo")
-    idEmpreend = IdEmpreend().get()
-    dtCarga = request.args.get("dtCarga")
-
-    if dtCarga is None and not DtCarga().has():
-        return redirect('/tratar_medicoes')
-    elif dtCarga is None:
-        dtCarga = DtCarga().get()
-    else:
-        DtCarga().set(dtCarga)
-
-    print('------ consultar_medicao_data ------')
+    print('------ consultar_medicao_pelo_ID ------')
 #    print(modo)
-    print(idEmpreend, dtCarga)
+    print(idMedicao)
 
     medC = medicaoController()
-    medS = medC.consultarMedicaoPelaData(idEmpreend, dtCarga)
+    medS = medC.consultarMedicaoPeloId(idMedicao)
 
-    print('------ consultar_medicao_data fim --------')
+    print('------ consultar_medicao_pelo_id fim --------')
 #    print(modo)
+    
+    print(medS.getNrMedicao())
 
-    return render_template("medicao_itens.html", medicoes=medS)
-
+    return render_template("medicao_item.html", medicao=medS)
 
 @medicoes_bp.route('/upload_arquivo_medicoes', methods=['GET', 'POST'])
 def upload_arquivo_medicoes():
