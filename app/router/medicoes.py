@@ -98,3 +98,9 @@ def upload_arquivo_medicoes():
         mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
     return render_template("erro.html", mensagem=mensagem)
 
+@medicoes_bp.route('/excluir_medicao')
+def excluir_medicao():
+  idMedicao = request.args.get('idMedicao')
+  ctrlMed = medicaoController()
+  ctrlMed.excluir_medicao(idMedicao)
+  return redirect('/tratar_medicoes')

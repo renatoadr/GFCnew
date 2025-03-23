@@ -81,7 +81,7 @@
                   <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Empreendimento">
                     <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
                       data-modal-exclude-title="Orçamento"
-                      data-modal-exclude-action="/excluir_orcamento?dtCarga={{m.getDtCarga()}}"
+                      data-modal-exclude-action="/excluir_orcamento?dtCarga={{m.getDtCarga()}}&mesV={{m.getMesVigencia()}}&anoV={{m.getAnoVigencia()}}&tipo=valor"
                       data-modal-exclude-text="Deseja realmente excluir o orçamento com a data <strong>{{m.getDtCarga()}}</strong>?"></i>
                   </a>
                 </td>

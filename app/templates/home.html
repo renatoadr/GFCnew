@@ -45,6 +45,7 @@
           <thead class="table-light">
             <tr>
               <th>Nome</th>
+              <th>Apelido</th>
               <th colspan="12" class="text-center">Ações</th>
             </tr>
           </thead>
@@ -53,6 +54,7 @@
             {% for e in empreends %}
             <tr>
               <td>{{ e.getNmEmpreend() }}</td>
+              <td>{{ e.getApelido() }}</td>
               <td>
                 <a href="/abrir_edicao_empreend?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
                   data-bs-title="Editar Empreendimento">
@@ -143,7 +145,7 @@
             {% endfor %}
             {% else %}
             <tr>
-              <td colspan="13" class="text-center">
+              <td colspan="14" class="text-center">
                 Não existem empreendimentos cadastrados.
               </td>
             </tr>

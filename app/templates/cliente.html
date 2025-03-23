@@ -17,16 +17,13 @@
       <div class="row">
         <div class="col-6">
           <h2 class="title title-page">
-            <i class="fa-solid fa-users"></i> {{ 'Editar' if cliente or criacao==true else 'Cadastrar' }} Cliente
+            <i class="fa-solid fa-users"></i> {{ 'Editar' if criacao==false else 'Cadastrar' }} Cliente
           </h2>
         </div>
       </div>
 
-      <form action="{{'/salvar_alteracao_cliente' if cliente or criacao==true else '/cadastrar_cliente' }}"
-        method="post" id="formCliente">
-        {% if error %}
-        <p class="alert alert-danger small text-center">{{error}}</p>
-        {% endif %}
+      <form action="{{'/salvar_alteracao_cliente' if criacao==false else '/cadastrar_cliente' }}" method="post"
+        id="formCliente">
         <div class="row">
           <div class="col-6">
 
@@ -99,8 +96,7 @@
             <a href="/tratar_clientes" class="btn btn-secondary w-100">Cancelar</a>
           </div>
           <div class="col-3 offset-1">
-            <button type="submit" class="btn btn-success w-100" id="submit" disabled>{{ 'Salvar' if cliente or
-              criacao==true
+            <button type="submit" class="btn btn-success w-100" id="submit" disabled>{{ 'Salvar' if criacao==false
               else
               'Criar' }}</button>
           </div>

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect
+from flask import Blueprint, request, render_template, redirect, flash
 from controller.clienteController import clienteController
 from utils.helper import protectedPage
 import utils.converter as converter
@@ -34,11 +34,12 @@ def cadastrar_cliente():
   cliC = clienteController()
 
   if (cliC.existeCliente(cli.getCpfCnpj())):
+    cli.setCpfCnpj(converter.maskCpfOrCnpj(cli.getCpfCnpj()))
+    flash('Este documento já está em uso. Informe outro número de documento.', category='error')
     return render_template(
       "cliente.html",
       cliente=cli,
       criacao=True,
-      error="Este documento já está em uso. Informe outro número de documento."
     )
 
   cliC.inserirCliente(cli)
@@ -49,6 +50,10 @@ def editar_cliente():
   idCli = request.args.get("cpfCnpj")
   cliC = clienteController ()
   cliente = cliC.consultarClientePeloId (idCli)
+  if cliente is None:
+    return redirect('/tratar_clientes')
+
+  cliente.setCpfCnpj(converter.maskCpfOrCnpj(cliente.getCpfCnpj()))
   return render_template("cliente.html", cliente=cliente, criacao=False)
 
 @cliente_bp.route('/salvar_alteracao_cliente', methods=['POST'])

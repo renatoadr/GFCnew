@@ -72,6 +72,10 @@ class clienteController:
         cursor.execute(query)
 
         linha = cursor.fetchone()
+
+        if linha is None:
+          return None
+
         print('+++++++++++++++++++++++++++')
         print (linha)
         print(linha['cpf_cnpj'])

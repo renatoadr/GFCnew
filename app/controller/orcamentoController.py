@@ -223,16 +223,26 @@ class orcamentoController:
         cursor.close()
         MySql.close(self.__connection)
 
-    def excluirOrcamento(self,idEmpreend,dtCarga):
+    def excluirOrcamento(self, idEmpreend, mesV, anoV, dtCarga):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
 #        print (emp)
 
-        query =  "delete from " + MySql.DB_NAME + ".tb_orcamentos" + " where id_empreendimento = " + str(idEmpreend) + " and dt_carga = '" + dtCarga + "'"
+        query =  "delete from " + MySql.DB_NAME + """.tb_orcamentos
+        where id_empreendimento = %s
+        and dt_carga = %s
+        and mes_vigencia = %s
+        and ano_vigencia = %s """
         print (query)
 
-        cursor.execute(query)
+        cursor.execute(query, (
+          idEmpreend,
+          dtCarga,
+          mesV,
+          anoV
+        ))
+
         self.__connection.commit()
         cursor.close()
         MySql.close(self.__connection)

@@ -32,6 +32,7 @@
             <div class="form-floating">
               <select type="text" name="idTorre" id="idTorre" class="form-control" placeholder=""
                 value="{{ unidade.getIdTorre() if unidade }}" {% if modo=='consulta' %} readonly {% endif %}>
+                <option value="">Selecione</option>
                 {% for t in listaTorres %}
                 <option value="{{ t.getIdTorre() }}" {% if unidade and unidade.getIdTorre()==t.getIdTorre() %} selected
                   {% endif %}>{{ t.getNmTorre() }}</option>
@@ -107,6 +108,7 @@
             <div class="form-floating">
               <select type="text" name="status" id="status" class="form-control" placeholder=""
                 value="{{ unidade.getStatus() if unidade }}" {% if modo=='consulta' %} readonly {% endif %}>
+                <option value="">Selecione</option>
                 <option value="Distrato" {% if unidade and unidade.getStatus()=='Distrato' %} selected {% endif %}>
                   Distrato</option>
                 <option value="Estoque" {% if unidade and unidade.getStatus()=='Estoque' %} selected {% endif %}>
@@ -128,6 +130,7 @@
             <div class="form-floating mt-4">
               <select type="text" name="financiado" id="financiado" class="form-control" placeholder=""
                 value="{{ unidade.getFinanciado() if unidade }}" {% if modo=='consulta' %} readonly {% endif %}>
+                <option value="">Selecione</option>
                 <option value="Sim" {% if unidade and unidade.getFinanciado()=='Sim' %} selected {% endif %}>
                   Sim</option>
                 <option value="Não" {% if unidade and unidade.getFinanciado()=='Não' %} selected {% endif %}>
