@@ -19,6 +19,7 @@ from router.inicio import init_bp
 from router.notas import nota_bp
 from router.fotos import foto_bp
 from filters import filtros_bp
+from router.api import api_bp
 
 
 app = Flask(__name__)
@@ -40,6 +41,7 @@ app.register_blueprint(orca_bp)
 app.register_blueprint(init_bp)
 app.register_blueprint(nota_bp)
 app.register_blueprint(foto_bp)
+app.register_blueprint(api_bp)
 
 def init(app):
   config = configparser.ConfigParser()

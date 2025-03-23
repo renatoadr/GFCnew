@@ -65,7 +65,7 @@ $(function(){
   }, "Campo inválido. O valor está abaixo do permitido.");
 
   $.validator.methods.email = function( value, element ) {
-    return this.optional( element ) || /[a-z]+@[a-z]+(\.[a-z]+){1,3}/.test( value );
+    return this.optional( element ) || /[a-z0-9_.-]+@[a-z0-9_.-]+(\.[a-z]+){1,4}(\.[a-z]{1,3})?/.test( value );
   }
 });
 

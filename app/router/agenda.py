@@ -1,9 +1,10 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, redirect
 from controller.empreendimentoController import empreendimentoController
 from controller.empreendimentoController import empreendimentoController
 from controller.agendaController import agendaController
 from utils.helper import protectedPage
 from dto.agenda import agenda
+from utils.CtrlSessao import IdEmpreend, NmEmpreend
 
 agenda_bp = Blueprint('agendas', __name__)
 
@@ -12,6 +13,19 @@ def tratar_agendas():
     protectedPage()
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
+
+    if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
+      redirect('/home')
+
+    if idEmpreend is None:
+      idEmpreend = IdEmpreend().get()
+    else:
+      IdEmpreend().set(idEmpreend)
+
+    if nmEmpreend is None:
+      nmEmpreend = NmEmpreend().get()
+    else:
+      NmEmpreend().set(nmEmpreend)
 
     print('-----tratar_agendas----')
     print(idEmpreend, nmEmpreend)

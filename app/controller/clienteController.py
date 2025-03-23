@@ -27,7 +27,6 @@ class clienteController:
         cursor.close()
         MySql.close(self.__connection)
 
-
     def consultarClientes(self, search = None):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
@@ -129,3 +128,12 @@ class clienteController:
         cursor.close()
         MySql.close(self.__connection)
 
+    def existeCliente(self, doc):
+      self.__connection = MySql.connect()
+      cursor = self.__connection.cursor()
+      query =  "SELECT COUNT(*) FROM " + MySql.DB_NAME + """.tb_clientes WHERE cpf_cnpj = %s"""
+      cursor.execute(query, (doc,))
+      result = cursor.fetchone()
+      cursor.close()
+      MySql.close(self.__connection)
+      return result[0] > 0

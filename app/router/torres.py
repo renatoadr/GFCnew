@@ -15,14 +15,14 @@ def tratartorres():
   nmEmpreend = request.args.get("nmEmpreend")
 
   if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
-      redirect('/home')
+    redirect('/home')
 
-  if idEmpreend is None and IdEmpreend().has():
+  if idEmpreend is None:
     idEmpreend = IdEmpreend().get()
   else:
     IdEmpreend().set(idEmpreend)
 
-  if nmEmpreend is None and NmEmpreend().has():
+  if nmEmpreend is None:
     nmEmpreend = NmEmpreend().get()
   else:
     NmEmpreend().set(nmEmpreend)

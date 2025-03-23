@@ -29,7 +29,7 @@
 
         <div class="row">
           <div class="col-6">
-            <div class="form-floating mt-4">
+            <div class="form-floating">
               <select type="text" name="idTorre" id="idTorre" class="form-control" placeholder=""
                 value="{{ unidade.getIdTorre() if unidade }}" {% if modo=='consulta' %} readonly {% endif %}>
                 {% for t in listaTorres %}
@@ -104,55 +104,35 @@
 
           </div>
           <div class="col-6">
-            <div class="">
-              <label class="d-block mt-4 mb-2">Status</label>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="distrato" value="Distrato" {% if
-                  modo=='consulta' %} disabled {% endif %} {% if unidade and unidade.getStatus()=='Distrato' %} checked
-                  {% endif %} />
-                <label class="form-check-label" for="distrato">
-                  Distrato
-                </label>
-              </div>
-
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="estoque" value="Estoque" {% if
-                  modo=='consulta' %} disabled {% endif %} {% if unidade and unidade.getStatus()=='Estoque' %} checked
-                  {% endif %} />
-                <label class="form-check-label" for="estoque">
-                  Estoque
-                </label>
-              </div>
-
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="quitado" value="Quitado" {% if
-                  modo=='consulta' %} disabled {% endif %} {% if unidade and unidade.getStatus()=='Quitado' %} checked
-                  {% endif %} />
-                <label class="form-check-label" for="quitado">
-                  Quitado
-                </label>
-              </div>
-
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="status" id="vendido" value="Vendido" {% if
-                  modo=='consulta' %} disabled {% endif %} {% if unidade and unidade.getStatus()=='Vendido' %} checked
-                  {% endif %} />
-                <label class="form-check-label" for="vendido">
-                  Vendido
-                </label>
-              </div>
-              <label class="is-invalid invalid-feedback" id="error-status">Este campo é obrigatório</label>
+            <div class="form-floating">
+              <select type="text" name="status" id="status" class="form-control" placeholder=""
+                value="{{ unidade.getStatus() if unidade }}" {% if modo=='consulta' %} readonly {% endif %}>
+                <option value="Distrato" {% if unidade and unidade.getStatus()=='Distrato' %} selected {% endif %}>
+                  Distrato</option>
+                <option value="Estoque" {% if unidade and unidade.getStatus()=='Estoque' %} selected {% endif %}>
+                  Estoque</option>
+                <option value="Quitado" {% if unidade and unidade.getStatus()=='Quitado' %} selected {% endif %}>
+                  Quitado</option>
+                <option value="Vendido" {% if unidade and unidade.getStatus()=='Vendido' %} selected {% endif %}>
+                  Vendido</option>
+              </select>
+              <label for="status">Status</label>
             </div>
             <div class="form-floating mt-4">
-              <input type="date" name="dtOcorrencia" id="dtOcorrencia" class="form-control" placeholder=""
-                value="{{ unidade.getDtOcorrencia() if unidade }}" {% if modo=='consulta' %} readonly {% endif %} />
+              <input type="date" name="dtOcorrencia" id="dtOcorrencia" class="form-control" placeholder="" readonly
+                value="{{ unidade.getDtOcorrencia() if unidade else current_date }}" {% if modo=='consulta' %} readonly
+                {% endif %} />
               <label for="dtOcorrencia">Data ocorrencia</label>
             </div>
 
             <div class="form-floating mt-4">
-              <input type="text" name="financiado" id="financiado" class="form-control perc" placeholder=""
-                value="{{ unidade.getFinanciado() if unidade }}" maxlength="3" {% if modo=='consulta' %} readonly {%
-                endif %} />
+              <select type="text" name="financiado" id="financiado" class="form-control" placeholder=""
+                value="{{ unidade.getFinanciado() if unidade }}" {% if modo=='consulta' %} readonly {% endif %}>
+                <option value="Sim" {% if unidade and unidade.getFinanciado()=='Sim' %} selected {% endif %}>
+                  Sim</option>
+                <option value="Não" {% if unidade and unidade.getFinanciado()=='Não' %} selected {% endif %}>
+                  Não</option>
+              </select>
               <label for="financiado">Financiado</label>
             </div>
 
@@ -246,10 +226,7 @@
           errorClass: 'is-invalid',
           errorElement: 'span',
           submitHandler: function (form) {
-            if (form.status.value === '') {
-              $('#error-status').show();
-              $('input[name="status"]').addClass('is-invalid');
-            } else if (form.cpfCnpjCliente.value === '' || !/\d/.test(form.cpfCnpjCliente.value)) {
+            if (form.cpfCnpjCliente.value === '' || !/\d/.test(form.cpfCnpjCliente.value)) {
               $.toast({
                 heading: '<strong>Erro ao enviar</strong>',
                 text: "É necessário informar o cliente associado a unidade de maneira correta",
