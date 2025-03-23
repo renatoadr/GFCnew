@@ -27,7 +27,7 @@ def tratar_certidoes():
   if len(certS) == 0:
     return render_template("certidoes.html", mensagem="Certidões não Cadastradas!!!", certidoes=certS)
   else:
-    return render_template("certidoes.html", certidoes=certS)
+    return render_template("certidoes.html", certidoes=certS[0])
 
 @cert_bp.route('/efetuar_cad_certidoes', methods=['POST'])
 def efetuar_cad_certidoes():
