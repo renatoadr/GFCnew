@@ -120,3 +120,31 @@ class certidaoController:
         print ('-----------------> ', listaItens)
 
         return listaItens
+    
+    def salvarCertidoes(self, item):
+        self.__connection = MySql.connect()
+        cursor = self.__connection.cursor()
+        
+        print(type(item.getIdEmpreend ()))
+        print(item.getIdEmpreend ())
+        print(item.getEstadualStatus ())
+        print(item.getEstadualValidade ())
+        print(item.getFgtsStatus ())
+        print(item.getFgtsValidade ())
+        print(item.getMunicipalStatus ())
+        print(item.getMunicipalValidade ())
+        print(item.getSrfInssStatus ())
+        print(item.getSrfInssValidade())
+        print(item.getTrabalhistaStatus ())
+        print(item.getTrabalhistaValidade ())
+        
+        query =  "update " + MySql.DB_NAME + ".tb_certidoes set " + "id_empreendimento = " + str(item.getIdEmpreend ()) + ", " + "estadual_status = '" + item.getEstadualStatus () + "', " + "estadual_validade = '" + item.getEstadualValidade () + "', " + "fgts_status = '" + item.getFgtsStatus () + "', " + "fgts_validade = '" + item.getFgtsValidade () + "', " + "municipal_status = '" + item.getMunicipalStatus () + "', " + "municipal_validade = '" + item.getMunicipalValidade () + "', " + "srf_inss_status = '" + item.getSrfInssStatus () + "', " + "trabalhista_status = '" + item.getTrabalhistaStatus () + "', " + "trabalhista_validade = '" + item.getTrabalhistaValidade () + "' where id_empreendimento = " + str(item.getIdEmpreend()) 
+#        query =  "update " + MySql.DB_NAME + """.tb_certidoes set id_empreendimento = %s, estadual_status = %s, estadual_validade = %s, fgts_status = %s, fgts_validade = %s, municipal_status = %s, municipal_validade = %s, srf_inss_status = %s, trabalhista_status = %s, trabalhista_validade = %s where id_empreendimento = %s """
+
+        print (query)
+        cursor.execute(query)
+
+        self.__connection.commit()
+        print(cursor.rowcount,"Certidões atualizada com sucesso")
+        cursor.close()
+        MySql.close(self.__connection)

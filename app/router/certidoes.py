@@ -27,7 +27,7 @@ def tratar_certidoes():
   if len(certS) == 0:
     return render_template("certidoes.html", mensagem="Certidões não Cadastradas!!!", certidoes=certS)
   else:
-    return render_template("certidoes.html", certidoes=certS)
+    return render_template("certidoes.html", certidoes=certS[0])
 
 @cert_bp.route('/efetuar_cad_certidoes', methods=['POST'])
 def efetuar_cad_certidoes():
@@ -48,3 +48,24 @@ def efetuar_cad_certidoes():
   certC = certidaoController()
   certC.inserirCertidoes(cert)
   return redirect("/tratar_certidoes")
+
+@cert_bp.route('/salvar_certidoes', methods=['POST'])
+def salvar_item_orcamento():
+
+    item = certidao ()
+    item.setIdEmpreend (request.form.get('idEmpreend'))
+    item.setEstadualStatus (request.form.get('estadualStatus'))
+    item.setEstadualValidade (request.form.get('estadualValidade'))
+    item.setFgtsStatus (request.form.get('fgtsStatus')) 
+    item.setFgtsValidade (request.form.get('fgtsValidade'))
+    item.setMunicipalStatus (request.form.get('municipalStatus'))
+    item.setMunicipalValidade (request.form.get('municipalValidade'))
+    item.setSrfInssStatus (request.form.get('srfInssStatus'))
+    item.setSrfInssValidade (request.form.get('srfInssValidade'))
+    item.setTrabalhistaStatus (request.form.get('trabalhistaStatus'))
+    item.setTrabalhistaValidade (request.form.get('trabalhistaValidade'))
+    
+    certC = certidaoController()
+    certC.salvarCertidoes(item)
+
+    return redirect("/tratar_certidoes")

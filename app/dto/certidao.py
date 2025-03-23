@@ -13,7 +13,7 @@ class certidao:
     __fgtsValidade          = ""
     __municipalStatus       = ""
     __municipalValidade     = ""
-    __srfInssStatus        = ""
+    __srfInssStatus         = ""
     __srfInssValidade       = ""
     __trabalhistaStatus     = ""
     __trabalhistaValidade   = "" 
