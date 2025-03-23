@@ -16,42 +16,99 @@
   <div class="container">
     <div class="row">
       <div class="col-6">
-        <h2 class="title">{{ 'Editar' if certidoes else 'Criar' }} Certidoes</h2>
+        <h2 class="title"><i class="fa-solid fa-book"></i> {{ 'Editar' if certidoes else 'Criar' }} Certidões</h2>
       </div>
     </div>
 
-    <form action="{{'/salvar_certidoes' if certidoes else '/efetuar_cad_certidoes'}}" method="POST"
-      id="formcertidoes">
+    <form action="{{'/salvar_certidoes' if certidoes else '/efetuar_cad_certidoes'}}" method="POST" id="formcertidoes">
       <div class="row">
         <div class="col-6">
 
           <div class="form-floating mt-6">
-            <input type="text" name="estadualStatus" id="estadualStatus" class="form-control" placeholder=""
-              value="{{ certidoes.getEstadualStatus() if certidoes}}" />
+            <select type="text" name="estadualStatus" id="estadualStatus" class="form-control"
+              value="{{ certidoes.getEstadualStatus() if certidoes}}">
+              <option value="">Selecione</option>
+              <option value="Pendente" {% if certidoes and certidoes.getEstadualStatus()=='Pendente' %} selected {%
+                endif %}>Pendente</option>
+              <option value="Negativa" {% if certidoes and certidoes.getEstadualStatus()=='Negativa' %} selected {%
+                endif %}>Negativa</option>
+              <option value="Positiva" {% if certidoes and certidoes.getEstadualStatus()=='Positiva' %} selected {%
+                endif %}>Positiva</option>
+            </select>
             <label for="estadualStatus">Estadual</label>
           </div>
 
           <div class="form-floating mt-4">
-            <input type="text" name="fgtsStatus" id="fgtsStatus" class="form-control" placeholder=""
-              value="{{ certidoes.getFgtsStatus() if certidoes}}" />
+            <select type="text" name="fgtsStatus" id="fgtsStatus" class="form-control"
+              value="{{ certidoes.getFgtsStatus() if certidoes}}">
+              <option value="">Selecione</option>
+              <option value="Pendente" {% if certidoes and certidoes.getFgtsStatus()=='Pendente' %} selected {% endif
+                %}>
+                Pendente
+              </option>
+              <option value="Negativa" {% if certidoes and certidoes.getFgtsStatus()=='Negativa' %} selected {% endif
+                %}>
+                Negativa
+              </option>
+              <option value="Positiva" {% if certidoes and certidoes.getFgtsStatus()=='Positiva' %} selected {% endif
+                %}>
+                Positiva
+              </option>
+            </select>
             <label for="fgtsStatus">FGTS</label>
           </div>
 
           <div class="form-floating mt-4">
-            <input type="text" name="municipalStatus" id="municipalStatus" class="form-control" placeholder=""
+            <select type="text" name="municipalStatus" id="municipalStatus" class="form-control"
               value="{{ certidoes.getMunicipalStatus() if certidoes}}">
+              <option value="">Selecione</option>
+              <option value="Pendente" {% if certidoes and certidoes.getMunicipalStatus()=='Pendente' %} selected {%
+                endif %}>Pendente
+              </option>
+              <option value="Negativa" {% if certidoes and certidoes.getMunicipalStatus()=='Negativa' %} selected {%
+                endif %}>Negativa
+              </option>
+              <option value="Positiva" {% if certidoes and certidoes.getMunicipalStatus()=='Positiva' %} selected {%
+                endif %}>Positiva
+              </option>
+            </select>
             <label for="municipalStatus">Municipal</label>
           </div>
 
           <div class="form-floating mt-4">
-            <input type="text" name="srfInssStatus" id="srfInssStatus" class="form-control" placeholder=""
+            <select type="text" name="srfInssStatus" id="srfInssStatus" class="form-control"
               value="{{ certidoes.getSrfInssStatus() if certidoes}}">
+              <option value="">Selecione</option>
+              <option value="Pendente" {% if certidoes and certidoes.getSrfInssStatus()=='Pendente' %} selected {% endif
+                %}>Pendente
+              </option>
+              </option>
+              <option value="Negativa" {% if certidoes and certidoes.getSrfInssStatus()=='Negativa' %} selected {% endif
+                %}>
+                Negativa
+              </option>
+              <option value="Positiva" {% if certidoes and certidoes.getSrfInssStatus()=='Positiva' %} selected {% endif
+                %}>
+                Positiva
+              </option>
+            </select>
             <label for="srfInssStatus">SRF/INSS</label>
           </div>
 
           <div class="form-floating mt-4">
-            <input type="text" name="trabalhistaStatus" id="trabalhistaStatus" class="form-control" placeholder=""
-              value="{{ certidoes.getTrabalhistaStatus() if certidoes}}" />
+            <select type="text" name="trabalhistaStatus" id="trabalhistaStatus" class="form-control"
+              value="{{ certidoes.getTrabalhistaStatus() if certidoes}}">
+              <option value="">Selecione</option>
+              <option value="Pendente" {% if certidoes and certidoes.getTrabalhistaStatus()=='Pendente' %} selected {%
+                endif %}>Pendente
+              </option>
+              <option value="Negativa" {% if certidoes and certidoes.getTrabalhistaStatus()=='Negativa' %} selected {%
+                endif %}>Negativa
+              </option>
+              <option value="Positiva" {% if certidoes and certidoes.getTrabalhistaStatus()=='Positiva' %} selected {%
+                endif %}>Positiva
+              </option>
+            </select>
             <label for="trabalhistaStatus">Trabalhista</label>
           </div>
 
@@ -122,23 +179,6 @@
       });
     });
   </script>
-  {% if certidoes %}
-  <script>
-    $(function () {
-      setTimeout(function () {
-        $('#estado').val(document.querySelector('#estado').getAttribute('value'));
-        $('#estado').trigger('change')
-        setTimeout(function () {
-          $('#cidade').val(document.querySelector('#cidade').getAttribute('value'));
-        }, 500);
-      }, 500);
-
-      setTimeout(function () {
-        $('#nmBanco').val(document.querySelector('#nmBanco').getAttribute('value'));
-      }, 500);
-    });
-  </script>
-  {% endif %}
 </body>
 
 </html>

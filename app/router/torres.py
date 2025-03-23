@@ -1,6 +1,7 @@
-from flask import Blueprint, request, render_template, redirect
+from flask import Blueprint, request, render_template, redirect, url_for, flash
 
 from controller.torreController import torreController
+from controller.unidadeController import unidadeController
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from utils.helper import protectedPage
 from dto.torre import torre
@@ -15,14 +16,14 @@ def tratartorres():
   nmEmpreend = request.args.get("nmEmpreend")
 
   if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
-      redirect('/home')
+    redirect('/home')
 
-  if idEmpreend is None and IdEmpreend().has():
+  if idEmpreend is None:
     idEmpreend = IdEmpreend().get()
   else:
     IdEmpreend().set(idEmpreend)
 
-  if nmEmpreend is None and NmEmpreend().has():
+  if nmEmpreend is None:
     nmEmpreend = NmEmpreend().get()
   else:
     NmEmpreend().set(nmEmpreend)
@@ -94,20 +95,16 @@ def salvar_alteracao_torre():
 
     return redirect("/tratar_torres")
 
-
 @torre_bp.route('/excluir_torre')
 def excluir_torre():
+  idTorre = request.args.get('idTorre')
+  ctrlUnid = unidadeController()
+  unidades = ctrlUnid.existeUnidadesPorTorre(idTorre)
 
-    idTorre = request.args.get('idTorre')
+  if unidades:
+    flash('Existem unidades cadastradas e não é possível remover essa torre', category='error')
+    return redirect('/tratar_torres')
 
-    print('--------------excluir_torre -------------')
-    print (idTorre)
-
-    torreC = torreController()
-    torreC.excluirTorre(idTorre)
-    torreS = torreC.consultarTorres (IdEmpreend().get())
-
-    if len(torreS) == 0:
-        return redirect("/home")
-    else:
-        return redirect("/tratar_torres")
+  torreC = torreController()
+  torreC.excluirTorre(idTorre)
+  return redirect("/tratar_torres")

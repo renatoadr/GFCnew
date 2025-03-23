@@ -17,12 +17,12 @@
       <div class="row">
         <div class="col-6">
           <h2 class="title title-page">
-            <i class="fa-solid fa-users"></i> {{ 'Editar' if cliente else 'Cadastrar' }} Cliente
+            <i class="fa-solid fa-users"></i> {{ 'Editar' if criacao==false else 'Cadastrar' }} Cliente
           </h2>
         </div>
       </div>
 
-      <form action="{{'/salvar_alteracao_cliente' if cliente else '/cadastrar_cliente' }}" method="post"
+      <form action="{{'/salvar_alteracao_cliente' if criacao==false else '/cadastrar_cliente' }}" method="post"
         id="formCliente">
         <div class="row">
           <div class="col-6">
@@ -31,7 +31,8 @@
               <div class="col-6">
                 <div class="form-floating">
                   <select type="text" name="tpCpfCnpj" id="tpCpfCnpj" class="form-control" placeholder=""
-                    value="{{ cliente.getTpCpfCnpj() if cliente}}">
+                    value="{{ cliente.getTpCpfCnpj() if cliente}}" {% if criacao==false %} readonly disabled {% endif
+                    %}>
                     <option value="">Selecione</option>
                     <option value="CPF" {% if cliente and cliente.getTpCpfCnpj()=='CPF' %} selected {% endif %}>Físico
                     </option>
@@ -44,7 +45,8 @@
               <div class="col-6">
                 <div class="form-floating">
                   <input type="text" name="cpfCnpj" id="cpfCnpj" disabled class="form-control" placeholder=""
-                    value="{{ cliente.getCpfCnpj() if cliente}}" maxlength="15" />
+                    value="{{ cliente.getCpfCnpj() if cliente}}" maxlength="15" {% if criacao==false %} readonly
+                    disabled {% endif %} />
                   <label for="cpfCnpj">Selecione o tipo</label>
                 </div>
               </div>
@@ -94,7 +96,8 @@
             <a href="/tratar_clientes" class="btn btn-secondary w-100">Cancelar</a>
           </div>
           <div class="col-3 offset-1">
-            <button type="submit" class="btn btn-success w-100" id="submit" disabled>{{ 'Salvar' if cliente else
+            <button type="submit" class="btn btn-success w-100" id="submit" disabled>{{ 'Salvar' if criacao==false
+              else
               'Criar' }}</button>
           </div>
         </div>

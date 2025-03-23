@@ -30,9 +30,13 @@ $(function() {
     $('#atcplt-nome').text('');
   }
 
+  function replaceAccents(value = '') {
+    return value.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+  }
+
   function strongSearch(val, item) {
-    let target = item.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
-    let source = val.trim().normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+    let target = replaceAccents(item);
+    let source = replaceAccents(val);
     let index = target.indexOf(source);
     if (index > -1) {
       let init = item.substring(0, index);

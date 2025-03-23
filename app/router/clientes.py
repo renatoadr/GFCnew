@@ -1,6 +1,6 @@
-from flask import Blueprint, request, render_template, redirect, jsonify
+from flask import Blueprint, request, render_template, redirect, flash
 from controller.clienteController import clienteController
-from utils.helper import protectedPage, is_logged
+from utils.helper import protectedPage
 import utils.converter as converter
 from dto.cliente import cliente
 
@@ -31,10 +31,18 @@ def cadastrar_cliente():
   cli.setDdd (request.form.get('ddd'))
   cli.setTel (converter.removeAlpha(request.form.get('tel')))
   cli.setEmail (request.form.get('email'))
-
   cliC = clienteController()
-  cliC.inserirCliente(cli)
 
+  if (cliC.existeCliente(cli.getCpfCnpj())):
+    cli.setCpfCnpj(converter.maskCpfOrCnpj(cli.getCpfCnpj()))
+    flash('Este documento já está em uso. Informe outro número de documento.', category='error')
+    return render_template(
+      "cliente.html",
+      cliente=cli,
+      criacao=True,
+    )
+
+  cliC.inserirCliente(cli)
   return redirect("/tratar_clientes")
 
 @cliente_bp.route('/editar_cliente')
@@ -42,7 +50,11 @@ def editar_cliente():
   idCli = request.args.get("cpfCnpj")
   cliC = clienteController ()
   cliente = cliC.consultarClientePeloId (idCli)
-  return render_template("cliente.html", cliente=cliente)
+  if cliente is None:
+    return redirect('/tratar_clientes')
+
+  cliente.setCpfCnpj(converter.maskCpfOrCnpj(cliente.getCpfCnpj()))
+  return render_template("cliente.html", cliente=cliente, criacao=False)
 
 @cliente_bp.route('/salvar_alteracao_cliente', methods=['POST'])
 def salvar_alteracao_cliente():
@@ -73,23 +85,3 @@ def excluir_cliente():
     cliS = cliC.consultarClientes ()
 
     return render_template("lista_clientes.html", clienteS=cliS)
-
-
-########## API #########
-@cliente_bp.route('/api/clientes', methods=['GET'])
-def get_clientes_api():
-  if not is_logged():
-    return jsonify([])
-  search = request.args.get('search')
-  cliC = clienteController()
-  cliS = cliC.consultarClientes(search.lower())
-  newList = list(map(lambda it: it.to_json(), cliS))
-  return jsonify(newList)
-
-@cliente_bp.route('/api/cliente/<doc>', methods=['GET'])
-def get_cliente_api(doc):
-  if not is_logged():
-    return jsonify([])
-  cliC = clienteController()
-  cli = cliC.consultarClientePeloId(doc)
-  return jsonify(cli.to_json())

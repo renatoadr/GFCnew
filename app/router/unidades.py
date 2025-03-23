@@ -7,6 +7,7 @@ from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from utils.helper import protectedPage
 import utils.converter as converter
 from dto.unidade import unidade
+from datetime import date
 
 
 unidade_bp = Blueprint('unidades', __name__)
@@ -17,12 +18,10 @@ def tratarunidades():
   protectedPage()
 
   idEmpreend = request.args.get("idEmpreend")
-  IdEmpreend().set(idEmpreend)
-  nmEmpreend = request.args.get('nmEmpreend')
-  NmEmpreend().set(nmEmpreend)
+  nmEmpreend = request.args.get("nmEmpreend")
 
   if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
-      return redirect('/home')
+    redirect('/home')
 
   if idEmpreend is None:
     idEmpreend = IdEmpreend().get()
@@ -45,13 +44,13 @@ def tratarunidades():
 
 @unidade_bp.route('/abrir_cad_unidade')
 def abrir_cad_unidade():
-    
+
 #    idEmpreend = request.args.get("idEmpreend")
 #    IdEmpreend().set(idEmpreend)
 
     ctrlTorre = torreController()
     listaTorres = ctrlTorre.consultarTorres(IdEmpreend().get())
-    return render_template("unidade.html", listaTorres=listaTorres)
+    return render_template("unidade.html", listaTorres=listaTorres, current_date=date.today())
 
 @unidade_bp.route('/cadastrar_unidade', methods=['POST'])
 def cadastrar_unidade():

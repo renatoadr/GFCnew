@@ -17,7 +17,7 @@
       <div class="row">
         <div class="col-6">
           <h2 class="title title-page">
-            <span><i class="fa-solid fa-scale-balanced"></i> Medições</span><strong>{{session.nmEmpreend}}</strong>
+            <span><i class="fa-solid fa-ruler-combined"></i> Medições</span><strong>{{session.nmEmpreend}}</strong>
           </h2>
         </div>
         <div class="col-6">
@@ -46,6 +46,9 @@
 
       <div class="row">
         <div class="col-12">
+          {% if error %}
+          <p class="alert alert-danger">{{error}}</p>
+          {% endif %}
           <table class="table table-striped">
             <thead class="table-light">
               <tr class="text-center">
@@ -63,7 +66,7 @@
               {% if medicoes %}
               {% for m in medicoes %}
               <tr class="text-center">
-                <td>{{ m.getNrMedicao() }}</td>            
+                <td>{{ m.getNrMedicao() }}</td>
                 <td>{{ m.getMesVigencia() }}</td>
                 <td>{{ m.getAnoVigencia() }}</td>
                 <td>{{ m.getPercPrevistoAcumulado() }}</td>
@@ -86,8 +89,8 @@
                   <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Empreendimento">
                     <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
                       data-modal-exclude-title="Medição"
-                      data-modal-exclude-action="/excluir_medição?dtCarga={{m.getDtCarga()}}"
-                      data-modal-exclude-text="Deseja realmente excluir a medição com a data <strong>{{m.getDtCarga()}}</strong>?"></i>
+                      data-modal-exclude-action="/excluir_medicao?idMedicao={{m.getIdMedicao()}}"
+                      data-modal-exclude-text="Deseja realmente excluir a medição <strong>{{m.getNrMedicao()}}</strong> do mês <strong>{{m.getMesVigencia()}}</strong> e ano <strong>{{m.getAnoVigencia()}}</strong>?"></i>
                   </a>
                 </td>
               </tr>

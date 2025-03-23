@@ -17,18 +17,18 @@ def tratar_medicoes():
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get('nmEmpreend')
 
-    if (not IdEmpreend().has() or not NmEmpreend().has()) and (idEmpreend is None or nmEmpreend is None):
-        return redirect('/home')
+    if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
+      redirect('/home')
 
-    if idEmpreend:
-        IdEmpreend().set(idEmpreend)
+    if idEmpreend is None:
+      idEmpreend = IdEmpreend().get()
     else:
-        idEmpreend = IdEmpreend().get()
+      IdEmpreend().set(idEmpreend)
 
-    if nmEmpreend:
-        NmEmpreend().set(nmEmpreend)
+    if nmEmpreend is None:
+      nmEmpreend = NmEmpreend().get()
     else:
-        nmEmpreend = NmEmpreend().get()
+      NmEmpreend().set(nmEmpreend)
 
     print('-----tratar_medicoes----')
     print(idEmpreend, nmEmpreend)
@@ -94,3 +94,9 @@ def upload_arquivo_medicoes():
         mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
     return render_template("erro.html", mensagem=mensagem)
 
+@medicoes_bp.route('/excluir_medicao')
+def excluir_medicao():
+  idMedicao = request.args.get('idMedicao')
+  ctrlMed = medicaoController()
+  ctrlMed.excluir_medicao(idMedicao)
+  return redirect('/tratar_medicoes')

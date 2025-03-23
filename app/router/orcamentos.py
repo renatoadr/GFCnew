@@ -33,18 +33,21 @@ def tratar_orcamentos():
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
-    if (not IdEmpreend().has() or not NmEmpreend().has()) and (idEmpreend is None or nmEmpreend is None):
-      return redirect('/home')
+    idEmpreend = request.args.get("idEmpreend")
+    nmEmpreend = request.args.get("nmEmpreend")
 
-    if idEmpreend:
-      IdEmpreend().set(idEmpreend)
-    else:
+    if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
+      redirect('/home')
+
+    if idEmpreend is None:
       idEmpreend = IdEmpreend().get()
-
-    if nmEmpreend:
-      NmEmpreend().set(nmEmpreend)
     else:
+      IdEmpreend().set(idEmpreend)
+
+    if nmEmpreend is None:
       nmEmpreend = NmEmpreend().get()
+    else:
+      NmEmpreend().set(nmEmpreend)
 
     print('-----tratar_orcamentos----')
     print(idEmpreend, nmEmpreend)
@@ -128,38 +131,19 @@ def editar_item_orcamento():
 @orca_bp.route('/excluir_item_orcamento')
 def excluir_item_orcamento():
   idOrc = request.args.get("idOrcamento")
-  idEmpreend = IdEmpreend().get()
-  dtCarga = DtCarga().get()
-  print ('idEmpreend, dtCarga  ==>',   idEmpreend, dtCarga)
-
-  print('------ excluir_item_orcamanto --------')
-  print (idOrc)
   orcC = orcamentoController ()
   orcC.excluirItemOrcamento(idOrc)
-  print('------ excluir_item_orcamanto --- consultar_orcamento_data ------')
-  print (idEmpreend, dtCarga)
-
-  print('------ excluir_item_orcamanto --- consultar_orcamento_data fim --------')
-
   return redirect('/consultar_orcamento_data')
 
 @orca_bp.route('/excluir_orcamento')
 def excluir_orcamento():
-
-    idEmpreend = session.get("idEmpreend")
-    dtCarga = session.get("dtCarga")
-    print ('idEmpreend, dtCarga  ==>',   idEmpreend, dtCarga)
-
-    print('------ excluir_orcamanto --------')
+    idEmpreend = IdEmpreend().get()
+    mes = request.args.get('mesV')
+    ano = request.args.get('anoV')
+    data = request.args.get('dtCarga')
     orcC = orcamentoController ()
-    orcC.excluirOrcamento(idEmpreend,dtCarga)
-
-    orcS = orcC.consultarOrcamentos(idEmpreend)
-
-    if len(orcS) == 0:
-        return render_template("lista_orcamentos.html", mensagem="Medição não Cadastrada, importar o arquivo Excel!!!", orcamentos=orcS)
-    else:
-        return render_template("lista_orcamentos.html", orcamentos=orcS)
+    orcC.excluirOrcamento(idEmpreend,mes, ano, data)
+    return redirect('/tratar_orcamentos')
 
 @orca_bp.route('/salvar_item_orcamento', methods=['POST'])
 def salvar_item_orcamento():

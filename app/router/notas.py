@@ -51,18 +51,18 @@ def tratar_notas():
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
-    if (not IdEmpreend().has() or not NmEmpreend().has()) and (idEmpreend is None or nmEmpreend is None):
-      return redirect('/home')
+    if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
+      redirect('/home')
 
-    if idEmpreend:
-      IdEmpreend().set(idEmpreend)
-    else:
+    if idEmpreend is None:
       idEmpreend = IdEmpreend().get()
-
-    if nmEmpreend:
-      NmEmpreend().set(nmEmpreend)
     else:
+      IdEmpreend().set(idEmpreend)
+
+    if nmEmpreend is None:
       nmEmpreend = NmEmpreend().get()
+    else:
+      NmEmpreend().set(nmEmpreend)
 
     print('-----tratar_notas----')
     print(idEmpreend, nmEmpreend)

@@ -46,18 +46,18 @@ def tratar_contas():
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
-    if (not IdEmpreend().has() or not NmEmpreend().has()) and (idEmpreend is None or nmEmpreend is None):
-      return redirect('/home')
+    if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
+      redirect('/home')
 
-    if idEmpreend:
-      IdEmpreend().set(idEmpreend)
-    else:
+    if idEmpreend is None:
       idEmpreend = IdEmpreend().get()
-
-    if nmEmpreend:
-      NmEmpreend().set(nmEmpreend)
     else:
+      IdEmpreend().set(idEmpreend)
+
+    if nmEmpreend is None:
       nmEmpreend = NmEmpreend().get()
+    else:
+      NmEmpreend().set(nmEmpreend)
 
     print('-----tratar_contas----')
     print(idEmpreend, nmEmpreend)
@@ -69,3 +69,16 @@ def tratar_contas():
         return render_template("lista_contas.html", mensagem="Conta não Cadastrada, importar o arquivo Excel!!!", contas=contS)
     else:
         return render_template("lista_contas.html", contas=contS)
+
+@contas_corrente_bp.route('/consultar_conta_data')
+def consultar_conta():
+  pass
+
+@contas_corrente_bp.route('/excluir_conta')
+def excluir_conta():
+  mes = request.args.get('mesV')
+  ano = request.args.get('anoV')
+  data = request.args.get('dtCarga')
+  contC = contaController ()
+  contC.excluir_por_data(data, mes, ano)
+  return redirect('/tratar_contas')

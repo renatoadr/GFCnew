@@ -21,6 +21,15 @@ def converterFloatToCurrency(value):
 def removeAlpha(value):
    return re.sub(r"\D+", "", value)
 
+def maskCpfOrCnpj(value: str):
+  if len(value) == 11:
+      cpf = value.zfill(11)
+      return f'{cpf[:3]}.{cpf[3:6]}.{cpf[6:9]}-{cpf[9:]}'
+  elif len(value) == 14:
+      cnpj = value.zfill(14)
+      return f'{cnpj[:2]}.{cnpj[2:5]}.{cnpj[5:8]}/{cnpj[8:12]}-{cnpj[12:]}'
+  return value
+
 def isNumber(value):
     try:
       float(value)
