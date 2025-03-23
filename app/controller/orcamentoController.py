@@ -241,28 +241,7 @@ class orcamentoController:
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
-#        print (">>>>>>>>>>>>", item.getOrcadoValor (), item.getFisicoValor ())
-#        print (item.getIdOrcamento ())
-#        print (item.getIdEmpreend ())
-#        print (item.getMesVigencia ())
-#        print (item.getAnoVigencia ())
-#        print (item.getDtCarga ())
-#        print (item.getItem ())
-#        print (item.getOrcadoValor ())
-#        print (item.getFisicoValor ())
-#        print (item.getFisicoPercentual ())
-#        print (item.getFisicoSaldo ())
-#        print (item.getFinanceiroValor ())
-#        print (item.getFinanceiroPercentual ())
-#        print (item.getFinanceiroSaldo ())
-
         query =  "update " + MySql.DB_NAME + ".tb_orcamentos set " + "item = '" + item.getItem () + "', " + "orcado_valor = " + str(item.getOrcadoValor ()) + ", " + "fisico_valor = " + str(item.getFisicoValor ()) + ", " + "fisico_percentual = " + str(item.getFisicoPercentual ()) + ", " + "fisico_saldo = " + str(item.getFisicoSaldo ()) + ", " + "financeiro_valor = " + str(item.getFinanceiroValor ()) + ", " + "financeiro_percentual = " + str(item.getFinanceiroPercentual ()) + ", " + "financeiro_saldo = " + str(item.getFinanceiroSaldo ()) + " where id_orcamento = " + str(item.getIdOrcamento())
-
-#        "id_orcamento = '" + item.getIdOrcamento () + "', " +
-#        "id_empreendimento = '" + item.getIdEmpreend () + "', " +
-#        "mes_vigencia = '" + item.getMesVigencia ()  + "', " +
-#        "ano_vigencia = '" + item.getAnoVigencia ()  + "', " +
-#        "dt_carga = '" + item.getDtCarga () + "', " +
 
         print (query)
         cursor.execute(query)
