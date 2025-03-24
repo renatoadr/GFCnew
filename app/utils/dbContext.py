@@ -10,7 +10,7 @@ class MySql:
   def getCursor(self):
     if self.__cursor is None:
       self.__conn = MySql.connect()
-      self.__cursor = self.__conn.cursor()
+      self.__cursor = self.__conn.cursor(dictionary=True)
       return self.__cursor
 
   def commitAndClose(self):
@@ -62,4 +62,11 @@ class MySql:
     conn = MySql()
     cursor = conn.getCursor()
     cursor.execute(query, args)
+    conn.commitAndClose()
+
+  @staticmethod
+  def execMany(query: str, args: tuple):
+    conn = MySql()
+    cursor = conn.getCursor()
+    cursor.executemany(query, args)
     conn.commitAndClose()

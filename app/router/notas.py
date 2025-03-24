@@ -40,19 +40,13 @@ def upload_arquivo_notas():
 
 @nota_bp.route('/tratar_notas')
 def tratar_notas():
-# ---- teste de sessão
-    temp = protectedPage()
-
-    if temp != None:
-        print ('protectedPage()')
-        return temp
-#---- fim teste de sessão
+    protectedPage()
 
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
     if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
-      redirect('/home')
+      return redirect('/home')
 
     if idEmpreend is None:
       idEmpreend = IdEmpreend().get()

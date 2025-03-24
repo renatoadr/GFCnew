@@ -18,7 +18,7 @@ def tratar_medicoes():
     nmEmpreend = request.args.get('nmEmpreend')
 
     if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
-      redirect('/home')
+      return redirect('/home')
 
     if idEmpreend is None:
       idEmpreend = IdEmpreend().get()

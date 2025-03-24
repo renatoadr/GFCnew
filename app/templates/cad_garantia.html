@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Garantia</title>
+  {% include 'fractials/head.html' %}
+</head>
+
+<body>
+  {% include 'fractials/menu.html' %}
+
+
+  <div class="container">
+    <div class="row">
+      <div class="col-6">
+        <h2 class="title"><i class="fa-solid fa-shield-halved"></i> {{ 'Atualizar' if empreend else 'Criar' }} Garantia
+        </h2>
+      </div>
+    </div>
+
+    <form action="{{'/salvar_garantia' if garantia else '/cadastrar_garantia'}}" method="POST" id="formGarantia">
+
+      <div class="row">
+        <div class="col-6">
+          <div class="form-floating">
+            <input type="text" name="mesVig" id="mesVig" class="form-control 2num" placeholder=""
+              value="{{ empreend.getIdEmpreend() if empreend}}" />
+            <label for="mesVig">Mês vigência</label>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-floating">
+            <input type="text" name="anoVig" id="anoVig" class="form-control 4num" placeholder=""
+              value="{{ empreend.getIdEmpreend() if empreend}}" />
+            <label for="anoVig">Ano vigência</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row mt-4">
+        <div class="col-12">
+          <h5>Documentos da obra</h5>
+        </div>
+      </div>
+
+      {% for campo in camposObra %}
+      <div class="row mt-4">
+        <div class="col-4">
+          <div class="form-floating">
+            <input type="text" name="obraDocumento" id="documento_obra_{{loop.index}}" class="form-control"
+              placeholder="" readonly value="{{campo}}" />
+            <label for="documento_obra_{{loop.index}}">{{campo}}</label>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-floating">
+            <select type="text" name="obraStatus" id="status_obra_{{loop.index}}" class="form-control" placeholder=""
+              value="">
+              <option value="">Selecione</option>
+              <option value="Normal">Normal</option>
+              <option value="Atenção">Atenção</option>
+              <option value="Verificar">Verificar</option>
+            </select>
+            <label for="status_obra_{{loop.index}}">Status</label>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-floating">
+            <input type="text" name="obraObservacao" id="observacao_obra_{{loop.index}}" class="form-control"
+              placeholder="" value="" />
+            <label for="observacao_obra_{{idx}}">Observação</label>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+      <hr class="border border-primary-subtle border-2 opacity-50 mt-5">
+
+      <div class="row mt-5">
+        <div class="col-12">
+          <h5>Documentos da Gerais</h5>
+        </div>
+      </div>
+      {% for campo in camposGeral %}
+      <div class="row mt-4">
+        <div class="col-4">
+          <div class="form-floating">
+            <input type="text" name="geralDocumento" id="documento_geral_{{loop.index}}" class="form-control"
+              placeholder="" readonly value="{{campo}}" />
+            <label for="documento_geral_{{loop.index}}">{{campo}}</label>
+          </div>
+        </div>
+        <div class="col-2">
+          <div class="form-floating">
+            <select type="text" name="geralStatus" id="status_geral_{{loop.index}}" class="form-control" placeholder=""
+              value="">
+              <option value="">Selecione</option>
+              <option value="Normal">Normal</option>
+              <option value="Atenção">Atenção</option>
+              <option value="Verificar">Verificar</option>
+            </select>
+            <label for="status_geral_{{loop.index}}">Status</label>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-floating">
+            <input type="text" name="geralObservacao" id="observacao_geral_{{loop.index}}" class="form-control"
+              placeholder="" value="" />
+            <label for="observacao_geral_{{idx}}">Observação</label>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+
+
+      <div class="row mt-5 justify-content-center d-flex">
+        <div class="col-3">
+          <a href="/tratar_garantias" class="btn btn-secondary w-100">Cancelar</a>
+        </div>
+        <div class="col-3 offset-1">
+          <button type="submit" class="btn btn-success w-100">{{ 'Atualizar' if empreend else 'Criar' }}</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+  {% include 'fractials/footer.html' %}
+  <script>
+    const requireds = GFC.getRequiredFields("formGarantia")
+    $(function () {
+      $("#formGarantia").validate({
+        rules: requireds.rules,
+        messages: requireds.messages,
+        errorClass: 'is-invalid',
+        errorElement: 'span',
+        highlight: function (element, errorClass, validClass) {
+          setTimeout(function () {
+            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
+            $(element).addClass(errorClass)
+          }, 50)
+        },
+      });
+    });
+  </script>
+</body>
+
+</html>
