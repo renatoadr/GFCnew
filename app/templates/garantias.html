@@ -12,27 +12,23 @@
 <body>
   {% include 'fractials/menu.html' %}
   <main>
-    <div class="container-fluid">
+    <div class="container">
       <div class="row">
         <div class="col-8">
           <h2 class="title title-page">
-            <span><i class="fa-solid fa-scale-balanced"></i> Garantias por
-              data</span><strong>{{session.nmEmpreend}} - <span>{{session.dtCarga|to_date}}</span></strong>
+            <span><i class="fa-solid fa-shield-halved"></i> Garantias</span> <strong>{{session.nmEmpreend}}</strong>
           </h2>
         </div>
         <div class="col-4">
           <div class="row h-100">
-            <div class="col-4 offset-4 d-flex justify-content-end align-items-center">
-              <form action="/cadastrar_item_orcamento">
-                <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}" />
-                <button type="submit" class="btn btn-primary">
-                  <i class="fa-solid fa-plus-circle"></i>
-                  Novo
-                </button>
-              </form>
+            <div class="col-5 offset-3 d-flex justify-content-end align-items-center">
+              <a href="/atualizar_garantia" class="btn btn-primary">
+                <i class="fa-solid fa-plus-circle"></i>
+                Atualizar
+              </a>
             </div>
             <div class="col-4 d-flex justify-content-end align-items-center">
-              <a href="/tratar_orcamentos" type="submit" class="btn btn-outline-dark">
+              <a href="/home" type="submit" class="btn btn-outline-dark">
                 <i class="fa-solid fa-caret-left"></i>
                 Voltar
               </a>
@@ -43,64 +39,77 @@
 
       <div class="row">
         <div class="col-12">
-          <div class="table-responsive">
-            <table class="table table-striped font-small">
-              <thead class="table-light">
-                <tr class="text-center">
-                  <th>Mes vigêcia</th>
-                  <th>Ano vigência</th>
-                  <th>Data carga</th>
-                  <th>Item</th>
-                  <th>Orcado</th>
-                  <th>Físico R$</th>
-                  <th>Físico %</th>
-                  <th>Físico saldo</th>
-                  <th>Financeiro R$</th>
-                  <th>Financeiro %</th>
-                  <th>Financeiro saldo</th>
-                  <th colspan="2">Ações</th>
-                </tr>
-              </thead>
-              <tbody>
-                {% if orcamentos %}
-                {% for m in orcamentos %}
-                <tr class="text-center">
-                  <td>{{'--' if m.getMesVigencia() is none else m.getMesVigencia() }}</td>
-                  <td>{{'--' if m.getAnoVigencia() is none else m.getAnoVigencia() }}</td>
-                  <td>{{'--' if m.getDtCarga() is none else m.getDtCarga()|to_date}}</td>
-                  <td>{{'--' if m.getItem() is none else m.getItem() }}</td>
-                  <td>{{'--' if m.getOrcadoValor() is none else m.getOrcadoValor()|to_currency }}</td>
-                  <td>{{'--' if m.getFisicoValor() is none else m.getFisicoValor()|to_currency }}</td>
-                  <td>{{'--' if m.getFisicoPercentual() is none else m.getFisicoPercentual()|to_currency }}</td>
-                  <td>{{'--' if m.getFisicoSaldo() is none else m.getFisicoSaldo()|to_currency }}</td>
-                  <td>{{'--' if m.getFinanceiroValor() is none else m.getFinanceiroValor()|to_currency }}</td>
-                  <td>{{'--' if m.getFinanceiroPercentual() is none else m.getFinanceiroPercentual()|to_currency }}</td>
-                  <td>{{'--' if m.getFinanceiroSaldo() is none else m.getFinanceiroSaldo()|to_currency }}</td>
-                  <td>
-                    <a href="/editar_item_orcamento?idOrcamento={{m.getIdOrcamento()}}" data-bs-toggle="tooltip"
-                      data-bs-title="Editar">
-                      <i class="fa-solid fa-pencil text-warning"></i>
-                    </a>
-                  </td>
-                  <td>
-                    <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir">
-                      <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
-                        data-modal-exclude-title="Garantia"
-                        data-modal-exclude-action="/excluir_item_orcamento?idOrcamento={{m.getIdOrcamento()}}&modo=exclui"
-                        data-modal-exclude-text="Deseja realmente excluir o item <strong>{{ m.getItem() }}</strong>?"></i>
-                    </a>
-                  </td>
-                </tr>
-                {% endfor %}
-                {% else %}
-                <tr>
-                  <td colspan="13" class="text-center">
-                    Não existem garantias cadastrados.
-                  </td>
-                </tr>
-                {% endif %}
-              </tbody>
-            </table>
+          <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-obra" href="#">Documentos Gerais</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#" data-bs-toggle="tab" data-bs-target="#tab-geral">Documentos da Obra</a>
+            </li>
+          </ul>
+          <div class="tab-content" id="nav-tabContent">
+            <div class="tab-pane fade show active" id="tab-obra">
+              <table class="table table-striped">
+                <thead class="table-light">
+                  <tr>
+                    <th class="p-3">Documento</th>
+                    <th class="p-3">Status</th>
+                    <th class="p-3">Observação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for geral in gerais %}
+                  <tr>
+                    <td class="p-3">{{geral.documento}}</td>
+                    <td class="p-3 align-content-around">
+                      {% if geral.status == 'Normal' %}
+                      <i class="fa-solid fa-square-check text-success"></i>
+                      {% endif %}
+                      {% if geral.status == 'Atenção' %}
+                      <i class="fa-solid fa-warning text-warning"></i>
+                      {% endif %}
+                      {% if geral.status == 'Verificar' %}
+                      <i class="fa-solid fa-land-mine-on text-danger"></i>
+                      {% endif %}
+                      &nbsp;&nbsp;{{geral.status}}
+                    </td>
+                    <td class="p-3">{{geral.observacao}}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+            <div class="tab-pane fade" id="tab-geral">
+              <table class="table table-striped">
+                <thead class="table-light">
+                  <tr>
+                    <th class="p-3">Documento</th>
+                    <th class="p-3">Status</th>
+                    <th class="p-3">Observação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for obra in obras %}
+                  <tr>
+                    <td class="p-3">{{obra.documento}}</td>
+                    <td class="p-3 align-content-around ">
+                      {% if obra.status == 'Normal' %}
+                      <i class="fa-solid fa-square-check text-success"></i>
+                      {% endif %}
+                      {% if obra.status == 'Atenção' %}
+                      <i class="fa-solid fa-warning text-warning"></i>
+                      {% endif %}
+                      {% if obra.status == 'Verificar' %}
+                      <i class="fa-solid fa-land-mine-on text-danger"></i>
+                      {% endif %}
+                      &nbsp;&nbsp;{{obra.status}}
+                    </td>
+                    <td class="p-3">{{obra.observacao}}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
           </div>
         </div>
       </div>
