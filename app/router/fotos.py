@@ -20,8 +20,8 @@ def upload_arquivo_fotos():
     id_empreend = str(42)
     anoMes = "2024_12"
 
-    diretorio = current_app['DIRSYS'] + id_empreend + \
-        current_app['BARRADIR'] + anoMes + current_app['BARRADIR']
+    diretorio = current_app.config['DIRSYS'] + id_empreend + \
+        current_app.config['BARRADIR'] + anoMes + current_app.config['BARRADIR']
     grafC.criaDir(diretorio)
 
     files = request.files.getlist("file")

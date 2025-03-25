@@ -101,7 +101,7 @@ def upload_arquivo_orcamentos():
             mensagem = "Erro no upload do arquivo. Arquivo='" + file.filename + "' não possui uma das extensões permitidas."
         else:
             filename = secure_filename(file.filename)
-            caminhoArq = os.path.join(current_app['UPLOAD_FOLDER'], filename)
+            caminhoArq = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
             file.save(caminhoArq)
 
 #            idEmpreend = request.form.get("idEmpreend")
