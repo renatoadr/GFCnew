@@ -41,50 +41,20 @@
         <div class="col-12">
           <ul class="nav nav-tabs">
             <li class="nav-item">
-              <a class="nav-link active" data-bs-toggle="tab" data-bs-target="#tab-obra" href="#">Documentos Gerais</a>
+              <a class="nav-link active" href="#" data-bs-toggle="tab" data-bs-target="#tab-obra">Documentos da
+                Obra</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="#" data-bs-toggle="tab" data-bs-target="#tab-geral">Documentos da Obra</a>
+              <a class="nav-link" data-bs-toggle="tab" data-bs-target="#tab-geral" href="#">Documentos Gerais</a>
             </li>
           </ul>
           <div class="tab-content" id="nav-tabContent">
             <div class="tab-pane fade show active" id="tab-obra">
-              <table class="table table-striped">
+              <table class="table table-striped t-fx">
                 <thead class="table-light">
                   <tr>
                     <th class="p-3">Documento</th>
-                    <th class="p-3">Status</th>
-                    <th class="p-3">Observação</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {% for geral in gerais %}
-                  <tr>
-                    <td class="p-3">{{geral.documento}}</td>
-                    <td class="p-3 align-content-around">
-                      {% if geral.status == 'Normal' %}
-                      <i class="fa-solid fa-square-check text-success"></i>
-                      {% endif %}
-                      {% if geral.status == 'Atenção' %}
-                      <i class="fa-solid fa-warning text-warning"></i>
-                      {% endif %}
-                      {% if geral.status == 'Verificar' %}
-                      <i class="fa-solid fa-land-mine-on text-danger"></i>
-                      {% endif %}
-                      &nbsp;&nbsp;{{geral.status}}
-                    </td>
-                    <td class="p-3">{{geral.observacao}}</td>
-                  </tr>
-                  {% endfor %}
-                </tbody>
-              </table>
-            </div>
-            <div class="tab-pane fade" id="tab-geral">
-              <table class="table table-striped">
-                <thead class="table-light">
-                  <tr>
-                    <th class="p-3">Documento</th>
-                    <th class="p-3">Status</th>
+                    <th class="p-3 text-center">Status</th>
                     <th class="p-3">Observação</th>
                   </tr>
                 </thead>
@@ -92,7 +62,7 @@
                   {% for obra in obras %}
                   <tr>
                     <td class="p-3">{{obra.documento}}</td>
-                    <td class="p-3 align-content-around ">
+                    <td class="p-3 align-content-around text-center">
                       {% if obra.status == 'Normal' %}
                       <i class="fa-solid fa-square-check text-success"></i>
                       {% endif %}
@@ -110,6 +80,39 @@
                 </tbody>
               </table>
             </div>
+
+            <div class="tab-pane fade" id="tab-geral">
+              <table class="table table-striped t-fx">
+                <thead class="table-light">
+                  <tr>
+                    <th class="p-3">Documento</th>
+                    <th class="p-3 text-center">Status</th>
+                    <th class="p-3">Observação</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for geral in gerais %}
+                  <tr>
+                    <td class="p-3">{{geral.documento}}</td>
+                    <td class="p-3 align-content-around text-center">
+                      {% if geral.status == 'Normal' %}
+                      <i class="fa-solid fa-square-check text-success"></i>
+                      {% endif %}
+                      {% if geral.status == 'Atenção' %}
+                      <i class="fa-solid fa-warning text-warning"></i>
+                      {% endif %}
+                      {% if geral.status == 'Verificar' %}
+                      <i class="fa-solid fa-land-mine-on text-danger"></i>
+                      {% endif %}
+                      &nbsp;&nbsp;{{geral.status}}
+                    </td>
+                    <td class="p-3">{{geral.observacao}}</td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+
           </div>
         </div>
       </div>

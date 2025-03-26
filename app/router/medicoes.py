@@ -81,7 +81,7 @@ def upload_arquivo_medicoes():
             file.save(caminhoArq)
 
 #            idEmpreend = request.args.get("idEmpreend")
-            idEmpreend = request.form.get("idEmpreend")
+            idEmpreend = IdEmpreend().get()
 
             print('-------------- upload_arquivo_medicoes ----------------')
 

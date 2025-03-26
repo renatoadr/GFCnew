@@ -10,22 +10,6 @@ class garantia:
     self.__id = param
 
   @property
-  def mesVigencia(self):
-    return self.__mesVigencia
-
-  @mesVigencia.setter
-  def mesVigencia(self, param):
-    self.__mesVigencia = param
-
-  @property
-  def anoVigencia(self):
-    return self.__anoVigencia
-
-  @anoVigencia.setter
-  def anoVigencia(self, param):
-    self.__anoVigencia = param
-
-  @property
   def documento(self):
     return self.__documento
 
