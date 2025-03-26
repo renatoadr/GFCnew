@@ -27,50 +27,37 @@ def tratar_agendas():
     else:
       NmEmpreend().set(nmEmpreend)
 
-    print('-----tratar_agendas----')
-    print(idEmpreend, nmEmpreend)
-
     agendaC = agendaController()
     agendaS = agendaC.consultarAgendas(idEmpreend)
 
-    if len(agendaS) == 0:
-        return render_template("lista_agendas.html", idEmpreend=idEmpreend, mensagem="Agenda não cadastrada!!!", nmEmpreend=nmEmpreend, agendaS=agendaS)
-    else:
-        return render_template("lista_agendas.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend, agendaS=agendaS)
+    return render_template("lista_agendas.html", agendaS=agendaS)
 
 
-@agenda_bp.route('/abrir_cad_agenda', methods=['POST'])
+
+@agenda_bp.route('/abrir_cad_agenda')
 def abrir_cad_agenda():
-
-    idEmpreend = request.form.get("idEmpreend")
-    nmEmpreend = request.form.get("nmEmpreend")
-
-    print('-----------abrir_cad_agenda-----------')
-    print(idEmpreend)
-
-    return render_template("agenda.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend)
+  agendaC = agendaController()
+  atividades = agendaC.lista_atividades()
+  return render_template("cad_agenda.html", atividades=atividades)
 
 
 @agenda_bp.route('/cadastrar_agenda', methods=['POST'])
 def cadastrar_agenda():
-
-    print('passei aqui 1')
-    nmEmpreend = request.form.get('nmEmpreend')
-
-    t = agenda()
-    t.setIdEmpreend(request.form.get('idEmpreend'))
-    t.setNmAgenda(request.form.get('nmAgenda'))
-    t.setQtUnidade(request.form.get('qtUnidade'))
-
-    print('passei aqui 2')
+    ag = agenda()
+    ag.setIdEmpreend(IdEmpreend().get())
+    ag.setAnoVigencia(request.form.get('anoVigencia'))
+    ag.setMesVigencia(request.form.get('mesVigencia'))
+    ag.setIdAtividade(request.form.get('atividade'))
+    ag.setStatus(request.form.get('status'))
+    ag.setDtAtividade(request.form.get('dtAtividade'))
+    ag.setNmRespAtividade(request.form.get('responsavel'))
+    ag.setDtBaixa(request.form.get('dtBaixa'))
+    ag.setNmRespBaixa(request.form.get('responsavelBaixa'))
 
     agendaC = agendaController()
-    agendaC.inserirAgenda(t)
+    agendaC.inserirAgenda(ag)
 
-    idEmpreend = request.form.get('idEmpreend')
-    agendaS = agendaC.consultarAgendas(idEmpreend)
-    print('passei aqui')
-    return render_template("lista_agendas.html", agendaS=agendaS, nmEmpreend=nmEmpreend)
+    return redirect("/tratar_agendas")
 
 
 @agenda_bp.route('/editar_agenda')

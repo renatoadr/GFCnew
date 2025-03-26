@@ -49,7 +49,7 @@ class MySql:
     return ret
 
   @staticmethod
-  def getAll(query: str, args: tuple):
+  def getAll(query: str, args: tuple = None):
     conn = MySql()
     cursor = conn.getCursor()
     cursor.execute(query, args)
