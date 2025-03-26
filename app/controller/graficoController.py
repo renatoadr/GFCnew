@@ -67,7 +67,7 @@ class graficoController:
         c.setFont('Helvetica-Bold', 14)
         c.setFillColor("black")
         c.drawString(30,780,"Comparativo: Previsto x Realizado Físico (%)")
-        imgFotoObra = diretorio + "tab_prev_realizado.png"
+        imgFotoObra = diretorio + "tab_medicoes.png"
         c.drawImage(imgFotoObra, 30, 450, width=520, height=300, mask='auto')   # preserveAspectRatio=True
         imgFotoObra = diretorio + "graf_progresso_obra.png"
         c.drawImage(imgFotoObra, 30, 100, width=520, height=300, mask='auto')   # preserveAspectRatio=True
@@ -374,7 +374,7 @@ class graficoController:
             listaErro.append('1ª pag - ' + foto + ' não encontrado')
 
 #   Segunda Página    
-        foto = diretorio + "tab_prev_realizado.png"
+        foto = diretorio + "tab_medicoes.png"
         if not os.path.isfile(foto):
             listaErro.append('2ª pag - ' + foto + ' não encontrado')
         foto = diretorio + "graf_progresso_obra.png"

@@ -581,17 +581,23 @@ def tab_acomp_financeiro():
     plt.savefig(grafNome)
 
 
-@tabela_bp.route('/prev_realizado')
-def tab_prev_realizado():
+@tabela_bp.route('/tab_medicoes')
+def tab_medicoes():
 
     #    tipo = request.args.get("tipo")
     #    idEmpreend = request.args.get("idEmpreend")
+##    idEmpreend = IdEmpreend().get()
+##    mes = request.args.get("mesV")
+##    ano = request.args.get("anoV")
+ ##   print('==============>', mes, ano)
 
-    idEmpreend = 55
-    mes = "12"
-    ano = "2024"
+    idEmpreend = 39
+    mes = "01"
+    ano = "2025"
 
-    geral = geralController(current_app)
+#    geral = geralController(current_app)
+    geral = geralController()
+
     preC = medicaoController()
     preS = preC.consultarMedicoes(idEmpreend)
 
@@ -650,9 +656,12 @@ def tab_prev_realizado():
 
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'tab_prev_realizado.png'
+    grafNome = diretorio + 'tab_medicoes.png'
 
     plt.savefig(grafNome)
+
+    return render_template("lista_medicoes.html", grafNome=grafNome, version=random.randint(1, 100000))
+
 
 
 @tabela_bp.route('/tab_orcamento_liberacao')

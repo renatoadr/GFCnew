@@ -6,6 +6,8 @@ Use db_gfc;
 -- select * from tb_medicoes where id_empreendimento = 55;
  select * from tb_medicoes;
  select * from tb_torres; 
+ select * from tb_garantias;
+ 
 -- select * from tb_clientes;
 -- select * from tb_atividades;
 -- select * from tb_agendas_param;

@@ -30,6 +30,14 @@
                 Carregar Excel
               </button>
             </div>
+            <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
+              <button type="submit" class="btn btn-primary" data-bs-toggle="modal" 
+                data-action-process="/tab_medicoes">
+
+                <i class="fa-solid fa-table"></i>
+                Gerar Tabela de Medições
+              </button>
+            </div>
             <div class="col-3 d-flex justify-content-end align-items-center">
               <form action="/home" method="POST">
                 <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}" />
@@ -59,6 +67,7 @@
                 <th>Realizado Acumulado %</th>
                 <th>Diferença %</th>
                 <th>Previsto Periodo %</th>
+                <th>Realizado Periodo %</th>
                 <th colspan="3">Ações</th>
               </tr>
             </thead>
@@ -73,16 +82,12 @@
                 <td>{{ m.getPercRealizadoAcumulado() }}</td>
                 <td>{{ m.getPercDiferenca() }}</td>
                 <td>{{ m.getPercPrevistoPeriodo() }}</td>
+                <td>{{ m.getPercRealizadoPeriodo() }}</td>
+                
                 <td>
                   <a href="/consultar_medicao_pelo_id?idMedicao={{m.getIdMedicao()}}" data-bs-toggle="tooltip"
                     data-bs-title="Consultar">
                     <i class="fa-solid fa-magnifying-glass-arrow-right"></i>
-                  </a>
-                </td>
-                <td>
-                  <a href="/graf_medicao_liberacao?dtCarga={{m.getDtCarga()}}&mesV={{m.getMesVigencia()}}&anoV={{m.getAnoVigencia()}}&tipo=valor"
-                    data-bs-toggle="tooltip" data-bs-title="Gráficos">
-                    <i class="fa-solid fa-chart-pie"></i>
                   </a>
                 </td>
                 <td>
@@ -97,7 +102,7 @@
               {% endfor %}
               {% else %}
               <tr>
-                <td colspan="6" class="text-center">
+                <td colspan="8" class="text-center">
                   Não existem medições cadastradas.
                 </td>
               </tr>

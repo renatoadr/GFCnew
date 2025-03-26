@@ -16,7 +16,8 @@ class medicao:
     __percRealizadoAcumulado = -1
     __percDiferenca = -1
     __percPrevistoPeriodo = -1
-    
+    __percRealizadoPeriodo = -1
+
     #Getters
 
     def getIdMedicao(self):
@@ -39,6 +40,8 @@ class medicao:
         return self.__percDiferenca
     def getPercPrevistoPeriodo(self):
         return self.__percPrevistoPeriodo
+    def getPercRealizadoPeriodo(self):
+        return self.__percRealizadoPeriodo
      
     #Setters
 
@@ -62,3 +65,5 @@ class medicao:
         self.__percDiferenca = param
     def setPercPrevistoPeriodo(self, param):
         self.__percPrevistoPeriodo = param
+    def setPercRealizadoPeriodo(self, param):
+        self.__percRealizadoPeriodo = param

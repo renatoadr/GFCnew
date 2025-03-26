@@ -3,6 +3,8 @@ from utils.CtrlSessao import IdEmpreend, NmEmpreend, DtCarga, IdMedicao
 from controller.medicaoController import medicaoController
 from utils.helper import allowed_file, protectedPage
 from werkzeug.utils import secure_filename
+from dto.medicao import medicao
+import utils.converter as converter
 import os
 
 medicoes_bp = Blueprint('medicoes', __name__)
@@ -46,17 +48,14 @@ def consultar__medicao_pelo_id():
 
     idMedicao = request.args.get("idMedicao")
     IdMedicao().set(idMedicao)
-#    idMedicao = IdMedicao().get()
 
     print('------ consultar_medicao_pelo_ID ------')
-#    print(modo)
     print(idMedicao)
 
     medC = medicaoController()
     medS = medC.consultarMedicaoPeloId(idMedicao)
 
     print('------ consultar_medicao_pelo_id fim --------')
-#    print(modo)
     
     print(medS.getNrMedicao())
 
@@ -80,7 +79,10 @@ def upload_arquivo_medicoes():
             caminhoArq = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
             file.save(caminhoArq)
 
+<<<<<<< Updated upstream
 #            idEmpreend = request.args.get("idEmpreend")
+=======
+>>>>>>> Stashed changes
             idEmpreend = IdEmpreend().get()
 
             print('-------------- upload_arquivo_medicoes ----------------')
@@ -100,3 +102,23 @@ def excluir_medicao():
   ctrlMed = medicaoController()
   ctrlMed.excluir_medicao(idMedicao)
   return redirect('/tratar_medicoes')
+
+@medicoes_bp.route('/salvar_item_medicao', methods=['POST'])
+def salvar_item_medicao():
+    med = medicao ()
+    med.setIdMedicao(request.form.get('idMedicao'))
+    med.setIdEmpreend(request.form.get('idEmpreend'))
+    med.setMesVigencia(request.form.get('mesVigencia'))
+    med.setAnoVigencia(request.form.get('anoVigencia'))
+    med.setDtCarga(request.form.get('dtCarga'))
+    med.setNrMedicao(request.form.get('nrMedicao'))
+    med.setPercPrevistoAcumulado(converter.converterStrToFloat(request.form.get('percPrevistoAcumulado')))
+    med.setPercRealizadoAcumulado(converter.converterStrToFloat(request.form.get('percRealizadoAcumulado')))
+    med.setPercDiferenca(converter.converterStrToFloat(request.form.get('percDiferenca')))
+    med.setPercPrevistoPeriodo(converter.converterStrToFloat(request.form.get('percPrevistoPeriodo')))
+    med.setPercRealizadoPeriodo(converter.converterStrToFloat(request.form.get('percRealizadoPeriodo')))
+
+    medC = medicaoController()
+    medC.salvarItemMedicao(med)
+
+    return redirect('/tratar_medicoes')
