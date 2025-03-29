@@ -15,27 +15,19 @@
   <main>
     <div class="container">
       <div class="row">
-        <div class="col-6">
-          <h2 class="title title-page">
+        <div class="col-5">
+          <h2 class="title title-page mt-4 mb-4">
             <span><i class="fa-solid fa-ruler-combined"></i> Medições</span><strong>{{session.nmEmpreend}}</strong>
           </h2>
         </div>
-        <div class="col-6">
+        <div class="col-7">
           <div class="row h-100">
             <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
               <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUploadExcel"
+                data-desc="{{'Já foi importado um arqiuvo de carga e realizar uma nova importação não irá sobscrever a carga anterior' if medicoes}}"
                 data-action-process="/upload_arquivo_medicoes">
-
                 <i class="fa-solid fa-file-arrow-up"></i>
                 Carregar Excel
-              </button>
-            </div>
-            <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
-              <button type="submit" class="btn btn-primary" data-bs-toggle="modal" 
-                data-action-process="/tab_medicoes">
-
-                <i class="fa-solid fa-table"></i>
-                Gerar Tabela de Medições
               </button>
             </div>
             <div class="col-3 d-flex justify-content-end align-items-center">
@@ -51,8 +43,43 @@
         </div>
       </div>
 
+      <p class="border-start border-5 p-3 pt-0 pb-0 h5 mb-2 mt-4 border-primary">Gerar Relatório por Tipo</p>
+      <div class="bg-body-tertiary border border-1 p-3 rounded-4 mb-5">
+        <form action="/gerar_relatorio" method="post" id="formRelatorio">
+          <div class="row">
+            <div class="col-3">
+              <div class="form-floating">
+                <input type="date" name="dtInicio" id="dtInicio" class="form-control" placeholder="" />
+                <label for="dtInicio">Data Início</label>
+              </div>
+            </div>
+            <div class="col-3">
+              <div class="form-floating">
+                <input type="date" name="dtFinal" id="dtFinal" class="form-control" placeholder="" />
+                <label for="dtFinal">Data Final</label>
+              </div>
+            </div>
+            <div class="col-3 align-content-center">
+              <div class="form-floating">
+                <select name="tipo" id="tipo" class="form-control">
+                  <option value="">Selecione</option>
+                  <option value="tabela">Tabela de Medições</option>
+                  <option value="grafico">Gráfico de Medições</option>
+                </select>
+                <label for="tipo">Tipo relatório</label>
+              </div>
+            </div>
+            <div class="col-3 align-content-center">
+              <button type="submit" class="btn btn-primary w-100">
+                Gerar
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
 
-      <div class="row">
+
+      <div class="row mt-3 d-inline">
         <div class="col-12">
           {% if error %}
           <p class="alert alert-danger">{{error}}</p>
@@ -61,8 +88,7 @@
             <thead class="table-light">
               <tr class="text-center">
                 <th>Medição</th>
-                <th>Mes Vigência</th>
-                <th>Ano Vigência</th>
+                <th>Vigência</th>
                 <th>Previsto Acumulado %</th>
                 <th>Realizado Acumulado %</th>
                 <th>Diferença %</th>
@@ -76,27 +102,33 @@
               {% for m in medicoes %}
               <tr class="text-center">
                 <td>{{ m.getNrMedicao() }}</td>
-                <td>{{ m.getMesVigencia() }}</td>
-                <td>{{ m.getAnoVigencia() }}</td>
-                <td>{{ m.getPercPrevistoAcumulado() }}</td>
-                <td>{{ m.getPercRealizadoAcumulado() }}</td>
-                <td>{{ m.getPercDiferenca() }}</td>
-                <td>{{ m.getPercPrevistoPeriodo() }}</td>
-                <td>{{ m.getPercRealizadoPeriodo() }}</td>
-                
+                <td>{{ m.getMesVigencia() }}/{{ m.getAnoVigencia() }}</td>
+                <td>{{ m.getPercPrevistoAcumulado()|to_currency }}</td>
+                <td>{{ m.getPercRealizadoAcumulado()|to_currency }}</td>
+                <td>{{ m.getPercDiferenca()|to_currency }}</td>
+                <td>{{ m.getPercPrevistoPeriodo()|to_currency }}</td>
+                <td>{{ m.getPercRealizadoPeriodo()|to_currency }}</td>
+
                 <td>
+                  {% if medPrevius and medCurrent and (m.getIdMedicao() == medCurrent.getIdMedicao() or
+                  m.getIdMedicao() == medPrevius.getIdMedicao())
+                  %}
                   <a href="/consultar_medicao_pelo_id?idMedicao={{m.getIdMedicao()}}" data-bs-toggle="tooltip"
                     data-bs-title="Consultar">
                     <i class="fa-solid fa-magnifying-glass-arrow-right"></i>
                   </a>
+                  {% endif %}
                 </td>
                 <td>
+                  {% if medPrevius and medCurrent and (m.getIdMedicao() > medCurrent.getIdMedicao() or
+                  m.getIdMedicao()==medCurrent.getIdMedicao()) %}
                   <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Empreendimento">
                     <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
                       data-modal-exclude-title="Medição"
                       data-modal-exclude-action="/excluir_medicao?idMedicao={{m.getIdMedicao()}}"
                       data-modal-exclude-text="Deseja realmente excluir a medição <strong>{{m.getNrMedicao()}}</strong> do mês <strong>{{m.getMesVigencia()}}</strong> e ano <strong>{{m.getAnoVigencia()}}</strong>?"></i>
                   </a>
+                  {% endif %}
                 </td>
               </tr>
               {% endfor %}
@@ -114,6 +146,23 @@
     </div>
   </main>
   {% include 'fractials/footer.html' %}
+  <script>
+    const requireds = GFC.getRequiredFields("formRelatorio")
+    $(function () {
+      $("#formRelatorio").validate({
+        rules: requireds.rules,
+        messages: requireds.messages,
+        errorClass: 'is-invalid',
+        errorElement: 'span',
+        highlight: function (element, errorClass, validClass) {
+          setTimeout(function () {
+            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
+            $(element).addClass(errorClass)
+          }, 50)
+        },
+      });
+    });
+  </script>
 </body>
 
 </html>

@@ -1,23 +1,42 @@
-<!--                                                                  erro.html-->
+<!-- Template: erro.html -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>GFC</title>
-     <link rel="stylesheet" href="../static/css/style.css">
-     <link rel="stylesheet" href="../static/css/tooltip.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Erro</title>
+  {% include 'fractials/head.html' %}
 </head>
 
 <body>
-     {% include 'fractials/menu.html' %}
-     <div style="margin-top: 10em;">
-          <p>Houve um erro no processamento: {{mensagem}}</p>
-          <p>
-          <form action="/home" method="POST" id="homeForm"></form><input type="button" value="Voltar para o início"
-               onClick="javascript:document.getElementById('homeForm').submit();" />
-     </div>
+  {% include 'fractials/menu.html' %}
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-7">
+          <h2 class="title title-page mt-4 mb-4">
+            <span><i class="fa-solid fa-bug"></i> Erro</span><strong>Ops!! Algo de errado aconteceu</strong>
+          </h2>
+        </div>
+        <div class="col-5 d-flex justify-content-end align-items-center">
+          <form action="/home" method="POST">
+            <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}" />
+            <button type="submit" class="btn btn-outline-dark">
+              <i class="fa-solid fa-home"></i>
+              Início
+            </button>
+          </form>
+        </div>
+      </div>
+
+      <div class="row mt-5">
+        <div class="col-12">
+          <p class="alert alert-danger text-center">Houve um erro no processamento: {{mensagem}}</p>
+        </div>
+      </div>
+    </div>
+  </main>
 </body>
 
 </html>

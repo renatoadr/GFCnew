@@ -1,11 +1,12 @@
-from flask import Blueprint, request, render_template, redirect, session, current_app
-from utils.CtrlSessao import IdEmpreend, NmEmpreend, DtCarga, IdMedicao
+from flask import Blueprint, request, render_template, redirect, current_app
+from utils.CtrlSessao import IdEmpreend, NmEmpreend, IdMedicao
 from controller.medicaoController import medicaoController
 from utils.helper import allowed_file, protectedPage
 from werkzeug.utils import secure_filename
 from dto.medicao import medicao
 import utils.converter as converter
 import os
+import datetime
 
 medicoes_bp = Blueprint('medicoes', __name__)
 
@@ -39,9 +40,16 @@ def tratar_medicoes():
     medS = medC.consultarMedicoes(idEmpreend)
 
     if len(medS) == 0:
-        return render_template("lista_medicoes.html", mensagem="Medição não Cadastrada, importar o arquivo Excel!!!", medicoes=medS)
+      return render_template("lista_medicoes.html", mensagem="Medição não Cadastrada, importar o arquivo Excel!!!", medicoes=medS)
     else:
-        return render_template("lista_medicoes.html", medicoes=medS)
+      medCurrent = None
+      medPrevius = None
+      for idx in range(0, len(medS)):
+        if medS[idx].getPercRealizadoAcumulado() == 0:
+          medCurrent = medS[idx]
+          medPrevius = medS[idx-1]
+          break
+      return render_template("lista_medicoes.html", medicoes=medS, medCurrent = medCurrent, medPrevius = medPrevius)
 
 @medicoes_bp.route('/consultar_medicao_pelo_id')
 def consultar__medicao_pelo_id():
@@ -54,9 +62,17 @@ def consultar__medicao_pelo_id():
 
     medC = medicaoController()
     medS = medC.consultarMedicaoPeloId(idMedicao)
+    medOld = medC.consultarMedicaoAnteriorPeloId(IdEmpreend().get(), idMedicao)
+
+    if not medOld:
+      medS.setPercRealizadoAcumulado(
+        medS.getPercRealizadoAcumulado() if medS.getPercRealizadoAcumulado() is not None else 0
+      )
+    else:
+      medS.setPercRealizadoAcumulado(medOld.getPercRealizadoAcumulado())
 
     print('------ consultar_medicao_pelo_id fim --------')
-    
+
     print(medS.getNrMedicao())
 
     return render_template("medicao_item.html", medicao=medS)
@@ -76,17 +92,19 @@ def upload_arquivo_medicoes():
                 file.filename + "' não possui uma das extensões permitidas."
         else:
             filename = secure_filename(file.filename)
-            caminhoArq = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+            pathTemp = os.path.join(os.environ.get('temp'), 'gfc')
+
+            if not os.path.exists(pathTemp):
+              os.makedirs(pathTemp)
+
+            caminhoArq = os.path.join(pathTemp, filename)
+
+            if os.path.isfile(caminhoArq):
+              os.remove(caminhoArq)
+
             file.save(caminhoArq)
 
-<<<<<<< Updated upstream
-#            idEmpreend = request.args.get("idEmpreend")
-=======
->>>>>>> Stashed changes
             idEmpreend = IdEmpreend().get()
-
-            print('-------------- upload_arquivo_medicoes ----------------')
-
             orcC = medicaoController()
             print(caminhoArq, '   ', idEmpreend)
             orcC.carregar_medicoes(caminhoArq, idEmpreend)
@@ -118,7 +136,19 @@ def salvar_item_medicao():
     med.setPercPrevistoPeriodo(converter.converterStrToFloat(request.form.get('percPrevistoPeriodo')))
     med.setPercRealizadoPeriodo(converter.converterStrToFloat(request.form.get('percRealizadoPeriodo')))
 
+    med.setPercRealizadoAcumulado(med.getPercRealizadoPeriodo() + med.getPercRealizadoAcumulado())
+    med.setPercDiferenca(med.getPercPrevistoAcumulado() - med.getPercRealizadoAcumulado())
+
     medC = medicaoController()
     medC.salvarItemMedicao(med)
 
     return redirect('/tratar_medicoes')
+
+@medicoes_bp.route('/gerar_relatorio', methods=['POST'])
+def gerar_relatorio():
+  idEmpreend = IdEmpreend().get()
+  tipo = request.form.get('tipo')
+  datInicio = request.form.get('dtInicio')
+  datFinal = request.form.get('dtFinal')
+
+  return redirect('/tratar_medicoes')

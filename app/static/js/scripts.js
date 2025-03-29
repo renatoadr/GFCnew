@@ -161,4 +161,9 @@ $(function(){
     },
   });
 
+  $("#submenu a").each(function() {
+    if (location.pathname === $(this).attr('href')) {
+      $(this).addClass('bg-body active')
+    }
+  })
 });

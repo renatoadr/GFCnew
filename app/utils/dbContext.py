@@ -40,7 +40,7 @@ class MySql:
       connection.close()
 
   @staticmethod
-  def getOne(query: str, args: tuple):
+  def getOne(query: str, args: tuple = None):
     conn = MySql()
     cursor = conn.getCursor()
     cursor.execute(query, args)
@@ -58,14 +58,14 @@ class MySql:
     return ret
 
   @staticmethod
-  def exec(query: str, args: tuple):
+  def exec(query: str, args: tuple = None):
     conn = MySql()
     cursor = conn.getCursor()
     cursor.execute(query, args)
     conn.commitAndClose()
 
   @staticmethod
-  def execMany(query: str, args: tuple):
+  def execMany(query: str, args: tuple = None):
     conn = MySql()
     cursor = conn.getCursor()
     cursor.executemany(query, args)

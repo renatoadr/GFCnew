@@ -8,188 +8,174 @@ from dto.medicao import medicao
 from utils.dbContext import MySql
 
 class medicaoController:
-    __connection = None
+  __connection = None
 
-    def __init__(self):
-        pass
+  def consultarMedicoes(self, idEmpreend):
+      self.__connection = MySql.connect()
+      cursor = self.__connection.cursor(dictionary=True)
 
-    def consultarMedicoes(self, idEmpreend):
-        self.__connection = MySql.connect()
-        cursor = self.__connection.cursor(dictionary=True)
+      query =  "select id_medicao, id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, nr_medicao, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo, perc_realizado_periodo from " + MySql.DB_NAME + ".tb_medicoes where id_empreendimento = '" + str(idEmpreend) + " order by nr_medicao'"
 
-        query =  "select id_medicao, id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, nr_medicao, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo, perc_realizado_periodo from " + MySql.DB_NAME + ".tb_medicoes where id_empreendimento = '" + str(idEmpreend) + " order by nr_medicao'"
+      print(query)
 
-        print(query)
+      cursor.execute(query)
 
-        cursor.execute(query)
+      lista = cursor.fetchall()
 
-        lista = cursor.fetchall()
+      listaItens = []
 
-        listaItens = []
+      for x in lista:
+          m = medicao()
+          m.setIdMedicao(x['id_medicao'])
+          m.setMesVigencia(x['mes_vigencia'])
+          m.setAnoVigencia(x['ano_vigencia'])
+          m.setDtCarga(converterDateTimeToDateEnFormat(x['dt_carga']))
+          m.setNrMedicao(x['nr_medicao'])
+          m.setPercPrevistoAcumulado(x['perc_previsto_acumulado'])
+          m.setPercRealizadoAcumulado(x['perc_realizado_acumulado'])
+          m.setPercDiferenca(x['perc_diferenca'])
+          m.setPercPrevistoPeriodo(x['perc_previsto_periodo'])
+          m.setPercRealizadoPeriodo(x['perc_realizado_periodo'])
 
-        for x in lista:
-            m = medicao()
-            m.setIdMedicao(x['id_medicao'])
-            m.setMesVigencia(x['mes_vigencia'])
-            m.setAnoVigencia(x['ano_vigencia'])
-            m.setDtCarga(converterDateTimeToDateEnFormat(x['dt_carga']))
-            m.setNrMedicao(x['nr_medicao'])
-            m.setPercPrevistoAcumulado(x['perc_previsto_acumulado'])
-            m.setPercRealizadoAcumulado(x['perc_realizado_acumulado'])
-            m.setPercDiferenca(x['perc_diferenca'])
-            m.setPercPrevistoPeriodo(x['perc_previsto_periodo'])
-            m.setPercRealizadoPeriodo(x['perc_realizado_periodo'])
-            
-            listaItens.append(m)
+          listaItens.append(m)
 
-        cursor.close()
-        MySql.close(self.__connection)
+      cursor.close()
+      MySql.close(self.__connection)
 
-        return listaItens
+      return listaItens
 
-    def consultarMedicoesPorPeriodo(self, idEmpreend, mesVigenciaIni, anoVigenciaIni, mesVigenciaFim, anoVigenciaFim):
-        self.__connection = MySql.connect()
-        cursor = self.__connection.cursor(dictionary=True)
+  def consultarMedicoesPorPeriodo(self, idEmpreend, mesVigenciaIni, anoVigenciaIni, mesVigenciaFim, anoVigenciaFim):
+      self.__connection = MySql.connect()
+      cursor = self.__connection.cursor(dictionary=True)
 
-        if anoVigenciaIni == anoVigenciaFim:
-            query =  "select id_empreendimento, nr_medicao, mes_vigencia, ano_vigencia, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo from " + MySql.DB_NAME + ".tb_medicoes where id_empreendimento = '" + str(idEmpreend) + "' and (mes_vigencia >= '" + mesVigenciaIni + "' and ano_vigencia = '" + anoVigenciaIni + "') and (mes_vigencia <= '" + mesVigenciaFim + "' and ano_vigencia = '" + anoVigenciaFim + "')"
-        else:
-            query =  "select id_empreendimento, nr_medicao, mes_vigencia, ano_vigencia, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo from " + MySql.DB_NAME + ".tb_medicoes where id_empreendimento = '" + str(idEmpreend) + "' and (mes_vigencia >= '" + mesVigenciaIni + "' and ano_vigencia = '" + anoVigenciaIni + "') or (mes_vigencia <= '" + mesVigenciaFim + "' and ano_vigencia = '" + anoVigenciaFim + "')"
+      if anoVigenciaIni == anoVigenciaFim:
+          query =  "select id_empreendimento, nr_medicao, mes_vigencia, ano_vigencia, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo from " + MySql.DB_NAME + ".tb_medicoes where id_empreendimento = '" + str(idEmpreend) + "' and (mes_vigencia >= '" + mesVigenciaIni + "' and ano_vigencia = '" + anoVigenciaIni + "') and (mes_vigencia <= '" + mesVigenciaFim + "' and ano_vigencia = '" + anoVigenciaFim + "')"
+      else:
+          query =  "select id_empreendimento, nr_medicao, mes_vigencia, ano_vigencia, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo from " + MySql.DB_NAME + ".tb_medicoes where id_empreendimento = '" + str(idEmpreend) + "' and (mes_vigencia >= '" + mesVigenciaIni + "' and ano_vigencia = '" + anoVigenciaIni + "') or (mes_vigencia <= '" + mesVigenciaFim + "' and ano_vigencia = '" + anoVigenciaFim + "')"
 
-        print(query)
+      print(query)
 
-        cursor.execute(query)
+      cursor.execute(query)
 
-        lista = cursor.fetchall()
+      lista = cursor.fetchall()
 
-        listaItens = []
+      listaItens = []
 
-        for x in lista:
-            m = medicao()
-            m.setNrMedicao(x['nr_medicao'])
-            m.setMesVigencia(x['mes_vigencia'])
-            m.setAnoVigencia(x['ano_vigencia'])
-            m.setPercPrevistoAcumulado(x['perc_previsto_acumulado'])
-            m.setPercRealizadoAcumulado(x['perc_realizado_acumulado'])
-            m.setPercDiferenca(x['perc_diferenca'])
-            m.setPercPrevistoPeriodo(x['perc_previsto_periodo'])
-            listaItens.append(m)
+      for x in lista:
+          m = medicao()
+          m.setNrMedicao(x['nr_medicao'])
+          m.setMesVigencia(x['mes_vigencia'])
+          m.setAnoVigencia(x['ano_vigencia'])
+          m.setPercPrevistoAcumulado(x['perc_previsto_acumulado'])
+          m.setPercRealizadoAcumulado(x['perc_realizado_acumulado'])
+          m.setPercDiferenca(x['perc_diferenca'])
+          m.setPercPrevistoPeriodo(x['perc_previsto_periodo'])
+          listaItens.append(m)
 
-        cursor.close()
-        MySql.close(self.__connection)
+      cursor.close()
+      MySql.close(self.__connection)
 
-        return listaItens
+      return listaItens
 
-    def consultarMedicaoPeloId(self, idMedicao):
-        self.__connection = MySql.connect()
-        cursor = self.__connection.cursor(dictionary=True)
+  def consultarMedicaoPeloId(self, idMedicao) -> medicao:
+      query =  "select id_medicao, id_empreendimento, nr_medicao, mes_vigencia, ano_vigencia, dt_carga, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo, perc_realizado_periodo from " + MySql.DB_NAME + ".tb_medicoes where id_medicao = %s"
+      linha = MySql.getOne(query, (idMedicao,))
+      return self.mapper(linha)
 
-        query =  "select id_medicao, id_empreendimento, nr_medicao, mes_vigencia, ano_vigencia, dt_carga, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo, perc_realizado_periodo from " + MySql.DB_NAME + ".tb_medicoes where id_medicao = " + str(idMedicao)
+  def consultarMedicaoAnteriorPeloId(self, idEmpreend, idMedicao) -> medicao:
+      query =  "select id_medicao, id_empreendimento, nr_medicao, mes_vigencia, ano_vigencia, dt_carga, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo, perc_realizado_periodo from " + MySql.DB_NAME + ".tb_medicoes where id_empreendimento = %s AND id_medicao < %s ORDER BY 1 DESC LIMIT 1"
+      linha = MySql.getOne(query, (idEmpreend, idMedicao))
+      if not linha:
+        return None
+      return self.mapper(linha)
 
-        print(query)
-        cursor.execute(query)
+  def carregar_medicoes(self, caminhoArq, idEmpreend):
 
-        linha = cursor.fetchone()
+      self.__connection = MySql.connect()
+      cursor = self.__connection.cursor()
 
-        item = medicao()
-        item.setIdMedicao(linha['id_medicao'])
-        item.setIdEmpreend(linha['id_empreendimento'])
-        item.setNrMedicao(linha['nr_medicao'])
-        item.setMesVigencia(linha['mes_vigencia'])
-        item.setAnoVigencia(linha['ano_vigencia'])
-        item.setDtCarga(linha['dt_carga'])
-        item.setPercPrevistoAcumulado(linha['perc_previsto_acumulado'])
-        item.setPercRealizadoAcumulado(linha['perc_realizado_acumulado'])
-        item.setPercDiferenca(linha['perc_diferenca'])
-        item.setPercPrevistoPeriodo(linha['perc_previsto_periodo'])
-        item.setPercRealizadoPeriodo(linha['perc_realizado_periodo'])
+      tabela = pd.read_excel(caminhoArq)
 
-        cursor.close()
-        MySql.close(self.__connection)
+      l, c = tabela.shape
+      linha = 0
+      m = medicao()
+      dtTime = datetime.now()
+      dateTime = dtTime.strftime("%Y-%m-%d %H:%M:%S")
 
-        return item
+      print ('------------ carregar_medicoes -----------------')
+      print (idEmpreend)
+      print (linha, l)
 
-    def carregar_medicoes(self, caminhoArq, idEmpreend):
+      while linha < l:
+          print(linha)
+          nrMedicao              = str(tabela.at[linha, 'Medição'])
+          mesVigencia            = str(tabela.at[linha, 'Mês']).zfill(2)
+          anoVigencia            = str(tabela.at[linha, 'Ano'])
+          percPrevistoPeriodo    = float(tabela.at[linha, 'Previsto Período'])
+          percRealizadoPeriodo   = float(tabela.at[linha, 'Realizado Período'])
 
-        self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()
+          # Substituir valores NaN por 0
+          if pd.isna(percRealizadoPeriodo):
+              percRealizadoPeriodo = 0.0
 
-        tabela = pd.read_excel(caminhoArq)
+          percRealizadoPeriodo = float(percRealizadoPeriodo)
 
-        l, c = tabela.shape
-        linha = 0
-        m = medicao()
-        dtTime = datetime.now()
-        dateTime = dtTime.strftime("%Y-%m-%d %H:%M:%S")
+          if linha == 0:
+              percPrevistoAcumulado  = percPrevistoPeriodo
+              percRealizadoAcumulado = percRealizadoPeriodo
+              percDiferenca           = percRealizadoAcumulado - percPrevistoAcumulado
+          else:
+              percPrevistoAcumulado  += percPrevistoPeriodo
+              if percRealizadoPeriodo != 0:
+                  percRealizadoAcumulado += percRealizadoPeriodo
+                  percDiferenca           = percRealizadoAcumulado - percPrevistoAcumulado
+              else:
+                  percRealizadoAcumulado = 0
+                  percDiferenca = 0
 
-        print ('------------ carregar_medicoes -----------------')
-        print (idEmpreend)
-        print (linha, l)
+          query =  "INSERT INTO " + MySql.DB_NAME + ".tb_medicoes (id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, nr_medicao, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo, perc_realizado_periodo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
-        while linha < l:
-            print(linha)    
-            nrMedicao              = str(tabela.at[linha, 'Medição'])
-            mesVigencia            = str(tabela.at[linha, 'Mês']).zfill(2)
-            anoVigencia            = str(tabela.at[linha, 'Ano'])
-            percPrevistoPeriodo    = float(tabela.at[linha, 'Previsto Período'])
-            percRealizadoPeriodo   = float(tabela.at[linha, 'Realizado Período'])
+          print (query)
+          cursor.execute(query, (idEmpreend, mesVigencia , anoVigencia , dateTime, nrMedicao + 'ª', percPrevistoAcumulado, percRealizadoAcumulado, percDiferenca, percPrevistoPeriodo, percRealizadoPeriodo))
+          linha += 1
 
-            # Substituir valores NaN por 0
-            if pd.isna(percRealizadoPeriodo):
-                percRealizadoPeriodo = 0.0
+      self.__connection.commit()
+      print(cursor.rowcount,"medição cadastrada com sucesso")
+      cursor.close()
+      MySql.close(self.__connection)
 
-            percRealizadoPeriodo = float(percRealizadoPeriodo)
+  def excluir_medicao(self, idMedicao):
+      query = "delete from " + MySql.DB_NAME + """.tb_medicoes WHERE id_medicao = %s;"""
+      MySql.exec(query, (idMedicao,))
 
-            if linha == 0:
-                percPrevistoAcumulado  = percPrevistoPeriodo
-                percRealizadoAcumulado = percRealizadoPeriodo
-                percDiferenca           = percRealizadoAcumulado - percPrevistoAcumulado
-            else:
-                percPrevistoAcumulado  += percPrevistoPeriodo  
-                if percRealizadoPeriodo != 0:
-                    percRealizadoAcumulado += percRealizadoPeriodo
-                    percDiferenca           = percRealizadoAcumulado - percPrevistoAcumulado
-                else:
-                    percRealizadoAcumulado = 0
-                    percDiferenca = 0
+  def salvarItemMedicao(self,medicao):
+    query =  "update " + MySql.DB_NAME + """.tb_medicoes set
+      perc_previsto_acumulado =  %s,
+      perc_realizado_acumulado =  %s,
+      perc_diferenca =  %s,
+      perc_previsto_periodo = %s,
+      perc_realizado_periodo = %s
+      where id_medicao = %s """
+    MySql.exec(query, (
+      medicao.getPercPrevistoAcumulado(),
+      medicao.getPercRealizadoAcumulado(),
+      medicao.getPercDiferenca(),
+      medicao.getPercPrevistoPeriodo(),
+      medicao.getPercRealizadoPeriodo(),
+      medicao.getIdMedicao()
+    ))
 
-            query =  "INSERT INTO " + MySql.DB_NAME + ".tb_medicoes (id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, nr_medicao, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo, perc_realizado_periodo) VALUES ('" + str(idEmpreend) + "', '" + mesVigencia + "', '" + anoVigencia + "', '" + dateTime + "', '" + str(nrMedicao) + "ª', " + str(percPrevistoAcumulado) + ", " + str(percRealizadoAcumulado) + ", " + str(percDiferenca) + ", " + str(percPrevistoPeriodo) + ", " + str(percRealizadoPeriodo) + ")"
-
-            print (query)
-            cursor.execute(query)
-            linha += 1
-
-        self.__connection.commit()
-        print(cursor.rowcount,"medição cadastrada com sucesso")
-        cursor.close()
-        MySql.close(self.__connection)
-
-    def excluir_medicao(self, idMedicao):
-        query = "delete from " + MySql.DB_NAME + """.tb_medicoes WHERE id_medicao = %s;"""
-        MySql.exec(query, (idMedicao,))
-
-    def salvarItemMedicao(self,medicao):
-        self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()
-
-        query =  "update " + MySql.DB_NAME + ".tb_medicoes set " + \
-            "id_medicao = " + str(medicao.getIdMedicao()) + ", " + \
-            "id_empreendimento = " + str(medicao.getIdEmpreend()) + ", " + \
-            "mes_vigencia = '" + medicao.getMesVigencia() + "', " + \
-            "ano_vigencia = '" + medicao.getAnoVigencia() + "', " + \
-            "dt_carga = '" + medicao.getDtCarga() + "', " + \
-            "nr_medicao = '" + str(medicao.getNrMedicao()) + "', " + \
-            "perc_previsto_acumulado = " + str(medicao.getPercPrevistoAcumulado()) + ", " + \
-            "perc_realizado_acumulado = " + str(medicao.getPercRealizadoAcumulado()) + ", " + \
-            "perc_diferenca = " + str(medicao.getPercDiferenca()) + ", " + \
-            "perc_previsto_periodo = " + str(medicao.getPercPrevistoPeriodo()) + " " + \
-            "perc_realizado_periodo = " + str(medicao.getPercRealizadoPeriodo()) + " " + \
-            "where id_medicao = " + str(medicao.getIdMedicao())
-                
-        print (query)
-        cursor.execute(query)
-        
-        self.__connection.commit()
-        print(cursor.rowcount,"Item da Medição atualizado com sucesso")
-        cursor.close()
-        MySql.close(self.__connection)
+  def mapper(self, linha):
+    item = medicao()
+    item.setIdMedicao(linha['id_medicao'])
+    item.setIdEmpreend(linha['id_empreendimento'])
+    item.setNrMedicao(linha['nr_medicao'])
+    item.setMesVigencia(linha['mes_vigencia'])
+    item.setAnoVigencia(linha['ano_vigencia'])
+    item.setDtCarga(linha['dt_carga'])
+    item.setPercPrevistoAcumulado(linha['perc_previsto_acumulado'])
+    item.setPercRealizadoAcumulado(linha['perc_realizado_acumulado'])
+    item.setPercDiferenca(linha['perc_diferenca'])
+    item.setPercPrevistoPeriodo(linha['perc_previsto_periodo'])
+    item.setPercRealizadoPeriodo(linha['perc_realizado_periodo'])
+    return item
