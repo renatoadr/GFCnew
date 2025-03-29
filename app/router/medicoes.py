@@ -47,7 +47,8 @@ def tratar_medicoes():
       for idx in range(0, len(medS)):
         if medS[idx].getPercRealizadoAcumulado() == 0:
           medCurrent = medS[idx]
-          medPrevius = medS[idx-1]
+          if idx > 0:
+            medPrevius = medS[idx-1]
           break
       return render_template("lista_medicoes.html", medicoes=medS, medCurrent = medCurrent, medPrevius = medPrevius)
 
