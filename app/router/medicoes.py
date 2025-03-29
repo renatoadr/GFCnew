@@ -109,10 +109,10 @@ def upload_arquivo_medicoes():
             print(caminhoArq, '   ', idEmpreend)
             orcC.carregar_medicoes(caminhoArq, idEmpreend)
 
-            return redirect("/tratar_medicoes")
+        return redirect("/tratar_medicoes")
     else:
-        mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
-    return render_template("erro.html", mensagem=mensagem)
+      mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
+      return render_template("erro.html", mensagem=mensagem)
 
 @medicoes_bp.route('/excluir_medicao')
 def excluir_medicao():

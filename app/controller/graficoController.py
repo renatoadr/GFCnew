@@ -1,7 +1,7 @@
 #controller or business logic
 # Tratamento de gáficos
 
-from flask import Flask, request, render_template, redirect, url_for, flash, send_file, session
+from flask import Flask, request, render_template, redirect, url_for, flash, send_file, session, current_app
 from dto.orcamento import orcamento
 from utils.dbContext import MySql
 from werkzeug.utils import secure_filename
@@ -15,8 +15,8 @@ class graficoController:
     __connection = None
     app = None
 
-    def __init__(self, app):
-        self.app = app
+    def __init__(self):
+        self.app = current_app
         pass
 
     def pdfPag1(self, c, diretorio, pagina):
