@@ -1,12 +1,13 @@
-from flask import Blueprint, request, render_template, current_app
+
+from flask import Blueprint, request, render_template, redirect, flash
 from controller.inadimplenciaController import inadimplenciaController
 from controller.financeiroController import financeiroController
 from controller.orcamentoController import orcamentoController
+from controller.garantiaController import garantiaController
 from controller.graficoController import graficoController
 from controller.medicaoController import medicaoController
 from controller.contaController import contaController
 from controller.geralController import geralController
-from controller.pontoController import pontoController
 from controller.notaController import notaController
 from utils.CtrlSessao import IdEmpreend
 from matplotlib import pyplot as plt
@@ -28,7 +29,7 @@ def tab_inadimplencia():
     mesFim = '01'
     anoFim = '2025'
 
-    geral = geralController(current_app)
+    geral = geralController()
     inaC = inadimplenciaController()
     inaS = inaC.consultarInadimplenciaPelaData(
         idEmpreend, mesIni, anoIni, mesFim, anoFim)
@@ -107,7 +108,7 @@ def tab_inadimplencia():
         if row == 0:
             cell.set_facecolor("lightblue")
 
-    grafC = graficoController(current_app)
+    grafC = graficoController()
 
     idEmpreend = 55  # preciso montar esse informação
     mes = "12"
@@ -135,7 +136,7 @@ def tab_notas():
     mes = "12"  # preciso montar esse informação
     ano = "2024"
 
-    geral = geralController(current_app)
+    geral = geralController()
     notC = notaController()
     notS = notC.consultarNotaPelaData(idEmpreend, dtCarga)
 
@@ -202,7 +203,7 @@ def tab_notas():
                 # Alinhar à esquerda
                 cell.set_text_props(ha='left', va='center')
 
-    grafC = graficoController(current_app)
+    grafC = graficoController()
 
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
@@ -226,7 +227,7 @@ def tab_conta_corrente():
     mes = "12"
     ano = "2024"
 
-    geral = geralController(current_app)
+    geral = geralController()
     conC = contaController()
     conS = conC.consultarConta(idEmpreend)
 
@@ -281,7 +282,7 @@ def tab_conta_corrente():
         else:  # Demais itens da tabela
             cell.set_text_props(ha='right', va='center')  # Alinhar à esquerda
 
-    grafC = graficoController(current_app)
+    grafC = graficoController()
 
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
@@ -293,17 +294,12 @@ def tab_conta_corrente():
 @tabela_bp.route('/tab_garantias_geral')
 def tab_garantias_geral():
 
-    #    tipo = request.args.get("tipo")
-    #    idEmpreend = request.args.get("idEmpreend")
-    #    dtCarga = request.args.get("dtCarga")
-
-    idEmpreend = 55
-    dtCarga = '2024-12-30 16:57:31'
+    idEmpreend = 57
     tipo = 'Geral'
 
-    geral = geralController(current_app)
-    ponC = pontoController()
-    ponS = ponC.consultarPontosPelaData(idEmpreend, dtCarga, tipo)
+    geral = geralController()
+    ponC = garantiaController()
+    ponS = ponC.consultargarantiaatual(idEmpreend, tipo)
 
     fig, ax = plt.subplots(1, 1)
 
@@ -311,9 +307,9 @@ def tab_garantias_geral():
 
     for p in ponS:
         dd = []
-        dd.append(p.getHistorico())
-        dd.append(p.getStatus())
-        dd.append(p.getObservacao())
+        dd.append(p.documento)
+        dd.append(p.status)
+        dd.append(p.observacao)
         data.append(dd)
 
     column_labels = ["Histórico", "Status", "Obs"]
@@ -350,7 +346,7 @@ def tab_garantias_geral():
         else:  # Demais itens da tabela
             cell.set_text_props(ha='left', va='center')  # Alinhar à esquerda
 
-    grafC = graficoController(current_app)
+    grafC = graficoController()
 
     idEmpreend = str(55)  # preciso montar esse informação
     mes = "12"
@@ -362,32 +358,37 @@ def tab_garantias_geral():
 
     plt.savefig(grafNome)
 
+    return render_template("garantias.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 @tabela_bp.route('/tab_garantias_obra')
 def tab_garantias_obra():
 
-    #    tipo = request.args.get("tipo")
-    #    idEmpreend = request.args.get("idEmpreend")
-    #    dtCarga = request.args.get("dtCarga")
-
-    idEmpreend = 55
-    dtCarga = '2024-12-30 16:57:31'
+    idEmpreend = 57
+#    dtCarga = '2024-12-30 16:57:31'
     tipo = 'Obra'
 
-    geral = geralController(current_app)
-    ponC = pontoController()
-    ponS = ponC.consultarPontosPelaData(idEmpreend, dtCarga, tipo)
+    geral = geralController()
+#    garC = garantiaController()
+#    garS = garC.consultargarantiaatual(idEmpreend, tipo)
+    ctrl = garantiaController()
+    itens = ctrl.consultargarantiaatual(idEmpreend, tipo)
+
+    if not itens:
+        return redirect('/atualizar_garantia')
+
+    data = filter(lambda it: it.tipo == 'Obra', itens)
 
     fig, ax = plt.subplots(1, 1)
 
-    data = []
+#    data = []
 
-    for p in ponS:
-        dd = []
-        dd.append(p.getHistorico())
-        dd.append(p.getStatus())
-        dd.append(p.getObservacao())
-        data.append(dd)
+#    for p in garS:
+#        dd = []
+#        dd.append(p.getdocumento())
+#        print (p.getdocumento())
+#        dd.append(p.getstatus())
+#        dd.append(p.getobservacao())
+#        data.append(dd)
 
     column_labels = ["Histórico", "Status", "Obs"]
 
@@ -423,9 +424,9 @@ def tab_garantias_obra():
         else:  # Demais itens da tabela
             cell.set_text_props(ha='left', va='center')  # Alinhar à esquerda
 
-    grafC = graficoController(current_app)
+    grafC = graficoController()
 
-    idEmpreend = str(55)  # preciso montar esse informação
+    idEmpreend = str(57)  # preciso montar esse informação
     mes = "12"
     ano = "2024"
 
@@ -447,8 +448,8 @@ def tab_garantias_certidoes():
     dtCarga = '2024-12-30 16:57:31'
     tipo = 'Dcto'
 
-    geral = geralController(current_app)
-    ponC = pontoController()
+    geral = geralController()
+    ponC = garantiaController()
     ponS = ponC.consultarPontosPelaData(idEmpreend, dtCarga, tipo)
 
     fig, ax = plt.subplots(1, 1)
@@ -496,7 +497,7 @@ def tab_garantias_certidoes():
         else:  # Demais itens da tabela
             cell.set_text_props(ha='left', va='center')  # Alinhar à esquerda
 
-    grafC = graficoController(current_app)
+    grafC = graficoController()
 
     idEmpreend = str(55)  # preciso montar esse informação
     mes = "12"
@@ -519,7 +520,7 @@ def tab_acomp_financeiro():
     idEmpreend = 55
     dtCarga = '2024-12-30 16:57:31'
 
-    geral = geralController(current_app)
+    geral = geralController()
     finC = financeiroController()
     finS = finC.consultarFinanceiroPelaData(idEmpreend, dtCarga)
     fig, ax = plt.subplots(1, 1)
@@ -568,7 +569,7 @@ def tab_acomp_financeiro():
 #        else:  # Demais itens da tabela
         cell.set_text_props(ha='left', va='center')  # Alinhar à esquerda
 
-    grafC = graficoController(current_app)
+    grafC = graficoController()
 
     idEmpreend = str(55)  # preciso montar esse informação
     mes = "12"
@@ -595,7 +596,7 @@ def tab_medicoes():
     mes = "01"
     ano = "2025"
 
-#    geral = geralController(current_app)
+#    geral = geralController()
     geral = geralController()
 
     preC = medicaoController()
@@ -652,7 +653,7 @@ def tab_medicoes():
         if row == 0:
             cell.set_facecolor("lightblue")
 
-    grafC = graficoController(current_app)
+    grafC = graficoController()
 
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
@@ -758,7 +759,7 @@ def tab_orcamento_liberacao():
         if row > 0 and col == 0:
             cell.set_text_props(ha='left', va='center')  # Alinhar à esquerda
 
-    grafC = graficoController(current_app)
+    grafC = graficoController()
 
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)

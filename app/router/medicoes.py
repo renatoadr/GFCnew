@@ -78,11 +78,6 @@ def upload_arquivo_medicoes():
             filename = secure_filename(file.filename)
             caminhoArq = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
             file.save(caminhoArq)
-
-<<<<<<< Updated upstream
-#            idEmpreend = request.args.get("idEmpreend")
-=======
->>>>>>> Stashed changes
             idEmpreend = IdEmpreend().get()
 
             print('-------------- upload_arquivo_medicoes ----------------')
@@ -91,10 +86,10 @@ def upload_arquivo_medicoes():
             print(caminhoArq, '   ', idEmpreend)
             orcC.carregar_medicoes(caminhoArq, idEmpreend)
 
-            return redirect("/tratar_medicoes")
+        return redirect("/tratar_medicoes")
     else:
-        mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
-    return render_template("erro.html", mensagem=mensagem)
+      mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
+      return render_template("erro.html", mensagem=mensagem)
 
 @medicoes_bp.route('/excluir_medicao')
 def excluir_medicao():

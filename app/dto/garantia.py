@@ -40,3 +40,7 @@ class garantia:
   @tipo.setter
   def tipo(self, param):
     self.__tipo = param
+
+    def __init__(self):
+        pass
+
