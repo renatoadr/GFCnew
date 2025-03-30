@@ -130,3 +130,66 @@ class notaController:
         query = "DELETE FROM " + MySql.DB_NAME + \
             """.tb_notas WHERE id_empreendimento = %s AND mes_vigencia = %s AND ano_vigencia = %s AND dt_carga = %s """
         MySql.exec(query, (idEmpreend, mes_vig, ano_vig, dt_carga))
+
+    def listaNotas(self, idEmpreend, dtCarga, mesVig, anoVig):
+        query = "SELECT id_nota, mes_vigencia, ano_vigencia, produto, vl_nota_fiscal, vl_estoque FROM " + \
+            MySql.DB_NAME + ".tb_notas WHERE id_empreendimento = %s AND dt_carga = %s AND mes_vigencia = %s AND ano_vigencia = %s "
+
+        lista = MySql.getAll(query, (idEmpreend, dtCarga, mesVig, anoVig))
+
+        listaNotas = []
+
+        for it in lista:
+            n = nota()
+            n.setIdNota(it['id_nota'])
+            n.setMesVigencia(it['mes_vigencia'])
+            n.setAnoVigencia(it['ano_vigencia'])
+            n.setProduto(it['produto'])
+            n.setVlNotaFiscal(it['vl_nota_fiscal'])
+            n.setVlEstoque(it['vl_estoque'])
+            listaNotas.append(n)
+        return listaNotas
+
+    def excluir_nota(self, id):
+        query = "DELETE FROM " + MySql.DB_NAME + \
+            """.tb_notas WHERE id_nota = %s """
+        MySql.exec(query, (id,))
+
+    def nota_por_id(self, id):
+        query = "SELECT id_nota, id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, produto, vl_nota_fiscal, vl_estoque FROM " + \
+            MySql.DB_NAME + ".tb_notas WHERE id_nota = %s "
+        nt = MySql.getOne(query, (id,))
+
+        recNota = nota()
+        recNota.setIdNota(nt['id_nota'])
+        recNota.setIdEmpreend(nt['id_empreendimento'])
+        recNota.setMesVigencia(nt['mes_vigencia'])
+        recNota.setAnoVigencia(nt['ano_vigencia'])
+        recNota.setDtCarga(nt['dt_carga'])
+        recNota.setProduto(nt['produto'])
+        recNota.setVlNotaFiscal(nt['vl_nota_fiscal'])
+        recNota.setVlEstoque(nt['vl_estoque'])
+        return recNota
+
+    def salvar_nota(self, nota: nota):
+        query = "UPDATE " + MySql.DB_NAME + \
+            ".tb_notas SET produto = %s, vl_nota_fiscal = %s, vl_estoque = %s WHERE id_nota = %s "
+        MySql.exec(query, (
+            nota.getProduto(),
+            nota.getVlNotaFiscal(),
+            nota.getVlEstoque(),
+            nota.getIdNota()
+        ))
+
+    def inserir_nota(self, nota: nota):
+        query = "INSERT INTO " + MySql.DB_NAME + \
+            ".tb_notas (id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, produto, vl_nota_fiscal, vl_estoque) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+        MySql.exec(query, (
+            nota.getIdEmpreend(),
+            nota.getMesVigencia(),
+            nota.getAnoVigencia(),
+            nota.getDtCarga(),
+            nota.getProduto(),
+            nota.getVlNotaFiscal(),
+            nota.getVlEstoque()
+        ))

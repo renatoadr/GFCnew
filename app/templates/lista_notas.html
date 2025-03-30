@@ -21,38 +21,34 @@
           </h2>
         </div>
         <div class="col-6">
-          <div class="row h-100">
-            <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
-              <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUploadExcel"
-                data-action-process="/upload_arquivo_notas">
-
-                <i class="fa-solid fa-file-arrow-up"></i>
-                Carregar Excel
-              </button>
+          <div class="row justify-content-end align-items-center h-100">
+            <div class="col-4">
+              <a href="/abrir_cad_nota" class="btn btn-primary w-100">
+                <i class="fa-solid fa-circle-plus"></i>
+                Nova nota
+              </a>
             </div>
-            <div class="col-3 d-flex justify-content-end align-items-center">
-              <form action="/home" method="POST">
-                <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}" />
-                <button type="submit" class="btn btn-outline-dark">
-                  <i class="fa-solid fa-home"></i>
-                  Início
-                </button>
-              </form>
+            <div class="col-3">
+              <a href="/tratar_notas" class="btn btn-outline-dark w-100">
+                <i class="fa-solid fa-caret-left"></i>
+                Voltar
+              </a>
             </div>
           </div>
         </div>
       </div>
-
 
       <div class="row">
         <div class="col-12">
           <table class="table table-striped">
             <thead class="table-light">
               <tr class="text-center">
-                <th>Mes Vigência</th>
-                <th>Ano Vigência</th>
-                <th>Data Carga</th>
-                <th colspan="3">Ações</th>
+                <th>Mês</th>
+                <th>Ano</th>
+                <th>Produto</th>
+                <th>Valor da nota fiscal</th>
+                <th>Valor do estoque</th>
+                <th colspan="2">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -61,32 +57,26 @@
               <tr class="text-center">
                 <td>{{ m.getMesVigencia() }}</td>
                 <td>{{ m.getAnoVigencia() }}</td>
-                <td>{{ m.getDtCarga()|to_datetime }}</td>
+                <td>{{ m.getProduto() }}</td>
+                <td>{{ m.getVlNotaFiscal()|to_currency }}</td>
+                <td>{{ m.getVlEstoque()|to_currency }}</td>
                 <td>
-                  <a href="/consultar_nota_data?dtCarga={{m.getDtCarga()}}" data-bs-toggle="tooltip"
-                    data-bs-title="Consultar">
-                    <i class="fa-solid fa-magnifying-glass-arrow-right"></i>
+                  <a href="/editar_nota?idConta={{m.getIdNota()}}" data-bs-toggle="tooltip" data-bs-title="Editar Nota">
+                    <i class="fa-solid fa-pencil text-warning"></i>
                   </a>
                 </td>
                 <td>
-                  <a href="/graf_nota_liberacao?dtCarga={{m.getDtCarga()}}&mesV={{m.getMesVigencia()}}&anoV={{m.getAnoVigencia()}}&tipo=valor"
-                    data-bs-toggle="tooltip" data-bs-title="Gráficos">
-                    <i class="fa-solid fa-chart-pie"></i>
-                  </a>
-                </td>
-                <td>
-                  <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Empreendimento">
+                  <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Nota">
                     <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
-                      data-modal-exclude-title="Nota"
-                      data-modal-exclude-action="/excluir_nota_carga?dtCarga={{m.getDtCarga()}}&mesV={{m.getMesVigencia()}}&anoV={{m.getAnoVigencia()}}"
-                      data-modal-exclude-text="Deseja realmente excluir a nota com a data <strong>{{m.getDtCarga()}}</strong>?"></i>
+                      data-modal-exclude-title="Nota" data-modal-exclude-action="/excluir_nota?idNota={{m.getIdNota()}}"
+                      data-modal-exclude-text="Deseja realmente excluir os dados da nota <strong>{{ m.getProduto() }}</strong>?"></i>
                   </a>
                 </td>
               </tr>
               {% endfor %}
               {% else %}
               <tr>
-                <td colspan="6" class="text-center">
+                <td colspan="7" class="text-center">
                   Não existem notas cadastradas.
                 </td>
               </tr>

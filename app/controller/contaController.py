@@ -172,14 +172,16 @@ class contaController:
         MySql.exec(query, (idEmpreend, mes_vig, ano_vig, dt_carga))
 
     def conta_por_id(self, id):
-        query = "SELECT id_conta, mes_vigencia, ano_vigencia, vl_liberacao, vl_aporte_construtora, vl_receita_recebiveis, vl_pagto_obra, vl_pagto_rh, vl_diferenca, vl_saldo  FROM " + \
+        query = "SELECT id_conta, id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, vl_liberacao, vl_aporte_construtora, vl_receita_recebiveis, vl_pagto_obra, vl_pagto_rh, vl_diferenca, vl_saldo  FROM " + \
             MySql.DB_NAME + ".tb_contas WHERE id_conta = %s "
         ct = MySql.getOne(query, (id,))
 
         rc = conta()
         rc.setIdConta(ct['id_conta'])
+        rc.setIdEmpreend(ct['id_empreendimento'])
         rc.setMesVigencia(ct['mes_vigencia'])
         rc.setAnoVigencia(ct['ano_vigencia'])
+        rc.setDtCarga(ct['dt_carga'])
         rc.setVlLiberacao(ct['vl_liberacao'])
         rc.setVlAporteConstrutora(ct['vl_aporte_construtora'])
         rc.setVlReceitaRecebiveis(ct['vl_receita_recebiveis'])

@@ -1,7 +1,9 @@
-from flask import Blueprint, request, render_template, redirect, current_app
+from flask import Blueprint, request, render_template, redirect
+from dto.nota import nota
+from utils.converter import converterStrToFloat
 from controller.notaController import notaController
 from utils.helper import protectedPage, allowed_file
-from utils.CtrlSessao import IdEmpreend, NmEmpreend
+from utils.CtrlSessao import IdEmpreend, NmEmpreend, DtCarga, AnoVigencia, MesVigenvia
 
 nota_bp = Blueprint('notas', __name__)
 
@@ -55,17 +57,95 @@ def tratar_notas():
     notC = notaController()
     notS = notC.consultarNotas(idEmpreend)
 
-    if len(notS) == 0:
-        return render_template("lista_notas.html", mensagem="Nota não Cadastrada, importar o arquivo Excel!!!", notas=notS)
-    else:
-        return render_template("lista_notas.html", notas=notS)
+    return render_template("lista_notas_agrupadas.html", notas=notS)
 
 
 @nota_bp.route('/excluir_nota_carga')
-def excluir_nota():
+def excluir_nota_carga():
     mes = request.args.get('mesV')
     ano = request.args.get('anoV')
     data = request.args.get('dtCarga')
     contC = notaController()
     contC.excluir_por_data(IdEmpreend().get(), data, mes, ano)
     return redirect('/tratar_notas')
+
+
+@nota_bp.route('/consultar_nota_data')
+def consultar_nota_data():
+    protectedPage()
+    data = request.args.get('dtCarga')
+    ano = request.args.get('anoV')
+    mes = request.args.get('mesV')
+
+    if data is None and not DtCarga().has():
+        return redirect('/tratar_notas')
+    if data is None:
+        data = DtCarga().get()
+        ano = AnoVigencia().get()
+        mes = MesVigenvia().get()
+    else:
+        AnoVigencia().set(ano)
+        MesVigenvia().set(mes)
+        DtCarga().set(data)
+
+    notaC = notaController()
+    notaS = notaC.listaNotas(IdEmpreend().get(), data, mes, ano)
+    return render_template("lista_notas.html", notas=notaS)
+
+
+@nota_bp.route('/excluir_nota')
+def excluir_nota():
+    id = request.args.get('idNota')
+    contC = notaController()
+    contC.excluir_nota(id)
+    return redirect('/consultar_nota_data')
+
+
+@nota_bp.route('/editar_nota')
+def editar_nota():
+    protectedPage()
+    id = request.args.get('idConta')
+    contC = notaController()
+    nota = contC.nota_por_id(id)
+    return render_template("cad_nota.html", nota=nota)
+
+
+@nota_bp.route('/abrir_cad_nota')
+def cadastrar_nota():
+    protectedPage()
+    return render_template("cad_nota.html")
+
+
+@nota_bp.route('/salvar_nota', methods=['POST'])
+def salvar_nota():
+    ct = get_nota_cadastro()
+    contC = notaController()
+    contC.salvar_nota(ct)
+    return redirect("/consultar_nota_data")
+
+
+@nota_bp.route('/criar_nota', methods=['POST'])
+def criar_nota():
+    ct = get_nota_cadastro()
+    ct.setAnoVigencia(AnoVigencia().get())
+    ct.setMesVigencia(MesVigenvia().get())
+    ct.setDtCarga(DtCarga().get())
+    ct.setIdEmpreend(IdEmpreend().get())
+    contC = notaController()
+    contC.inserir_nota(ct)
+    return redirect("/consultar_nota_data")
+
+
+def get_nota_cadastro() -> nota:
+    idNota = request.form.get('idNota')
+    produto = request.form.get('produto')
+    vlNotaFiscal = converterStrToFloat(request.form.get('vlNotaFiscal'))
+    vlEstoque = converterStrToFloat(request.form.get('vlEstoque'))
+
+    ct = nota()
+    ct.setIdNota(idNota)
+    ct.setProduto(produto)
+    ct.setVlNotaFiscal(vlNotaFiscal)
+    ct.setVlEstoque(vlEstoque)
+
+    return ct

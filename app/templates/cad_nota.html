@@ -1,0 +1,86 @@
+<!-- Template: cad_nota -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Cadastro Nota</title>
+  {% include 'fractials/head.html' %}
+</head>
+
+<body>
+  {% include 'fractials/menu.html' %}
+
+  <div class="container">
+    <div class="row">
+      <div class="col-6">
+        <h2 class="title"><i class="fa-solid fa-clipboard-list"></i> {{ 'Editar' if nota else 'Criar' }} Nota
+        </h2>
+      </div>
+    </div>
+
+    <form action="{{ '/salvar_nota' if nota else '/criar_nota' }}" method="POST" id="formNota">
+      <input type="hidden" name="idNota" value="{{nota.getIdNota() if nota}}" />
+
+      <div class="row">
+        <div class="col-12">
+          <div class="form-floating mt-4">
+            <input type="text" name="produto" id="produto" class="form-control" placeholder=""
+              value="{{nota.getProduto() if nota}}" maxlength="100" />
+            <label for="produto">Produto</label>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-6">
+          <div class="form-floating mt-4">
+            <input type="text" name="vlNotaFiscal" id="vlNotaFiscal" class="form-control money" placeholder=""
+              value="{{nota.getVlNotaFiscal() if nota}}" maxlength="20" />
+            <label for="vlNotaFiscal">Valor na Nota Fiscal</label>
+          </div>
+        </div>
+        <div class="col-6">
+          <div class="form-floating mt-4">
+            <input type="text" name="vlEstoque" id="vlEstoque" class="form-control money" placeholder=""
+              value="{{nota.getVlEstoque() if nota}}" maxlength="20" />
+            <label for="vlEstoque">Valor no Estoque</label>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row mt-5 justify-content-center d-flex">
+        <div class="col-3">
+          <a href="#" id="backHistory" class="btn btn-secondary w-100">Cancelar</a>
+        </div>
+        <div class="col-3 offset-1">
+          <button type="submit" class="btn btn-success w-100">{{ 'Atualizar' if nota else 'Criar' }}</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+  {% include 'fractials/footer.html' %}
+  <script>
+    const requireds = GFC.getRequiredFields("formNota")
+    $(function () {
+      $("#formNota").validate({
+        rules: requireds.rules,
+        messages: requireds.messages,
+        errorClass: 'is-invalid',
+        errorElement: 'span',
+        highlight: function (element, errorClass, validClass) {
+          setTimeout(function () {
+            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
+            $(element).addClass(errorClass)
+          }, 50)
+        },
+      });
+    });
+  </script>
+</body>
+
+</html>
