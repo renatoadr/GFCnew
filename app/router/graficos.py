@@ -14,6 +14,7 @@ import random
 
 grafico_bp = Blueprint('graficos', __name__)
 
+
 @grafico_bp.route('/obter_grafico', methods=['GET'])
 def obter_grafico():
 
@@ -69,7 +70,7 @@ def graf_orcamento_liberacao():
     plt.legend(loc='lower left', bbox_to_anchor=(0, -0.2),
                fontsize=8, ncols=3)  # Adicionar a legenda fora do gráfico
 
-    grafC = graficoController(current_app)
+    grafC = graficoController()
 
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
