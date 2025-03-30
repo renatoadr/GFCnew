@@ -15,29 +15,26 @@
   <main>
     <div class="container">
       <div class="row">
-        <div class="col-5">
+        <div class="col-7">
           <h2 class="title title-page mt-4 mb-4">
             <span><i class="fa-solid fa-ruler-combined"></i> Medições</span><strong>{{session.nmEmpreend}}</strong>
           </h2>
         </div>
-        <div class="col-7">
+        <div class="col-5">
           <div class="row h-100">
-            <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
+            <div class="col-7 offset-2 d-flex justify-content-end align-items-center">
               <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUploadExcel"
-                data-desc="{{'Já foi importado um arqiuvo de carga e realizar uma nova importação não irá sobscrever a carga anterior' if medicoes}}"
+                data-desc="{{'<p class=\'alert alert-warning p-2 m-0 small\'> Já foi importado um arquivo de carga e realizar uma nova importação não irá sobscrever a carga anterior</p>' if medicoes}}"
                 data-action-process="/upload_arquivo_medicoes">
                 <i class="fa-solid fa-file-arrow-up"></i>
                 Carregar Excel
               </button>
             </div>
             <div class="col-3 d-flex justify-content-end align-items-center">
-              <form action="/home" method="POST">
-                <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}" />
-                <button type="submit" class="btn btn-outline-dark">
-                  <i class="fa-solid fa-home"></i>
-                  Início
-                </button>
-              </form>
+              <a href="/home" type="submit" class="btn btn-outline-dark">
+                <i class="fa-solid fa-home"></i>
+                Início
+              </a>
             </div>
           </div>
         </div>
@@ -110,8 +107,9 @@
                 <td>{{ m.getPercRealizadoPeriodo()|to_currency }}</td>
 
                 <td>
-                  {% if medPrevius and medCurrent and (m.getIdMedicao() == medCurrent.getIdMedicao() or
-                  m.getIdMedicao() == medPrevius.getIdMedicao())
+                  {% if (medCurrent and m.getIdMedicao() == medCurrent.getIdMedicao()) or (medPrevius and medCurrent and
+                  (m.getIdMedicao() == medCurrent.getIdMedicao() or
+                  m.getIdMedicao() == medPrevius.getIdMedicao()))
                   %}
                   <a href="/consultar_medicao_pelo_id?idMedicao={{m.getIdMedicao()}}" data-bs-toggle="tooltip"
                     data-bs-title="Consultar">
@@ -120,8 +118,9 @@
                   {% endif %}
                 </td>
                 <td>
-                  {% if medPrevius and medCurrent and (m.getIdMedicao() > medCurrent.getIdMedicao() or
-                  m.getIdMedicao()==medCurrent.getIdMedicao()) %}
+                  {% if (medCurrent and m.getIdMedicao() >= medCurrent.getIdMedicao()) or (medPrevius and medCurrent and
+                  (m.getIdMedicao() > medCurrent.getIdMedicao() or
+                  m.getIdMedicao()==medCurrent.getIdMedicao())) %}
                   <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Empreendimento">
                     <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
                       data-modal-exclude-title="Medição"

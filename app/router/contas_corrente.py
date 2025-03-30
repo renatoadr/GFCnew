@@ -1,14 +1,16 @@
-from flask import Blueprint, request, render_template, redirect, current_app
+from flask import Blueprint, request, render_template, redirect
 from controller.contaController import contaController
 from utils.helper import allowed_file, protectedPage
-from utils.CtrlSessao import IdEmpreend, NmEmpreend
-from werkzeug.utils import secure_filename
-import os
+from utils.CtrlSessao import IdEmpreend, NmEmpreend, DtCarga, AnoVigencia, MesVigenvia
+from utils.converter import converterStrToFloat
+from dto.conta import conta
 
 contas_corrente_bp = Blueprint('contas_corrente', __name__)
 
+
 @contas_corrente_bp.route('/upload_arquivo_contas', methods=['POST'])
 def upload_arquivo_contas():
+
     # check if the post request has the file part
     if 'file' not in request.files:
         mensagem = "Erro no upload do arquivo. No file part."
@@ -18,26 +20,16 @@ def upload_arquivo_contas():
         if file.filename == '':
             mensagem = "Erro no upload do arquivo. Nome do arquivo='" + file.filename + "'."
         elif not allowed_file(file.filename):
-            mensagem = "Erro no upload do arquivo. Arquivo='" + file.filename + "' não possui uma das extensões permitidas."
+            mensagem = "Erro no upload do arquivo. Arquivo: '"
+            mensagem += file.filename + "' não possui uma das extensões permitidas."
         else:
-            filename = secure_filename(file.filename)
-            caminhoArq = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
-            file.save(caminhoArq)
-
-#            idEmpreend = request.args.get("idEmpreend")
-#            idEmpreend = request.form.get("idEmpreend")
-            idEmpreend = IdEmpreend().get()
-
-            print ('-------------- upload_arquivo_contas ----------------')
-
-            notC = contaController ()
-            print (caminhoArq, '   ', idEmpreend)
-            notC.carregar_contas(caminhoArq, idEmpreend)
-
+            notC = contaController()
+            notC.carregar_contas(file, IdEmpreend().get())
             return redirect("/tratar_contas")
     else:
         mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
     return render_template("erro.html", mensagem=mensagem)
+
 
 @contas_corrente_bp.route('/tratar_contas')
 def tratar_contas():
@@ -47,38 +39,123 @@ def tratar_contas():
     nmEmpreend = request.args.get("nmEmpreend")
 
     if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
-      return redirect('/home')
+        return redirect('/home')
 
     if idEmpreend is None:
-      idEmpreend = IdEmpreend().get()
+        idEmpreend = IdEmpreend().get()
     else:
-      IdEmpreend().set(idEmpreend)
+        IdEmpreend().set(idEmpreend)
 
     if nmEmpreend is None:
-      nmEmpreend = NmEmpreend().get()
+        nmEmpreend = NmEmpreend().get()
     else:
-      NmEmpreend().set(nmEmpreend)
+        NmEmpreend().set(nmEmpreend)
 
     print('-----tratar_contas----')
     print(idEmpreend, nmEmpreend)
 
-    contC = contaController ()
+    contC = contaController()
     contS = contC.consultarContas(idEmpreend)
 
     if len(contS) == 0:
-        return render_template("lista_contas.html", mensagem="Conta não Cadastrada, importar o arquivo Excel!!!", contas=contS)
+        return render_template(
+            "lista_contas_agrupadas.html",
+            mensagem="Conta não Cadastrada, importar o arquivo Excel!!!",
+            contas=contS
+        )
     else:
-        return render_template("lista_contas.html", contas=contS)
+        return render_template("lista_contas_agrupadas.html", contas=contS)
+
 
 @contas_corrente_bp.route('/consultar_conta_data')
 def consultar_conta():
-  pass
+    protectedPage()
+    data = request.args.get('dtCarga')
+    ano = request.args.get('anoV')
+    mes = request.args.get('mesV')
 
-@contas_corrente_bp.route('/excluir_conta')
+    if data is None and not DtCarga().has():
+        return redirect('/tratar_contas')
+    if data is None:
+        data = DtCarga().get()
+        ano = AnoVigencia().get()
+        mes = MesVigenvia().get()
+    else:
+        AnoVigencia().set(ano)
+        MesVigenvia().set(mes)
+        DtCarga().set(data)
+
+    contC = contaController()
+    contS = contC.listaContas(IdEmpreend().get(), data, mes, ano)
+    return render_template("lista_contas.html", contas=contS)
+
+
+@contas_corrente_bp.route('/editar_conta')
+def editar_conta():
+    protectedPage()
+    id = request.args.get('id')
+    contC = contaController()
+    conta = contC.conta_por_id(id)
+    return render_template("cad_conta.html", conta=conta)
+
+
+@contas_corrente_bp.route('/abrir_cad_conta')
+def cadastrar_conta():
+    protectedPage()
+    return render_template("cad_conta.html")
+
+
+@contas_corrente_bp.route('/salvar_conta', methods=['POST'])
+def salvar_conta():
+    ct = get_conta_cadastro()
+    contC = contaController()
+    contC.salvar_conta(ct)
+    return redirect("/consultar_conta_data")
+
+
+@contas_corrente_bp.route('/criar_conta', methods=['POST'])
+def criar_conta():
+    ct = get_conta_cadastro()
+    ct.setAnoVigencia(AnoVigencia().get())
+    ct.setMesVigencia(MesVigenvia().get())
+    ct.setDtCarga(DtCarga().get())
+    ct.setIdEmpreend(IdEmpreend().get())
+    contC = contaController()
+    contC.inserir_conta(ct)
+    return redirect("/consultar_conta_data")
+
+
+@contas_corrente_bp.route('/excluir_conta_carga')
 def excluir_conta():
-  mes = request.args.get('mesV')
-  ano = request.args.get('anoV')
-  data = request.args.get('dtCarga')
-  contC = contaController ()
-  contC.excluir_por_data(data, mes, ano)
-  return redirect('/tratar_contas')
+    mes = request.args.get('mesV')
+    ano = request.args.get('anoV')
+    data = request.args.get('dtCarga')
+    contC = contaController()
+    contC.excluir_por_data(IdEmpreend().get(), data, mes, ano)
+    return redirect('/tratar_contas')
+
+
+def get_conta_cadastro():
+    idConta = request.form.get('idConta')
+    vlSaldo = converterStrToFloat(request.form.get('vlSaldo'))
+    vlReceita = converterStrToFloat(request.form.get('vlReceita'))
+    vlLiberacao = converterStrToFloat(request.form.get('vlLiberacao'))
+    vlPagamento = converterStrToFloat(request.form.get('vlPagamento'))
+    vlPagamentoObra = converterStrToFloat(request.form.get('vlPagamentoObra'))
+    vlAporteConstrutora = converterStrToFloat(
+        request.form.get('vlAporteConstrutora')
+    )
+
+    ct = conta()
+    ct.setIdConta(idConta)
+    ct.setVlReceitaRecebiveis(vlReceita)
+    ct.setVlLiberacao(vlLiberacao)
+    ct.setVlPagtoObra(vlPagamentoObra)
+    ct.setVlAporteConstrutora(vlAporteConstrutora)
+    ct.setVlPagtoRh(vlPagamento)
+    ct.setVlSaldo(vlSaldo)
+    ct.setVlDiferenca(
+        (vlLiberacao + vlAporteConstrutora + vlReceita) -
+        (vlPagamentoObra + vlPagamento) - vlSaldo
+    )
+    return ct

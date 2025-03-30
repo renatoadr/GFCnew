@@ -21,23 +21,18 @@
           </h2>
         </div>
         <div class="col-6">
-          <div class="row h-100">
-            <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
-              <button type="submit" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalUploadExcel"
-                data-action-process="/upload_arquivo_contas">
-
-                <i class="fa-solid fa-file-arrow-up"></i>
-                Carregar Excel
-              </button>
+          <div class="row justify-content-end align-items-center h-100">
+            <div class="col-4">
+              <a href="/abrir_cad_conta" class="btn btn-primary w-100">
+                <i class="fa-solid fa-circle-plus"></i>
+                Nova conta
+              </a>
             </div>
-            <div class="col-3 d-flex justify-content-end align-items-center">
-              <form action="/home" method="POST">
-                <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}" />
-                <button type="submit" class="btn btn-outline-dark">
-                  <i class="fa-solid fa-home"></i>
-                  Início
-                </button>
-              </form>
+            <div class="col-3">
+              <a href="/tratar_contas" class="btn btn-outline-dark w-100">
+                <i class="fa-solid fa-caret-left"></i>
+                Voltar
+              </a>
             </div>
           </div>
         </div>
@@ -48,10 +43,16 @@
           <table class="table table-striped">
             <thead class="table-light">
               <tr class="text-center">
-                <th>Mes Vigência</th>
-                <th>Ano Vigência</th>
-                <th>Data Carga</th>
-                <th colspan="3">Ações</th>
+                <th>Mês</th>
+                <th>Ano</th>
+                <th>Liberação</th>
+                <th>Aporte Construtora</th>
+                <th>Receita Recebíveis</th>
+                <th>Pagamento Obra</th>
+                <th>Pagamento RH</th>
+                <th>Diferença</th>
+                <th>Saldo</th>
+                <th colspan="2">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -60,24 +61,22 @@
               <tr class="text-center">
                 <td>{{ m.getMesVigencia() }}</td>
                 <td>{{ m.getAnoVigencia() }}</td>
-                <td>{{ m.getDtCarga()|to_datetime }}</td>
+                <td>{{ m.getVlLiberacao()|to_currency }}</td>
+                <td>{{ m.getVlAporteConstrutora()|to_currency }}</td>
+                <td>{{ m.getVlReceitaRecebiveis()|to_currency }}</td>
+                <td>{{ m.getVlPagtoObra()|to_currency }}</td>
+                <td>{{ m.getVlPagtoRh()|to_currency }}</td>
+                <td>{{ m.getVlDiferenca()|to_currency }}</td>
+                <td>{{ m.getVlSaldo()|to_currency }}</td>
                 <td>
-                  <a href="/consultar_conta_data?dtCarga={{m.getDtCarga()}}" data-bs-toggle="tooltip"
-                    data-bs-title="Consultar">
-                    <i class="fa-solid fa-magnifying-glass-arrow-right"></i>
+                  <a href="/editar_conta?id={{m.getIdConta()}}" data-bs-toggle="tooltip" data-bs-title="Editar Conta">
+                    <i class="fa-solid fa-pencil text-warning"></i>
                   </a>
                 </td>
                 <td>
-                  <a href="/graf_conta_liberacao?dtCarga={{m.getDtCarga()}}&mesV={{m.getMesVigencia()}}&anoV={{m.getAnoVigencia()}}&tipo=valor"
-                    data-bs-toggle="tooltip" data-bs-title="Gráficos">
-                    <i class="fa-solid fa-chart-pie"></i>
-                  </a>
-                </td>
-                <td>
-                  <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Empreendimento">
+                  <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Conta">
                     <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
-                      data-modal-exclude-title="Conta"
-                      data-modal-exclude-action="/excluir_conta?dtCarga={{m.getDtCarga()}}&mesV={{m.getMesVigencia()}}&anoV={{m.getAnoVigencia()}}"
+                      data-modal-exclude-title="Conta" data-modal-exclude-action="/excluir_conta?id={{m.getIdConta()}}"
                       data-modal-exclude-text="Deseja realmente excluir a conta com a data <strong>{{m.getDtCarga()}}</strong>?"></i>
                   </a>
                 </td>
@@ -85,7 +84,7 @@
               {% endfor %}
               {% else %}
               <tr>
-                <td colspan="6" class="text-center">
+                <td colspan="11" class="text-center">
                   Não existem contas cadastradas.
                 </td>
               </tr>
