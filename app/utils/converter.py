@@ -3,7 +3,7 @@ import re
 
 
 def converterStrToFloat(value, default=0):
-    if value is None or not isNumber(value):
+    if value is None or re.search(r"^[\d.,]+$", value) is None:
         return default
     return float(value.replace('.', '').replace(',', '.'))
 

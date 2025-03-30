@@ -20,14 +20,14 @@
           </h2>
         </div>
         <div class="col-6">
-          <div class="row h-100">
-            <div class="col-4 d-flex justify-content-end align-items-center"></div>
+          <div class="row h-100 justify-content-end align-items-center">
+            <div class="col-4">
               <a href="/atualizar_garantia" class="btn btn-primary">
                 <i class="fa-solid fa-plus-circle"></i>
                 Atualizar
               </a>
             </div>
-            <div class="col-3 d-flex justify-content-end align-items-center">
+            <div class="col-3">
               <a href="/home" type="submit" class="btn btn-outline-dark">
                 <i class="fa-solid fa-caret-left"></i>
                 Voltar
@@ -141,7 +141,7 @@
                       {% endif %}
                       &nbsp;&nbsp;{{geral.status}}
                     </td>
-                    <td class="p-3" >{{geral.observacao}}</td>
+                    <td class="p-3">{{geral.observacao}}</td>
                   </tr>
                   {% endfor %}
                 </tbody>

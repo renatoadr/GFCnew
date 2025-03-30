@@ -219,3 +219,8 @@ class contaController:
             conta.getVlDiferenca(),
             conta.getVlSaldo()
         ))
+
+    def excluir_conta(self, id):
+        query = "DELETE FROM " + MySql.DB_NAME + \
+            """.tb_contas WHERE id_conta = %s """
+        MySql.exec(query, (id,))

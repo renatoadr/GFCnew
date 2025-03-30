@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect
+from flask import Blueprint, Request, request, render_template, redirect
 from controller.contaController import contaController
 from utils.helper import allowed_file, protectedPage
 from utils.CtrlSessao import IdEmpreend, NmEmpreend, DtCarga, AnoVigencia, MesVigenvia
@@ -126,13 +126,21 @@ def criar_conta():
 
 
 @contas_corrente_bp.route('/excluir_conta_carga')
-def excluir_conta():
+def excluir_conta_carga():
     mes = request.args.get('mesV')
     ano = request.args.get('anoV')
     data = request.args.get('dtCarga')
     contC = contaController()
     contC.excluir_por_data(IdEmpreend().get(), data, mes, ano)
     return redirect('/tratar_contas')
+
+
+@contas_corrente_bp.route('/excluir_conta')
+def excluir_conta():
+    id = request.args.get('idConta')
+    contC = contaController()
+    contC.excluir_conta(id)
+    return redirect('/consultar_conta_data')
 
 
 def get_conta_cadastro():

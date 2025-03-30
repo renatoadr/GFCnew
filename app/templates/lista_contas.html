@@ -76,8 +76,9 @@
                 <td>
                   <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Conta">
                     <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
-                      data-modal-exclude-title="Conta" data-modal-exclude-action="/excluir_conta?id={{m.getIdConta()}}"
-                      data-modal-exclude-text="Deseja realmente excluir a conta com a data <strong>{{m.getDtCarga()}}</strong>?"></i>
+                      data-modal-exclude-title="Conta"
+                      data-modal-exclude-action="/excluir_conta?idConta={{m.getIdConta()}}"
+                      data-modal-exclude-text="Deseja realmente excluir essa conta?"></i>
                   </a>
                 </td>
               </tr>
