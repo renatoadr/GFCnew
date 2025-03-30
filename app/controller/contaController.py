@@ -6,6 +6,7 @@ from utils.dbContext import MySql
 from datetime import datetime
 import pandas as pd
 from utils.dbContext import MySql
+from utils.converter import converterStrToFloat
 
 
 class contaController:
@@ -65,7 +66,7 @@ class contaController:
             n.setVlSaldo(it['vl_saldo'])
 
             listaContas.append(n)
-            return listaContas
+        return listaContas
 
     def consultarConta(self, idEmpreend):
         self.__connection = MySql.connect()
@@ -113,12 +114,12 @@ class contaController:
 
         return listaItens
 
-    def carregar_contas(self, caminhoArq, idEmpreend):
+    def carregar_contas(self, file, idEmpreend):
 
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
-        tabela = pd.read_excel(caminhoArq)
+        tabela = pd.read_excel(file)
 
         l, c = tabela.shape
         linha = 0
@@ -132,23 +133,32 @@ class contaController:
 
         while linha < l:
 
-            mesVigencia = str(tabela.at[linha, 'Mês']).zfill(2)
-            anoVigencia = str(tabela.at[linha, 'Ano'])
-            vlLiberacao = tabela.at[linha, 'Valor Liberação']
-            vlAporteConstrutora = float(
-                tabela.at[linha, 'Valor Aporte Construtora'])
-            vlReceitaRecebiveis = float(
-                tabela.at[linha, 'Valor Receita Recebíveis'])
-            vlPagtoObra = float(tabela.at[linha, 'Valor Pagamento Obra'])
-            vlPagtoRh = float(tabela.at[linha, 'Valor Pagamento RH'])
-            vlDiferenca = float(tabela.at[linha, 'Valor Diferença'])
-            vlSaldo = float(tabela.at[linha, 'Valor Saldo'])
+            if pd.isna(tabela.at[linha, 'Mês']) or pd.isna(tabela.at[linha, 'Ano']):
+                linha += 1
+                continue
 
-            query = "INSERT INTO " + MySql.DB_NAME + ".tb_contas (id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, vl_liberacao, vl_aporte_construtora, vl_receita_recebiveis, vl_pagto_obra, vl_pagto_rh, vl_diferenca, vl_saldo ) VALUES ('" + str(
-                idEmpreend) + "', '" + mesVigencia + "', '" + anoVigencia + "', '" + dateTime + "', " + str(vlLiberacao) + ", " + str(vlAporteConstrutora) + ", " + str(vlReceitaRecebiveis) + ", " + str(vlPagtoObra) + ", " + str(vlPagtoRh) + ", " + str(vlDiferenca) + ", " + str(vlSaldo) + ")"
+            mesVigencia = str(int(tabela.at[linha, 'Mês'])).zfill(2)
+            anoVigencia = str(int(tabela.at[linha, 'Ano']))
+            vlLiberacao = converterStrToFloat(
+                tabela.at[linha, 'Valor Liberação'])
+            vlAporteConstrutora = converterStrToFloat(
+                tabela.at[linha, 'Valor Aporte Construtora'])
+            vlReceitaRecebiveis = converterStrToFloat(
+                tabela.at[linha, 'Valor Receita Recebíveis'])
+            vlPagtoObra = converterStrToFloat(
+                tabela.at[linha, 'Valor Pagamento Obra'])
+            vlPagtoRh = converterStrToFloat(
+                tabela.at[linha, 'Valor Pagamento RH'])
+            vlDiferenca = converterStrToFloat(
+                tabela.at[linha, 'Valor Diferença'])
+            vlSaldo = converterStrToFloat(tabela.at[linha, 'Valor Saldo'])
+
+            query = "INSERT INTO " + MySql.DB_NAME + \
+                ".tb_contas (id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, vl_liberacao, vl_aporte_construtora, vl_receita_recebiveis, vl_pagto_obra, vl_pagto_rh, vl_diferenca, vl_saldo ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
             print(query)
-            cursor.execute(query)
+            cursor.execute(query, (idEmpreend, mesVigencia, anoVigencia, dateTime, vlLiberacao,
+                           vlAporteConstrutora, vlReceitaRecebiveis, vlPagtoObra, vlPagtoRh, vlDiferenca, vlSaldo))
             linha += 1
 
         self.__connection.commit()
@@ -156,15 +166,10 @@ class contaController:
         cursor.close()
         MySql.close(self.__connection)
 
-    def excluir_por_data(self, dt_carga, mes_vig, ano_vig):
-        self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()
+    def excluir_por_data(self, idEmpreend, dt_carga, mes_vig, ano_vig):
         query = "DELETE FROM " + MySql.DB_NAME + \
-            """.tb_contas WHERE mes_vigencia = %s AND ano_vigencia = %s AND dt_carga = %s """
-        cursor.execute(query, (mes_vig, ano_vig, dt_carga))
-        self.__connection.commit()
-        cursor.close()
-        MySql.close(self.__connection)
+            """.tb_contas WHERE id_empreendimento = %s AND mes_vigencia = %s AND ano_vigencia = %s AND dt_carga = %s """
+        MySql.exec(query, (idEmpreend, mes_vig, ano_vig, dt_carga))
 
     def conta_por_id(self, id):
         query = "SELECT id_conta, mes_vigencia, ano_vigencia, vl_liberacao, vl_aporte_construtora, vl_receita_recebiveis, vl_pagto_obra, vl_pagto_rh, vl_diferenca, vl_saldo  FROM " + \
@@ -196,4 +201,21 @@ class contaController:
             conta.getVlDiferenca(),
             conta.getVlSaldo(),
             conta.getIdConta()
+        ))
+
+    def inserir_conta(self, conta: conta):
+        query = "INSERT INTO " + MySql.DB_NAME + \
+            ".tb_contas (id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, vl_liberacao, vl_aporte_construtora, vl_receita_recebiveis, vl_pagto_obra, vl_pagto_rh, vl_diferenca, vl_saldo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+        MySql.exec(query, (
+            conta.getIdEmpreend(),
+            conta.getMesVigencia(),
+            conta.getAnoVigencia(),
+            conta.getDtCarga(),
+            conta.getVlLiberacao(),
+            conta.getVlAporteConstrutora(),
+            conta.getVlReceitaRecebiveis(),
+            conta.getVlPagtoObra(),
+            conta.getVlPagtoRh(),
+            conta.getVlDiferenca(),
+            conta.getVlSaldo()
         ))

@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, redirect
 from controller.contaController import contaController
 from utils.helper import allowed_file, protectedPage
-from utils.CtrlSessao import IdEmpreend, NmEmpreend
+from utils.CtrlSessao import IdEmpreend, NmEmpreend, DtCarga, AnoVigencia, MesVigenvia
 from utils.converter import converterStrToFloat
 from dto.conta import conta
 
@@ -38,9 +38,7 @@ def tratar_contas():
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
-    if (idEmpreend is None
-            and not IdEmpreend().has()) or (nmEmpreend is None
-                                            and not NmEmpreend().has()):
+    if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
         return redirect('/home')
 
     if idEmpreend is None:
@@ -71,9 +69,22 @@ def tratar_contas():
 
 @contas_corrente_bp.route('/consultar_conta_data')
 def consultar_conta():
+    protectedPage()
     data = request.args.get('dtCarga')
     ano = request.args.get('anoV')
     mes = request.args.get('mesV')
+
+    if data is None and not DtCarga().has():
+        return redirect('/tratar_contas')
+    if data is None:
+        data = DtCarga().get()
+        ano = AnoVigencia().get()
+        mes = MesVigenvia().get()
+    else:
+        AnoVigencia().set(ano)
+        MesVigenvia().set(mes)
+        DtCarga().set(data)
+
     contC = contaController()
     contS = contC.listaContas(IdEmpreend().get(), data, mes, ano)
     return render_template("lista_contas.html", contas=contS)
@@ -81,14 +92,50 @@ def consultar_conta():
 
 @contas_corrente_bp.route('/editar_conta')
 def editar_conta():
+    protectedPage()
     id = request.args.get('id')
     contC = contaController()
     conta = contC.conta_por_id(id)
     return render_template("cad_conta.html", conta=conta)
 
 
+@contas_corrente_bp.route('/abrir_cad_conta')
+def cadastrar_conta():
+    protectedPage()
+    return render_template("cad_conta.html")
+
+
 @contas_corrente_bp.route('/salvar_conta', methods=['POST'])
 def salvar_conta():
+    ct = get_conta_cadastro()
+    contC = contaController()
+    contC.salvar_conta(ct)
+    return redirect("/consultar_conta_data")
+
+
+@contas_corrente_bp.route('/criar_conta', methods=['POST'])
+def criar_conta():
+    ct = get_conta_cadastro()
+    ct.setAnoVigencia(AnoVigencia().get())
+    ct.setMesVigencia(MesVigenvia().get())
+    ct.setDtCarga(DtCarga().get())
+    ct.setIdEmpreend(IdEmpreend().get())
+    contC = contaController()
+    contC.inserir_conta(ct)
+    return redirect("/consultar_conta_data")
+
+
+@contas_corrente_bp.route('/excluir_conta_carga')
+def excluir_conta():
+    mes = request.args.get('mesV')
+    ano = request.args.get('anoV')
+    data = request.args.get('dtCarga')
+    contC = contaController()
+    contC.excluir_por_data(IdEmpreend().get(), data, mes, ano)
+    return redirect('/tratar_contas')
+
+
+def get_conta_cadastro():
     idConta = request.form.get('idConta')
     vlSaldo = converterStrToFloat(request.form.get('vlSaldo'))
     vlReceita = converterStrToFloat(request.form.get('vlReceita'))
@@ -111,16 +158,4 @@ def salvar_conta():
         (vlLiberacao + vlAporteConstrutora + vlReceita) -
         (vlPagamentoObra + vlPagamento) - vlSaldo
     )
-    contC = contaController()
-    contC.salvar_conta(ct)
-    return redirect("/consultar_conta_data")
-
-
-@contas_corrente_bp.route('/excluir_conta')
-def excluir_conta():
-    mes = request.args.get('mesV')
-    ano = request.args.get('anoV')
-    data = request.args.get('dtCarga')
-    contC = contaController()
-    contC.excluir_por_data(data, mes, ano)
-    return redirect('/tratar_contas')
+    return ct

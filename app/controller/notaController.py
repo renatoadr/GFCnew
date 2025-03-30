@@ -1,4 +1,4 @@
-#controller or business logic
+# controller or business logic
 # Trata base de NOTAS
 
 from datetime import datetime
@@ -6,6 +6,7 @@ import pandas as pd
 from utils.converter import converterDateTimeToDateEnFormat
 from dto.nota import nota
 from utils.dbContext import MySql
+
 
 class notaController:
     __connection = None
@@ -15,21 +16,23 @@ class notaController:
 
     def consultarNotas(self, idEmpreend):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()   
+        cursor = self.__connection.cursor()
 
         print('---consultarn notas---')
-        print(idEmpreend)  
+        print(idEmpreend)
 
-        query =  "select mes_vigencia, ano_vigencia, dt_carga  from " + MySql.DB_NAME + ".tb_notas where id_empreendimento = " +  str (idEmpreend) + " group by mes_vigencia, ano_vigencia, dt_carga"
+        query = "select mes_vigencia, ano_vigencia, dt_carga  from " + MySql.DB_NAME + \
+            ".tb_notas where id_empreendimento = " + \
+                str(idEmpreend) + " group by mes_vigencia, ano_vigencia, dt_carga"
 
         print('-----------------')
         print(query)
         print('-----------------')
-        
+
         cursor.execute(query)
 
         lista = cursor.fetchall()
-        
+
         listaNotas = []
 
         for x in lista:
@@ -45,11 +48,13 @@ class notaController:
 
     def consultarNotaPelaData(self, idEmpreend, dtCarga):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor(dictionary=True)   
+        cursor = self.__connection.cursor(dictionary=True)
 
 #        query =  "select id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, item, vl_nota_fiscal, vl_estoque from " + MySql.DB_NAME + ".tb_notas where id_empreendimento = '" + idEmpreend + "' and dt_carga = '" + dtCarga + "'"
-        query =  "select id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, item, vl_nota_fiscal, vl_estoque from " + MySql.DB_NAME + ".tb_notas where id_empreendimento = '" + str(idEmpreend) + "'"
-    
+        query = "select id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, item, vl_nota_fiscal, vl_estoque from " + \
+            MySql.DB_NAME + ".tb_notas where id_empreendimento = '" + \
+                str(idEmpreend) + "'"
+
         print(query)
 
         cursor.execute(query)
@@ -60,7 +65,7 @@ class notaController:
 #        print('+++++++++++++++++++++++++++')
 
         lista = cursor.fetchall()
-        
+
         listaItens = []
 
         for x in lista:
@@ -75,21 +80,21 @@ class notaController:
 
 #        dados = [list(linha) for linha in listaItens()]
 
-        print('------------------------')       
+        print('------------------------')
         print('------------------------')
         cursor.close()
         MySql.close(self.__connection)
 #        print ('-----------------> ', dados)
-        print ('-----------------> ', listaItens)
+        print('-----------------> ', listaItens)
 
         return listaItens
 
-    def carregar_notas(self, caminhoArq, idEmpreend):
+    def carregar_notas(self, file, idEmpreend):
 
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
-        tabela = pd.read_excel(caminhoArq)
+        tabela = pd.read_excel(file)
 
         l, c = tabela.shape
         linha = 0
@@ -97,25 +102,31 @@ class notaController:
         dtTime = datetime.now()
         dateTime = dtTime.strftime("%Y-%m-%d %H:%M:%S")
 
-        print ('------------ carregar_notas -----------------')
-        print (idEmpreend)
-        print (linha, l)
+        print('------------ carregar_notas -----------------')
+        print(idEmpreend)
+        print(linha, l)
 
         while linha < l:
 
-            mesVigencia   = str(tabela.at[linha, 'Mês']).zfill(2)
-            anoVigencia   = str(tabela.at[linha, 'Ano'])
-            produto       = tabela.at[linha, 'Produtos']
-            vlNotaFiscal  = float(tabela.at[linha, 'Valor NF'])
-            vlEstoque     = float(tabela.at[linha, 'Estoque'])
+            mesVigencia = str(tabela.at[linha, 'Mês']).zfill(2)
+            anoVigencia = str(tabela.at[linha, 'Ano'])
+            produto = tabela.at[linha, 'Produtos']
+            vlNotaFiscal = float(tabela.at[linha, 'Valor NF'])
+            vlEstoque = float(tabela.at[linha, 'Estoque'])
 
-            query =  "INSERT INTO " + MySql.DB_NAME + ".tb_notas (id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, produto, vl_nota_fiscal, vl_estoque) VALUES ('" + str(idEmpreend) + "', '" + mesVigencia + "', '" + anoVigencia + "', '" + dateTime + "', '" + produto + "', " + str(vlNotaFiscal) + ", " + str(vlEstoque) + ")"
+            query = "INSERT INTO " + MySql.DB_NAME + ".tb_notas (id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, produto, vl_nota_fiscal, vl_estoque) VALUES ('" + str(
+                idEmpreend) + "', '" + mesVigencia + "', '" + anoVigencia + "', '" + dateTime + "', '" + produto + "', " + str(vlNotaFiscal) + ", " + str(vlEstoque) + ")"
 
-            print (query)
+            print(query)
             cursor.execute(query)
             linha += 1
 
         self.__connection.commit()
-        print(cursor.rowcount,"Nota cadastrada com sucesso")
+        print(cursor.rowcount, "Nota cadastrada com sucesso")
         cursor.close()
         MySql.close(self.__connection)
+
+    def excluir_por_data(self, idEmpreend, dt_carga, mes_vig, ano_vig):
+        query = "DELETE FROM " + MySql.DB_NAME + \
+            """.tb_notas WHERE id_empreendimento = %s AND mes_vigencia = %s AND ano_vigencia = %s AND dt_carga = %s """
+        MySql.exec(query, (idEmpreend, mes_vig, ano_vig, dt_carga))

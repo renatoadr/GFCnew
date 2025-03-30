@@ -15,16 +15,26 @@
   <main>
     <div class="container">
       <div class="row">
-        <div class="col-7">
+        <div class="col-6">
           <h2 class="title title-page">
             <span><i class="fa-solid fa-building-columns"></i> Contas</span><strong>{{session.nmEmpreend}}</strong>
           </h2>
         </div>
-        <div class="col-5 d-flex justify-content-end align-items-center">
-          <a href="/tratar_contas" class="btn btn-outline-dark">
-            <i class="fa-solid fa-caret-left"></i>
-            Voltar
-          </a>
+        <div class="col-6">
+          <div class="row justify-content-end align-items-center h-100">
+            <div class="col-4">
+              <a href="/abrir_cad_conta" class="btn btn-primary w-100">
+                <i class="fa-solid fa-circle-plus"></i>
+                Nova conta
+              </a>
+            </div>
+            <div class="col-3">
+              <a href="/tratar_contas" class="btn btn-outline-dark w-100">
+                <i class="fa-solid fa-caret-left"></i>
+                Voltar
+              </a>
+            </div>
+          </div>
         </div>
       </div>
 
