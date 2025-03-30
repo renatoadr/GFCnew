@@ -291,11 +291,13 @@ def tab_conta_corrente():
     plt.savefig(grafNome)
 
 
-@tabela_bp.route('/tab_garantias_geral')
+@tabela_bp.route('/tab_garantias_geral', methods=['GET'])
 def tab_garantias_geral():
 
-    idEmpreend = 57
-    tipo = 'Geral'
+    idEmpreend = IdEmpreend().get()
+    tipo = request.args.get("tipo")
+    mesVigencia = request.args.get("mesVigencia")
+    anoVigencia = request.args.get("anoVigencia")
 
     geral = geralController()
     ponC = garantiaController()
@@ -315,7 +317,7 @@ def tab_garantias_geral():
     column_labels = ["Histórico", "Status", "Obs"]
 
     # Definir tamanho das células
-    cell_width = 2.0  # Largura de cada célula
+    cell_width = 2.2  # Largura de cada célula
     cell_height = 0.2  # Altura de cada célula
     # Calcular o tamanho total da figura com base no número de células
     num_rows = len(data) + 1  # +1 para incluir os cabeçalhos
@@ -344,56 +346,54 @@ def tab_garantias_geral():
             cell.set_facecolor("lightblue")
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
-            cell.set_text_props(ha='left', va='center')  # Alinhar à esquerda
+            if col == 1: 
+                cell_text = cell.get_text().get_text()  # Obtém o texto da célula
+                if "Atenção" in cell_text:  # Verifica se contém a palavra "Atenção"
+                    cell.set_text_props(ha='left', va='center',color='red')  # Alinhar à esquerda
+                elif "Verificar" in cell_text:  # Verifica se contém a palavra "Atenção"
+                    cell.set_text_props(ha='left', va='center',color='orange')  # Alinhar à esquerda
+                else:
+                    cell.set_text_props(ha='left', va='center',color='green')  # Alinhar à esquerda
+            else:
+                cell.set_text_props(ha='left', va='center')  # Alinhar no centro
 
     grafC = graficoController()
 
-    idEmpreend = str(55)  # preciso montar esse informação
-    mes = "12"
-    ano = "2024"
-
-    diretorio = grafC.montaDir(idEmpreend, mes, ano)
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_garantias_geral.png'
 
     plt.savefig(grafNome)
 
-    return render_template("garantias.html", grafNome=grafNome, version=random.randint(1, 100000))
+    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 @tabela_bp.route('/tab_garantias_obra')
 def tab_garantias_obra():
 
-    idEmpreend = 57
-#    dtCarga = '2024-12-30 16:57:31'
-    tipo = 'Obra'
+    idEmpreend = IdEmpreend().get()
+    tipo = request.args.get("tipo")
+    mesVigencia = request.args.get("mesVigencia")
+    anoVigencia = request.args.get("anoVigencia")
 
     geral = geralController()
-#    garC = garantiaController()
-#    garS = garC.consultargarantiaatual(idEmpreend, tipo)
-    ctrl = garantiaController()
-    itens = ctrl.consultargarantiaatual(idEmpreend, tipo)
-
-    if not itens:
-        return redirect('/atualizar_garantia')
-
-    data = filter(lambda it: it.tipo == 'Obra', itens)
+    ponC = garantiaController()
+    ponS = ponC.consultargarantiaatual(idEmpreend, tipo)
 
     fig, ax = plt.subplots(1, 1)
 
-#    data = []
+    data = []
 
-#    for p in garS:
-#        dd = []
-#        dd.append(p.getdocumento())
-#        print (p.getdocumento())
-#        dd.append(p.getstatus())
-#        dd.append(p.getobservacao())
-#        data.append(dd)
+    for p in ponS:
+        dd = []
+        dd.append(p.documento)
+        dd.append(p.status)
+        dd.append(p.observacao)
+        data.append(dd)
 
     column_labels = ["Histórico", "Status", "Obs"]
 
     # Definir tamanho das células
-    cell_width = 2.0  # Largura de cada célula
+    cell_width = 2.35  # Largura de cada célula
     cell_height = 0.2  # Altura de cada célula
     # Calcular o tamanho total da figura com base no número de células
     num_rows = len(data) + 1  # +1 para incluir os cabeçalhos
@@ -422,19 +422,26 @@ def tab_garantias_obra():
             cell.set_facecolor("lightblue")
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
-            cell.set_text_props(ha='left', va='center')  # Alinhar à esquerda
+            if col == 1: 
+                cell_text = cell.get_text().get_text()  # Obtém o texto da célula
+                if "Atenção" in cell_text:  # Verifica se contém a palavra "Atenção"
+                    cell.set_text_props(ha='left', va='center',color='red')  # Alinhar à esquerda
+                elif "Verificar" in cell_text:  # Verifica se contém a palavra "Atenção"
+                    cell.set_text_props(ha='left', va='center',color='orange')  # Alinhar à esquerda
+                else:
+                    cell.set_text_props(ha='left', va='center',color='green')  # Alinhar à esquerda
+            else:
+                cell.set_text_props(ha='left', va='center')  # Alinhar no centro
 
     grafC = graficoController()
 
-    idEmpreend = str(57)  # preciso montar esse informação
-    mes = "12"
-    ano = "2024"
-
-    diretorio = grafC.montaDir(idEmpreend, mes, ano)
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_garantias_obra.png'
 
     plt.savefig(grafNome)
+
+    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
 @tabela_bp.route('/tab_certidoes')
@@ -672,10 +679,6 @@ def tab_orcamento_liberacao():
     dtCarga = request.args.get("dtCarga")
     mes = request.args.get("mesV")
     ano = request.args.get("anoV")
-
-#    idEmpreend = 45
-#    dtCarga = '2025-02-26 22:36:33'
-    # preciso montar esse informação
 
     geral = geralController()
     medC = orcamentoController()

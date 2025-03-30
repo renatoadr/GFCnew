@@ -99,3 +99,14 @@ def prepareList(idEmpreend, tipo, date, docsList, stsList, obsList):
     temp.append(date)
     result.append(tuple(temp))
   return tuple(result)
+
+@garantia_bp.route('/gerar_relatorio_garantia', methods=['POST'])
+def gerar_relatorio():
+  idEmpreend = IdEmpreend().get()
+  tipo = request.form.get('tipo')
+  mesVigencia = str(request.form.get('mesVigencia')).zfill(2)
+  anoVigencia = request.form.get('anoVigencia')
+  if tipo == 'Geral':
+    return redirect('/tab_garantias_geral?tipo=' + tipo + '&idEmpreend=' + idEmpreend + '&mesVigencia=' + mesVigencia + '&anoVigencia=' + anoVigencia)
+  else:
+    return redirect('/tab_garantias_obra?tipo=' + tipo + '&idEmpreend=' + idEmpreend + '&mesVigencia=' + mesVigencia + '&anoVigencia=' + anoVigencia)

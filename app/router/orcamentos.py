@@ -107,14 +107,14 @@ def upload_arquivo_orcamentos():
 #            idEmpreend = request.form.get("idEmpreend")
             print ('-------------- upload_arquivo_orcamentos ----------------')
             idEmpreend = 56
-            orcC = medicaoController ()
+            orcC = orcamentoController ()
             print (caminhoArq, '   ', idEmpreend)
             orcC.carregar_medicoes(caminhoArq, idEmpreend)
 
             return redirect("/tratar_orcamentos")
     else:
         mensagem = "Erro no upload do arquivo. Você precisa selecionar um arquivo."
-    return render_template("erro.html", mensagem=mensagem)
+        return render_template("erro.html", mensagem=mensagem)
 
 @orca_bp.route('/editar_item_orcamento', methods=['GET'])
 def editar_item_orcamento():
