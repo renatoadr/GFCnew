@@ -31,46 +31,19 @@
 
         <div class="row">
           <div class="col-6">
-
             <div class="form-floating mt-4">
               <input type="text" name="item" id="item" class="form-control" placeholder="" {% if modo=='consulta' %}
                 readonly {% endif %} value="{{ item.getItem() if item }}" maxlength="50" />
               <label for="item">Item</label>
             </div>
+          </div>
 
+          <div class="col-6">
             <div class="form-floating mt-4">
               <input type="text" name="orcadoValor" id="orcadoValor" class="form-control money" placeholder="" {% if
                 modo=='consulta' %} readonly {% endif %} value="{{ item.getOrcadoValor() if item }}" maxlength="20" />
               <label for="orcadoValor">Valor Orçado</label>
             </div>
-          </div>
-
-          <div class="col-6">
-
-            <div class="form-floating mt-4">
-              <input type="text" name="dtCarga" id="dtCarga" class="form-control" placeholder="" readonly
-                value="{{ item.getDtCarga()|to_datetime if item else dtCarga}}" maxlength="20" />
-              <label for="dtCarga">Data carga</label>
-            </div>
-
-            <div class="row">
-              <div class="col-6">
-                <div class="form-floating mt-4">
-                  <input type="number" name="mesVigencia" id="mesVigencia" class="form-control" placeholder="" readonly
-                    value="{{ item.getMesVigencia() if item else mesVig}}" maxlength="2" />
-                  <label for="mesVigencia">Mês vigência</label>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="form-floating mt-4">
-                  <input type="number" name="anoVigencia" id="anoVigencia" class="form-control" placeholder="" readonly
-                    value="{{ item.getAnoVigencia() if item else anoVig}}" maxlength="4" />
-                  <label for="anoVigencia">Ano vigência</label>
-                </div>
-              </div>
-            </div>
-
-
           </div>
         </div>
 
@@ -105,7 +78,7 @@
 
             <div class="form-floating mt-4">
               <input type="text" name="financeiroPercentual" id="financeiroPercentual" class="form-control percent"
-                placeholder="" readonly value="{{ item.getFinanceiroPercentual() if item }}" maxlength="6" />
+                placeholder="" readonly value="{{ item.getFinanceiroPercentual() if item }}" maxlength="8" />
               <label for="financeiroPercentual">Financeiro (%)</label>
             </div>
 
@@ -132,18 +105,7 @@
   <script>
     $(function () {
       const requireds = GFC.getRequiredFields("formIncluirOrcamento")
-      $("#formIncluirOrcamento").validate({
-        rules: requireds.rules,
-        messages: requireds.messages,
-        errorClass: 'is-invalid',
-        errorElement: 'span',
-        highlight: function (element, errorClass, validClass) {
-          setTimeout(function () {
-            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
-            $(element).addClass(errorClass)
-          }, 50)
-        },
-      });
+      $("#formIncluirOrcamento").validate(GFC.getConfigValidateForm(requireds));
     });
   </script>
 </body>

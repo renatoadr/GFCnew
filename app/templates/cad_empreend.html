@@ -161,43 +161,33 @@
 
   {% include 'fractials/footer.html' %}
   <script>
-    const requireds = GFC.getRequiredFields("formEmpreendimento")
-    requireds.messages.indiceGarantia = {
-      required: GFC_MESSAGES.REQUIRED,
-      minf: GFC_MESSAGES.MIN('0,01'),
-      maxf: GFC_MESSAGES.MAX(100),
-    }
-    requireds.rules.indiceGarantia = {
-      required: true,
-      minf: 0.01,
-      maxf: 100
-    }
     $(function () {
-      $("#formEmpreendimento").validate({
-        rules: requireds.rules,
-        messages: requireds.messages,
-        errorClass: 'is-invalid',
-        errorElement: 'span',
-        submitHandler: function (form) {
-          if (form.cpfCnpjEngenheiro.value === '' || !/\d/.test(form.cpfCnpjEngenheiro.value)) {
-            $.toast({
-              heading: '<strong>Erro ao enviar</strong>',
-              text: "É necessário informar o cliente associado ao empreendimento de maneira correta",
-              icon: 'error',
-              position: 'bottom-center',
-              hideAfter: 10000,
-            });
-          } else {
-            form.submit();
-          }
-        },
-        highlight: function (element, errorClass, validClass) {
-          setTimeout(function () {
-            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
-            $(element).addClass(errorClass)
-          }, 50)
-        },
-      });
+      const requireds = GFC.getRequiredFields("formEmpreendimento")
+      requireds.messages.indiceGarantia = {
+        required: GFC_MESSAGES.REQUIRED,
+        minf: GFC_MESSAGES.MIN('0,01'),
+        maxf: GFC_MESSAGES.MAX(100),
+      }
+      requireds.rules.indiceGarantia = {
+        required: true,
+        minf: 0.01,
+        maxf: 100
+      }
+      const config = GFC.getConfigValidateForm(requireds)
+      config.submitHandler = function (form) {
+        if (form.cpfCnpjEngenheiro.value === '' || !/\d/.test(form.cpfCnpjEngenheiro.value)) {
+          $.toast({
+            heading: '<strong>Erro ao enviar</strong>',
+            text: "É necessário informar o cliente associado ao empreendimento de maneira correta",
+            icon: 'error',
+            position: 'bottom-center',
+            hideAfter: 10000,
+          });
+        } else {
+          form.submit();
+        }
+      };
+      $("#formEmpreendimento").validate(config);
     });
   </script>
   {% if empreend %}

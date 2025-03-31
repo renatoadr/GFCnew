@@ -33,8 +33,8 @@
         <div class="row">
           <div class="col-12">
             <div class="form-floating mt-4">
-              <input type="text" name="nrMedicao" id="nrMedicao" class="form-control" placeholder="" 
-                readonly value="{{ medicao.getNrMedicao() if medicao }}" maxlength="3" />
+              <input type="text" name="nrMedicao" id="nrMedicao" class="form-control" placeholder="" readonly
+                value="{{ medicao.getNrMedicao() if medicao }}" maxlength="3" />
               <label for="nrMedicao">Medição</label>
             </div>
           </div>
@@ -50,40 +50,40 @@
             </div>
 
             <div class="form-floating mt-4">
-              <input type="text" name="percPrevistoAcumulado" id="percPrevistoAcumulado" class="form-control money" placeholder="" readonly
-                value="{{ medicao.getPercPrevistoAcumulado() if medicao }}" maxlength="5" />
+              <input type="text" name="percPrevistoAcumulado" id="percPrevistoAcumulado" class="form-control money"
+                placeholder="" readonly value="{{ medicao.getPercPrevistoAcumulado() if medicao }}" maxlength="5" />
               <label for="percPrevistoAcumulado">Previsto Acumulado %</label>
             </div>
 
             <div class="form-floating mt-4">
-              <input type="text" name="percRealizadoAcumulado" id="percRealizadoAcumulado" class="form-control percent" placeholder="" readonly 
-                value="{{ medicao.getPercRealizadoAcumulado() if medicao }}" maxlength="5" />
+              <input type="text" name="percRealizadoAcumulado" id="percRealizadoAcumulado" class="form-control percent"
+                placeholder="" readonly value="{{ medicao.getPercRealizadoAcumulado() if medicao }}" maxlength="5" />
               <label for="percRealizadoAcumulado">Realizado Acumulado %</label>
             </div>
 
             <div class="form-floating mt-4">
-              <input type="text" name="percDiferenca" id="percDiferenca" class="form-control money" placeholder="" readonly 
-                value="{{ medicao.getPercDiferenca() if medicao }}" maxlength="5" />
+              <input type="text" name="percDiferenca" id="percDiferenca" class="form-control money" placeholder=""
+                readonly value="{{ medicao.getPercDiferenca() if medicao }}" maxlength="5" />
               <label for="percDiferenca">Diferença %</label>
             </div>
-          </div>            
+          </div>
 
           <div class="col-6">
             <div class="form-floating mt-4">
-              <input type="text" name="anoVigencia" id="anoVigencia" class="form-control" placeholder="" readonly 
+              <input type="text" name="anoVigencia" id="anoVigencia" class="form-control" placeholder="" readonly
                 value="{{ medicao.getAnoVigencia() if medicao }}" maxlength="4" />
               <label for="anoVigencia">Ano Vigência</label>
             </div>
 
             <div class="form-floating mt-4">
-              <input type="text" name="percPrevistoPeriodo" id="percPrevistoPeriodo" class="form-control money" placeholder="" readonly 
-                value="{{ medicao.getPercPrevistoPeriodo() if medicao }}" maxlength="5" />
+              <input type="text" name="percPrevistoPeriodo" id="percPrevistoPeriodo" class="form-control money"
+                placeholder="" readonly value="{{ medicao.getPercPrevistoPeriodo() if medicao }}" maxlength="5" />
               <label for="percPrevistoPeriodo">Previsto Período %</label>
             </div>
 
             <div class="form-floating mt-4">
-              <input type="text" name="percRealizadoPeriodo" id="percRealizadoPeriodo" class="form-control money" placeholder=""
-                value="{{ medicao.getPercRealizadoPeriodo() if medicao }}" maxlength="5" />
+              <input type="text" name="percRealizadoPeriodo" id="percRealizadoPeriodo" class="form-control money"
+                placeholder="" value="{{ medicao.getPercRealizadoPeriodo() if medicao }}" maxlength="5" />
               <label for="percRealizadoPeriodo">Realizado Período %</label>
             </div>
 
@@ -107,18 +107,7 @@
   <script>
     $(function () {
       const requireds = GFC.getRequiredFields("formIncluirMedicao")
-      $("#formIncluirMedicao").validate({
-        rules: requireds.rules,
-        messages: requireds.messages,
-        errorClass: 'is-invalid',
-        errorElement: 'span',
-        highlight: function (element, errorClass, validClass) {
-          setTimeout(function () {
-            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
-            $(element).addClass(errorClass)
-          }, 50)
-        },
-      });
+      $("#formIncluirMedicao").validate(GFC.getConfigValidateForm(requireds));
     });
   </script>
 </body>

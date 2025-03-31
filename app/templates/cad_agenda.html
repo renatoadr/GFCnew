@@ -111,40 +111,29 @@
 
   {% include 'fractials/footer.html' %}
   <script>
-    const requireds = GFC.getRequiredFields("formAgenda")
-    requireds.rules.mesVigencia = {
-      required: true,
-      min: 1,
-      max: 12
-    }
-    requireds.rules.anoVigencia = {
-      required: true,
-      min: 1990,
-      max: 3000
-    }
-    requireds.messages.mesVigencia = {
-      required: GFC_MESSAGES.REQUIRED,
-      min: GFC_MESSAGES.MIN(1),
-      max: GFC_MESSAGES.MAX(12),
-    }
-    requireds.messages.anoVigencia = {
-      required: GFC_MESSAGES.REQUIRED,
-      min: GFC_MESSAGES.MIN(1990),
-      max: GFC_MESSAGES.MAX(3000),
-    }
     $(function () {
-      $("#formAgenda").validate({
-        rules: requireds.rules,
-        messages: requireds.messages,
-        errorClass: 'is-invalid',
-        errorElement: 'span',
-        highlight: function (element, errorClass, validClass) {
-          setTimeout(function () {
-            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
-            $(element).addClass(errorClass)
-          }, 50)
-        },
-      });
+      const requireds = GFC.getRequiredFields("formAgenda")
+      requireds.rules.mesVigencia = {
+        required: true,
+        min: 1,
+        max: 12
+      }
+      requireds.rules.anoVigencia = {
+        required: true,
+        min: 1990,
+        max: 3000
+      }
+      requireds.messages.mesVigencia = {
+        required: GFC_MESSAGES.REQUIRED,
+        min: GFC_MESSAGES.MIN(1),
+        max: GFC_MESSAGES.MAX(12),
+      }
+      requireds.messages.anoVigencia = {
+        required: GFC_MESSAGES.REQUIRED,
+        min: GFC_MESSAGES.MIN(1990),
+        max: GFC_MESSAGES.MAX(3000),
+      }
+      $("#formAgenda").validate(GFC.getConfigValidateForm(requireds));
     });
   </script>
 </body>

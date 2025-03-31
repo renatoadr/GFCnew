@@ -104,8 +104,24 @@ window.GFC = (function() {
     return {messages, rules}
   }
 
+  const getConfigValidateForm = function(args) {
+    return {
+      rules: args.rules,
+      messages: args.messages,
+      errorClass: 'is-invalid',
+      errorElement: 'span',
+      highlight: function (element, errorClass, validClass) {
+        setTimeout(function () {
+          $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
+          $(element).addClass(errorClass)
+        }, 50)
+      },
+    }
+  }
+
   return {
-    getRequiredFields
+    getRequiredFields,
+    getConfigValidateForm
   }
 
 })();

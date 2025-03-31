@@ -30,6 +30,7 @@
       </div>
 
       {% for campo in camposObra %}
+      {% set gar = getGarantia(garantias, campo) %}
       <div class="row mt-4">
         <div class="col-4">
           <div class="form-floating">
@@ -41,11 +42,11 @@
         <div class="col-2">
           <div class="form-floating">
             <select type="text" name="obraStatus_{{loop.index}}" id="status_obra_{{loop.index}}"
-              class="form-control required" placeholder="" value="">
+              class="form-control required" placeholder="" value="{{ gar.status if gar }}">
               <option value="">Selecione</option>
-              <option value="Normal">Normal</option>
-              <option value="Atenção">Atenção</option>
-              <option value="Verificar">Verificar</option>
+              <option value="Normal" {% if gar and gar.status=='Normal' %} selected {% endif %}>Normal</option>
+              <option value="Atenção" {% if gar and gar.status=='Atenção' %} selected {% endif %}>Atenção</option>
+              <option value="Verificar" {% if gar and gar.status=='Verificar' %} selected {% endif %}>Verificar</option>
             </select>
             <label for="status_obra_{{loop.index}}">Status</label>
           </div>
@@ -53,7 +54,7 @@
         <div class="col-6">
           <div class="form-floating">
             <input type="text" name="obraObservacao" id="observacao_obra_{{loop.index}}" class="form-control"
-              placeholder="" value="" maxlength="50"  />
+              placeholder="" value="{{ gar.observacao if gar }}" maxlength="50" />
             <label for="observacao_obra_{{idx}}">Observação</label>
           </div>
         </div>
@@ -68,6 +69,7 @@
         </div>
       </div>
       {% for campo in camposGeral %}
+      {% set gar = getGarantia(garantias, campo) %}
       <div class="row mt-4">
         <div class="col-4">
           <div class="form-floating">
@@ -79,11 +81,11 @@
         <div class="col-2">
           <div class="form-floating">
             <select type="text" name="geralStatus_{{loop.index}}" id="status_geral_{{loop.index}}"
-              class="form-control required" placeholder="" value="">
+              class="form-control required" placeholder="" value="{{ gar.status if gar }}">
               <option value="">Selecione</option>
-              <option value="Normal">Normal</option>
-              <option value="Atenção">Atenção</option>
-              <option value="Verificar">Verificar</option>
+              <option value="Normal" {% if gar and gar.status=='Normal' %} selected {% endif %}>Normal</option>
+              <option value="Atenção" {% if gar and gar.status=='Atenção' %} selected {% endif %}>Atenção</option>
+              <option value="Verificar" {% if gar and gar.status=='Verificar' %} selected {% endif %}>Verificar</option>
             </select>
             <label for="status_geral_{{loop.index}}">Status</label>
           </div>
@@ -91,7 +93,7 @@
         <div class="col-6">
           <div class="form-floating">
             <input type="text" name="geralObservacao" id="observacao_geral_{{loop.index}}" class="form-control"
-              placeholder="" value="" maxlength="50" />
+              placeholder="" value="{{ gar.observacao if gar }}" maxlength="50" />
             <label for="observacao_geral_{{idx}}">Observação</label>
           </div>
         </div>
@@ -113,26 +115,18 @@
 
   {% include 'fractials/footer.html' %}
   <script>
-    const requireds = GFC.getRequiredFields("formGarantia")
     $(function () {
-      $("#formGarantia").validate({
-        errorClass: 'is-invalid',
-        errorElement: 'span',
-        messages: requireds.messages,
-        submitHandler: function (form) {
-          let selects = $(form).find('select')
-          for (let sel of selects) {
-            $(sel).attr('name', $(sel).attr('name').replace(/_\d$/, ''))
-          }
-          form.submit()
-        },
-        highlight: function (element, errorClass, validClass) {
-          setTimeout(function () {
-            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
-            $(element).addClass(errorClass)
-          }, 50)
-        },
-      });
+      const requireds = GFC.getRequiredFields("formGarantia");
+      const config = GFC.getConfigValidateForm(requireds);
+      delete config.rules;
+      config.submitHandler = function (form) {
+        let selects = $(form).find('select')
+        for (let sel of selects) {
+          $(sel).attr('name', $(sel).attr('name').replace(/_\d$/, ''))
+        }
+        form.submit()
+      };
+      $("#formGarantia").validate(config);
     });
   </script>
 </body>

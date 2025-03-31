@@ -88,8 +88,8 @@
               <table class="table table-striped t-fx">
                 <thead class="table-light">
                   <tr>
-                    <th class="p-3">Documento</th>
-                    <th class="p-3 text-center">Status</th>
+                    <th class="p-3 w-25">Documento</th>
+                    <th class="p-3 text-center w-25">Status</th>
                     <th class="p-3">Observação</th>
                   </tr>
                 </thead>
@@ -120,8 +120,8 @@
               <table class="table table-striped t-fx">
                 <thead class="table-light">
                   <tr>
-                    <th class="p-3">Documento</th>
-                    <th class="p-3 text-center">Status</th>
+                    <th class="p-3 w-25">Documento</th>
+                    <th class="p-3 text-center w-25">Status</th>
                     <th class="p-3">Observação</th>
                   </tr>
                 </thead>
@@ -155,20 +155,9 @@
   </main>
   {% include 'fractials/footer.html' %}
   <script>
-    const requireds = GFC.getRequiredFields("formRelatorio")
     $(function () {
-      $("#formRelatorio").validate({
-        rules: requireds.rules,
-        messages: requireds.messages,
-        errorClass: 'is-invalid',
-        errorElement: 'span',
-        highlight: function (element, errorClass, validClass) {
-          setTimeout(function () {
-            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
-            $(element).addClass(errorClass)
-          }, 50)
-        },
-      });
+      const requireds = GFC.getRequiredFields("formRelatorio")
+      $("#formRelatorio").validate(GFC.getConfigValidateForm(requireds));
     });
   </script>
 </body>

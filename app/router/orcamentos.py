@@ -1,8 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, session, current_app
 from utils.CtrlSessao import IdEmpreend, DtCarga, MesVigencia, AnoVigencia, NmEmpreend, IdOrca
 from controller.orcamentoController import orcamentoController
-from controller.medicaoController import medicaoController
-from werkzeug.utils import secure_filename
 from dto.orcamento import orcamento
 
 import os
@@ -14,24 +12,12 @@ orca_bp = Blueprint('orcamentos', __name__)
 
 @orca_bp.route('/abrir_cad_orcamento')
 def abrir_cad_orcamento():
-
-    idEmpreend = IdEmpreend().get()
-    dtCarga = request.args.get("dtCarga")
-    anoVigencia = request.args.get("anoVigencia")
-    esVigencia = request.args.get("mesVigencia")
-               
-#    medC = orcamentoController()
-#    med = medC.consultarOrcamentoPeloId(IdOrca().get())
-#    dtCarga = med.getDtCarga()
-#    ano = med.getAnoVigencia()
-#    mes = med.getMesVigencia()
     return render_template("Orcamento_item.html", idEmpreend=IdEmpreend().get())
+
 
 @orca_bp.route('/tratar_orcamentos')
 def tratar_orcamentos():
     protectedPage()
-#    idEmpreend = request.args.get("idEmpreend")
-#   nmEmpreend = request.args.get("nmEmpreend")
 
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
@@ -63,10 +49,9 @@ def tratar_orcamentos():
 
 @orca_bp.route('/consultar_orcamento_data')
 def consultar_orcamento_data():
-
-    #    modo = request.args.get("modo")
-    idEmpreend = IdEmpreend().get()
     dtCarga = request.args.get("dtCarga")
+    ano = request.args.get("anoV")
+    mes = request.args.get("mesV")
 
     if dtCarga is None and not DtCarga().has():
         return redirect('/tratar_orcamentos')
@@ -74,28 +59,17 @@ def consultar_orcamento_data():
         dtCarga = DtCarga().get()
     else:
         DtCarga().set(dtCarga)
-
-    IdOrca().set(request.args.get('idOrca'))
-    print('------ consultar_orcamento_data ------')
-#    print(modo)
-    print(idEmpreend, dtCarga)
+        MesVigencia().set(mes)
+        AnoVigencia().set(ano)
 
     medC = orcamentoController()
-    medS = medC.consultarOrcamentoPelaData(idEmpreend, dtCarga)
+    medS = medC.consultarOrcamentoPelaData(IdEmpreend().get(), dtCarga)
 
-    print('------ consultar_orcamento_data fim --------')
-#    print(modo)
-    mes = medS[0].getMesVigencia()
-    ano = medS[0].getAnoVigencia()
-    MesVigencia().set(mes)
-    AnoVigencia().set(ano)
-    
     return render_template("orcamentos_itens.html", orcamentos=medS)
 
 
 @orca_bp.route('/upload_arquivo_orcamentos', methods=['POST'])
 def upload_arquivo_orcamentos():
-    # check if the post request has the file part
     if 'file' not in request.files:
         mensagem = "Erro no upload do arquivo. No file part."
         return render_template("erro.html", mensagem=mensagem)
@@ -117,14 +91,9 @@ def upload_arquivo_orcamentos():
 
 @orca_bp.route('/editar_item_orcamento', methods=['GET'])
 def editar_item_orcamento():
-
     idOrc = request.args.get("idOrcamento")
-
-    print('------ editar_item_orcamanto --------')
-    print(idOrc)
     orcC = orcamentoController()
     item = orcC.consultarOrcamentoPeloId(idOrc)
-    print('item    ', item)
     return render_template("Orcamento_item.html", item=item)
 
 
@@ -149,35 +118,23 @@ def excluir_orcamento():
 
 @orca_bp.route('/salvar_item_orcamento', methods=['POST'])
 def salvar_item_orcamento():
-    valorOrcado = converter.converterStrToFloat(request.form.get('orcadoValor'))
-    fisicoPercent = converter.converterStrToFloat(request.form.get('fisicoPercentual'), 1)
-    valorFinanceiro = converter.converterStrToFloat(request.form.get('financeiroValor'))
-    financeiroPercentual = valorFinanceiro / valorOrcado * 100
-    fisicoValor = valorOrcado * fisicoPercent / 100
-
-    item = orcamento()
-    item.setIdOrcamento(request.form.get('idOrcamento'))
-    item.setIdEmpreend(request.form.get('idEmpreend'))
-    item.setMesVigencia(request.form.get('mesVigencia'))
-    item.setAnoVigencia(request.form.get('anoVigencia'))
-    item.setDtCarga(request.form.get('dtCarga'))
-    item.setItem(request.form.get('item'))
-    item.setOrcadoValor(valorOrcado)
-    item.setFisicoPercentual(fisicoPercent)
-    item.setFinanceiroValor(valorFinanceiro)
-
-    item.setFinanceiroPercentual(financeiroPercentual)
-    item.setFinanceiroSaldo(valorOrcado - valorFinanceiro)
-    item.setFisicoValor(fisicoValor)
-    item.setFisicoSaldo(valorOrcado - fisicoValor)
-
+    item = get_orcamento_form()
     orcC = orcamentoController()
     orcC.salvarItemOrcamento(item)
 
     return redirect("/consultar_orcamento_data")
 
+
 @orca_bp.route('/incluir_item_orcamento', methods=['POST'])
 def incluir_item_orcamento():
+    item = get_orcamento_form()
+    orcC = orcamentoController()
+    orcC.inserirOrcamento(item)
+
+    return redirect("/consultar_orcamento_data")
+
+
+def get_orcamento_form() -> orcamento:
     valorOrcado = converter.converterStrToFloat(
         request.form.get('orcadoValor'))
     fisicoPercent = converter.converterStrToFloat(
@@ -189,10 +146,10 @@ def incluir_item_orcamento():
 
     item = orcamento()
     item.setIdOrcamento(request.form.get('idOrcamento'))
-    item.setIdEmpreend(request.form.get('idEmpreend'))
-    item.setMesVigencia(request.form.get('mesVigencia'))
-    item.setAnoVigencia(request.form.get('anoVigencia'))
-    item.setDtCarga(request.form.get('dtCarga'))
+    item.setIdEmpreend(IdEmpreend().get())
+    item.setMesVigencia(MesVigencia().get())
+    item.setAnoVigencia(AnoVigencia().get())
+    item.setDtCarga(DtCarga().get())
     item.setItem(request.form.get('item'))
     item.setOrcadoValor(valorOrcado)
     item.setFisicoPercentual(fisicoPercent)
@@ -202,9 +159,4 @@ def incluir_item_orcamento():
     item.setFinanceiroSaldo(valorOrcado - valorFinanceiro)
     item.setFisicoValor(fisicoValor)
     item.setFisicoSaldo(valorOrcado - fisicoValor)
-
-    orcC = orcamentoController()
-    orcC.inserirOrcamento(item)
-
-    print('passei aqui')
-    return redirect("/consultar_orcamento_data")
+    return item

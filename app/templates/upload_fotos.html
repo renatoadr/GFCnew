@@ -1,25 +1,102 @@
+<!-- Template: upload_fotos -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
-     <meta charset="UTF-8">
-     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-     <title>GFC</title>
-     <link rel="stylesheet" href="../static/css/style.css">
-     <link rel="stylesheet" href="../static/css/tooltip.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Fotos</title>
+  {% include 'fractials/head.html' %}
 </head>
 
 <body>
-     {% include 'fractials/menu.html' %}
-     <div style="margin-top: 5em;">
-          <h3>Carregar fotos</hr3><br>
+  {% include 'fractials/menu.html' %}
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-8">
+          <h2 class="title title-page">
+            <span><i class="fa-solid fa-images"></i> Anexar Fotos </span><strong>{{session.nmEmpreend}}</strong>
+          </h2>
+        </div>
+      </div>
 
-               <form action="/upload_arquivo_fotos" method="POST" enctype="multipart/form-data">
-                    Id do Empreendimento: <input type="text" name="idEmpreend" value="{{idEmpreend}}">
-                    <input type="file" name="file" multiple="multiple">
-                    <input type="submit" value="Carregar fotos">
-               </form>
-     </div>
+      <form action="/upload_arquivo_fotos" method="POST" id="formUpload" enctype="multipart/form-data">
+
+        <div class="border border-1 border-dark-subtle rounded-4">
+          <h4 class="bg-body-secondary d-block p-3 pt-2 pb-2 rounded-top-4">Fotos da Capa</h4>
+          <div class="p-3 pt-0">
+            <div class="row">
+              <div class="col-4">
+                <label for="perspectiva" class="form-label"><strong>Perspectiva</strong></label>
+                <input type="file" class="form-control upload" id="perspectiva" name="perspectiva"
+                  accept="image/png, image/jpeg">
+              </div>
+              <div class="col-4">
+                <label for="fotoAtual" class="form-label"><strong>Foto Atual</strong></label>
+                <input type="file" class="form-control upload" id="fotoAtual" name="fotoAtual"
+                  accept="image/png, image/jpeg">
+              </div>
+              <div class="col-4">
+                <label for="evolucao3D1" class="form-label"><strong>Evolução 3D 1</strong></label>
+                <input type="file" class="form-control upload" id="evolucao3D1" name="evolucao3D1"
+                  accept="image/png, image/jpeg">
+              </div>
+            </div>
+            <div class="row mt-4">
+              <div class="col-4">
+                <label for="evolucao3D2" class="form-label"><strong>Evolução 3D 2</strong></label>
+                <input type="file" class="form-control upload" id="evolucao3D2" name="evolucao3D2"
+                  accept="image/png, image/jpeg">
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="row mt-5 justify-content-center d-flex">
+          <div class="col-3">
+            <a href="/home" class="btn btn-secondary w-100">Cancelar</a>
+          </div>
+          <div class="col-3 offset-1">
+            <button type="submit" class="btn btn-success w-100">Salvar</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+  {% include 'fractials/footer.html' %}
+  <script>
+    const requireds = GFC.getRequiredFields("formUpload")
+
+    $(function () {
+      $("#formUpload").validate({
+        rules: requireds.rules,
+        messages: requireds.messages,
+        errorClass: 'is-invalid',
+        errorElement: 'span',
+        // submitHandler: function (form) {
+        //   if (form.cpfCnpjEngenheiro.value === '' || !/\d/.test(form.cpfCnpjEngenheiro.value)) {
+        //     $.toast({
+        //       heading: '<strong>Erro ao enviar</strong>',
+        //       text: "É necessário informar o cliente associado ao empreendimento de maneira correta",
+        //       icon: 'error',
+        //       position: 'bottom-center',
+        //       hideAfter: 10000,
+        //     });
+        //   } else {
+        //     form.submit();
+        //   }
+        // },
+        highlight: function (element, errorClass, validClass) {
+          setTimeout(function () {
+            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
+            $(element).addClass(errorClass)
+          }, 50)
+        },
+      });
+    });
+  </script>
 </body>
 
 </html>

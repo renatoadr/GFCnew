@@ -33,7 +33,7 @@
             <tr>
               <th>Nome</th>
               <th>Apelido</th>
-              <th colspan="12" class="text-center">Ações</th>
+              <th colspan="13" class="text-center">Ações</th>
             </tr>
           </thead>
           <tbody>
@@ -115,6 +115,13 @@
               </td>
 
               <td>
+                <a href="/upload_fotos?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                  data-bs-toggle="tooltip" data-bs-title="Anexar Fotos">
+                  <i class="fa-regular fa-images"></i>
+                </a>
+              </td>
+
+              <td>
                 <a href="/lista_relatorios?idEmpreend={{e.getIdEmpreend()}}&napelido=None" data-bs-toggle="tooltip"
                   data-bs-title="Relatórios">
                   <i class="fa-solid fa-file-contract"></i>
@@ -132,7 +139,7 @@
             {% endfor %}
             {% else %}
             <tr>
-              <td colspan="14" class="text-center">
+              <td colspan="15" class="text-center">
                 Não existem empreendimentos cadastrados.
               </td>
             </tr>

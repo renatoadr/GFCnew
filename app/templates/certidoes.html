@@ -24,19 +24,19 @@
     <div class="bg-body-tertiary border border-1 p-3 rounded-4 mb-5">
       <form action="/gerar_relatorio_certidoes" method="post" id="formRelatorio">
         <div class="row">
-          <div class="col-3">
+          <div class="col-4">
             <div class="form-floating">
               <input type="text" name="mesVigencia" id="mesVigencia" class="form-control" placeholder="" />
               <label for="mesVigencia">Mês Vigencia</label>
             </div>
           </div>
-          <div class="col-3">
+          <div class="col-4">
             <div class="form-floating">
               <input type="text" name="anoVigencia" id="anoVigencia" class="form-control" placeholder="" />
               <label for="anoVigencia">Ano Vigencia</label>
             </div>
           </div>
-          <div class="col-3 align-content-center">
+          <div class="col-4 align-content-center">
             <button type="submit" class="btn btn-primary w-100">
               Gerar
             </button>
@@ -68,7 +68,7 @@
             <select type="text" name="fgtsStatus" id="fgtsStatus" class="form-control"
               value="{{ certidoes.getFgtsStatus() if certidoes}}">
               <option value="">Selecione</option>
-            </option>
+              </option>
               <option value="Positiva" {% if certidoes and certidoes.getFgtsStatus()=='Positiva' %} selected {% endif
                 %}>
                 Positiva
@@ -186,26 +186,29 @@
 
   {% include 'fractials/footer.html' %}
   <script>
-    function config(args){
-      return{rules: args.rules,
-        messages: args.messages,
-        errorClass: 'is-invalid',
-        errorElement: 'span',
-        highlight: function (element, errorClass, validClass) {
-          setTimeout(function () {
-            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
-            $(element).addClass(errorClass)
-          }, 50)
-        }}
-    } 
+    $(function () {
       const configCerts = GFC.getRequiredFields("formcertidoes")
       const configrels = GFC.getRequiredFields("formRelatorio")
-      $(function () {
-      $("#formcertidoes").validate(config(configCerts));
-      $("#formRelatorio").validate(config(configrels));
-     });
+      const setSelectValidate = function (field, id) {
+        configCerts.rules[field] = {
+          required() {
+            return $('#' + id).val() === '' || $('#' + id).val() === 'Positiva'
+          }
+        }
+      }
+
+      setSelectValidate('estadualValidade', 'estadualStatus')
+      setSelectValidate('fgtsValidade', 'fgtsStatus')
+      setSelectValidate('municipalValidade', 'municipalStatus')
+      setSelectValidate('srfInssValidade', 'srfInssStatus')
+      setSelectValidate('trabalhistaValidade', 'trabalhistaStatus')
+
+
+      $("#formcertidoes").validate(GFC.getConfigValidateForm(configCerts));
+      $("#formRelatorio").validate(GFC.getConfigValidateForm(configrels));
+    });
   </script>
-  
+
 </body>
 
 </html>

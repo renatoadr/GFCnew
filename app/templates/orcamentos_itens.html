@@ -23,13 +23,10 @@
         <div class="col-4">
           <div class="row h-100">
             <div class="col-4 offset-4 d-flex justify-content-end align-items-center">
-              <form action="/abrir_cad_orcamento">
-                <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}" />
-                <button type="submit" class="btn btn-primary">
-                  <i class="fa-solid fa-plus-circle"></i>
-                  Novo
-                </button>
-              </form>
+              <a href="/abrir_cad_orcamento" class="btn btn-primary">
+                <i class="fa-solid fa-plus-circle"></i>
+                Novo
+              </a>
             </div>
             <div class="col-4 d-flex justify-content-end align-items-center">
               <a href="/tratar_orcamentos" type="submit" class="btn btn-outline-dark">
