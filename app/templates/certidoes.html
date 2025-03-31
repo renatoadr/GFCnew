@@ -20,7 +20,33 @@
       </div>
     </div>
 
+    <p class="border-start border-5 p-3 pt-0 pb-0 h5 mb-2 mt-4 border-primary">Gerar Relatórios</p>
+    <div class="bg-body-tertiary border border-1 p-3 rounded-4 mb-5">
+      <form action="/gerar_relatorio_certidoes" method="post" id="formRelatorio">
+        <div class="row">
+          <div class="col-3">
+            <div class="form-floating">
+              <input type="text" name="mesVigencia" id="mesVigencia" class="form-control" placeholder="" />
+              <label for="mesVigencia">Mês Vigencia</label>
+            </div>
+          </div>
+          <div class="col-3">
+            <div class="form-floating">
+              <input type="text" name="anoVigencia" id="anoVigencia" class="form-control" placeholder="" />
+              <label for="anoVigencia">Ano Vigencia</label>
+            </div>
+          </div>
+          <div class="col-3 align-content-center">
+            <button type="submit" class="btn btn-primary w-100">
+              Gerar
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+
     <form action="{{'/salvar_certidoes' if certidoes else '/efetuar_cad_certidoes'}}" method="POST" id="formcertidoes">
+
       <div class="row">
         <div class="col-6">
 
@@ -28,12 +54,12 @@
             <select type="text" name="estadualStatus" id="estadualStatus" class="form-control"
               value="{{ certidoes.getEstadualStatus() if certidoes}}">
               <option value="">Selecione</option>
+              <option value="Positiva" {% if certidoes and certidoes.getEstadualStatus()=='Positiva' %} selected {%
+                endif %}>Positiva</option>
               <option value="Pendente" {% if certidoes and certidoes.getEstadualStatus()=='Pendente' %} selected {%
                 endif %}>Pendente</option>
               <option value="Negativa" {% if certidoes and certidoes.getEstadualStatus()=='Negativa' %} selected {%
                 endif %}>Negativa</option>
-              <option value="Positiva" {% if certidoes and certidoes.getEstadualStatus()=='Positiva' %} selected {%
-                endif %}>Positiva</option>
             </select>
             <label for="estadualStatus">Estadual</label>
           </div>
@@ -42,6 +68,11 @@
             <select type="text" name="fgtsStatus" id="fgtsStatus" class="form-control"
               value="{{ certidoes.getFgtsStatus() if certidoes}}">
               <option value="">Selecione</option>
+            </option>
+              <option value="Positiva" {% if certidoes and certidoes.getFgtsStatus()=='Positiva' %} selected {% endif
+                %}>
+                Positiva
+              </option>
               <option value="Pendente" {% if certidoes and certidoes.getFgtsStatus()=='Pendente' %} selected {% endif
                 %}>
                 Pendente
@@ -49,27 +80,22 @@
               <option value="Negativa" {% if certidoes and certidoes.getFgtsStatus()=='Negativa' %} selected {% endif
                 %}>
                 Negativa
-              </option>
-              <option value="Positiva" {% if certidoes and certidoes.getFgtsStatus()=='Positiva' %} selected {% endif
-                %}>
-                Positiva
-              </option>
             </select>
             <label for="fgtsStatus">FGTS</label>
           </div>
-
           <div class="form-floating mt-4">
             <select type="text" name="municipalStatus" id="municipalStatus" class="form-control"
               value="{{ certidoes.getMunicipalStatus() if certidoes}}">
               <option value="">Selecione</option>
+              </option>
+              <option value="Positiva" {% if certidoes and certidoes.getMunicipalStatus()=='Positiva' %} selected {%
+                endif %}>Positiva
+              </option>
               <option value="Pendente" {% if certidoes and certidoes.getMunicipalStatus()=='Pendente' %} selected {%
                 endif %}>Pendente
               </option>
               <option value="Negativa" {% if certidoes and certidoes.getMunicipalStatus()=='Negativa' %} selected {%
                 endif %}>Negativa
-              </option>
-              <option value="Positiva" {% if certidoes and certidoes.getMunicipalStatus()=='Positiva' %} selected {%
-                endif %}>Positiva
               </option>
             </select>
             <label for="municipalStatus">Municipal</label>
@@ -79,17 +105,14 @@
             <select type="text" name="srfInssStatus" id="srfInssStatus" class="form-control"
               value="{{ certidoes.getSrfInssStatus() if certidoes}}">
               <option value="">Selecione</option>
+              <option value="Positiva" {% if certidoes and certidoes.getSrfInssStatus()=='Positiva' %} selected {% endif
+                %}>Positiva
+              </option>
               <option value="Pendente" {% if certidoes and certidoes.getSrfInssStatus()=='Pendente' %} selected {% endif
                 %}>Pendente
               </option>
-              </option>
               <option value="Negativa" {% if certidoes and certidoes.getSrfInssStatus()=='Negativa' %} selected {% endif
-                %}>
-                Negativa
-              </option>
-              <option value="Positiva" {% if certidoes and certidoes.getSrfInssStatus()=='Positiva' %} selected {% endif
-                %}>
-                Positiva
+                %}>Negativa
               </option>
             </select>
             <label for="srfInssStatus">SRF/INSS</label>
@@ -99,14 +122,14 @@
             <select type="text" name="trabalhistaStatus" id="trabalhistaStatus" class="form-control"
               value="{{ certidoes.getTrabalhistaStatus() if certidoes}}">
               <option value="">Selecione</option>
+              <option value="Positiva" {% if certidoes and certidoes.getTrabalhistaStatus()=='Positiva' %} selected {%
+                endif %}>Positiva
+              </option>
               <option value="Pendente" {% if certidoes and certidoes.getTrabalhistaStatus()=='Pendente' %} selected {%
                 endif %}>Pendente
               </option>
               <option value="Negativa" {% if certidoes and certidoes.getTrabalhistaStatus()=='Negativa' %} selected {%
                 endif %}>Negativa
-              </option>
-              <option value="Positiva" {% if certidoes and certidoes.getTrabalhistaStatus()=='Positiva' %} selected {%
-                endif %}>Positiva
               </option>
             </select>
             <label for="trabalhistaStatus">Trabalhista</label>
@@ -163,11 +186,9 @@
 
   {% include 'fractials/footer.html' %}
   <script>
-    const requireds = GFC.getRequiredFields("formcertidoes")
-    $(function () {
-      $("#formcertidoes").validate({
-        rules: requireds.rules,
-        messages: requireds.messages,
+    function config(args){
+      return{rules: args.rules,
+        messages: args.messages,
         errorClass: 'is-invalid',
         errorElement: 'span',
         highlight: function (element, errorClass, validClass) {
@@ -175,10 +196,16 @@
             $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
             $(element).addClass(errorClass)
           }, 50)
-        },
-      });
-    });
+        }}
+    } 
+      const configCerts = GFC.getRequiredFields("formcertidoes")
+      const configrels = GFC.getRequiredFields("formRelatorio")
+      $(function () {
+      $("#formcertidoes").validate(config(configCerts));
+      $("#formRelatorio").validate(config(configrels));
+     });
   </script>
+  
 </body>
 
 </html>

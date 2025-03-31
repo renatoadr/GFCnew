@@ -50,7 +50,7 @@ class IdMedicao(CtrlSessao):
         super().__init__('idMedicao')
 
 
-class MesVigenvia(CtrlSessao):
+class MesVigencia(CtrlSessao):
     def __init__(self):
         super().__init__('mesVigencia')
 

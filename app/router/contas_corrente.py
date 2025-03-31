@@ -1,7 +1,7 @@
 from flask import Blueprint, Request, request, render_template, redirect
 from controller.contaController import contaController
 from utils.helper import allowed_file, protectedPage
-from utils.CtrlSessao import IdEmpreend, NmEmpreend, DtCarga, AnoVigencia, MesVigenvia
+from utils.CtrlSessao import IdEmpreend, NmEmpreend, DtCarga, AnoVigencia, MesVigencia
 from utils.converter import converterStrToFloat
 from dto.conta import conta
 
@@ -79,10 +79,10 @@ def consultar_conta():
     if data is None:
         data = DtCarga().get()
         ano = AnoVigencia().get()
-        mes = MesVigenvia().get()
+        mes = MesVigencia().get()
     else:
         AnoVigencia().set(ano)
-        MesVigenvia().set(mes)
+        MesVigencia().set(mes)
         DtCarga().set(data)
 
     contC = contaController()
@@ -117,7 +117,7 @@ def salvar_conta():
 def criar_conta():
     ct = get_conta_cadastro()
     ct.setAnoVigencia(AnoVigencia().get())
-    ct.setMesVigencia(MesVigenvia().get())
+    ct.setMesVigencia(MesVigencia().get())
     ct.setDtCarga(DtCarga().get())
     ct.setIdEmpreend(IdEmpreend().get())
     contC = contaController()

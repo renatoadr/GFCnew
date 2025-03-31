@@ -3,6 +3,7 @@ from flask import Blueprint, request, render_template, redirect, flash
 from controller.inadimplenciaController import inadimplenciaController
 from controller.financeiroController import financeiroController
 from controller.orcamentoController import orcamentoController
+from controller.certidaoController import certidaoController
 from controller.garantiaController import garantiaController
 from controller.graficoController import graficoController
 from controller.medicaoController import medicaoController
@@ -445,30 +446,22 @@ def tab_garantias_obra():
 
 
 @tabela_bp.route('/tab_certidoes')
-def tab_garantias_certidoes():
+def tab_certidoes():
 
-    #    tipo = request.args.get("tipo")
-    #    idEmpreend = request.args.get("idEmpreend")
-    #    dtCarga = request.args.get("dtCarga")
-
-    idEmpreend = 55
-    dtCarga = '2024-12-30 16:57:31'
-    tipo = 'Dcto'
+    idEmpreend = IdEmpreend().get()
+    mesVigencia = request.args.get("mesVigencia")
+    anoVigencia = request.args.get("anoVigencia")
 
     geral = geralController()
-    ponC = garantiaController()
-    ponS = ponC.consultarPontosPelaData(idEmpreend, dtCarga, tipo)
+    ponC = certidaoController()
+    ponS = ponC.consultarCertidoes(idEmpreend)
 
     fig, ax = plt.subplots(1, 1)
 
     data = []
-
-    for p in ponS:
-        dd = []
-        dd.append(p.getHistorico())
-        dd.append(p.getStatus())
-        dd.append(p.getObservacao())
-        data.append(dd)
+    data.append (ponS[0,0])
+    data.append (ponS[0,1])
+    data.append (ponS[0,2])
 
     column_labels = ["Doc. Fiscal", "Status", "Validade"]
 
@@ -506,15 +499,13 @@ def tab_garantias_certidoes():
 
     grafC = graficoController()
 
-    idEmpreend = str(55)  # preciso montar esse informação
-    mes = "12"
-    ano = "2024"
-
-    diretorio = grafC.montaDir(idEmpreend, mes, ano)
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_certidoes.png'
 
     plt.savefig(grafNome)
+
+    return render_template("certidoes_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
 @tabela_bp.route('/tab_acomp_financeiro')

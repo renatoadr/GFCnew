@@ -3,7 +3,7 @@ from dto.nota import nota
 from utils.converter import converterStrToFloat
 from controller.notaController import notaController
 from utils.helper import protectedPage, allowed_file
-from utils.CtrlSessao import IdEmpreend, NmEmpreend, DtCarga, AnoVigencia, MesVigenvia
+from utils.CtrlSessao import IdEmpreend, NmEmpreend, DtCarga, AnoVigencia, MesVigencia
 
 nota_bp = Blueprint('notas', __name__)
 
@@ -82,10 +82,10 @@ def consultar_nota_data():
     if data is None:
         data = DtCarga().get()
         ano = AnoVigencia().get()
-        mes = MesVigenvia().get()
+        mes = MesVigencia().get()
     else:
         AnoVigencia().set(ano)
-        MesVigenvia().set(mes)
+        MesVigencia().set(mes)
         DtCarga().set(data)
 
     notaC = notaController()
@@ -128,7 +128,7 @@ def salvar_nota():
 def criar_nota():
     ct = get_nota_cadastro()
     ct.setAnoVigencia(AnoVigencia().get())
-    ct.setMesVigencia(MesVigenvia().get())
+    ct.setMesVigencia(MesVigencia().get())
     ct.setDtCarga(DtCarga().get())
     ct.setIdEmpreend(IdEmpreend().get())
     contC = notaController()

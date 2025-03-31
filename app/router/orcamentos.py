@@ -1,5 +1,5 @@
 from flask import Blueprint, request, render_template, redirect, session, current_app
-from utils.CtrlSessao import IdEmpreend, DtCarga, NmEmpreend, IdOrca
+from utils.CtrlSessao import IdEmpreend, DtCarga, MesVigencia, AnoVigencia, NmEmpreend, IdOrca
 from controller.orcamentoController import orcamentoController
 from controller.medicaoController import medicaoController
 from werkzeug.utils import secure_filename
@@ -13,27 +13,25 @@ orca_bp = Blueprint('orcamentos', __name__)
 
 
 @orca_bp.route('/abrir_cad_orcamento')
-def criar_orcamento():
-    medC = orcamentoController()
-    med = medC.consultarOrcamentoPeloId(IdOrca().get())
-    dtCarga = med.getDtCarga()
-    ano = med.getAnoVigencia()
-    mes = med.getMesVigencia()
-    return render_template(
-        "Orcamento_item.html",
-        item=None,
-        dtCarga=dtCarga,
-        anoVig=ano,
-        mesVig=mes,
-        idEmpreend=IdEmpreend().get()
-    )
+def abrir_cad_orcamento():
 
+    idEmpreend = IdEmpreend().get()
+    dtCarga = request.args.get("dtCarga")
+    anoVigencia = request.args.get("anoVigencia")
+    esVigencia = request.args.get("mesVigencia")
+               
+#    medC = orcamentoController()
+#    med = medC.consultarOrcamentoPeloId(IdOrca().get())
+#    dtCarga = med.getDtCarga()
+#    ano = med.getAnoVigencia()
+#    mes = med.getMesVigencia()
+    return render_template("Orcamento_item.html", idEmpreend=IdEmpreend().get())
 
 @orca_bp.route('/tratar_orcamentos')
 def tratar_orcamentos():
     protectedPage()
-    idEmpreend = request.args.get("idEmpreend")
-    nmEmpreend = request.args.get("nmEmpreend")
+#    idEmpreend = request.args.get("idEmpreend")
+#   nmEmpreend = request.args.get("nmEmpreend")
 
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
@@ -87,7 +85,11 @@ def consultar_orcamento_data():
 
     print('------ consultar_orcamento_data fim --------')
 #    print(modo)
-
+    mes = medS[0].getMesVigencia()
+    ano = medS[0].getAnoVigencia()
+    MesVigencia().set(mes)
+    AnoVigencia().set(ano)
+    
     return render_template("orcamentos_itens.html", orcamentos=medS)
 
 
@@ -147,12 +149,9 @@ def excluir_orcamento():
 
 @orca_bp.route('/salvar_item_orcamento', methods=['POST'])
 def salvar_item_orcamento():
-    valorOrcado = converter.converterStrToFloat(
-        request.form.get('orcadoValor'))
-    fisicoPercent = converter.converterStrToFloat(
-        request.form.get('fisicoPercentual'), 1)
-    valorFinanceiro = converter.converterStrToFloat(
-        request.form.get('financeiroValor'))
+    valorOrcado = converter.converterStrToFloat(request.form.get('orcadoValor'))
+    fisicoPercent = converter.converterStrToFloat(request.form.get('fisicoPercentual'), 1)
+    valorFinanceiro = converter.converterStrToFloat(request.form.get('financeiroValor'))
     financeiroPercentual = valorFinanceiro / valorOrcado * 100
     fisicoValor = valorOrcado * fisicoPercent / 100
 
@@ -176,7 +175,6 @@ def salvar_item_orcamento():
     orcC.salvarItemOrcamento(item)
 
     return redirect("/consultar_orcamento_data")
-
 
 @orca_bp.route('/incluir_item_orcamento', methods=['POST'])
 def incluir_item_orcamento():

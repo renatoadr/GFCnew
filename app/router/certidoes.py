@@ -61,7 +61,7 @@ def efetuar_cad_certidoes():
   return redirect("/tratar_certidoes")
 
 @cert_bp.route('/salvar_certidoes', methods=['POST'])
-def salvar_item_orcamento():
+def salvar_certidoes():
 
     item = certidao ()
     item.setIdEmpreend (request.form.get('idEmpreend'))
@@ -80,3 +80,12 @@ def salvar_item_orcamento():
     certC.salvarCertidoes(item)
 
     return redirect("/tratar_certidoes")
+
+@cert_bp.route('/gerar_relatorio_certidoes', methods=['POST'])
+def gerar_relatorio_certidoes():
+  idEmpreend = IdEmpreend().get()
+  mesVigencia = str(request.form.get('mesVigencia')).zfill(2)
+  anoVigencia = request.form.get('anoVigencia')
+ 
+  return redirect('/tab_certidoes?idEmpreend=' + idEmpreend + '&mesVigencia=' + mesVigencia + '&anoVigencia=' + anoVigencia)
+ 
