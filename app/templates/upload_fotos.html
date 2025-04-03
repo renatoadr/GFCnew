@@ -22,81 +22,111 @@
       </div>
 
       <form action="/upload_arquivo_fotos" method="POST" id="formUpload" enctype="multipart/form-data">
+        <input type="hidden" name="camposCapa" value="{{camposCapa}}" />
+        <input type="hidden" name="qtd3D" value="{{qtd3D}}" />
+        <input type="hidden" name="qtdObra" value="{{qtdObra}}" />
+        <div class="row mb-5">
+          <div class="col-6">
+            <div class="form-floating">
+              <input type="text" name="mesVigencia" id="mesVigencia" class="form-control" readonly maxlength="2"
+                placeholder="" value="{{(mesV|string).zfill(2)}}" />
+              <label for="mesVigencia">Mês Vigência</label>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-floating">
+              <input type="text" name="anoVigencia" id="anoVigencia" class="form-control" readonly placeholder=""
+                value="{{anoV}}" maxlength="4" />
+              <label for="anoVigencia">Ano Vigência</label>
+            </div>
+          </div>
+        </div>
 
-        <div class="border border-1 border-dark-subtle rounded-4">
-          <h4 class="bg-body-secondary d-block p-3 pt-2 pb-2 rounded-top-4">Fotos da Capa</h4>
-          <div class="p-3 pt-0">
-            <div class="row">
-              <div class="col-4">
-                <label for="perspectiva" class="form-label"><strong>Perspectiva</strong></label>
-                <input type="file" class="form-control upload" id="perspectiva" name="perspectiva"
-                  accept="image/png, image/jpeg">
-              </div>
-              <div class="col-4">
-                <label for="fotoAtual" class="form-label"><strong>Foto Atual</strong></label>
-                <input type="file" class="form-control upload" id="fotoAtual" name="fotoAtual"
-                  accept="image/png, image/jpeg">
-              </div>
-              <div class="col-4">
-                <label for="evolucao3D1" class="form-label"><strong>Evolução 3D 1</strong></label>
-                <input type="file" class="form-control upload" id="evolucao3D1" name="evolucao3D1"
-                  accept="image/png, image/jpeg">
+        <div class="row mb-5">
+          <div class="col-5">
+            <div class="border border-1 border-dark-subtle rounded-4">
+              <h4 class="bg-body-secondary d-block p-3 pt-2 pb-2 rounded-top-4">Fotos da Capa</h4>
+              <div class="p-3 pt-0">
+
+                {% for name, field, file in camposCapa %}
+                <div class="bg-body-tertiary border border-1 w-100 mt-4 p-3 rounded">
+                  <label for="{{field}}" class="form-label"><strong>{{name}}</strong></label>
+                  {% if file in fotosCarregadas %}
+                  <img src="/obter_imagem/{{fotosCarregadas[file]}}" class="img-thumbnail w-100 mt-2 mb-2" />
+                  {% endif %}
+                  <input type="file" class="form-control upload {{'required' if file not in fotosCarregadas}}"
+                    id="{{field}}" name="{{field}}" accept="image/png, image/jpeg">
+                </div>
+                {% endfor %}
+
               </div>
             </div>
-            <div class="row mt-4">
-              <div class="col-4">
-                <label for="evolucao3D2" class="form-label"><strong>Evolução 3D 2</strong></label>
-                <input type="file" class="form-control upload" id="evolucao3D2" name="evolucao3D2"
-                  accept="image/png, image/jpeg">
+          </div>
+          <div class="col-5 offset-2">
+            <div class="border border-1 border-dark-subtle rounded-4">
+              <h4 class="bg-body-secondary d-block p-3 pt-2 pb-2 rounded-top-4">Imagens 3D</h4>
+              <div class="p-3 pt-0">
+
+                {% for idx in range(1, qtd3D) %}
+                <div class="bg-body-tertiary border border-1 w-100 mt-4 p-3 rounded">
+                  <label for="foto_3D_{{idx}}" class="form-label"><strong>Foto 3D {{idx}}</strong></label>
+                  {% set fileName = "foto_3D_{}".format(idx) %}
+                  {% if fileName in fotosCarregadas %}
+                  <img src="/obter_imagem/{{fotosCarregadas[fileName]}}" class="img-thumbnail w-100 mt-2 mb-2" />
+                  {% endif %}
+                  <input type="file" class="form-control upload {{'required' if fileName not in fotosCarregadas}}"
+                    id="foto_3D_1" name="foto_3D_{{idx}}" accept="image/png, image/jpeg">
+                </div>
+                {% endfor %}
+
               </div>
             </div>
+          </div>
+        </div>
 
+        <div class="row mt-5">
+          <div class="col-12">
+            <div class="border border-1 border-dark-subtle rounded-4">
+              <h4 class="bg-body-secondary d-block p-3 pt-2 pb-2 rounded-top-4">Fotos da Obra</h4>
+              <div class="d-flex justify-content-around p-3 pt-0 row">
+
+                {% for idx in range(1, qtdObra) %}
+                <div class="bg-body-tertiary border border-1 mt-4 col-5 p-3 rounded">
+                  <label for="foto_{{idx}}" class="form-label"><strong>Foto {{idx}}</strong></label>
+                  {% set fileName = "foto_{}".format(idx) %}
+                  {% if fileName in fotosCarregadas %}
+                  <img src="/obter_imagem/{{fotosCarregadas[fileName]}}" class="img-thumbnail w-100 mt-2 mb-2" />
+                  {% endif %}
+                  <input type="file"
+                    class="form-control upload fotosObra {{'required' if fileName not in fotosCarregadas}}"
+                    id="foto_{{idx}}" name="fotosObra_{{idx}}" accept="image/png, image/jpeg">
+                  <div class="input-group input-group-sm mt-3" {% if fileName in fotosCarregadas %}
+                    style="display: none;" {% endif %}>
+                    <span class="input-group-text">A foto é de qual cômodo?</span>
+                    <input type="text" class="form-control" name="fotosObra_desc_{{idx}}" {% if fileName in
+                      fotosCarregadas %} disabled {% endif %} maxlength="50">
+                  </div>
+                </div>
+                {% endfor %}
+
+              </div>
+            </div>
           </div>
         </div>
 
         <div class="row mt-5 justify-content-center d-flex">
           <div class="col-3">
-            <a href="/home" class="btn btn-secondary w-100">Cancelar</a>
+            <a href="/upload_config_fotos" class="btn btn-secondary w-100">Voltar</a>
           </div>
           <div class="col-3 offset-1">
-            <button type="submit" class="btn btn-success w-100">Salvar</button>
+            <button type="submit" class="btn btn-success w-100">Enviar</button>
           </div>
         </div>
       </form>
     </div>
   </main>
   {% include 'fractials/footer.html' %}
-  <script>
-    const requireds = GFC.getRequiredFields("formUpload")
-
-    $(function () {
-      $("#formUpload").validate({
-        rules: requireds.rules,
-        messages: requireds.messages,
-        errorClass: 'is-invalid',
-        errorElement: 'span',
-        // submitHandler: function (form) {
-        //   if (form.cpfCnpjEngenheiro.value === '' || !/\d/.test(form.cpfCnpjEngenheiro.value)) {
-        //     $.toast({
-        //       heading: '<strong>Erro ao enviar</strong>',
-        //       text: "É necessário informar o cliente associado ao empreendimento de maneira correta",
-        //       icon: 'error',
-        //       position: 'bottom-center',
-        //       hideAfter: 10000,
-        //     });
-        //   } else {
-        //     form.submit();
-        //   }
-        // },
-        highlight: function (element, errorClass, validClass) {
-          setTimeout(function () {
-            $(element).siblings(`span[id="${element.id}-error"]`).addClass('invalid-feedback').show();
-            $(element).addClass(errorClass)
-          }, 50)
-        },
-      });
-    });
-  </script>
+  <script src="../static/js/gfc-upload.js"></script>
 </body>
 
 </html>

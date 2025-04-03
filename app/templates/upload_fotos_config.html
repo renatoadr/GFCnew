@@ -1,0 +1,129 @@
+<!-- Template: upload_fotos -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Fotos</title>
+  {% include 'fractials/head.html' %}
+</head>
+
+<body>
+  {% include 'fractials/menu.html' %}
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-8">
+          <h2 class="title title-page">
+            <span><i class="fa-solid fa-images"></i> Anexar Fotos </span><strong>{{session.nmEmpreend}}</strong>
+          </h2>
+        </div>
+      </div>
+
+      <form action="/upload_fotos" method="POST" id="formUploadConfig">
+        <h5>Informe</h5>
+        <div class="row mb-4">
+          <div class="col-12 d-flex gap-4">
+            <div class="form-check">
+              <input class="form-check-input" type="radio" {% if not listVigencias %} checked {% endif %}
+                name="tipoVigencia" value="novaVigencia" id="novaVigenciaOpt">
+              <label class="form-check-label" for="novaVigenciaOpt">
+                Nova vigência
+              </label>
+            </div>
+            {% if listVigencias %}
+            <div class="form-check">
+              <input class="form-check-input" type="radio" name="tipoVigencia" value="vigenciaExistente"
+                id="vigenciaExistenteOpt">
+              <label class="form-check-label" for="vigenciaExistenteOpt">
+                Vigência existente
+              </label>
+            </div>
+            {% endif %}
+          </div>
+        </div>
+
+        <div id="novaVigenciaBox" {% if listVigencias %} style="display:none" {% endif %}>
+          <div class="row mb-5">
+            <div class="col-6">
+              <div class="form-floating">
+                <select name="mesVigencia" id="mesVigencia" class="form-control required" placeholder="" value="">
+                  <option value="">Selecione o mês</option>
+                  {% for m in range(1, 13) %}
+                  <option value="{{(m|string).zfill(2)}}">{{(m|string).zfill(2)}}</option>
+                  {% endfor %}
+                </select>
+                <label for="mesVigencia">Mês Vigência</label>
+              </div>
+            </div>
+            <div class="col-6">
+              <div class="form-floating">
+                <input type="text" name="anoVigencia" id="anoVigencia" class="form-control 4num required" min="2000"
+                  max="3000" placeholder="" value="" maxlength="4" />
+                <label for="anoVigencia">Ano Vigência</label>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="vigenciaExistenteBox" style="display:none">
+          <div class="row mb-5">
+            <div class="col-12 d-flex gap-4">
+              {% for label, value in listVigencias %}
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="vigCorrrente" value="{{value}}" id="{{value}}">
+                <label class="form-check-label" for="{{value}}">
+                  {{label}}
+                </label>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+
+        <h5>Escolha quais fotos deseja enviar para este empreendimento na vigência informada.</h5>
+        <div class="row mt-4 mb-5">
+          <div class="col-4">
+            <h6 class="text-black-50">Fotos de capa</h6>
+            {% for label, value, name in camposCapa %}
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" name="capa" value="{{value}}" id="{{name}}">
+              <label class="form-check-label" for="{{name}}">
+                {{label}}
+              </label>
+            </div>
+            {% endfor %}
+          </div>
+
+          <div class="col-4">
+            <h6 class="text-black-50">Quantas Imagens 3D</h6>
+            <label for="foto_3D" class="form-label">Selecione até 4 fotos</label>
+            <input type="range" class="form-range" value="0" min="0" max="4" name="qtd3D" id="foto_3D">
+            Total de <output>0</output> fotos
+          </div>
+
+          <div class="col-4">
+            <h6 class="text-black-50">Quantas Fotos da Obra</h6>
+            <label for="fotos_obra" class="form-label">Selecione até 24 fotos</label>
+            <input type="range" class="form-range" value="0" min="0" max="24" name="qtdObra" id="fotos_obra">
+            Total de <output>0</output> fotos
+          </div>
+        </div>
+
+        <div class="row mt-5 justify-content-center d-flex">
+          <div class="col-3">
+            <a href="/home" class="btn btn-secondary w-100">Voltar</a>
+          </div>
+          <div class="col-3 offset-1">
+            <button type="submit" class="btn btn-success w-100">Escolher fotos</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+  {% include 'fractials/footer.html' %}
+  <script src="../static/js/gfc-upload.js"></script>
+</body>
+
+</html>

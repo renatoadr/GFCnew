@@ -8,6 +8,12 @@ def converterStrToFloat(value, default=0):
     return float(value.replace('.', '').replace(',', '.'))
 
 
+def converterStrToInt(value, default=0):
+    if value is None or re.search(r"^\d+$", value) is None:
+        return default
+    return int(value)
+
+
 def converterStrDateTimeToDateFormat(stringdatetime):
     return format(datetime.strptime(stringdatetime, "%Y-%m-%d %H:%M:%S"), "%d/%m/%Y")
 

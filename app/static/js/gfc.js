@@ -105,8 +105,7 @@ window.GFC = (function() {
   }
 
   const getConfigValidateForm = function(args) {
-    return {
-      rules: args.rules,
+    const config = {
       messages: args.messages,
       errorClass: 'is-invalid',
       errorElement: 'span',
@@ -117,6 +116,12 @@ window.GFC = (function() {
         }, 50)
       },
     }
+
+    if (args.rules) {
+      config.rules = args.rules
+    }
+
+    return config
   }
 
   return {
