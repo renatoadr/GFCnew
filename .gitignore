@@ -2,3 +2,9 @@ __pycache__
 .venv
 .vscode
 */__pycache__
+build/
+GFC.egg-info
+Queries.sql
+Sistema GFC.mwb.bak
+Sistema GFC.mwb
+db_gfc.mwb
