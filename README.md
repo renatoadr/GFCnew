@@ -38,6 +38,19 @@ Ou para apenas visualizar o projeto rode
 flask --app main.py
 ```
 
+Para gerar o pacote para deploy rode o comando
+```sh
+python -m build --wheel
+```
+E copie o arquivo gerado na pasta dist para o servidor e execute o comando de instalação desse pacote
+```sh
+pip install gfc-1.0-py3-none-any.whl
+```
+
+Para criar o diretório de banco, execute o comando após a instalação
+```sh
+flask --app gfc init-db
+```
 
 ### FrontEnd
 Por ser um monolito, foi adicionado as bibliotecas abaixo para layout e comportamentos do projeto

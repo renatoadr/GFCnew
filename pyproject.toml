@@ -5,6 +5,14 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "GFC"
 version = "1.0"
+description = "Este sistemma tem como objetivo gerar relatórios do andamento de construções prediais."
+license = { text = "PRIVATE COPYRIGHT GFC" }
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+  { name = "Renato Adriano", email = "renatoadr@yahoo.com" },
+  { name = "Thiago Adriano", email = "thiago.s.adriano@gmail.com" },
+]
 dependencies = [
   "Flask",
   "reportlab",
