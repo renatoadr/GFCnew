@@ -45,22 +45,25 @@ app.register_blueprint(nota_bp)
 app.register_blueprint(foto_bp)
 app.register_blueprint(api_bp)
 
-def init(app):
-  config = configparser.ConfigParser()
-  try:
-    config_location = "gfc.cfg"
-    config.read(config_location)
-    app.config['UPLOAD_FOLDER'] = config.get("config", "UPLOAD_FOLDER")
-    app.config['ALLOWED_EXTENSIONS'] = config.get("config", "ALLOWED_EXTENSIONS")
-    app.config['BARRADIR'] = config.get("config", "BARRADIR")
-    app.config['DIRSYS'] = config.get("config", "DIRSYS")
-    print("Succesfully read configs from: ", config_location)
-  except:
-    print("Couldn't read configs from: ", config_location)
 
-if __name__ == "__main__" or __name__ == "main":
-  init(app)
-  app.run()
-  # app.run(host="192.168.0.11",port=5000)
-  # app.run(host="177.195.148.38",port=80)
-  # app.run(host='2804:14d:32a2:8564:a16e:bd9f:ad8b:9c76',port=80)
+def init(app):
+    config = configparser.ConfigParser()
+    try:
+        config_location = "gfc.cfg"
+        config.read(config_location)
+        app.config['UPLOAD_FOLDER'] = config.get("config", "UPLOAD_FOLDER")
+        app.config['ALLOWED_EXTENSIONS'] = config.get(
+            "config", "ALLOWED_EXTENSIONS")
+        app.config['BARRADIR'] = config.get("config", "BARRADIR")
+        app.config['DIRSYS'] = config.get("config", "DIRSYS")
+        print("Succesfully read configs from: ", config_location)
+    except:
+        print("Couldn't read configs from: ", config_location)
+
+
+if __name__ == "__main__":
+    init(app)
+    app.run()
+    # app.run(host="192.168.0.11",port=5000)
+    # app.run(host="177.195.148.38",port=80)
+    # app.run(host='2804:14d:32a2:8564:a16e:bd9f:ad8b:9c76',port=80)
