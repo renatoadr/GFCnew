@@ -214,3 +214,33 @@ main {
   top: 0;
   z-index: 1;
 }
+
+#boxVigencias {
+  width: 100%;
+  height: 38px;
+  display: flex;
+  align-items: center;
+}
+
+#itensVigencias {
+  padding: 0;
+  margin: 0;
+  display: flex;
+  gap: 25px;
+  align-items: center;
+  position: absolute;
+  transition: left 300ms ease;
+}
+
+#itensVigencias li {
+  list-style: none;
+  cursor: pointer;
+}
+
+#boxItensVigencias {
+  width: 200px;
+  margin: 0 20px;
+  overflow: hidden;
+  position: relative;
+  height: 25px;
+}

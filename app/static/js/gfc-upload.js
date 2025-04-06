@@ -99,7 +99,9 @@ $(function() {
     $(this).siblings('.input-group').show();
     $(this).siblings('.input-group').find('input').removeAttr('disabled')
   });
+});
 
+$(function() {
   const requireds = GFC.getRequiredFields("formUploadConfig")
   requireds.messages.anoVigencia = {
     required: GFC_MESSAGES.REQUIRED,
@@ -118,5 +120,65 @@ $(function() {
   delete requiredsUpload.rules;
   const configUpload = GFC.getConfigValidateForm(requiredsUpload);
   $("#formUpload").validate(configUpload);
+})
 
-});
+$(function() {
+  function valuesWidth() {
+    const $itens = $('#itensVigencias');
+    const $box = $('#boxItensVigencias');
+    const $li = $itens.find('li');
+
+    const wBox = parseInt($box.css('width'));
+    const wItens = parseInt($itens.css('width'));
+    const wli = Math.round(parseFloat($($li.get(0)).css('width')));
+    const gap = parseInt($itens.css('gap'));
+    const liWidth = wli + gap;
+
+    const pos = Math.abs(parseInt($itens.css('left')));
+    const limiter = liWidth * $li.length - (liWidth + 70);
+
+    return {
+      pos,
+      liWidth,
+      $itens,
+      hasLimiter: pos <= limiter,
+      isListGrandSize: wBox < wItens
+    }
+  }
+
+  function initBox() {
+    const containerWidth = parseInt($('.container').css('width'));
+    const values = valuesWidth();
+    const over = containerWidth % values.liWidth;
+    $('#boxItensVigencias').css('width', (containerWidth - over) + 'px');
+  }
+
+  $('#btn-left').click(function() {
+    const values = valuesWidth();
+    const neg = values.pos * -1
+    const isLastpos = neg >= (values.liWidth * -1) && neg <= 0;
+    const btns = $('.btnMove');
+    btns.attr('disabled', true);
+    if (values.isListGrandSize) {
+      values.$itens.css('left', (isLastpos ? 0 : neg + values.liWidth) + 'px')
+    }
+    setTimeout(function() {btns.removeAttr('disabled');}, 50);
+  });
+
+  $('#btn-right').click(function() {
+    const values = valuesWidth();
+    const btns = $('.btnMove');
+    btns.attr('disabled', true);
+    if (values.isListGrandSize && values.hasLimiter) {
+      values.$itens.css('left', -(values.pos + values.liWidth) + 'px')
+    }
+    setTimeout(function() {btns.removeAttr('disabled');}, 50);
+  });
+
+  $('[name="tipoVigencia"]').on('change', function() {
+    const val = $(this).val();
+    if (val == 'vigenciaExistente') {
+      initBox();
+    }
+  });
+})

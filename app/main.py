@@ -61,7 +61,7 @@ def init(app):
         print("Couldn't read configs from: ", config_location)
 
 
-if __name__ == "__main__":
+if __name__ == "__main__" or __name__ == 'main':
     init(app)
     app.run()
     # app.run(host="192.168.0.11",port=5000)

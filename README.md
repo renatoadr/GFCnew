@@ -60,3 +60,4 @@ Por ser um monolito, foi adicionado as bibliotecas abaixo para layout e comporta
 - [Fonte Ubuntu *(google fontes)*](https://fonts.google.com/specimen/Ubuntu)
 - [Fontawesome *(galeria de ícones)*](https://fontawesome.com/icons)
 - [Jquery Mask *(Para manipular os inputs adicionando padrão)*](https://igorescobar.github.io/jQuery-Mask-Plugin/docs.html)
+- [Jquery Toast *(Para adicionar mensagens informativas para o usuário)*](https://kamranahmed.info/toast)

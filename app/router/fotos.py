@@ -54,6 +54,8 @@ def upload_config_fotos():
         date = datetime.date(year=int(ano), month=int(mes), day=1)
         listVigencias.append((date.strftime('%b/%Y').capitalize(), folder))
 
+    listVigencias.reverse()
+
     return render_template("upload_fotos_config.html", camposCapa=camposCapa, listVigencias=listVigencias)
 
 
