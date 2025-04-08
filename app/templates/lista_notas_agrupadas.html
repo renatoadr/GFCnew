@@ -1,4 +1,4 @@
-<!-- Template: lista_notas.html -->
+<!-- Template: lista_notas_agrupadas.html -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -69,9 +69,9 @@
                   </a>
                 </td>
                 <td>
-                  <a href="/graf_nota_liberacao?dtCarga={{m.getDtCarga()}}&mesV={{m.getMesVigencia()}}&anoV={{m.getAnoVigencia()}}&tipo=valor"
-                    data-bs-toggle="tooltip" data-bs-title="Gráficos">
-                    <i class="fa-solid fa-chart-pie"></i>
+                  <a href="/tab_notas?idEmpreend={{m.getIdEmpreend()}}&dtCarga={{m.getDtCarga()}}&mesV={{m.getMesVigencia()}}&anoV={{m.getAnoVigencia()}}&tipo=valor"
+                    data-bs-toggle="tooltip" data-bs-title="Tabela">
+                    <i class="fa-solid fa-table"></i>
                   </a>
                 </td>
                 <td>

@@ -15,6 +15,8 @@ from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
 import random
 
+from dto.certidao import certidao
+
 tabela_bp = Blueprint('tabelas', __name__)
 
 @tabela_bp.route('/tab_inadimplencia')
@@ -128,14 +130,17 @@ def tab_inadimplencia():
 @tabela_bp.route('/tab_notas')
 def tab_notas():
 
-    #    tipo = request.args.get("tipo")
-    #    idEmpreend = request.args.get("idEmpreend")
-    #    dtCarga = request.args.get("dtCarga")
+#    idEmpreend = request.args.get("idEmpreend")
+    idEmpreend = IdEmpreend().get()
+    dtCarga = request.args.get("dtCarga")
+    mesVigencia = str(request.args.get('mesV')).zfill(2)
+    anoVigencia = str(request.args.get('anoV'))
 
-    idEmpreend = 55
-    dtCarga = '2024-12-30 16:57:31'
-    mes = "12"  # preciso montar esse informação
-    ano = "2024"
+
+#    idEmpreend = 55
+#    dtCarga = '2024-12-30 16:57:31'
+#    mes = "12"  # preciso montar esse informação
+#    ano = "2024"
 
     geral = geralController()
     notC = notaController()
@@ -149,7 +154,7 @@ def tab_notas():
 
     for n in notS:
         dd = []
-        dd.append(n.getItem())
+        dd.append(n.getProduto())
         somaVlNotaFiscal += n.getVlNotaFiscal()
         dd.append(geral.formataNumero(n.getVlNotaFiscal()))
         somaVlEstoque += n.getVlEstoque()
@@ -158,7 +163,7 @@ def tab_notas():
 
     # incluindo a linha de totais
     dd = []
-    dd.append('Estoque em ' + mes + '/' + ano)
+    dd.append('Estoque em ' + mesVigencia + '/' + anoVigencia)
     dd.append(' ')
     dd.append(geral.formataNumero(somaVlEstoque))
     data.append(dd)
@@ -206,31 +211,28 @@ def tab_notas():
 
     grafC = graficoController()
 
-    diretorio = grafC.montaDir(idEmpreend, mes, ano)
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_notas.png'
 
     plt.savefig(grafNome)
 
+    return render_template("nota_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
-@tabela_bp.route('/tab_conta_corrente')
+
+@tabela_bp.route('/tab_conta')
 def tab_conta_corrente():
 
     fig, ax = plt.subplots(1, 1)
 
-#    tipo = request.args.get("tipo")
-#    idEmpreend = request.args.get("idEmpreend")
-#    dtCarga = request.args.get("dtCarga")
-
-    idEmpreend = 55
-    dtCarga = '2024-12-30 16:57:31'
-    # preciso montar esse informação
-    mes = "12"
-    ano = "2024"
+    idEmpreend = IdEmpreend().get()
+    dtCarga = request.args.get("dtCarga")
+    mesVigencia = str(request.args.get('mesV')).zfill(2)
+    anoVigencia = str(request.args.get('anoV'))
 
     geral = geralController()
     conC = contaController()
-    conS = conC.consultarConta(idEmpreend)
+    conS = conC.consultarContaPelaCarga(idEmpreend, dtCarga)
 
     data = []
 
@@ -285,11 +287,13 @@ def tab_conta_corrente():
 
     grafC = graficoController()
 
-    diretorio = grafC.montaDir(idEmpreend, mes, ano)
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_conta_corrente.png'
 
     plt.savefig(grafNome)
+
+    return render_template("conta_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
 @tabela_bp.route('/tab_garantias_geral', methods=['GET'])
@@ -453,15 +457,24 @@ def tab_certidoes():
     anoVigencia = request.args.get("anoVigencia")
 
     geral = geralController()
-    ponC = certidaoController()
-    ponS = ponC.consultarCertidoes(idEmpreend)
-
+    certC = certidaoController()
+    certS = certC.consultarCertidoesGraf(idEmpreend)
+ 
     fig, ax = plt.subplots(1, 1)
+    print (certS)
+    print (certS.getEstadualStatus())
 
     data = []
-    data.append (ponS[0,0])
-    data.append (ponS[0,1])
-    data.append (ponS[0,2])
+    a = ['Estadual', certS.getEstadualStatus(), certS.getEstadualValidade()]
+    data.append (a)
+    b = ['FGTS', certS.getFgtsStatus(), certS.getEstadualValidade()]
+    data.append (b)    
+    c = ['Municipal', certS.getMunicipalStatus(), certS.getMunicipalValidade()]
+    data.append (c)
+    d = ['SRF/INSS', certS.getSrfInssStatus(), certS.getSrfInssValidade()]
+    data.append (d)
+    e = ['Trabalhista', certS.getTrabalhistaStatus(), certS.getTrabalhistaValidade()]
+    data.append (e)
 
     column_labels = ["Doc. Fiscal", "Status", "Validade"]
 
@@ -495,7 +508,16 @@ def tab_certidoes():
             cell.set_facecolor("lightblue")
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
-            cell.set_text_props(ha='left', va='center')  # Alinhar à esquerda
+            if col == 1: 
+                cell_text = cell.get_text().get_text()  # Obtém o texto da célula
+                if "Positiva" in cell_text:  # Verifica se contém a palavra "Atenção"
+                    cell.set_text_props(ha='left', va='center',color='red')  # Alinhar à esquerda
+                elif "Pendente" in cell_text:  # Verifica se contém a palavra "Atenção"
+                    cell.set_text_props(ha='left', va='center',color='orange')  # Alinhar à esquerda
+                else:
+                    cell.set_text_props(ha='left', va='center',color='green')  # Alinhar à esquerda
+            else:
+                cell.set_text_props(ha='left', va='center')  # Alinhar no centro
 
     grafC = graficoController()
 

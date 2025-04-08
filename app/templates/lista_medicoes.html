@@ -44,19 +44,32 @@
       <div class="bg-body-tertiary border border-1 p-3 rounded-4 mb-5">
         <form action="/gerar_relatorio" method="post" id="formRelatorio">
           <div class="row">
-            <div class="col-3">
+            <div class="col-2">
               <div class="form-floating">
-                <input type="date" name="dtInicio" id="dtInicio" class="form-control" placeholder="" />
-                <label for="dtInicio">Data Início</label>
+                <input type="text" name="mesInicio" id="mesInicio" class="form-control" placeholder="" />
+                <label for="mesInicio">Mês Início</label>
               </div>
             </div>
-            <div class="col-3">
+            <div class="col-2">
               <div class="form-floating">
-                <input type="date" name="dtFinal" id="dtFinal" class="form-control" placeholder="" />
-                <label for="dtFinal">Data Final</label>
+                <input type="text" name="anoInicio" id="anoInicio" class="form-control" placeholder="" />
+                <label for="anoInicio">Ano Início</label>
               </div>
             </div>
-            <div class="col-3 align-content-center">
+            <div class="col-2">
+              <div class="form-floating">
+                <input type="text" name="mesFinal" id="mesFinal" class="form-control" placeholder="" />
+                <label for="mesFinal">Mês Final</label>
+              </div>
+            </div>
+            <div class="col-2">
+              <div class="form-floating">
+                <input type="text" name="anoFinal" id="anoFinal" class="form-control" placeholder="" />
+                <label for="anoFinal">Ano Final</label>
+              </div>
+            </div>
+
+            <div class="col-2 align-content-center">
               <div class="form-floating">
                 <select name="tipo" id="tipo" class="form-control">
                   <option value="">Selecione</option>
@@ -66,7 +79,7 @@
                 <label for="tipo">Tipo relatório</label>
               </div>
             </div>
-            <div class="col-3 align-content-center">
+            <div class="col-2 align-content-center">
               <button type="submit" class="btn btn-primary w-100">
                 Gerar
               </button>

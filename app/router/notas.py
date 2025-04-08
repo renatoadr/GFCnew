@@ -57,8 +57,7 @@ def tratar_notas():
     notC = notaController()
     notS = notC.consultarNotas(idEmpreend)
 
-    return render_template("lista_notas_agrupadas.html", notas=notS)
-
+    return render_template("lista_notas_agrupadas.html", notas=notS, idEmpreend=idEmpreend)
 
 @nota_bp.route('/excluir_nota_carga')
 def excluir_nota_carga():

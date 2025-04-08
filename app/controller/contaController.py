@@ -68,22 +68,17 @@ class contaController:
             listaContas.append(n)
         return listaContas
 
-    def consultarConta(self, idEmpreend):
+    def consultarContaPelaCarga(self, idEmpreend,dtCarga):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor(dictionary=True)
 
-        query = "select id_empreendimento, mes_vigencia, ano_vigencia, vl_liberacao, vl_material_estoque, vl_aporte_construtora, vl_receita_recebiveis, vl_pagto_obra, vl_pagto_rh, vl_diferenca, vl_saldo from " + \
-            MySql.DB_NAME + ".tb_contas where id_empreendimento = '" + \
-                str(idEmpreend) + "'"
+        query = "select id_empreendimento, mes_vigencia, ano_vigencia, vl_liberacao, vl_aporte_construtora, vl_receita_recebiveis, vl_pagto_obra, vl_pagto_rh, vl_diferenca, vl_saldo from " + \
+            MySql.DB_NAME + ".tb_contas where id_empreendimento = " + \
+                str(idEmpreend) + " and dt_carga = '" + dtCarga + "'"
 
         print(query)
 
         cursor.execute(query)
-
-#        linha = cursor.fetchone()
-#        print('++++++++++++ consultarContaPelaData +++++++++++++++')
-#        print (linha)
-#        print('+++++++++++++++++++++++++++')
 
         lista = cursor.fetchall()
 
@@ -94,7 +89,6 @@ class contaController:
             m.setMesVigencia(x['mes_vigencia'])
             m.setAnoVigencia(x['ano_vigencia'])
             m.setVlLiberacao(x['vl_liberacao'])
-            m.setVlMaterialEstoque(x['vl_material_estoque'])
             m.setVlAporteConstrutora(x['vl_aporte_construtora'])
             m.setVlReceitaRecebiveis(x['vl_receita_recebiveis'])
             m.setVlPagtoObra(x['vl_pagto_obra'])
@@ -103,7 +97,7 @@ class contaController:
             m.setVlSaldo(x['vl_saldo'])
             listaItens.append(m)
 
-#        dados = [list(linha) for linha in listaItens()]
+
 
 #        print('------------------------')
 #        print('------------------------')
