@@ -133,19 +133,19 @@ class contaController:
 
             mesVigencia = str(int(tabela.at[linha, 'Mês'])).zfill(2)
             anoVigencia = str(int(tabela.at[linha, 'Ano']))
-            vlLiberacao = converterStrToFloat(
-                tabela.at[linha, 'Valor Liberação'])
-            vlAporteConstrutora = converterStrToFloat(
-                tabela.at[linha, 'Valor Aporte Construtora'])
-            vlReceitaRecebiveis = converterStrToFloat(
-                tabela.at[linha, 'Valor Receita Recebíveis'])
-            vlPagtoObra = converterStrToFloat(
-                tabela.at[linha, 'Valor Pagamento Obra'])
-            vlPagtoRh = converterStrToFloat(
-                tabela.at[linha, 'Valor Pagamento RH'])
-            vlDiferenca = converterStrToFloat(
-                tabela.at[linha, 'Valor Diferença'])
-            vlSaldo = converterStrToFloat(tabela.at[linha, 'Valor Saldo'])
+            vlLiberacao = float(converterStrToFloat(
+                tabela.at[linha, 'Valor Liberação']))
+            vlAporteConstrutora = float(converterStrToFloat(
+                tabela.at[linha, 'Valor Aporte Construtora']))
+            vlReceitaRecebiveis = float(converterStrToFloat(
+                tabela.at[linha, 'Valor Receita Recebíveis']))
+            vlPagtoObra = float(converterStrToFloat(
+                tabela.at[linha, 'Valor Pagamento Obra']))
+            vlPagtoRh = float(converterStrToFloat(
+                tabela.at[linha, 'Valor Pagamento RH']))
+            vlDiferenca = float(converterStrToFloat(
+                tabela.at[linha, 'Valor Diferença']))
+            vlSaldo = float(converterStrToFloat(tabela.at[linha, 'Valor Saldo']))
 
             query = "INSERT INTO " + MySql.DB_NAME + \
                 ".tb_contas (id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, vl_liberacao, vl_aporte_construtora, vl_receita_recebiveis, vl_pagto_obra, vl_pagto_rh, vl_diferenca, vl_saldo ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
