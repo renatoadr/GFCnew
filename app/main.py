@@ -2,7 +2,7 @@
 
 from flask import Flask
 import configparser
-
+import os
 from router.contas_corrente import contas_corrente_bp
 from router.emprendimento import empreend_bp
 from router.relatorios import relatorio_bp
@@ -56,13 +56,18 @@ def init(app):
             "config", "ALLOWED_EXTENSIONS")
         app.config['BARRADIR'] = config.get("config", "BARRADIR")
         app.config['DIRSYS'] = config.get("config", "DIRSYS")
+
+        if not os.path.exists(app.config['UPLOAD_FOLDER']):
+            os.makedirs(app.config['UPLOAD_FOLDER'])
+
         print("Succesfully read configs from: ", config_location)
     except:
         print("Couldn't read configs from: ", config_location)
 
 
-if __name__ == "__main__" or __name__ == 'main':
-    init(app)
+init(app)
+
+if __name__ == "__main__":
     app.run()
     # app.run(host="192.168.0.11",port=5000)
     # app.run(host="177.195.148.38",port=80)

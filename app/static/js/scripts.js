@@ -47,6 +47,22 @@ $(function(){
     }
   });
 
+  $(".percent10").mask("0,00", {
+    reverse: true,
+    onChange: function(val, evt, el, opt) {
+      if (val.length === 2) {
+        val = val.split('');
+        val = `${val[0]},${val[1]}`
+        el.val(val)
+      } else {
+        let fval = parseFloat(val.replace(',', '.'))
+        if (!isNaN(fval) && fval > 10) {
+          el.val('9,99')
+        }
+      }
+    }
+  });
+
   $(".perc").mask("##0", {
     reverse: true,
     onChange: function(val, evt, el, opt) {

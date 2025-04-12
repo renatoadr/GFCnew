@@ -62,16 +62,27 @@ def gerar_relatorio_certidoes():
 
 
 def get_form_data():
+    estadualValidate = request.form.get('estadualValidade')
+    fgtsValidate = request.form.get('fgtsValidade')
+    municipalValidate = request.form.get('municipalValidade')
+    inssValidate = request.form.get('srfInssValidade')
+    trabalhistaValidate = request.form.get('trabalhistaValidade')
+
     item = certidao()
     item.setIdEmpreend(IdEmpreend().get())
     item.setEstadualStatus(request.form.get('estadualStatus'))
-    item.setEstadualValidade(request.form.get('estadualValidade'))
+    item.setEstadualValidade(None if estadualValidate ==
+                             '' else estadualValidate)
     item.setFgtsStatus(request.form.get('fgtsStatus'))
-    item.setFgtsValidade(request.form.get('fgtsValidade'))
+    item.setFgtsValidade(None if fgtsValidate ==
+                         '' else fgtsValidate)
     item.setMunicipalStatus(request.form.get('municipalStatus'))
-    item.setMunicipalValidade(request.form.get('municipalValidade'))
+    item.setMunicipalValidade(None if municipalValidate ==
+                              '' else municipalValidate)
     item.setSrfInssStatus(request.form.get('srfInssStatus'))
-    item.setSrfInssValidade(request.form.get('srfInssValidade'))
+    item.setSrfInssValidade(None if inssValidate ==
+                            '' else inssValidate)
     item.setTrabalhistaStatus(request.form.get('trabalhistaStatus'))
-    item.setTrabalhistaValidade(request.form.get('trabalhistaValidade'))
+    item.setTrabalhistaValidade(None if trabalhistaValidate ==
+                                '' else trabalhistaValidate)
     return item

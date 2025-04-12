@@ -3,15 +3,26 @@ from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from utils.converter import converterStrToInt
 from PIL import Image, ImageDraw, ImageFont
 from utils.helper import criaPastas
-import datetime
-import locale
 import ast
 import os
 import re
 
-locale.setlocale(locale.LC_ALL, 'pt_BR.utf8')
-
 foto_bp = Blueprint('fotos', __name__)
+
+months = {
+    "01": "Jan",
+    "02": "Fev",
+    "03": "Mar",
+    "04": "Abr",
+    "05": "Mai",
+    "06": "Jun",
+    "07": "Jul",
+    "08": "Ago",
+    "09": "Set",
+    "10": "Out",
+    "11": "Nov",
+    "12": "Dez",
+}
 
 camposCapa = (
     ('Perspectiva', 'perspectiva', 'perspectiva'),
@@ -51,8 +62,7 @@ def upload_config_fotos():
         if not os.path.isdir(os.path.join(diretorio, folder)):
             continue
         ano, mes = folder.split('_')
-        date = datetime.date(year=int(ano), month=int(mes), day=1)
-        listVigencias.append((date.strftime('%b/%Y').capitalize(), folder))
+        listVigencias.append((f"{months[mes.zfill(2)]}/{ano}", folder))
 
     listVigencias.reverse()
 

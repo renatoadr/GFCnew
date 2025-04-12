@@ -133,7 +133,7 @@
           </div>
 
           <div class="form-floating mt-4">
-            <input type="text" name="indiceGarantia" id="indiceGarantia" class="form-control percent" placeholder=""
+            <input type="text" name="indiceGarantia" id="indiceGarantia" class="form-control percent10" placeholder=""
               value="{{ empreend.getIndiceGarantia() if empreend}}" maxlength="6" />
             <label for="indiceGarantia">Indice de Garantia Contratado</label>
           </div>
@@ -171,7 +171,7 @@
       requireds.rules.indiceGarantia = {
         required: true,
         minf: 0.01,
-        maxf: 100
+        maxf: 9.99
       }
       const config = GFC.getConfigValidateForm(requireds)
       config.submitHandler = function (form) {
