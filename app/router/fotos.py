@@ -1,4 +1,5 @@
 from flask import Blueprint, request, render_template, current_app, redirect, flash, jsonify, send_file
+from utils.logger import logger
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from utils.converter import converterStrToInt
 from PIL import Image, ImageDraw, ImageFont
@@ -155,7 +156,9 @@ def api_files():
 
 @foto_bp.route('/obter_imagem/<idEmpreend>/<vigencia>/<nameFile>')
 def obter_imagem(idEmpreend, vigencia, nameFile):
+    dirPath = os.path.abspath(__name__).replace(__name__, '')
     file = os.path.join(
+        dirPath,
         current_app.config['DIRSYS'],
         idEmpreend,
         vigencia,
@@ -216,7 +219,8 @@ def saveFile(file, path, nameFile):
             return True
         else:
             return False
-    except:
+    except Exception as error:
+        logger.error('Erro ao salvar a imagem: %s', error)
         return False
 
 

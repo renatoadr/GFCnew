@@ -57,8 +57,8 @@ def init(app):
         app.config['BARRADIR'] = config.get("config", "BARRADIR")
         app.config['DIRSYS'] = config.get("config", "DIRSYS")
 
-        if not os.path.exists(app.config['UPLOAD_FOLDER']):
-            os.makedirs(app.config['UPLOAD_FOLDER'])
+        if not os.path.exists(app.config['DIRSYS']):
+            os.makedirs(app.config['DIRSYS'])
 
         print("Succesfully read configs from: ", config_location)
     except:

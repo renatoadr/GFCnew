@@ -1,3 +1,4 @@
+from utils.logger import logger
 import mysql.connector as m
 import os
 
@@ -34,7 +35,7 @@ class MySql:
                 return connection
 
         except Exception as e:
-            print(e)
+            logger.error('Erro ao conectar com o banco: %s', e)
 
     @staticmethod
     def close(connection):

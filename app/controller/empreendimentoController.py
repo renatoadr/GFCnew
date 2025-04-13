@@ -44,7 +44,6 @@ class empreendimentoController:
 
     def consultarEmpreendimentos(self):
         self.__connection = MySql.connect()
-        print(self.__connection)
         cursor = self.__connection.cursor()
 
         query = "select * from " + MySql.DB_NAME + ".tb_empreendimentos"
