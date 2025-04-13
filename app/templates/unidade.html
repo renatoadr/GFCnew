@@ -23,15 +23,14 @@
         </div>
       </div>
 
-      <form action="{{'/salvar_alteracao_unidade' if unidade else '/cadastrar_unidade'}}" method="post"
-        id="formIncluirUnidade">
+      <form action="/cadastrar_unidade" method="post" id="formIncluirUnidade">
         <input type="hidden" name="idUnidade" value="{{unidade.getIdUnidade() if unidade}}">
 
         <div class="row">
           <div class="col-6">
             <div class="form-floating">
               <select type="text" name="idTorre" id="idTorre" class="form-control" placeholder=""
-                value="{{ unidade.getIdTorre() if unidade }}" {% if modo=='consulta' %} readonly {% endif %}>
+                value="{{ unidade.getIdTorre() if unidade }}" readonly>
                 <option value="">Selecione</option>
                 {% for t in listaTorres %}
                 <option value="{{ t.getIdTorre() }}" {% if unidade and unidade.getIdTorre()==t.getIdTorre() %} selected
@@ -41,11 +40,27 @@
               <label for="idTorre">Torre</label>
             </div>
 
-            <div class="form-floating mt-4">
-              <input type="text" name="unidade" id="unidade" class="form-control 4num" placeholder=""
-                value="{{ unidade.getUnidade() if unidade }}" maxlength="5" {% if modo=='consulta' %} readonly {% endif
-                %} />
-              <label for="unidade">Unidade</label>
+            <div class="row mt-4">
+              <div class="col-6">
+                <div class="form-floating">
+                  <input type="text" name="unidade" id="unidade" class="form-control alphanum" placeholder=""
+                    value="{{ unidade.getUnidade() if unidade }}" maxlength="15" readonly />
+                  <label for="unidade">Unidade</label>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-floating">
+                  <select type="text" name="status" id="status" class="form-control" placeholder=""
+                    value="{{ unidade.getStatus() if unidade }}" {% if modo=='consulta' %} readonly {% endif %}>
+                    {% for sts in listaStatus %}
+                    <option value="{{ sts }}" {% if unidade and unidade.getStatus()==sts %} selected {% endif %}>
+                      {{ sts }}
+                    </option>
+                    {% endfor %}
+                  </select>
+                  <label for="status">Status</label>
+                </div>
+              </div>
             </div>
 
             <div class="row">
@@ -68,12 +83,40 @@
             </div>
 
             <div class="row mt-4">
+              <div class="col-6">
+                <div class="form-floating">
+                  <input type="text" name="vlUnidade" id="vlUnidade" class="form-control money" placeholder=""
+                    value="{{ unidade.getVlUnidade() if unidade }}" maxlength="18" {% if modo=='consulta' %} readonly {%
+                    endif %} />
+                  <label for="vlUnidade">Valor Unidade</label>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-floating">
+                  <select type="text" name="financiado" id="financiado" class="form-control" placeholder=""
+                    value="{{ unidade.getFinanciado() if unidade }}" {% if modo=='consulta' %} readonly {% endif %}>
+                    <option value="">Selecione</option>
+                    <option value="Sim" {% if unidade and unidade.getFinanciado()=='Sim' %} selected {% endif %}>
+                      Sim</option>
+                    <option value="Não" {% if unidade and unidade.getFinanciado()=='Não' %} selected {% endif %}>
+                      Não</option>
+                  </select>
+                  <label for="financiado">Financiado</label>
+                </div>
+              </div>
+            </div>
+
+          </div>
+          <div class="col-6">
+
+            <div class="row">
               <div class="col-9">
                 <div class="form-floating ">
                   <input type="hidden" id="cpfCnpjCliente" name="cpfCnpjCliente"
                     value="{{ unidade.getCpfComprador() if unidade}}">
                   <input type="text" name="nmComprador" id="nmComprador" class="form-control" placeholder=""
-                    value="{{ unidade.getNmComprador() if unidade }}" {% if modo=='consulta' %} readonly {% endif %} />
+                    value="{{ unidade.getNmComprador() if unidade and unidade.getNmComprador() is not none  }}" {% if
+                    modo=='consulta' %} readonly {% endif %} />
                   <label for="nmComprador">Comprador</label>
                 </div>
               </div>
@@ -89,77 +132,43 @@
               </div>
             </div>
 
-            <div class="form-floating mt-4">
-              <input type="text" name="vlUnidade" id="vlUnidade" class="form-control money" placeholder=""
-                value="{{ unidade.getVlUnidade() if unidade }}" maxlength="18" {% if modo=='consulta' %} readonly {%
-                endif %} />
-              <label for="vlUnidade">Valor Unidade</label>
+            <div class="row mt-4">
+              <div class="col-6">
+                <div class="form-floating">
+                  <input type="text" name="vlPago" id="vlPago" class="form-control money" placeholder=""
+                    value="{{ unidade.getVlPago() if unidade }}" maxlength="18" {% if modo=='consulta' %} readonly {%
+                    endif %} />
+                  <label for="vlPago">Valor pago</label>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-floating ">
+                  <input type="text" name="vlChaves" id="vlChaves" class="form-control money" placeholder=""
+                    value="{{ unidade.getVlChaves() if unidade }}" maxlength="20" {% if modo=='consulta' %} readonly {%
+                    endif %} />
+                  <label for="vlChaves">Valor das chaves</label>
+                </div>
+              </div>
             </div>
 
-            <div class="form-floating mt-4">
-              <input type="text" name="vlPago" id="vlPago" class="form-control money" placeholder=""
-                value="{{ unidade.getVlPago() if unidade }}" maxlength="18" {% if modo=='consulta' %} readonly {% endif
-                %} />
-              <label for="vlPago">Valor pago</label>
+            <div class="row mt-4">
+              <div class="col-6">
+                <div class="form-floating ">
+                  <input type="text" name="vlPreChaves" id="vlPreChaves" class="form-control money" placeholder=""
+                    value="{{ unidade.getVlPreChaves() if unidade }}" maxlength="20" {% if modo=='consulta' %} readonly
+                    {% endif %} />
+                  <label for="vlPreChaves">Valor pré-chaves</label>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-floating">
+                  <input type="text" name="vlPosChaves" id="vlPosChaves" class="form-control money" placeholder=""
+                    value="{{ unidade.getVlPosChaves() if unidade }}" maxlength="20" {% if modo=='consulta' %} readonly
+                    {% endif %} />
+                  <label for="vlPosChaves">Valor pós-chaves</label>
+                </div>
+              </div>
             </div>
-
-          </div>
-          <div class="col-6">
-            <div class="form-floating">
-              <select type="text" name="status" id="status" class="form-control" placeholder=""
-                value="{{ unidade.getStatus() if unidade }}" {% if modo=='consulta' %} readonly {% endif %}>
-                <option value="">Selecione</option>
-                <option value="Distrato" {% if unidade and unidade.getStatus()=='Distrato' %} selected {% endif %}>
-                  Distrato</option>
-                <option value="Estoque" {% if unidade and unidade.getStatus()=='Estoque' %} selected {% endif %}>
-                  Estoque</option>
-                <option value="Quitado" {% if unidade and unidade.getStatus()=='Quitado' %} selected {% endif %}>
-                  Quitado</option>
-                <option value="Vendido" {% if unidade and unidade.getStatus()=='Vendido' %} selected {% endif %}>
-                  Vendido</option>
-              </select>
-              <label for="status">Status</label>
-            </div>
-            <div class="form-floating mt-4">
-              <input type="date" name="dtOcorrencia" id="dtOcorrencia" class="form-control" placeholder="" readonly
-                value="{{ unidade.getDtOcorrencia() if unidade else current_date }}" {% if modo=='consulta' %} readonly
-                {% endif %} />
-              <label for="dtOcorrencia">Data ocorrencia</label>
-            </div>
-
-            <div class="form-floating mt-4">
-              <select type="text" name="financiado" id="financiado" class="form-control" placeholder=""
-                value="{{ unidade.getFinanciado() if unidade }}" {% if modo=='consulta' %} readonly {% endif %}>
-                <option value="">Selecione</option>
-                <option value="Sim" {% if unidade and unidade.getFinanciado()=='Sim' %} selected {% endif %}>
-                  Sim</option>
-                <option value="Não" {% if unidade and unidade.getFinanciado()=='Não' %} selected {% endif %}>
-                  Não</option>
-              </select>
-              <label for="financiado">Financiado</label>
-            </div>
-
-            <div class="form-floating mt-4">
-              <input type="text" name="vlChaves" id="vlChaves" class="form-control money" placeholder=""
-                value="{{ unidade.getVlChaves() if unidade }}" maxlength="20" {% if modo=='consulta' %} readonly {%
-                endif %} />
-              <label for="vlChaves">Valor das chaves</label>
-            </div>
-
-            <div class="form-floating mt-4">
-              <input type="text" name="vlPreChaves" id="vlPreChaves" class="form-control money" placeholder=""
-                value="{{ unidade.getVlPreChaves() if unidade }}" maxlength="20" {% if modo=='consulta' %} readonly {%
-                endif %} />
-              <label for="vlPreChaves">Valor pré-chaves</label>
-            </div>
-
-            <div class="form-floating mt-4">
-              <input type="text" name="vlPosChaves" id="vlPosChaves" class="form-control money" placeholder=""
-                value="{{ unidade.getVlPosChaves() if unidade }}" maxlength="20" {% if modo=='consulta' %} readonly {%
-                endif %} />
-              <label for="vlPosChaves">Valor pós-chaves</label>
-            </div>
-
           </div>
         </div>
         <div class="row mt-5 justify-content-center">
@@ -184,13 +193,30 @@
         delete requireds.rules[field];
         delete requireds.messages[field];
       }
-      remove('status')
-
-      requireds.rules.unidade = {
-        required: true,
-        min: 1,
-        max: 9999
+      const requiredByStatus = function (field) {
+        requireds.rules[field] = {
+          required(el) {
+            let val = $('#status').val()
+            let elVal = $(el).val()
+            if (['Vendido', 'Quitado'].includes(val) && (parseFloat(elVal) === 0 || elVal === '')) {
+              $(el).val('');
+              return true;
+            }
+            return false;
+          }
+        }
       }
+
+      remove('unidade')
+      remove('nmComprador')
+
+      requiredByStatus('vlPosChaves')
+      requiredByStatus('vlPreChaves')
+      requiredByStatus('vlChaves')
+      requiredByStatus('vlPago')
+      requiredByStatus('financiado')
+      requiredByStatus('vlUnidade')
+
       requireds.rules.mesVigencia = {
         required: true,
         min: 1,
@@ -200,11 +226,6 @@
         required: true,
         min: 1990,
         max: 3000
-      }
-      requireds.messages.unidade = {
-        required: GFC_MESSAGES.REQUIRED,
-        min: GFC_MESSAGES.MIN(1),
-        max: GFC_MESSAGES.MAX(9999),
       }
       requireds.messages.mesVigencia = {
         required: GFC_MESSAGES.REQUIRED,
@@ -217,14 +238,13 @@
         max: GFC_MESSAGES.MAX(3000),
       }
 
-      $('input[name="status"]').change(function () {
-        $('#error-status').hide();
-        $('input[name="status"]').removeClass('is-invalid');
-      })
-
       const config = GFC.getConfigValidateForm(requireds);
       config.submitHandler = function (form) {
-        if (form.cpfCnpjCliente.value === '' || !/\d/.test(form.cpfCnpjCliente.value)) {
+        let status = $('#status').val()
+        if (
+          ['Vendido', 'Quitado'].includes(status) &&
+          (form.cpfCnpjCliente.value === '' || !/\d/.test(form.cpfCnpjCliente.value))
+        ) {
           $.toast({
             heading: '<strong>Erro ao enviar</strong>',
             text: "É necessário informar o cliente associado a unidade de maneira correta",

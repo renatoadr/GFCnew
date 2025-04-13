@@ -37,6 +37,12 @@ $(function(){
     history.back();
   });
 
+  $('.alphanum').mask("A", {
+    translation: {
+        "A": { pattern: /[A-Za-z0-9\sÇçÃÂÀÁâãàáÕÔôõÉÈéè]/, recursive: true }
+    }
+  })
+
   $(".percent").mask("##0,00", {
     reverse: true,
     onChange: function(val, evt, el, opt) {

@@ -1,100 +1,126 @@
-#controller or business logic
+# controller or business logic
 # Trata base de TORRES
 
 from dto.torre import torre
 from utils.dbContext import MySql
+from datetime import datetime
+
 
 class torreController:
     __connection = None
 
-    def __init__(self):
-        pass
-
-    def inserirTorre(self, torre):
+    def inserirTorre(self, torre: torre):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()       
-   
-        query =  "INSERT INTO " + MySql.DB_NAME + ".tb_torres ( id_empreendimento, nm_torre, qt_unidade ) VALUES (" + str(torre.getIdEmpreend()) + ", '" + torre.getNmTorre() + "', " + torre.getQtUnidade() + ")"
-                                                                                                                                                          
-        print('++++++++++++++++++++++')
-        print(query)
-        print('++++++++++++++++++++++')
+        cursor = self.__connection.cursor()
 
-        cursor.execute(query)
+        queryUnidade = "INSERT INTO " + MySql.DB_NAME + \
+            ".tb_unidades (id_empreendimento, id_torre, unidade, mes_vigencia, ano_vigencia, status) VALUES (%s, %s, %s, %s, %s, %s);"
+        queryTorre = "INSERT INTO " + MySql.DB_NAME + \
+            ".tb_torres ( id_empreendimento, nm_torre, qt_unidade, qt_andar, qt_coberturas, prefix_cobertura, num_apt_um_andar_um ) VALUES (%s, %s, %s, %s, %s, %s, %s);"
 
-        self.__connection.commit()     
-        print(cursor.rowcount,"Torre cadastrada com sucesso")     
+        dadosUnidade = []
+
+        cursor.execute(queryTorre, (
+            torre.getIdEmpreend(),
+            torre.getNmTorre(),
+            torre.getQtUnidade(),
+            torre.getQtAndar(),
+            torre.getQtCobertura(),
+            torre.getPrefixCobertura(),
+            torre.getNumAptUmAndarUm()
+        ))
+
+        date = datetime.now()
+        baseAndar = 10 if len(str(torre.getNumAptUmAndarUm())) == 2 else 100
+        initAp = int(torre.getNumAptUmAndarUm())
+        qtdAndar = int(torre.getQtAndar())
+        qtdApt = int(torre.getQtUnidade())
+        qtdCobertura = int(torre.getQtCobertura()
+                           ) if torre.getQtCobertura() else 0
+        prefix = torre.getPrefixCobertura()
+
+        currentAndar = 1
+        currentApt = initAp
+        currentBase = baseAndar
+        limitePorAndar = currentApt + qtdApt - 1
+
+        while currentAndar <= qtdAndar:
+            dadosUnidade.append((
+                torre.getIdEmpreend(),
+                cursor.lastrowid,
+                currentApt,
+                str(date.month).zfill(2),
+                date.year,
+                'Estoque'
+            ))
+            currentApt += 1
+
+            if currentApt > limitePorAndar:
+                currentAndar += 1
+                currentBase += baseAndar
+                currentApt = currentBase + 1
+                limitePorAndar += baseAndar
+
+        for num in range(1, qtdCobertura + 1):
+            dadosUnidade.append((
+                torre.getIdEmpreend(),
+                cursor.lastrowid,
+                f"{prefix} {num}",
+                str(date.month).zfill(2),
+                date.year,
+                'Estoque'
+            ))
+
+        cursor.executemany(queryUnidade, dadosUnidade)
+        self.__connection.commit()
         cursor.close()
         MySql.close(self.__connection)
 
-
     def consultarTorres(self, idEmpreend):
-        self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()   
+        query = "select * from " + MySql.DB_NAME + \
+            ".tb_torres where id_empreendimento = %s order by nm_torre"
 
-        print('---consultarTorres--')
-        print(idEmpreend)
-
-        query =  "select * from " + MySql.DB_NAME + ".tb_torres where id_empreendimento = " +  str (idEmpreend) + " order by nm_torre"
-
-        print('-----------------')
-        print(query)
-        print('-----------------')
-        
-        cursor.execute(query)
-
-        lista = cursor.fetchall()
-        
+        lista = MySql.getAll(query, (idEmpreend,))
         listatorres = []
 
         for x in lista:
             t = torre()
-            t.setIdTorre(x[0])
-            t.setIdEmpreend(x[1])
-            t.setNmTorre(x[2])
-            t.setQtUnidade(x[3])
+            t.setIdTorre(x['id_torre'])
+            t.setIdEmpreend(x['id_empreendimento'])
+            t.setNmTorre(x['nm_torre'])
+            t.setQtUnidade(x['qt_unidade'])
+            t.setQtAndar(x['qt_andar'])
+            t.setQtCobertura(x['qt_coberturas'])
+            t.setPrefixCobertura(x['prefix_cobertura'])
+            t.setNumAptUmAndarUm(x['num_apt_um_andar_um'])
             listatorres.append(t)
-            
-        cursor.close()
-        MySql.close(self.__connection)
+
         return listatorres
 
     def consultarTorrePeloId(self, idTorre):
-        self.__connection = MySql.connect()
-        cursor = self.__connection.cursor(dictionary=True)   
+        query = f"""SELECT id_torre, id_empreendimento, nm_torre, qt_unidade, qt_andar, qt_coberturas, prefix_cobertura, num_apt_um_andar_um from {MySql.DB_NAME}.tb_torres WHERE id_torre = %s"""
 
-        query =  "select id_torre, id_empreendimento, nm_torre, qt_unidade from " + MySql.DB_NAME + ".tb_torres where id_torre = " + str(idTorre) 
-    
-        print(query)
-
-        cursor.execute(query)
-
-        linha = cursor.fetchone()
-        print('+++++++++++++++++++++++++++')
-        print (linha)
-        print(linha['id_torre'])
-        print('+++++++++++++++++++++++++++')
+        linha = MySql.getOne(query, (idTorre,))
 
         linhaT = torre()
         linhaT.setIdTorre(linha['id_torre'])
         linhaT.setIdEmpreend(linha['id_empreendimento'])
         linhaT.setNmTorre(linha['nm_torre'])
         linhaT.setQtUnidade(linha['qt_unidade'])
-    
-        print('------------------------')       
-        print(linhaT.getIdTorre())
-        print('------------------------')
-        cursor.close()
-        MySql.close(self.__connection)
+        linhaT.setQtAndar(linha['qt_andar'])
+        linhaT.setQtCobertura(linha['qt_coberturas'])
+        linhaT.setPrefixCobertura(linha['prefix_cobertura'])
+        linhaT.setNumAptUmAndarUm(linha['num_apt_um_andar_um'])
 
         return linhaT
 
     def consultarNomeTorre(self, idTorre):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor(dictionary=True)   
+        cursor = self.__connection.cursor(dictionary=True)
 
-        query =  "select nm_torre from " + MySql.DB_NAME + ".tb_torres where id_torre = " + str(idTorre) 
-    
+        query = "select nm_torre from " + MySql.DB_NAME + \
+            ".tb_torres where id_torre = " + str(idTorre)
+
         print('-----------consultarNomeTorre----------')
         print(query)
 
@@ -107,7 +133,7 @@ class torreController:
         linhaT = torre()
         linhaT.setNmTorre(linha['nm_torre'])
         nmTorre = linha['nm_torre']
-     #   print('------------------------')   
+     #   print('------------------------')
      #   print(nmTorre)
      #   print('-----------fim consultarNomeTorre----------')
         cursor.close()
@@ -115,33 +141,28 @@ class torreController:
 
         return nmTorre
 
-    def salvarTorre(self,torre):
+    def salvarTorre(self, torre):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()   
+        cursor = self.__connection.cursor()
 
-        query =  "update " + MySql.DB_NAME + ".tb_torres set " + \
-        "nm_torre = '" + torre.getNmTorre() + "', " + "qt_unidade = '" + torre.getQtUnidade() + "' " + " where id_torre = " + str(torre.getIdTorre())
+        queryTorre = "update " + MySql.DB_NAME + \
+            ".tb_torres set nm_torre = %s, qt_unidade = %s, qt_andar = %s, qt_coberturas = %s, prefix_cobertura = %s, num_apt_um_andar_um = %s where id_torre = %s;"
 
-        print (query)
-        cursor.execute(query)
+        cursor.execute(queryTorre, (
+            torre.getNmTorre(),
+            torre.getQtUnidade(),
+            torre.getQtAndar(),
+            torre.getQtCobertura(),
+            torre.getPrefixCobertura(),
+            torre.getNumAptUmAndarUm()
+        ))
 
-        self.__connection.commit()     
-        print(cursor.rowcount,"Torre atualizada com sucesso")     
+        self.__connection.commit()
+        print(cursor.rowcount, "Torre atualizada com sucesso")
         cursor.close()
         MySql.close(self.__connection)
 
-    def excluirTorre(self,idTorre):
-        self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()   
-
-#        print (emp)
-
-        query =  "delete from " + MySql.DB_NAME + ".tb_torres" + " where id_torre = " + str(idTorre) 
-        print (query)
-
-        cursor.execute(query)
-        self.__connection.commit()   
-        cursor.close()
-        MySql.close(self.__connection)
-     
- 
+    def excluirTorre(self, idTorre):
+        query = "delete from " + MySql.DB_NAME + \
+            ".tb_torres" + " where id_torre = %s "
+        MySql.exec(query, (idTorre,))

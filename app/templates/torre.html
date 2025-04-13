@@ -22,11 +22,12 @@
         </div>
       </div>
 
-      <form action="{{'/salvar_alteracao_torre' if torre else '/cadastrar_torre'}}" id="formAlterarTorre" method="POST">
+      <form action="{{'/salvar_alteracao_torre' if torre and torre.getIdTorre() is not none else '/cadastrar_torre'}}"
+        id="formAlterarTorre" method="POST">
         <input type="hidden" name="idTorre" value="{{ torre.getIdTorre() if torre }}" />
         <div class="row">
 
-          <div class="col-7">
+          <div class="col-4">
             <div class="form-floating">
               <input type="text" name="nmTorre" id="nmTorre" class="form-control" placeholder=""
                 value="{{ torre.getNmTorre() if torre }}" maxlength="20" />
@@ -34,11 +35,44 @@
             </div>
           </div>
 
-          <div class="col-5">
+          <div class="col-4">
+            <div class="form-floating">
+              <input type="number" name="qtdAndar" id="qtdAndar" class="form-control" placeholder=""
+                value="{{ torre.getQtAndar() if torre }}" maxlength="2" />
+              <label for="qtdAndar">Quantos andares</label>
+            </div>
+          </div>
+
+          <div class="col-4">
             <div class="form-floating">
               <input type="number" name="qtUnidade" id="qtUnidade" class="form-control" placeholder=""
-                value="{{ torre.getQtUnidade() if torre }}" maxlength="5" />
-              <label for="qtUnidade">Quantidade de unidades</label>
+                value="{{ torre.getQtUnidade() if torre }}" maxlength="3" />
+              <label for="qtUnidade">Quantidade de unidades por andar</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-4">
+            <div class="form-floating">
+              <input type="number" name="numApUmAdrUm" id="numApUmAdrUm" class="form-control" placeholder=""
+                value="{{ torre.getNumAptUmAndarUm() if torre }}" maxlength="3" />
+              <label for="numApUmAdrUm">Número do 1º apartamento do 1º andar</label>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-floating">
+              <input type="number" name="qtdCoberturas" id="qtdCoberturas" class="form-control" placeholder=""
+                value="{{ torre.getQtCobertura() if torre }}" maxlength="2" />
+              <label for="qtdCoberturas">Quantidade de coberturas</label>
+            </div>
+          </div>
+          <div class="col-4">
+            <div class="form-floating">
+              <input type="text" name="prefixCobertura" id="prefixCobertura" class="form-control" placeholder=""
+                value="{{ torre.getPrefixCobertura() if torre }}" maxlength="20" />
+              <label for="prefixCobertura">Prefixo da cobertura</label>
             </div>
           </div>
         </div>
@@ -48,7 +82,8 @@
             <a href="/tratar_torres" class="btn btn-secondary w-100">Cancelar</a>
           </div>
           <div class="col-3">
-            <button type="submit" class="btn btn-success w-100">{{ 'Salvar' if torre else 'Criar' }}</button>
+            <button type="submit" class="btn btn-success w-100">{{ 'Salvar' if torre and torre.getIdTorre() is not none
+              else 'Criar' }}</button>
           </div>
         </div>
       </form>
@@ -59,6 +94,8 @@
   <script>
     $(function () {
       const requireds = GFC.getRequiredFields("formAlterarTorre")
+      delete requireds.rules.prefixCobertura
+      delete requireds.rules.qtdCoberturas
       $("#formAlterarTorre").validate(GFC.getConfigValidateForm(requireds));
     });
   </script>

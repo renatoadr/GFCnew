@@ -13,7 +13,7 @@
   {% include 'fractials/menu.html' %}
 
   <main>
-    <div class="container">
+    <div class="container-fluid">
       <div class="row">
         <div class="col-6">
           <h2 class="title title-page">
@@ -43,7 +43,11 @@
             <thead class="table-light">
               <tr>
                 <th>Nome da Torre</th>
-                <th class="text-center">Quantidade de Unidades</th>
+                <th class="text-center">Quantidade de Andares</th>
+                <th class="text-center">Quantidade de Unidades por Andar</th>
+                <th class="text-center">Número do 1º apartamento do 1º andar</th>
+                <th class="text-center">Quantidade de Cobertura</th>
+                <th class="text-center">Prefixo da Cobertura</th>
                 <th colspan="2" class="text-center">Ações</th>
               </tr>
             </thead>
@@ -52,13 +56,23 @@
               {% for t in torreS %}
               <tr>
                 <td>{{ t.getNmTorre() }}</td>
+                <td class="text-center">{{ t.getQtAndar() }}</td>
                 <td class="text-center">{{ t.getQtUnidade() }}</td>
+                <td class="text-center">{{ t.getNumAptUmAndarUm() }}</td>
+                <td class="text-center">{{ t.getQtCobertura() }}</td>
+                <td class="text-center">{{ t.getPrefixCobertura() }}</td>
                 <td class="text-center">
+                  <a href="/copiar_torre?idTorre={{t.getIdTorre()}}" data-bs-toggle="tooltip"
+                    data-bs-title="Copiar os dados dessa Torre">
+                    <i class="fa-solid fa-clone"></i>
+                  </a>
+                </td>
+                <!-- <td class="text-center">
                   <a href="/editar_torre?idTorre={{t.getIdTorre()}}" data-bs-toggle="tooltip"
                     data-bs-title="Editar Torre">
                     <i class="fa-solid fa-pencil text-warning"></i>
                   </a>
-                </td>
+                </td> -->
                 <td class="text-center">
                   <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Torre">
                     <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
@@ -71,7 +85,7 @@
               {% endfor %}
               {% else %}
               <tr>
-                <td colspan="4" class="text-center">
+                <td colspan="8" class="text-center">
                   Não existem torres cadastradas.
                 </td>
               </tr>
