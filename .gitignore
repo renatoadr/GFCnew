@@ -9,3 +9,8 @@ Sistema GFC.mwb.bak
 Sistema GFC.mwb
 db_gfc.mwb
 dist/
+GFC
+data_db
+*.tar
+db_password.txt
+*.pem

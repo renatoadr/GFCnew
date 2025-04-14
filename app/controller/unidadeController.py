@@ -265,8 +265,7 @@ class unidadeController:
         MySql.exec(query, (idUnidade,))
 
     def existeUnidadesPorTorre(self, idTorre):
-        query = "SELECT COUNT(id_unidade) total FROM " + MySql.DB_NAME + \
-            """.tb_unidades WHERE id_torre = %s;"""
+        query = f"""SELECT COUNT(id_unidade) total FROM {MySql.DB_NAME}.tb_unidades WHERE id_torre = %s AND ac_historico IS NULL;"""
         ret = MySql.getAll(query, (idTorre,))
         return ret[0]['total'] > 0
 
