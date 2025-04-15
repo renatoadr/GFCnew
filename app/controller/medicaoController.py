@@ -49,9 +49,9 @@ class medicaoController:
       cursor = self.__connection.cursor(dictionary=True)
 
       if anoVigenciaIni == anoVigenciaFim:
-          query =  "select id_empreendimento, nr_medicao, mes_vigencia, ano_vigencia, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo from " + MySql.DB_NAME + ".tb_medicoes where id_empreendimento = '" + str(idEmpreend) + "' and (mes_vigencia >= '" + mesVigenciaIni + "' and ano_vigencia = '" + anoVigenciaIni + "') and (mes_vigencia <= '" + mesVigenciaFim + "' and ano_vigencia = '" + anoVigenciaFim + "')"
+          query =  "select id_empreendimento, nr_medicao, mes_vigencia, ano_vigencia, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo from " + MySql.DB_NAME + ".tb_medicoes where id_empreendimento = '" + str(idEmpreend) + "' and ((mes_vigencia >= '" + mesVigenciaIni + "' and ano_vigencia = '" + anoVigenciaIni + "') and (mes_vigencia <= '" + mesVigenciaFim + "' and ano_vigencia = '" + anoVigenciaFim + "')) order by id_medicao"
       else:
-          query =  "select id_empreendimento, nr_medicao, mes_vigencia, ano_vigencia, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo from " + MySql.DB_NAME + ".tb_medicoes where id_empreendimento = '" + str(idEmpreend) + "' and (mes_vigencia >= '" + mesVigenciaIni + "' and ano_vigencia = '" + anoVigenciaIni + "') or (mes_vigencia <= '" + mesVigenciaFim + "' and ano_vigencia = '" + anoVigenciaFim + "')"
+          query =  "select id_empreendimento, nr_medicao, mes_vigencia, ano_vigencia, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo from " + MySql.DB_NAME + ".tb_medicoes where id_empreendimento = '" + str(idEmpreend) + "' and ((mes_vigencia >= '" + mesVigenciaIni + "' and ano_vigencia = '" + anoVigenciaIni + "') or (mes_vigencia <= '" + mesVigenciaFim + "' and ano_vigencia <= '" + anoVigenciaFim + "')) order by id_medicao"
 
       print(query)
 

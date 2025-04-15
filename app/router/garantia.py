@@ -28,7 +28,7 @@ def getGarantia(garantias, campo):
 
 
 @garantia_bp.route('/tratar_garantias')
-def obter_grafico():
+def tratar_garantias():
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
@@ -119,7 +119,7 @@ def prepareList(idEmpreend, tipo, date, docsList, stsList, obsList):
 
 
 @garantia_bp.route('/gerar_relatorio_garantia', methods=['POST'])
-def gerar_relatorio():
+def gerar_relatorio_garantia():
     idEmpreend = IdEmpreend().get()
     tipo = request.form.get('tipo')
     mesVigencia = str(request.form.get('mesVigencia')).zfill(2)

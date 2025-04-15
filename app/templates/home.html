@@ -34,7 +34,7 @@
               <tr>
                 <th>Nome</th>
                 <th>Apelido</th>
-                <th colspan="13" class="text-center">Ações</th>
+                <th colspan="14" class="text-center">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -123,7 +123,14 @@
                 </td>
 
                 <td>
-                  <a href="/lista_relatorios?idEmpreend={{e.getIdEmpreend()}}&napelido=None" data-bs-toggle="tooltip"
+                  <a href="/tratar_graficos_tabelas?idEmpreend={{e.getIdEmpreend()}}&apelido={{e.getApelido()}}" data-bs-toggle="tooltip"
+                    data-bs-title="Gráficos e Tabelas">
+                    <i class="fa-solid fa-file-contract"></i>
+                  </a>
+                </td>
+
+                <td>
+                  <a href="/lista_relatorios?idEmpreend={{e.getIdEmpreend()}}&apelido={{e.getApelido()}}" data-bs-toggle="tooltip"
                     data-bs-title="Relatórios">
                     <i class="fa-solid fa-file-contract"></i>
                   </a>

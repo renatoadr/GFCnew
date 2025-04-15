@@ -172,13 +172,13 @@ class graficoController:
         c.drawString(30, 340, "Garantias")
         c.drawString(30, 180, "Certidões")
 
-        imgFotoObra = diretorio + "tab_pontos_atencao_geral.png"
+        imgFotoObra = diretorio + "tab_garantias_geral.png"
         c.drawImage(imgFotoObra, 20, 220, width=300, height=100,
                     mask='auto')   # preserveAspectRatio=True
-        imgFotoObra = diretorio + "tab_pontos_atencao_obra.png"
+        imgFotoObra = diretorio + "tab_garantias_obra.png"
         c.drawImage(imgFotoObra, 290, 220, width=300, height=100,
                     mask='auto')   # preserveAspectRatio=True
-        imgFotoObra = diretorio + "tab_pontos_atencao_documentos.png"
+        imgFotoObra = diretorio + "tab_certidoes.png"
         c.drawImage(imgFotoObra, 20, 60, width=250, height=100,
                     mask='auto')   # preserveAspectRatio=True
 
@@ -476,13 +476,13 @@ class graficoController:
         foto = diretorio + "tab_conta_corrente.png"
         if not os.path.isfile(foto):
             listaErro.append('6ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "tab_pontos_atencao_geral.png"
+        foto = diretorio + "tab_garantias_geral.png"
         if not os.path.isfile(foto):
             listaErro.append('6ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "tab_pontos_atencao_obra.png"
+        foto = diretorio + "tab_garantias_obra.png"
         if not os.path.isfile(foto):
             listaErro.append('6ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "tab_pontos_atencao_documentos.png"
+        foto = diretorio + "tab_certidoes.png"
         if not os.path.isfile(foto):
             listaErro.append('6ª pag - ' + foto + ' não encontrado')
 #   Setima Página

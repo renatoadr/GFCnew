@@ -9,7 +9,8 @@ relatorio_bp = Blueprint('relatorios', __name__)
 @relatorio_bp.route('/gerar_relatorio', methods=['GET'])
 def gerar_relatorio():
 
-    grafC = graficoController(current_app)
+#    grafC = graficoController()
+    grafC = graficoController()
 
     idEmpreend = request.args.get("idEmpreend")
     apelido = request.args.get("apelido")
@@ -81,7 +82,7 @@ def gerar_relatorio():
             c.save()
             mensagem = "RELATORIO GERADO COM SUCESSO"
 
-    gerC = geralController(current_app)
+    gerC = geralController()
     arqS = gerC.listar_arquivos_com_prefixo(dirRelatorio, apelido)
 
     meses = ['  ', '01', '02', '03', '04', '05',
@@ -89,3 +90,32 @@ def gerar_relatorio():
     anos = ['    ', '2025', '2026', '2027', '2028', '2029', '2030']
 
     return render_template("relatorio.html", arquivos=arqS, listaMes=meses, listaAno=anos, apelido=apelido, idEmpreend=idEmpreend, mensagem=mensagem)
+
+@relatorio_bp.route('/tratar_graficos_tabelas')
+def tratar_graficos_tabelas():
+    idEmpreend = request.args.get("idEmpreend")
+    nmEmpreend = request.args.get("nmEmpreend")
+
+    if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
+        return redirect('/home')
+
+    if idEmpreend is None:
+        idEmpreend = IdEmpreend().get()
+    else:
+        IdEmpreend().set(idEmpreend)
+
+    if nmEmpreend is None:
+        nmEmpreend = NmEmpreend().get()
+    else:
+        NmEmpreend().set(nmEmpreend)
+
+    ctrl = garantiaController()
+    items = ctrl.list(idEmpreend)
+
+    if not items:
+        return redirect('/atualizar_garantia')
+
+    obras = filter(lambda it: it.tipo == 'Obra', items)
+    gerais = filter(lambda it: it.tipo == 'Geral', items)
+
+    return render_template('graf_tab.html', obras=obras, gerais=gerais)

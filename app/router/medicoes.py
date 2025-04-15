@@ -145,11 +145,19 @@ def salvar_item_medicao():
 
     return redirect('/tratar_medicoes')
 
-@medicoes_bp.route('/gerar_relatorio', methods=['POST'])
-def gerar_relatorio():
-  idEmpreend = IdEmpreend().get()
-  tipo = request.form.get('tipo')
-  datInicio = request.form.get('dtInicio')
-  datFinal = request.form.get('dtFinal')
+@medicoes_bp.route('/gerar_relatorio_medicoes', methods=['POST'])
+def gerar_relatorio_medicoes():
+  idEmpreend  = IdEmpreend().get()
+  tipo        = request.form.get('tipo')
+  mesVigencia = request.form.get('mesVigencia')
+  anoVigencia = request.form.get('anoVigencia')
+  mesInicio   = request.form.get('mesInicio')
+  anoInicio   = request.form.get('anoInicio')
+  mesFinal    = request.form.get('mesFinal')
+  anoFinal    = request.form.get('anoFinal')
 
-  return redirect('/tratar_medicoes')
+  if tipo == 'tabela':
+      return redirect('/tab_medicoes?tipo=' + tipo + '&idEmpreend=' + idEmpreend + '&mesVigencia=' + mesVigencia + '&anoVigencia=' + anoVigencia + '&mesInicio=' + mesInicio + '&anoInicio=' + anoInicio + '&mesFinal=' + mesFinal + '&anoFinal=' + anoFinal)
+  else:
+      return redirect('/graf_progresso_obra?tipo=' + tipo + '&idEmpreend=' + idEmpreend + '&mesVigencia=' + mesVigencia + '&anoVigencia=' + anoVigencia + '&mesInicio=' + mesInicio + '&anoInicio=' + anoInicio + '&mesFinal=' + mesFinal + '&anoFinal=' + anoFinal)
+#  return redirect('/tratar_medicoes')

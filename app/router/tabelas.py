@@ -605,22 +605,20 @@ def tab_acomp_financeiro():
 @tabela_bp.route('/tab_medicoes')
 def tab_medicoes():
 
-    #    tipo = request.args.get("tipo")
-    #    idEmpreend = request.args.get("idEmpreend")
-##    idEmpreend = IdEmpreend().get()
-##    mes = request.args.get("mesV")
-##    ano = request.args.get("anoV")
- ##   print('==============>', mes, ano)
+    idEmpreend  = IdEmpreend().get()
+    mesVigencia = request.args.get("mesVigencia")
+    anoVigencia = request.args.get("anoVigencia")
+    mesInicio  = request.args.get("mesInicio")
+    anoInicio  = request.args.get("anoInicio")
+    mesFinal   = request.args.get("mesFinal")
+    anoFinal   = request.args.get("anoFinal")
 
-    idEmpreend = 39
-    mes = "01"
-    ano = "2025"
-
-#    geral = geralController()
     geral = geralController()
+    preC  = medicaoController()
 
-    preC = medicaoController()
-    preS = preC.consultarMedicoes(idEmpreend)
+#    preS = preC.consultarMedicoes(idEmpreend)
+
+    preS = preC.consultarMedicoesPorPeriodo(idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
 
     fig, ax = plt.subplots(1, 1)
 
@@ -628,14 +626,15 @@ def tab_medicoes():
 
     for p in preS:
         dd = []
-        dd.append(str(p.getNrMedicao())+'ª')
+        dd.append(str(p.getNrMedicao()))
         periodo = geral.formatammmaa(p.getMesVigencia(), p.getAnoVigencia())
         dd.append(periodo)
         dd.append(geral.formataNumero(p.getPercPrevistoAcumulado()))
         dd.append(geral.formataNumero(p.getPercRealizadoAcumulado()))
         if p.getPercRealizadoAcumulado() != 0:
-            dd.append(geral.formataNumero(
-                p.getPercRealizadoAcumulado()-p.getPercPrevistoAcumulado()))
+            dd.append(geral.formataNumero(p.getPercDiferenca()))
+#            dd.append(geral.formataNumero(
+#                p.getPercRealizadoAcumulado()-p.getPercPrevistoAcumulado()))
         else:
             dd.append('')
         dd.append(geral.formataNumero(p.getPercPrevistoPeriodo()))
@@ -675,14 +674,13 @@ def tab_medicoes():
 
     grafC = graficoController()
 
-    diretorio = grafC.montaDir(idEmpreend, mes, ano)
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_medicoes.png'
 
     plt.savefig(grafNome)
 
-    return render_template("lista_medicoes.html", grafNome=grafNome, version=random.randint(1, 100000))
-
+    return render_template("medicoes_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
 @tabela_bp.route('/tab_orcamento_liberacao')

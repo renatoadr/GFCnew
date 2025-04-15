@@ -114,7 +114,6 @@ class certidaoController:
         cursor.close()
         MySql.close(self.__connection)
 
-
     def XXconsultarNotaPelaData(self, idEmpreend, dtCarga):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor(dictionary=True)   
