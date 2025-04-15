@@ -49,6 +49,7 @@ services:
   proxy:
     image: nginx:latest
     container_name: proxy_nginx
+    restart: always
     ports:
       - 80:80
       - 443:443
