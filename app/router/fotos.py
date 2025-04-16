@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, current_app, redirect, fl
 from utils.logger import logger
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from utils.converter import converterStrToInt
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageFile
 from utils.helper import criaPastas
 import ast
 import os
@@ -208,9 +208,9 @@ def saveImage(label, fieldName, nameFile, path):
                     f"Ouve um erro ao tentar salvar a imagem para o campo {label}")
 
 
-def saveFile(file, path, nameFile):
+def saveFile(file: ImageFile, path, nameFile):
     try:
-        if file and file.filename.endswith(('png', 'jpg', 'jpeg')):
+        if file and file.filename.lower().endswith(('png', 'jpg', 'jpeg')):
             name, ext = os.path.splitext(file.filename)
             filePath = os.path.normpath(f"{path}/{nameFile}{ext}")
             if os.path.exists(filePath):
