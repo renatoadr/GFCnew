@@ -43,11 +43,11 @@
         </div>
 
         <div class="row mb-5">
+          {% if camposCapa %}
           <div class="col-5">
             <div class="border border-1 border-dark-subtle rounded-4">
               <h4 class="bg-body-secondary d-block p-3 pt-2 pb-2 rounded-top-4">Fotos da Capa</h4>
               <div class="p-3 pt-0">
-
                 {% for name, field, file in camposCapa %}
                 <div class="bg-body-tertiary border border-1 w-100 mt-4 p-3 rounded">
                   <label for="{{field}}" class="form-label"><strong>{{name}}</strong></label>
@@ -58,15 +58,16 @@
                     id="{{field}}" name="{{field}}" accept="image/png, image/jpeg">
                 </div>
                 {% endfor %}
-
               </div>
             </div>
           </div>
+          {% endif %}
+
+          {% if qtd3D > 0 %}
           <div class="col-5 offset-2">
             <div class="border border-1 border-dark-subtle rounded-4">
               <h4 class="bg-body-secondary d-block p-3 pt-2 pb-2 rounded-top-4">Imagens 3D</h4>
               <div class="p-3 pt-0">
-
                 {% for idx in range(1, qtd3D) %}
                 <div class="bg-body-tertiary border border-1 w-100 mt-4 p-3 rounded">
                   <label for="foto_3D_{{idx}}" class="form-label"><strong>Foto 3D {{idx}}</strong></label>
@@ -78,18 +79,18 @@
                     id="foto_3D_1" name="foto_3D_{{idx}}" accept="image/png, image/jpeg">
                 </div>
                 {% endfor %}
-
               </div>
             </div>
           </div>
+          {% endif %}
         </div>
 
+        {% if qtdObra > 0 %}
         <div class="row mt-5">
           <div class="col-12">
             <div class="border border-1 border-dark-subtle rounded-4">
               <h4 class="bg-body-secondary d-block p-3 pt-2 pb-2 rounded-top-4">Fotos da Obra</h4>
               <div class="d-flex justify-content-around p-3 pt-0 row">
-
                 {% for idx in range(1, qtdObra) %}
                 <div class="bg-body-tertiary border border-1 mt-4 col-5 p-3 rounded">
                   <label for="foto_{{idx}}" class="form-label"><strong>Foto {{idx}}</strong></label>
@@ -108,11 +109,11 @@
                   </div>
                 </div>
                 {% endfor %}
-
               </div>
             </div>
           </div>
         </div>
+        {% endif %}
 
         <div class="row mt-5 justify-content-center d-flex">
           <div class="col-3">

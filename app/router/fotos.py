@@ -233,10 +233,10 @@ def escreverNaImagem(file, desc):
         pass
 
     draw = ImageDraw.Draw(img, 'RGBA')
-    font = ImageFont.truetype('arial.ttf', fontSize)
+    font = ImageFont.load_default(fontSize)
     while draw.textlength(desc.capitalize(), font) > img.width:
         fontSize -= 2
-        font = ImageFont.truetype('arial.ttf', fontSize)
+        font = ImageFont.load_default(fontSize)
 
     img.convert('RGBA')
 
