@@ -1,0 +1,76 @@
+services:
+  db:
+    image: mysql:9.2
+    container_name: mysql_db
+    restart: always
+    healthcheck:
+      test: ['CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 --password="$$(cat /run/secrets/db-password)" --silent']
+      interval: 3s
+      retries: 5
+      start_period: 30s
+    secrets:
+      - db-password
+    environment:
+      - MYSQL_ROOT_PASSWORD_FILE=/run/secrets/db-password
+      - MYSQL_DATABASE=db_gfc
+    volumes:
+      - ./init_db.sql:/docker-entrypoint-initdb.d/init_db.sql
+      - ./data_db:/var/lib/mysql
+    expose:
+      - 3306
+      - 33060
+    networks:
+      - dbnet
+
+  app:
+    image: gfcapp:1.0.0
+    restart: always
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: app_gfc
+    environment:
+      DB_HOST: db
+      DB_USER: "root"
+      DB_NAME: "db_gfc"
+    volumes:
+      - ./GFC:/app_gfc/GFC
+    secrets:
+      - db-password
+    depends_on:
+      db:
+        condition: service_healthy
+    links:
+      - db
+    networks:
+      - dbnet
+      - proxynet
+
+  proxy:
+    image: nginx:latest
+    container_name: proxy_nginx
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    volumes:
+      - type: bind
+        source: ./nginx.conf
+        target: /etc/nginx/conf.d/default.conf
+        read_only: true
+    depends_on:
+      - app
+    networks:
+      - proxynet
+
+volumes:
+  db-data:
+  GFC:
+
+secrets:
+  db-password:
+    file: db_password.txt
+
+networks:
+  dbnet:
+  proxynet:

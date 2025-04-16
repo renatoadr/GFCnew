@@ -21,7 +21,7 @@ from router.notas import nota_bp
 from router.fotos import foto_bp
 from filters import filtros_bp
 from router.api import api_bp
-
+from utils.logger import logger
 
 app = Flask(__name__)
 app.secret_key = "gfc001"
@@ -68,7 +68,7 @@ def init(app):
 init(app)
 
 if __name__ == "__main__":
-    app.run()
+    app.run(host="0.0.0.0", port=5000)
     # app.run(host="192.168.0.11",port=5000)
     # app.run(host="177.195.148.38",port=80)
     # app.run(host='2804:14d:32a2:8564:a16e:bd9f:ad8b:9c76',port=80)

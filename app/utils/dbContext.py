@@ -23,19 +23,28 @@ class MySql:
         self.__conn = None
 
     @staticmethod
+    def getSenha():
+        try:
+            filePass = open('/run/secrets/db-password', 'r')
+            return filePass.read()
+        except Exception as error:
+            logger.error('Não foi encontrado o secret com a senha: ', error)
+            return os.getenv('DB_PASS')
+
+    @staticmethod
     def connect():
         try:
             connection = m.connect(
                 host=os.getenv('DB_HOST'),
                 user=os.getenv('DB_USER'),
-                password=os.getenv('DB_PASS')
+                password=MySql.getSenha()
             )
 
             if connection.is_connected():
                 return connection
 
         except Exception as e:
-            logger.error('Erro ao conectar com o banco: %s', e)
+            logger.error('Erro ao conectar com o banco: ', e)
 
     @staticmethod
     def close(connection):
