@@ -37,19 +37,48 @@ Ou para apenas visualizar o projeto rode
 ```sh
 flask --app main.py
 ```
+### Deploy
+O projeto roda no EC2 usando docker. Para subir uma imagem da aplicação, necessário subir a versão da imagem no docker compose e depois realizar os comandos abaixo:
 
-Para gerar o pacote para deploy rode o comando
-```sh
-python -m build --wheel
-```
-E copie o arquivo gerado na pasta dist para o servidor e execute o comando de instalação desse pacote
-```sh
-pip install gfc-1.0-py3-none-any.whl
+#### Gerar Imagem Atualizada
+Depois de alterar a versão no docker compose:
+```docker
+ app:
+    image: gfcapp:1.0.1
 ```
 
-Para criar o diretório de banco, execute o comando após a instalação
+Realize o comando de build
 ```sh
-flask --app gfc init-db
+docker-compose build app
+```
+
+#### Salvar praparar a imagem
+Após realizar o build, salva a cópia da imagem buildada
+```sh
+docker save > gfcapp_1.0.1.tar
+```
+
+Depois suba a imagem que foi gerada para o EC2 e carregue no docker com o comando
+```sh
+docker load < gfcapp_1.0.1.tar
+```
+
+Altere a versão da imagem do app no docker compose no EC2 e rode o comando para atualizar o container
+```sh
+docker-compose up -d
+```
+
+**Obs: Vale lembrar que deletar a imagem antiga bem como o seu container, funcionará melhor o fluxo de atualização no EC2**
+
+### Comandos para gerenciamento do Docker
+Para visualizar os logs
+```sh
+docker logs {id_container}
+```
+
+Para acessar o terminal interno do container
+```sh
+docker exec -it {nome_container} /bin/bash
 ```
 
 ### FrontEnd
