@@ -61,15 +61,16 @@ class torreController:
                 currentApt = currentBase + 1
                 limitePorAndar += baseAndar
 
-        for num in range(1, qtdCobertura + 1):
-            dadosUnidade.append((
-                torre.getIdEmpreend(),
-                cursor.lastrowid,
-                f"{prefix} {num}",
-                str(date.month).zfill(2),
-                date.year,
-                'Estoque'
-            ))
+        if qtdCobertura > 0:
+            for num in range(1, qtdCobertura + 1):
+                dadosUnidade.append((
+                    torre.getIdEmpreend(),
+                    cursor.lastrowid,
+                    f"{prefix} {num}",
+                    str(date.month).zfill(2),
+                    date.year,
+                    'Estoque'
+                ))
 
         cursor.executemany(queryUnidade, dadosUnidade)
         self.__connection.commit()

@@ -198,7 +198,11 @@
           required(el) {
             let val = $('#status').val()
             let elVal = $(el).val()
-            if (['Vendido', 'Quitado'].includes(val) && (parseFloat(elVal) === 0 || elVal === '')) {
+            let id = $(el).attr('id')
+            let allowZero = ['vlPosChaves', 'vlPreChaves', 'vlChaves']
+            if (['Vendido', 'Quitado'].includes(val) && (
+              (!allowZero.includes(id) && (parseFloat(elVal) === 0 || elVal === '')) || (allowZero.includes(id) && elVal === '')
+            )) {
               $(el).val('');
               return true;
             }
@@ -213,6 +217,7 @@
       requiredByStatus('vlPosChaves')
       requiredByStatus('vlPreChaves')
       requiredByStatus('vlChaves')
+
       requiredByStatus('vlPago')
       requiredByStatus('financiado')
       requiredByStatus('vlUnidade')

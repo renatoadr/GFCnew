@@ -37,7 +37,7 @@
 
           <div class="col-4">
             <div class="form-floating">
-              <input type="number" name="qtdAndar" id="qtdAndar" class="form-control" placeholder=""
+              <input type="text" name="qtdAndar" id="qtdAndar" class="form-control 2num" placeholder=""
                 value="{{ torre.getQtAndar() if torre }}" maxlength="2" />
               <label for="qtdAndar">Quantos andares</label>
             </div>
@@ -45,7 +45,7 @@
 
           <div class="col-4">
             <div class="form-floating">
-              <input type="number" name="qtUnidade" id="qtUnidade" class="form-control" placeholder=""
+              <input type="text" name="qtUnidade" id="qtUnidade" class="form-control 4num" placeholder=""
                 value="{{ torre.getQtUnidade() if torre }}" maxlength="3" />
               <label for="qtUnidade">Quantidade de unidades por andar</label>
             </div>
@@ -55,16 +55,16 @@
         <div class="row mt-4">
           <div class="col-4">
             <div class="form-floating">
-              <input type="number" name="numApUmAdrUm" id="numApUmAdrUm" class="form-control" placeholder=""
-                value="{{ torre.getNumAptUmAndarUm() if torre }}" maxlength="3" />
+              <input type="text" name="numApUmAdrUm" id="numApUmAdrUm" class="form-control 4num" placeholder=""
+                value="{{ torre.getNumAptUmAndarUm() if torre }}" maxlength="4" />
               <label for="numApUmAdrUm">Número do 1º apartamento do 1º andar</label>
             </div>
           </div>
 
           <div class="col-4">
             <div class="form-floating">
-              <input type="number" name="qtdCoberturas" id="qtdCoberturas" class="form-control" placeholder=""
-                value="{{ torre.getQtCobertura() if torre }}" maxlength="2" />
+              <input type="text" name="qtdCoberturas" id="qtdCoberturas" class="form-control 2num" placeholder=""
+                value="{{ torre.getQtCobertura() if torre }}" maxlength="1" />
               <label for="qtdCoberturas">Quantidade de coberturas</label>
             </div>
           </div>
