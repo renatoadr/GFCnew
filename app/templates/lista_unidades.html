@@ -44,9 +44,17 @@
           <table class="table table-striped">
             <thead class="table-light">
               <tr>
-                <th class="w-50">Torre</th>
+                <th>Torre</th>
+                <th class="text-center">Unidade</th>
+                <th class="text-center">Status</th>
+                <th class="text-center">Valor</th>
+                <th class="text-center">Cliente</th>
+<!--              
                 <th class="text-center w-25">Unidade</th>
                 <th class="text-center w-25">Status</th>
+                <th class="text-center w-25">Valor</th>
+                <th class="text-center w-25">Cliente</th>
+-->                
                 <th colspan="3" class="text-center">Ações</th>
               </tr>
             </thead>
@@ -55,8 +63,12 @@
               {% for u in unidades %}
               <tr>
                 <td>{{ u.getNmTorre() }}</td>
+
                 <td class="text-center">{{ u.getUnidade() }}</td>
                 <td class="text-center">{{ u.getStatus() }}</td>
+                <td class="text-center">{{ u.getVlUnidade() }}</td>
+                <td class="text-center">{{ u.getNmComprador() }}</td>
+
                 <td class="text-center">
                   <a href="/consultar_unidade?idUnidade={{u.getIdUnidade()}}&modo=consulta" data-bs-toggle="tooltip"
                     data-bs-title="Consultar">

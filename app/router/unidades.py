@@ -1,7 +1,5 @@
 from flask import Blueprint, request, render_template, redirect
 from controller.unidadeController import unidadeController
-from controller.unidadeController import unidadeController
-from controller.torreController import torreController
 from controller.torreController import torreController
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from utils.helper import protectedPage

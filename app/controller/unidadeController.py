@@ -2,8 +2,11 @@
 # Trata base de UNIDADES
 
 from controller.torreController import torreController
+from controller.clienteController import clienteController
+from dto.cliente import cliente
 from dto.unidade import unidade
 from utils.dbContext import MySql
+import locale
 
 
 class unidadeController:
@@ -48,7 +51,7 @@ class unidadeController:
         print('---consultarUnidades--')
         print(idEmpreend)
 
-        query = f"""SELECT uni.id_unidade, uni.id_empreendimento, uni.id_torre, uni.unidade, uni.status, tor.nm_torre
+        query = f"""SELECT uni.id_unidade, uni.id_empreendimento, uni.id_torre, uni.unidade, uni.status, tor.nm_torre, uni.vl_unidade, uni.cpf_cnpj_comprador
         FROM {MySql.DB_NAME}.tb_unidades uni
         INNER JOIN {MySql.DB_NAME}.tb_torres tor
         ON uni.id_torre = tor.id_torre
@@ -64,6 +67,8 @@ class unidadeController:
 
         lista = cursor.fetchall()
         listaunids = []
+        
+        cliC = clienteController()
 
         for x in lista:
             u = unidade()
@@ -73,6 +78,18 @@ class unidadeController:
             u.setNmTorre(x['nm_torre'])
             u.setUnidade(x['unidade'])
             u.setStatus(x['status'])
+#            print (x['unidade'], x['id_unidade'])
+            if x['vl_unidade'] == None:
+                u.setVlUnidade(0.00)
+            else: 
+                ValorUnidade = x['vl_unidade']
+                ValorUnidadeFormatado = f"{ValorUnidade:,.2f}".replace(",", "X").replace(".", ",").replace("X", ".")
+                u.setVlUnidade(ValorUnidadeFormatado)
+            cpfCnpj = x['cpf_cnpj_comprador']    
+            if cpfCnpj == None or cpfCnpj == 'None':
+                u.setNmComprador('')
+            else:
+                u.setNmComprador(cliC.consultaClientePorCpf(cpfCnpj))
             listaunids.append(u)
 
         cursor.close()
