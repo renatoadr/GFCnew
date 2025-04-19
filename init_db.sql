@@ -1,28 +1,6 @@
-CREATE DATABASE  IF NOT EXISTS `db_gfc` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+CREATE DATABASE  IF NOT EXISTS `db_gfc`;
 USE `db_gfc`;
--- MySQL dump 10.13  Distrib 8.0.41, for Win64 (x86_64)
---
--- Host: localhost    Database: db_gfc
--- ------------------------------------------------------
--- Server version	9.1.0
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-
---
--- Table structure for table `tb_agendas`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `tb_agendas` (
   `id_empreendimento` int NOT NULL,
   `mes_vigencia` varchar(2) NOT NULL,
@@ -35,27 +13,13 @@ CREATE TABLE IF NOT EXISTS `tb_agendas` (
   `nm_resp_baixa` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id_empreendimento`,`mes_vigencia`,`ano_vigencia`,`id_atividade`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tb_agendas_atividades`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `tb_agendas_atividades` (
   `id_atividade` varchar(7) NOT NULL,
   `descr_atividade` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id_atividade`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tb_agendas_param`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `tb_agendas_param` (
   `id_empreendimento` int NOT NULL,
   `id_atividade` varchar(7) NOT NULL,
@@ -66,14 +30,7 @@ CREATE TABLE IF NOT EXISTS `tb_agendas_param` (
   `dt_fim` date DEFAULT NULL,
   PRIMARY KEY (`id_empreendimento`,`id_atividade`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tb_certidoes`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `tb_certidoes` (
   `id_empreendimento` int NOT NULL,
   `estadual_status` varchar(8) DEFAULT NULL,
@@ -88,14 +45,7 @@ CREATE TABLE IF NOT EXISTS `tb_certidoes` (
   `trabalhista_validade` date DEFAULT NULL,
   PRIMARY KEY (`id_empreendimento`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tb_clientes`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `tb_clientes` (
   `cpf_cnpj` varchar(15) NOT NULL,
   `tp_cpf_cnpj` varchar(4) DEFAULT NULL,
@@ -105,14 +55,7 @@ CREATE TABLE IF NOT EXISTS `tb_clientes` (
   `email` varchar(50) DEFAULT NULL,
   PRIMARY KEY (`cpf_cnpj`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tb_contas`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `tb_contas` (
   `id_conta` int NOT NULL AUTO_INCREMENT,
   `id_empreendimento` int NOT NULL,
@@ -128,14 +71,7 @@ CREATE TABLE IF NOT EXISTS `tb_contas` (
   `vl_saldo` decimal(15,2) DEFAULT NULL,
   PRIMARY KEY (`id_conta`)
 ) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tb_empreendimentos`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `tb_empreendimentos` (
   `id_empreendimento` int NOT NULL AUTO_INCREMENT,
   `nm_empreendimento` varchar(100) DEFAULT NULL,
@@ -154,14 +90,7 @@ CREATE TABLE IF NOT EXISTS `tb_empreendimentos` (
   `previsao_entrega` date DEFAULT NULL,
   PRIMARY KEY (`id_empreendimento`)
 ) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tb_financeiro`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `tb_financeiro` (
   `id_empreendimento` int NOT NULL,
   `mes_vigencia` varchar(2) NOT NULL,
@@ -172,14 +101,7 @@ CREATE TABLE IF NOT EXISTS `tb_financeiro` (
   `vl_financeiro` decimal(15,2) DEFAULT NULL,
   PRIMARY KEY (`id_empreendimento`,`mes_vigencia`,`ano_vigencia`,`ordem`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tb_garantias`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `tb_garantias` (
   `id_empreendimento` int NOT NULL,
   `tipo` varchar(5) NOT NULL,
@@ -190,14 +112,7 @@ CREATE TABLE IF NOT EXISTS `tb_garantias` (
   `criado_em` datetime NOT NULL,
   PRIMARY KEY (`id_garantia`)
 ) ENGINE=InnoDB AUTO_INCREMENT=97 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tb_inadimplencias`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `tb_inadimplencias` (
   `id_empreendimento` int NOT NULL,
   `mes_vigencia` varchar(2) NOT NULL,
@@ -207,14 +122,7 @@ CREATE TABLE IF NOT EXISTS `tb_inadimplencias` (
   `qt_unidades` int DEFAULT NULL,
   PRIMARY KEY (`id_empreendimento`,`mes_vigencia`,`ano_vigencia`,`ordem`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tb_laudos`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE  IF NOT EXISTS `tb_laudos` (
   `id_empreendimento` int NOT NULL,
   `mes_vigencia` varchar(2) NOT NULL,
@@ -224,14 +132,7 @@ CREATE TABLE  IF NOT EXISTS `tb_laudos` (
   `observacao` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id_empreendimento`,`mes_vigencia`,`ano_vigencia`,`descricao`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tb_medicoes`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `tb_medicoes` (
   `id_medicao` int NOT NULL AUTO_INCREMENT,
   `id_empreendimento` int NOT NULL,
@@ -247,14 +148,7 @@ CREATE TABLE IF NOT EXISTS `tb_medicoes` (
   PRIMARY KEY (`id_medicao`),
   KEY `idx_medicoes` (`id_empreendimento`,`mes_vigencia`,`ano_vigencia`) /*!80000 INVISIBLE */
 ) ENGINE=InnoDB AUTO_INCREMENT=466 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tb_notas`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `tb_notas` (
   `id_nota` int NOT NULL AUTO_INCREMENT,
   `id_empreendimento` int NOT NULL,
@@ -267,14 +161,7 @@ CREATE TABLE IF NOT EXISTS `tb_notas` (
   PRIMARY KEY (`id_nota`),
   KEY `idx_nota` (`dt_carga`,`id_empreendimento`,`mes_vigencia`,`ano_vigencia`)
 ) ENGINE=InnoDB AUTO_INCREMENT=117 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tb_orcamentos`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `tb_orcamentos` (
   `id_orcamento` int NOT NULL AUTO_INCREMENT,
   `id_empreendimento` int DEFAULT NULL,
@@ -291,14 +178,7 @@ CREATE TABLE IF NOT EXISTS `tb_orcamentos` (
   `financeiro_saldo` decimal(15,2) DEFAULT NULL,
   PRIMARY KEY (`id_orcamento`)
 ) ENGINE=InnoDB AUTO_INCREMENT=396 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tb_torres`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `tb_torres` (
   `id_torre` int NOT NULL AUTO_INCREMENT,
   `id_empreendimento` int NOT NULL,
@@ -311,14 +191,7 @@ CREATE TABLE `tb_torres` (
   PRIMARY KEY (`id_torre`),
   KEY `idx_torres` (`id_empreendimento`,`id_torre`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tb_unidades`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
   CREATE TABLE `tb_unidades` (
   `id_unidade` int NOT NULL AUTO_INCREMENT,
   `id_empreendimento` int NOT NULL,
@@ -340,27 +213,12 @@ CREATE TABLE `tb_torres` (
   KEY `idx_unidades` (`id_empreendimento`,`id_torre`,`unidade`,`mes_vigencia`,`ano_vigencia`)
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `tb_usuario_empreendimento`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `tb_usuario_empreendimento` (
   `id_usuario` int NOT NULL,
   `id_empreendimento` int NOT NULL,
   PRIMARY KEY (`id_usuario`,`id_empreendimento`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
 
---
--- Table structure for table `tb_usuarios`
---
-
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE IF NOT EXISTS `tb_usuarios` (
   `id_usuario` int NOT NULL AUTO_INCREMENT,
   `email` varchar(50) DEFAULT NULL,
@@ -370,15 +228,14 @@ CREATE TABLE IF NOT EXISTS `tb_usuarios` (
   PRIMARY KEY (`id_usuario`),
   KEY `idx_email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2025-04-10 20:45:11
+CREATE TABLE `tb_consideracoes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `campo` varchar(20) NOT NULL,
+  `texto` varchar(120) NOT NULL,
+  `dt_criado` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `ac_historico` varchar(45) DEFAULT NULL,
+  `id_empreendimento` int NOT NULL,
+  `dt_editado` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
