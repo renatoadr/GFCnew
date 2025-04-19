@@ -1,0 +1,130 @@
+<!-- Template: unidade -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Considerações</title>
+  {% include 'fractials/head.html' %}
+</head>
+
+<body>
+  {% include 'fractials/menu.html' %}
+
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-8">
+          <h2 class="title title-page">
+            <span><i class="fa-solid fa-clipboard-check"></i> Editar
+              Considerações</span><strong>{{session.nmEmpreend}}</strong>
+          </h2>
+        </div>
+      </div>
+
+      <form action="/atualizar_consideracoes" method="post">
+        <div class="row">
+          <div class="col-12">
+            <label class="form-label m-0"><strong>Qualidade - Segurança e Aspecto
+                Visual</strong></label>
+            <input type="text" class="form-control input-line" name="gp_qualidade_1" maxlength="120"
+              value="{{ consid.getQualidade1() }}">
+            <input type="text" class="form-control input-line" name="gp_qualidade_2" maxlength="120"
+              value="{{ consid.getQualidade2() }}">
+            <input type="text" class="form-control input-line" name="gp_qualidade_3" maxlength="120"
+              value="{{ consid.getQualidade3() }}">
+          </div>
+        </div>
+
+        <div class="row mt-5">
+          <div class="col-12">
+            <label class="form-label m-0"><strong>Serviços Realizados e Andamento</strong></label>
+            <input type="text" class="form-control input-line" name="gp_servico_1" maxlength="120"
+              value="{{ consid.getServico1() }}">
+            <input type="text" class="form-control input-line" name="gp_servico_2" maxlength="120"
+              value="{{ consid.getServico2() }}">
+            <input type="text" class="form-control input-line" name="gp_servico_3" maxlength="120"
+              value="{{ consid.getServico3() }}">
+          </div>
+        </div>
+
+        <div class="row mt-5">
+          <div class="col-12">
+            <label class="form-label m-0"><strong>Efetivo e Estoque</strong></label>
+            <input type="text" class="form-control input-line" name="gp_efetivoEstoque_1" maxlength="120"
+              value="{{ consid.getEfetivoEstoque1() }}">
+            <input type="text" class="form-control input-line" name="gp_efetivoEstoque_2" maxlength="120"
+              value="{{ consid.getEfetivoEstoque2() }}">
+            <input type="text" class="form-control input-line" name="gp_efetivoEstoque_3" maxlength="120"
+              value="{{ consid.getEfetivoEstoque3() }}">
+          </div>
+        </div>
+
+        <div class="row mt-5">
+          <div class="col-12">
+            <label class="form-label m-0"><strong>Empreiteiros Diversos</strong></label>
+            <input type="text" class="form-control input-line" name="gp_empreiteiro_1" maxlength="120"
+              value="{{ consid.getEmpreiteiro1() }}">
+            <input type="text" class="form-control input-line" name="gp_empreiteiro_2" maxlength="120"
+              value="{{ consid.getEmpreiteiro2() }}">
+            <input type="text" class="form-control input-line" name="gp_empreiteiro_3" maxlength="120"
+              value="{{ consid.getEmpreiteiro3() }}">
+          </div>
+        </div>
+
+
+        <div class="row mt-5">
+          <div class="col-12">
+            <label class="form-label m-0"><strong>Estoque</strong></label>
+            <input type="text" class="form-control input-line" name="gp_estoque_1" maxlength="120"
+              value="{{ consid.getEstoque1() }}">
+            <input type="text" class="form-control input-line" name="gp_estoque_2" maxlength="120"
+              value="{{ consid.getEstoque2() }}">
+            <input type="text" class="form-control input-line" name="gp_estoque_3" maxlength="120"
+              value="{{ consid.getEstoque3() }}">
+          </div>
+        </div>
+
+        <div class="row mt-5">
+          <div class="col-12">
+            <label class="form-label m-0"><strong>Para Conclusão da Obra</strong></label>
+            <input type="text" class="form-control input-line" name="gp_conclusao_1" maxlength="120"
+              value="{{ consid.getConclusao1() }}">
+            <input type="text" class="form-control input-line" name="gp_conclusao_2" maxlength="120"
+              value="{{ consid.getConclusao2() }}">
+            <input type="text" class="form-control input-line" name="gp_conclusao_3" maxlength="120"
+              value="{{ consid.getConclusao3() }}">
+          </div>
+        </div>
+
+        <div class="row mt-5">
+          <div class="col-12">
+            <label class="form-label m-0"><strong>Considerações Finais</strong></label>
+            <input type="text" class="form-control input-line" name="gp_consideracao_1" maxlength="120"
+              value="{{ consid.getConsideracao1() }}">
+            <input type="text" class="form-control input-line" name="gp_consideracao_2" maxlength="120"
+              value="{{ consid.getConsideracao2() }}">
+            <input type="text" class="form-control input-line" name="gp_consideracao_3" maxlength="120"
+              value="{{ consid.getConsideracao3() }}">
+          </div>
+        </div>
+
+
+        <div class="row mt-5 justify-content-center">
+          <div class="col-3">
+            <a href="/home" class="btn btn-secondary w-100">Cancelar</a>
+          </div>
+          <div class="col-3">
+            <button type="submit" class="btn btn-success w-100">Salvar</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </main>
+
+  {% include 'fractials/footer.html' %}
+</body>
+
+</html>

@@ -244,3 +244,18 @@ main {
   position: relative;
   height: 25px;
 }
+
+.form-control.input-line {
+  margin-bottom: 5px;
+  border-width: 0;
+  border-color: #9e9e9e;
+  border-bottom-width: 1px;
+  border-radius: 0;
+  padding: 3px;
+}
+
+.form-control.input-line:focus {
+  outline: none;
+  box-shadow: none;
+  border-color: #86b7fe;
+}

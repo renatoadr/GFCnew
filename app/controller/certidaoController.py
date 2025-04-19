@@ -4,9 +4,6 @@
 
 from dto.certidao import certidao
 from utils.dbContext import MySql
-from datetime import datetime
-import pandas as pd
-from utils.converter import converterDateTimeToDateEnFormat
 
 
 class certidaoController:
@@ -52,19 +49,21 @@ class certidaoController:
         MySql.close(self.__connection)
         return listaItens
 
-    def consultarCertidoesGraf (self, idEmpreend):
+    def consultarCertidoesGraf(self, idEmpreend):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor(dictionary=True)  
+        cursor = self.__connection.cursor(dictionary=True)
 
         print('---consultar certidoes---')
-        print('consultar certidoes ',idEmpreend)  
+        print('consultar certidoes ', idEmpreend)
 
-        query =  "select id_empreendimento, estadual_status, estadual_validade, fgts_status, fgts_validade, municipal_status, municipal_validade, srf_inss_status, srf_inss_validade, trabalhista_status, trabalhista_validade  from " + MySql.DB_NAME + ".tb_certidoes where id_empreendimento = " + str(idEmpreend)
-            
+        query = "select id_empreendimento, estadual_status, estadual_validade, fgts_status, fgts_validade, municipal_status, municipal_validade, srf_inss_status, srf_inss_validade, trabalhista_status, trabalhista_validade  from " + \
+            MySql.DB_NAME + ".tb_certidoes where id_empreendimento = " + \
+                str(idEmpreend)
+
         print('-----------------')
         print(query)
         print('-----------------')
-        
+
         cursor.execute(query)
 
         linha = cursor.fetchone()
@@ -80,7 +79,7 @@ class certidaoController:
         cert.setSrfInssValidade(linha['srf_inss_validade'])
         cert.setTrabalhistaStatus(linha['trabalhista_status'])
         cert.setTrabalhistaValidade(linha['trabalhista_validade'])
-    
+
         cursor.close()
         MySql.close(self.__connection)
         return cert
@@ -116,11 +115,13 @@ class certidaoController:
 
     def XXconsultarNotaPelaData(self, idEmpreend, dtCarga):
         self.__connection = MySql.connect()
-        cursor = self.__connection.cursor(dictionary=True)   
+        cursor = self.__connection.cursor(dictionary=True)
 
 #        query =  "select id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, item, vl_nota_fiscal, vl_estoque from " + MySql.DB_NAME + ".tb_notas where id_empreendimento = '" + idEmpreend + "' and dt_carga = '" + dtCarga + "'"
-        query =  "select id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, item, vl_nota_fiscal, vl_estoque from " + MySql.DB_NAME + ".tb_notas where id_empreendimento = '" + str(idEmpreend) + "'"
-    
+        query = "select id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, item, vl_nota_fiscal, vl_estoque from " + \
+            MySql.DB_NAME + ".tb_notas where id_empreendimento = '" + \
+                str(idEmpreend) + "'"
+
         print(query)
 
         cursor.execute(query)
@@ -131,7 +132,7 @@ class certidaoController:
 #        print('+++++++++++++++++++++++++++')
 
         lista = cursor.fetchall()
-        
+
         listaItens = []
 
         for x in lista:
@@ -146,15 +147,15 @@ class certidaoController:
 
 #        dados = [list(linha) for linha in listaItens()]
 
-        print('------------------------')       
+        print('------------------------')
         print('------------------------')
         cursor.close()
         MySql.close(self.__connection)
 #        print ('-----------------> ', dados)
-        print ('-----------------> ', listaItens)
+        print('-----------------> ', listaItens)
 
         return listaItens
-    
+
     def salvarCertidoes(self, item):
         query = "update " + MySql.DB_NAME + """.tb_certidoes set estadual_status = %s, estadual_validade = %s, fgts_status = %s, fgts_validade = %s, municipal_status = %s, municipal_validade = %s, srf_inss_status = %s, srf_inss_validade = %s, trabalhista_status = %s, trabalhista_validade = %s where id_empreendimento = %s """
         MySql.exec(query, (

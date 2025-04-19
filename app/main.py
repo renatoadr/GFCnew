@@ -3,6 +3,8 @@
 from flask import Flask
 import configparser
 import os
+
+from app.router.consideracoes import consideracoes_bp
 from router.contas_corrente import contas_corrente_bp
 from router.emprendimento import empreend_bp
 from router.relatorios import relatorio_bp
@@ -21,12 +23,11 @@ from router.notas import nota_bp
 from router.fotos import foto_bp
 from filters import filtros_bp
 from router.api import api_bp
-from utils.logger import logger
-
 app = Flask(__name__)
 app.secret_key = "gfc001"
 
 app.register_blueprint(contas_corrente_bp)
+app.register_blueprint(consideracoes_bp)
 app.register_blueprint(relatorio_bp)
 app.register_blueprint(empreend_bp)
 app.register_blueprint(medicoes_bp)
