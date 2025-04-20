@@ -237,5 +237,7 @@ CREATE TABLE `tb_consideracoes` (
   `ac_historico` varchar(45) DEFAULT NULL,
   `id_empreendimento` int NOT NULL,
   `dt_editado` timestamp NULL DEFAULT NULL,
+  `mes_vigencia` varchar(2) NOT NULL,
+  `ano_vigencia` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci
+) ENGINE=MyISAM AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;

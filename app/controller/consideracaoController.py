@@ -5,18 +5,21 @@ from dto.consideracoes import consideracoes
 
 class consideracaoController:
 
-    def insert_registros(self, registros: dict, idEmpreend: int) -> None:
-        queryInsert = f"""INSERT INTO {MySql.DB_NAME}.tb_consideracoes (campo, texto, id_empreendimento) VALUES (%s, %s, %s);"""
-        queryUpdate = f"UPDATE {MySql.DB_NAME}.tb_consideracoes SET ac_historico = 'EDITADO', dt_editado = CURRENT_TIMESTAMP WHERE campo = %s AND texto != %s AND id_empreendimento = %s ;"
-        tuples = []
-        for campo, texto in registros.items():
-            tuples.append((campo, texto, idEmpreend))
-        MySql.execMany(queryUpdate, tuples)
-        MySql.execMany(queryInsert, tuples)
+    def insert_registros(self, registros: dict, idEmpreend: int, mes: str, ano: int) -> None:
+        querySelect = f"SELECT COUNT(1) existe FROM {MySql.DB_NAME}.tb_consideracoes WHERE campo = %s AND texto = %s AND id_empreendimento = %s AND mes_vigencia = %s AND ano_vigencia = %s AND ac_historico IS NULL;"
+        queryInsert = f"INSERT INTO {MySql.DB_NAME}.tb_consideracoes (campo, texto, id_empreendimento, mes_vigencia, ano_vigencia) VALUES (%s, %s, %s, %s, %s);"
+        queryUpdate = f"UPDATE {MySql.DB_NAME}.tb_consideracoes SET ac_historico = 'EDITADO', dt_editado = CURRENT_TIMESTAMP WHERE campo = %s AND texto != %s AND id_empreendimento = %s AND mes_vigencia = %s AND ano_vigencia = %s ;"
 
-    def listar_campos(self, idEmpreend: int) -> consideracoes:
-        query = f"SELECT campo, texto FROM {MySql.DB_NAME}.tb_consideracoes WHERE id_empreendimento = %s AND ac_historico IS NULL ORDER BY 1;"
-        result = MySql.getAll(query, (idEmpreend,))
+        for campo, texto in registros.items():
+            data = (campo, escape(texto), idEmpreend, mes, ano)
+            select = MySql.getOne(querySelect, data)
+            if select['existe'] == 0:
+                MySql.exec(queryUpdate, data)
+                MySql.exec(queryInsert, data)
+
+    def listar_campos(self, idEmpreend: int, mes: str, ano: int) -> consideracoes:
+        query = f"SELECT campo, texto FROM {MySql.DB_NAME}.tb_consideracoes WHERE id_empreendimento = %s AND mes_vigencia = %s AND ano_vigencia = %s AND ac_historico IS NULL ORDER BY 1;"
+        result = MySql.getAll(query, (idEmpreend, mes, ano))
         return self.mapeamento(result)
 
     def mapeamento(self, lista) -> consideracoes:
@@ -43,11 +46,13 @@ class consideracaoController:
             'gp_servico_1': 'setServico1',
             'gp_servico_2': 'setServico2',
             'gp_servico_3': 'setServico3',
+            'responsavel': 'setResponsavel',
+            'crea': 'setCREA',
         }
         for linha in lista:
             campo = linha['campo']
             texto = linha['texto']
-            if map[campo]:
+            if campo in map:
                 metodo = getattr(consid, map[campo])
                 metodo(texto)
         return consid

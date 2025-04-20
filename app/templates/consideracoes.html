@@ -23,7 +23,41 @@
         </div>
       </div>
 
-      <form action="/atualizar_consideracoes" method="post">
+      <p class="border-start border-5 p-3 pt-0 pb-0 h5 mb-2 mt-4 border-primary">Selecione a vigência</p>
+      <div class="bg-body-tertiary border border-1 p-3 rounded-4 mb-5">
+        <form action="" method="GET" id="formVigencia">
+          <div class="row">
+            <div class="col-4">
+              <div class="form-floating">
+                <select name="mes" id="mesVigencia" class="form-control required" placeholder="" value="">
+                  <option value="">Selecione o mês</option>
+                  {% for m in range(1, 13) %}
+                  <option value="{{(m|string).zfill(2)}}" {% if (m|string).zfill(2)==mes %} selected {% endif %}>
+                    {{(m|string).zfill(2)}}
+                  </option>
+                  {% endfor %}
+                </select>
+                <label for="mesVigencia">Mês Vigência</label>
+              </div>
+            </div>
+            <div class="col-4">
+              <div class="form-floating">
+                <input type="text" name="ano" id="anoVigencia" class="form-control  4num required" min="2000" max="3000"
+                  placeholder="" value="{{ano if ano}}" maxlength="4" />
+                <label for="anoVigencia">Ano Vigencia</label>
+              </div>
+            </div>
+            <div class="col-4 align-content-center">
+              <button type="submit" class="btn btn-primary w-100">
+                Visualizar
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      {% if consid %}
+      <form action="/atualizar_consideracoes?ano={{ano}}&mes={{mes}}" method="post">
         <div class="row">
           <div class="col-12">
             <label class="form-label m-0"><strong>Qualidade - Segurança e Aspecto
@@ -110,6 +144,20 @@
           </div>
         </div>
 
+        <div class="row mt-5">
+          <div class="col-4">
+            <label class="form-label m-0"><strong>Engenheiro responsável pela vistoria</strong></label>
+            <input type="text" class="form-control input-line" name="responsavel" maxlength="60"
+              value="{{ consid.getResponsavel() }}">
+            <div class="d-flex align-items-center gap-3">
+              <label class="form-label flex-shrink-0 m-0">CREA RJ nº</label>
+              <input type="text" class="form-control input-line m-0" name="crea" maxlength="12"
+                value="{{ consid.getCREA() }}">
+            </div>
+          </div>
+        </div>
+
+
 
         <div class="row mt-5 justify-content-center">
           <div class="col-3">
@@ -121,10 +169,24 @@
         </div>
 
       </form>
+      {% endif %}
     </div>
   </main>
 
   {% include 'fractials/footer.html' %}
+  <script>
+    $(function () {
+      const requireds = GFC.getRequiredFields("formVigencia")
+      requireds.messages.ano = {
+        required: GFC_MESSAGES.REQUIRED,
+        min: GFC_MESSAGES.MIN(2000),
+        max: GFC_MESSAGES.MAX(3000),
+      }
+      delete requireds.rules;
+      const config = GFC.getConfigValidateForm(requireds);
+      $("#formVigencia").validate(config);
+    });
+  </script>
 </body>
 
 </html>

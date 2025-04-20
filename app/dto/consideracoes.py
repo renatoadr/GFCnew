@@ -20,6 +20,8 @@ class consideracoes:
     __consideracao1 = ''
     __consideracao2 = ''
     __consideracao3 = ''
+    __responsavel = ''
+    __crea = ''
 
     def getQualidade1(self):
         return self.__qualidade1
@@ -146,3 +148,15 @@ class consideracoes:
 
     def setConsideracao3(self, param):
         self.__consideracao3 = param
+
+    def getResponsavel(self):
+        return self.__responsavel
+
+    def setResponsavel(self, param):
+        self.__responsavel = param
+
+    def getCREA(self):
+        return self.__crea
+
+    def setCREA(self, param):
+        self.__crea = param
