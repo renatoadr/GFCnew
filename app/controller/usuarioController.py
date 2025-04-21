@@ -1,63 +1,55 @@
-#controller or business logic
+# controller or business logic
 # Trata base de USUARIOS
 
-import os
-from flask import Flask, send_from_directory, jsonify
 from utils.dbContext import MySql
 from dto.usuario import usuario
 from dto.empreendimento import empreendimento
+import bcrypt
+
 
 class usuarioController:
-    __connection = None
 
-    def __init__(self):
-        pass
+    def lista_usuarios(self):
+        query = f"SELECT id_usuario, email, tp_acesso, nm_usuario FROM {MySql.DB_NAME}.tb_usuarios ORDER BY id_usuario"
+        users = MySql.getAll(query)
+        list = []
+        for row in users:
+            user = usuario()
+            user.setIdUsuario(row.get('id_usuario'))
+            user.setEmail(row.get('email'))
+            user.setTpAcesso(row.get('tp_acesso'))
+            user.setNmUsuario(row.get('nm_usuario'))
+            list.append(user)
+        return list
 
     def consultarAcesso(self, email, senha):
-        self.__connection = MySql.connect()
-        cursor = self.__connection.cursor(dictionary=True)
+        query = f"SELECT id_usuario, email, senha, tp_acesso, nm_usuario, salt FROM {MySql.DB_NAME}.tb_usuarios WHERE email = %s"
 
-        query =  "select id_usuario, email, senha, tp_acesso, nm_usuario from " + MySql.DB_NAME + ".tb_usuarios where email = '" + email + "' and senha = '" + senha + "'"
-
-#        print(query)
-
-        cursor.execute(query)
-
-        linha = cursor.fetchone()
-#        print('++++++++++++ consultarAcesso +++++++++++++++')
-#        print (cursor)
-#        print (linha)
-#        print('+++++++++++++++++++++++++++')
+        linha = MySql.getOne(query, (email,))
 
         if linha:
-#            print('++++++++++++ passou aqui no usuario +++++++++++++')
-            itens = usuario()
-            itens.setIdUsuario(linha.get('id_usuario'))
-            itens.setEmail(linha.get('email'))
-            itens.setSenha(linha.get('senha'))
-            itens.setTpAcesso(linha.get('tp_acesso'))
-            itens.setNmUsuario(linha.get('nm_usuario'))
-            cursor.close()
-            MySql.close(self.__connection)
-            return itens
-        else:
-            return None
+            senhaSalva = self.encrypt(linha.get('senha'), linha.get('salt'))
+            senhaInformada = self.encrypt(senha, linha.get('salt'))
+
+            if senhaInformada == senhaSalva:
+                user = usuario()
+                user.setIdUsuario(linha.get('id_usuario'))
+                user.setEmail(linha.get('email'))
+                user.setSenha(linha.get('senha'))
+                user.setTpAcesso(linha.get('tp_acesso'))
+                user.setNmUsuario(linha.get('nm_usuario'))
+                return user
+
+        return None
 
     def consultarApelidos(self, idUsuario):
-        self.__connection = MySql.connect()
-        cursor = self.__connection.cursor(dictionary=True)
+        query = f"""SELECT * from {MySql.DB_NAME}.tb_empreendimentos emp
+        INNER JOIN  {MySql.DB_NAME}.tb_usuario_empreendimento user
+        ON user.id_empreendimento = emp.id_empreendimento
+        WHERE user.id_usuario = %s
+        ORDER BY emp.apelido"""
 
-#       print('---consultarApelidos--')
-#       print(idUsuario)
-
-        query = "select * from " + MySql.DB_NAME + ".tb_empreendimentos E inner join  " + MySql.DB_NAME + """.tb_usuario_empreendimento U on U.id_empreendimento = E.id_empreendimento where U.id_usuario = %s order by E.apelido"""
-
-#       print(query)
-#       print('-----------------')
-
-        cursor.execute(query, (idUsuario,))
-
-        lista = cursor.fetchall()
+        lista = MySql.getAll(query, (idUsuario,))
         listaA = []
 
         for x in lista:
@@ -73,12 +65,7 @@ class usuarioController:
             e.setCep(x['cep'])
             listaA.append(e)
 
-#       print('listaA  ', listaA)
-#       print('---consultarApelidos--')
-#       print('------ FIM -------')
-
-        cursor.close()
-        MySql.close(self.__connection)
         return listaA
 
-
+    def encrypt(self, senha: str, salt=bcrypt.gensalt(6)) -> str:
+        return bcrypt.hashpw(senha, salt)
