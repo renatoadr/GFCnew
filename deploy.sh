@@ -13,7 +13,7 @@ IFS='.' read -r -a semver <<< "$versao_atual"
 versao_build=$(( semver[3] + 1))
 semver[3]=$versao_build
 nova_versao=$(IFS=. ; echo "${semver[*]}")
-nome_arquivo="gfcapp_${nova_versao}.tar"
+nome_arquivo="${nome_image}_${nova_versao}.tar"
 
 echo "[GFC_DEPLOY] Alterando versão do deploy no docker-compose"
 sed -i "s/image: ${imagem_atual}/image: gfcapp:${nova_versao}/" docker-compose.yml
@@ -61,5 +61,8 @@ ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${p
 
 echo "[GFC_DEPLOY] Deletando imagem salva no diretório local"
 rm -f "${nome_arquivo}" "${nome_arquivo}.gz"
+
+echo "[GFC_DEPLOY] Removendo imagem nova do docker local"
+docker rmi "${nome_image}:${nova_versao}"
 
 echo "[GFC_DEPLOY] Deploy concluído!"
