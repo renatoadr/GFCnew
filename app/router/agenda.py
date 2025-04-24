@@ -2,30 +2,31 @@ from flask import Blueprint, request, render_template, redirect
 from controller.empreendimentoController import empreendimentoController
 from controller.empreendimentoController import empreendimentoController
 from controller.agendaController import agendaController
-from utils.helper import protectedPage
 from dto.agenda import agenda
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
+from decorators.login_riquired import login_required
 
 agenda_bp = Blueprint('agendas', __name__)
 
+
 @agenda_bp.route('/tratar_agendas')
+@login_required
 def tratar_agendas():
-    protectedPage()
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
 
     if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
-      return redirect('/home')
+        return redirect('/home')
 
     if idEmpreend is None:
-      idEmpreend = IdEmpreend().get()
+        idEmpreend = IdEmpreend().get()
     else:
-      IdEmpreend().set(idEmpreend)
+        IdEmpreend().set(idEmpreend)
 
     if nmEmpreend is None:
-      nmEmpreend = NmEmpreend().get()
+        nmEmpreend = NmEmpreend().get()
     else:
-      NmEmpreend().set(nmEmpreend)
+        NmEmpreend().set(nmEmpreend)
 
     agendaC = agendaController()
     agendaS = agendaC.consultarAgendas(idEmpreend)
@@ -33,12 +34,12 @@ def tratar_agendas():
     return render_template("lista_agendas.html", agendaS=agendaS)
 
 
-
 @agenda_bp.route('/abrir_cad_agenda')
+@login_required
 def abrir_cad_agenda():
-  agendaC = agendaController()
-  atividades = agendaC.lista_atividades()
-  return render_template("cad_agenda.html", atividades=atividades)
+    agendaC = agendaController()
+    atividades = agendaC.lista_atividades()
+    return render_template("cad_agenda.html", atividades=atividades)
 
 
 @agenda_bp.route('/cadastrar_agenda', methods=['POST'])
@@ -61,6 +62,7 @@ def cadastrar_agenda():
 
 
 @agenda_bp.route('/editar_agenda')
+@login_required
 def editar_agenda():
 
     idT = request.args.get("idAgenda")
@@ -101,6 +103,7 @@ def salvar_alteracao_agenda():
 
 
 @agenda_bp.route('/consultar_agenda')
+@login_required
 def consultar_agenda():
 
     modo = request.args.get("modo")
@@ -122,6 +125,7 @@ def consultar_agenda():
 
 
 @agenda_bp.route('/excluir_agenda')
+@login_required
 def excluir_agenda():
 
     idAgenda = request.args.get('idAgenda')

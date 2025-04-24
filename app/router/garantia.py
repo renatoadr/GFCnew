@@ -1,6 +1,7 @@
 from flask import Blueprint, request, render_template, redirect, flash
 from controller.garantiaController import garantiaController
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
+from decorators.login_riquired import login_required
 from datetime import datetime
 
 garantia_bp = Blueprint('garantias', __name__)
@@ -28,6 +29,7 @@ def getGarantia(garantias, campo):
 
 
 @garantia_bp.route('/tratar_garantias')
+@login_required
 def tratar_garantias():
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
@@ -58,6 +60,7 @@ def tratar_garantias():
 
 
 @garantia_bp.route('/atualizar_garantia')
+@login_required
 def atualizar_garantia():
     ctrl = garantiaController()
     items = ctrl.list(IdEmpreend().get())

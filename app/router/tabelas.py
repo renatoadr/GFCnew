@@ -1,5 +1,6 @@
 
-from flask import Blueprint, request, render_template, redirect, flash
+from flask import Blueprint, request, render_template
+
 from controller.inadimplenciaController import inadimplenciaController
 from controller.financeiroController import financeiroController
 from controller.orcamentoController import orcamentoController
@@ -10,18 +11,18 @@ from controller.medicaoController import medicaoController
 from controller.contaController import contaController
 from controller.geralController import geralController
 from controller.notaController import notaController
+from decorators.login_riquired import login_required
 from utils.CtrlSessao import IdEmpreend
 from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
 import random
 
-from dto.certidao import certidao
-
 tabela_bp = Blueprint('tabelas', __name__)
 
-@tabela_bp.route('/tab_inadimplencia')
-def tab_inadimplencia():
 
+@tabela_bp.route('/tab_inadimplencia')
+@login_required
+def tab_inadimplencia():
     #    tipo = request.args.get("tipo")
     #    idEmpreend = request.args.get("idEmpreend")
     #    dtCarga = request.args.get("dtCarga")
@@ -128,24 +129,23 @@ def tab_inadimplencia():
 
 
 @tabela_bp.route('/tab_notas')
+@login_required
 def tab_notas():
-
-#    idEmpreend = request.args.get("idEmpreend")
     idEmpreend = IdEmpreend().get()
     dtCarga = request.args.get("dtCarga")
     mesVigencia = str(request.args.get('mesV')).zfill(2)
     anoVigencia = str(request.args.get('anoV'))
 
-
-#    idEmpreend = 55
-#    dtCarga = '2024-12-30 16:57:31'
-#    mes = "12"  # preciso montar esse informação
-#    ano = "2024"
-
-    geral = geralController()
     notC = notaController()
     notS = notC.consultarNotaPelaData(idEmpreend, dtCarga)
 
+    grafNome = gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS)
+
+    return render_template("nota_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+def gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS):
+    geral = geralController()
     fig, ax = plt.subplots(1, 1)
 
     data = []
@@ -217,23 +217,29 @@ def tab_notas():
 
     plt.savefig(grafNome)
 
-    return render_template("nota_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    return grafNome
 
 
 @tabela_bp.route('/tab_conta')
+@login_required
 def tab_conta_corrente():
-
-    fig, ax = plt.subplots(1, 1)
-
     idEmpreend = IdEmpreend().get()
     dtCarga = request.args.get("dtCarga")
     mesVigencia = str(request.args.get('mesV')).zfill(2)
     anoVigencia = str(request.args.get('anoV'))
 
-    geral = geralController()
     conC = contaController()
     conS = conC.consultarContaPelaCarga(idEmpreend, dtCarga)
 
+    grafNome = gerar_tab_conta_corrente(
+        idEmpreend, mesVigencia, anoVigencia, conS)
+    return render_template("conta_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+def gerar_tab_conta_corrente(idEmpreend, mesVigencia, anoVigencia, conS):
+    geral = geralController()
+
+    fig, ax = plt.subplots(1, 1)
     data = []
 
     for c in conS:
@@ -293,10 +299,11 @@ def tab_conta_corrente():
 
     plt.savefig(grafNome)
 
-    return render_template("conta_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    return grafNome
 
 
 @tabela_bp.route('/tab_garantias_geral', methods=['GET'])
+@login_required
 def tab_garantias_geral():
 
     idEmpreend = IdEmpreend().get()
@@ -351,16 +358,20 @@ def tab_garantias_geral():
             cell.set_facecolor("lightblue")
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
-            if col == 1: 
+            if col == 1:
                 cell_text = cell.get_text().get_text()  # Obtém o texto da célula
                 if "Atenção" in cell_text:  # Verifica se contém a palavra "Atenção"
-                    cell.set_text_props(ha='left', va='center',color='red')  # Alinhar à esquerda
+                    # Alinhar à esquerda
+                    cell.set_text_props(ha='left', va='center', color='red')
                 elif "Verificar" in cell_text:  # Verifica se contém a palavra "Atenção"
-                    cell.set_text_props(ha='left', va='center',color='orange')  # Alinhar à esquerda
+                    # Alinhar à esquerda
+                    cell.set_text_props(ha='left', va='center', color='orange')
                 else:
-                    cell.set_text_props(ha='left', va='center',color='green')  # Alinhar à esquerda
+                    # Alinhar à esquerda
+                    cell.set_text_props(ha='left', va='center', color='green')
             else:
-                cell.set_text_props(ha='left', va='center')  # Alinhar no centro
+                # Alinhar no centro
+                cell.set_text_props(ha='left', va='center')
 
     grafC = graficoController()
 
@@ -372,7 +383,9 @@ def tab_garantias_geral():
 
     return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
+
 @tabela_bp.route('/tab_garantias_obra')
+@login_required
 def tab_garantias_obra():
 
     idEmpreend = IdEmpreend().get()
@@ -427,16 +440,20 @@ def tab_garantias_obra():
             cell.set_facecolor("lightblue")
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
-            if col == 1: 
+            if col == 1:
                 cell_text = cell.get_text().get_text()  # Obtém o texto da célula
                 if "Atenção" in cell_text:  # Verifica se contém a palavra "Atenção"
-                    cell.set_text_props(ha='left', va='center',color='red')  # Alinhar à esquerda
+                    # Alinhar à esquerda
+                    cell.set_text_props(ha='left', va='center', color='red')
                 elif "Verificar" in cell_text:  # Verifica se contém a palavra "Atenção"
-                    cell.set_text_props(ha='left', va='center',color='orange')  # Alinhar à esquerda
+                    # Alinhar à esquerda
+                    cell.set_text_props(ha='left', va='center', color='orange')
                 else:
-                    cell.set_text_props(ha='left', va='center',color='green')  # Alinhar à esquerda
+                    # Alinhar à esquerda
+                    cell.set_text_props(ha='left', va='center', color='green')
             else:
-                cell.set_text_props(ha='left', va='center')  # Alinhar no centro
+                # Alinhar no centro
+                cell.set_text_props(ha='left', va='center')
 
     grafC = graficoController()
 
@@ -450,6 +467,7 @@ def tab_garantias_obra():
 
 
 @tabela_bp.route('/tab_certidoes')
+@login_required
 def tab_certidoes():
 
     idEmpreend = IdEmpreend().get()
@@ -459,22 +477,22 @@ def tab_certidoes():
     geral = geralController()
     certC = certidaoController()
     certS = certC.consultarCertidoesGraf(idEmpreend)
- 
+
     fig, ax = plt.subplots(1, 1)
-    print (certS)
-    print (certS.getEstadualStatus())
+    print(certS)
+    print(certS.getEstadualStatus())
 
     data = []
     a = ['Estadual', certS.getEstadualStatus(), certS.getEstadualValidade()]
-    data.append (a)
+    data.append(a)
     b = ['FGTS', certS.getFgtsStatus(), certS.getEstadualValidade()]
-    data.append (b)    
+    data.append(b)
     c = ['Municipal', certS.getMunicipalStatus(), certS.getMunicipalValidade()]
-    data.append (c)
+    data.append(c)
     d = ['SRF/INSS', certS.getSrfInssStatus(), certS.getSrfInssValidade()]
-    data.append (d)
+    data.append(d)
     e = ['Trabalhista', certS.getTrabalhistaStatus(), certS.getTrabalhistaValidade()]
-    data.append (e)
+    data.append(e)
 
     column_labels = ["Doc. Fiscal", "Status", "Validade"]
 
@@ -508,16 +526,20 @@ def tab_certidoes():
             cell.set_facecolor("lightblue")
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
-            if col == 1: 
+            if col == 1:
                 cell_text = cell.get_text().get_text()  # Obtém o texto da célula
                 if "Positiva" in cell_text:  # Verifica se contém a palavra "Atenção"
-                    cell.set_text_props(ha='left', va='center',color='red')  # Alinhar à esquerda
+                    # Alinhar à esquerda
+                    cell.set_text_props(ha='left', va='center', color='red')
                 elif "Pendente" in cell_text:  # Verifica se contém a palavra "Atenção"
-                    cell.set_text_props(ha='left', va='center',color='orange')  # Alinhar à esquerda
+                    # Alinhar à esquerda
+                    cell.set_text_props(ha='left', va='center', color='orange')
                 else:
-                    cell.set_text_props(ha='left', va='center',color='green')  # Alinhar à esquerda
+                    # Alinhar à esquerda
+                    cell.set_text_props(ha='left', va='center', color='green')
             else:
-                cell.set_text_props(ha='left', va='center')  # Alinhar no centro
+                # Alinhar no centro
+                cell.set_text_props(ha='left', va='center')
 
     grafC = graficoController()
 
@@ -531,19 +553,22 @@ def tab_certidoes():
 
 
 @tabela_bp.route('/tab_acomp_financeiro')
+@login_required
 def tab_acomp_financeiro():
-
     idEmpreend = IdEmpreend().get()
-    mesVigencia = request.args.get("mesVigencia")
-    anoVigencia = request.args.get("anoVigencia")
+    dtCarga = request.args.get("dtCarga")
+    mesVigencia = str(request.args.get('mesV')).zfill(2)
+    anoVigencia = str(request.args.get('anoV'))
 
-    idEmpreend = 55
-    mesVigencia = '05'
-    anoVigencia = '2025'
-
-    geral = geralController()
     finC = financeiroController()
-    finS = finC.consultarFinanceiroPelaData(idEmpreend)
+    finS = finC.consultarFinanceiroPelaData(idEmpreend, dtCarga)
+    grafNome = gerar_tab_acomp_financeiro(
+        idEmpreend, mesVigencia, anoVigencia, finS)
+    return render_template(".html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+def gerar_tab_acomp_financeiro(idEmpreend, mes, ano, finS):
+    geral = geralController()
     fig, ax = plt.subplots(1, 1)
 
     data = []
@@ -592,32 +617,34 @@ def tab_acomp_financeiro():
 
     grafC = graficoController()
 
-    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
+    diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_acomp_financeiro.png'
 
     plt.savefig(grafNome)
 
-    return render_template("financeiro_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    return grafNome
 
 
 @tabela_bp.route('/tab_medicoes')
+@login_required
 def tab_medicoes():
 
-    idEmpreend  = IdEmpreend().get()
+    idEmpreend = IdEmpreend().get()
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
-    mesInicio  = request.args.get("mesInicio")
-    anoInicio  = request.args.get("anoInicio")
-    mesFinal   = request.args.get("mesFinal")
-    anoFinal   = request.args.get("anoFinal")
+    mesInicio = request.args.get("mesInicio")
+    anoInicio = request.args.get("anoInicio")
+    mesFinal = request.args.get("mesFinal")
+    anoFinal = request.args.get("anoFinal")
 
     geral = geralController()
-    preC  = medicaoController()
+    preC = medicaoController()
 
 #    preS = preC.consultarMedicoes(idEmpreend)
 
-    preS = preC.consultarMedicoesPorPeriodo(idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
+    preS = preC.consultarMedicoesPorPeriodo(
+        idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
 
     fig, ax = plt.subplots(1, 1)
 
@@ -683,16 +710,21 @@ def tab_medicoes():
 
 
 @tabela_bp.route('/tab_orcamento_liberacao')
+@login_required
 def tab_orcamento_liberacao():
-
     idEmpreend = IdEmpreend().get()
     dtCarga = request.args.get("dtCarga")
     mes = request.args.get("mesV")
     ano = request.args.get("anoV")
 
-    geral = geralController()
     medC = orcamentoController()
     medS = medC.consultarOrcamentoPelaData(idEmpreend, dtCarga)
+    grafNome = gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS)
+    return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+def gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS):
+    geral = geralController()
     fig, ax = plt.subplots(1, 1)
 
     data = []
@@ -780,6 +812,4 @@ def tab_orcamento_liberacao():
 
     plt.savefig(grafNome)
 
-#    plt.savefig(grafNome, bbox_inches='tight')
-
-    return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    return grafNome

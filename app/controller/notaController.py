@@ -50,7 +50,9 @@ class notaController:
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor(dictionary=True)
 
-        query =  "select id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, produto, vl_nota_fiscal, vl_estoque from " + MySql.DB_NAME + ".tb_notas where id_empreendimento = '" + str(idEmpreend) + "' and dt_carga = '" + dtCarga + "'"
+        query = "select id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, produto, vl_nota_fiscal, vl_estoque from " + \
+            MySql.DB_NAME + ".tb_notas where id_empreendimento = '" + \
+                str(idEmpreend) + "' and dt_carga = '" + dtCarga + "'"
 #        query = "select id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, produto, vl_nota_fiscal, vl_estoque from " + MySql.DB_NAME + ".tb_notas where id_empreendimento = '" + str(idEmpreend) + "'"
 
         print(query)
@@ -84,6 +86,25 @@ class notaController:
         MySql.close(self.__connection)
 #        print ('-----------------> ', dados)
         print('-----------------> ', listaItens)
+
+        return listaItens
+
+    def consultarNotaPelaVigencia(self, idEmpreend, mes, ano):
+        query = f"SELECT id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, produto, vl_nota_fiscal, vl_estoque FROM {MySql.DB_NAME}.tb_notas WHERE id_empreendimento = %s AND mes_vigencia = %s AND ano_vigencia = %s;"
+
+        lista = MySql.getAll(query, (idEmpreend, mes, ano))
+
+        listaItens = []
+
+        for x in lista:
+            n = nota()
+            n.setMesVigencia(x['mes_vigencia'])
+            n.setAnoVigencia(x['ano_vigencia'])
+            n.setDtCarga(x['dt_carga'])
+            n.setProduto(x['produto'])
+            n.setVlNotaFiscal(x['vl_nota_fiscal'])
+            n.setVlEstoque(x['vl_estoque'])
+            listaItens.append(n)
 
         return listaItens
 

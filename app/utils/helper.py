@@ -1,10 +1,5 @@
-from flask import session, redirect, current_app
+from flask import session, current_app
 import os
-
-
-def protectedPage():
-    if 'logged_in' not in session or session['logged_in'] == False:
-        return redirect("/login")
 
 
 def is_logged():

@@ -1,3 +1,4 @@
+from decorators.login_riquired import login_required
 from flask import Blueprint, request, render_template, current_app, redirect, flash, jsonify, send_file
 from utils.logger import logger
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
@@ -34,6 +35,7 @@ camposCapa = (
 
 
 @foto_bp.route('/upload_config_fotos')
+@login_required
 def upload_config_fotos():
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
@@ -155,6 +157,7 @@ def api_files():
 
 
 @foto_bp.route('/obter_imagem/<idEmpreend>/<vigencia>/<nameFile>')
+@login_required
 def obter_imagem(idEmpreend, vigencia, nameFile):
     dirPath = os.path.abspath(__name__).replace(__name__, '')
     file = os.path.join(

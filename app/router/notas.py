@@ -1,9 +1,11 @@
 from flask import Blueprint, request, render_template, redirect
-from dto.nota import nota
-from utils.converter import converterStrToFloat
-from controller.notaController import notaController
-from utils.helper import protectedPage, allowed_file
+
 from utils.CtrlSessao import IdEmpreend, NmEmpreend, DtCarga, AnoVigencia, MesVigencia
+from decorators.login_riquired import login_required
+from controller.notaController import notaController
+from utils.converter import converterStrToFloat
+from utils.helper import allowed_file
+from dto.nota import nota
 
 nota_bp = Blueprint('notas', __name__)
 
@@ -32,8 +34,8 @@ def upload_arquivo_notas():
 
 
 @nota_bp.route('/tratar_notas')
+@login_required
 def tratar_notas():
-    protectedPage()
 
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
@@ -59,7 +61,9 @@ def tratar_notas():
 
     return render_template("lista_notas_agrupadas.html", notas=notS, idEmpreend=idEmpreend)
 
+
 @nota_bp.route('/excluir_nota_carga')
+@login_required
 def excluir_nota_carga():
     mes = request.args.get('mesV')
     ano = request.args.get('anoV')
@@ -70,8 +74,8 @@ def excluir_nota_carga():
 
 
 @nota_bp.route('/consultar_nota_data')
+@login_required
 def consultar_nota_data():
-    protectedPage()
     data = request.args.get('dtCarga')
     ano = request.args.get('anoV')
     mes = request.args.get('mesV')
@@ -93,6 +97,7 @@ def consultar_nota_data():
 
 
 @nota_bp.route('/excluir_nota')
+@login_required
 def excluir_nota():
     id = request.args.get('idNota')
     contC = notaController()
@@ -101,8 +106,8 @@ def excluir_nota():
 
 
 @nota_bp.route('/editar_nota')
+@login_required
 def editar_nota():
-    protectedPage()
     id = request.args.get('idConta')
     contC = notaController()
     nota = contC.nota_por_id(id)
@@ -110,8 +115,8 @@ def editar_nota():
 
 
 @nota_bp.route('/abrir_cad_nota')
+@login_required
 def cadastrar_nota():
-    protectedPage()
     return render_template("cad_nota.html")
 
 

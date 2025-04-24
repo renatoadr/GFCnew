@@ -3,9 +3,11 @@
 from flask import Flask
 import configparser
 import os
+from utils.logger import logger
 
-from app.router.consideracoes import consideracoes_bp
+from router.gerar_relatorios import gerar_relatorio_bp
 from router.contas_corrente import contas_corrente_bp
+from router.consideracoes import consideracoes_bp
 from router.emprendimento import empreend_bp
 from router.relatorios import relatorio_bp
 from router.medicoes import medicoes_bp
@@ -21,11 +23,14 @@ from router.torres import torre_bp
 from router.inicio import init_bp
 from router.notas import nota_bp
 from router.fotos import foto_bp
-from filters import filtros_bp
 from router.api import api_bp
+
+from filters import filtros_bp
+
 app = Flask(__name__)
 app.secret_key = "gfc001"
 
+app.register_blueprint(gerar_relatorio_bp)
 app.register_blueprint(contas_corrente_bp)
 app.register_blueprint(consideracoes_bp)
 app.register_blueprint(relatorio_bp)
@@ -61,9 +66,9 @@ def init(app):
         if not os.path.exists(app.config['DIRSYS']):
             os.makedirs(app.config['DIRSYS'])
 
-        print("Succesfully read configs from: ", config_location)
-    except:
-        print("Couldn't read configs from: ", config_location)
+        logger.info("Configurações carregadas com sucesso: ", config_location)
+    except Exception as error:
+        logger.error("Não foi possível carregar as configurações: ", error)
 
 
 init(app)

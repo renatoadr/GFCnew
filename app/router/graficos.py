@@ -1,4 +1,5 @@
-from flask import Blueprint, request, render_template, send_file, current_app
+from decorators.login_riquired import login_required
+from flask import Blueprint, request, render_template, send_file
 from controller.empreendimentoController import empreendimentoController
 from controller.orcamentoController import orcamentoController
 from controller.unidadeController import unidadeController
@@ -16,6 +17,7 @@ grafico_bp = Blueprint('graficos', __name__)
 
 
 @grafico_bp.route('/obter_grafico', methods=['GET'])
+@login_required
 def obter_grafico():
 
     grafNome = request.args.get("grafNome")
@@ -26,6 +28,7 @@ def obter_grafico():
 
 
 @grafico_bp.route('/graf_orcamento_liberacao', methods=['GET'])
+@login_required
 def graf_orcamento_liberacao():
 
     tipo = request.args.get("tipo")
@@ -33,10 +36,17 @@ def graf_orcamento_liberacao():
     dtCarga = request.args.get("dtCarga")
     mes = request.args.get("mesV")
     ano = request.args.get("anoV")
-    print('==============>', mes, ano)
 
     medC = orcamentoController()
     medS = medC.consultarOrcamentoPelaData(idEmpreend, dtCarga)
+
+    grafNome = gerar_graf_orcamento_liberacao(
+        idEmpreend, mes, ano, tipo, medS)
+
+    return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+def gerar_graf_orcamento_liberacao(idEmpreend, mes, ano, tipo, medS):
 
     fisico = []
     financeiro = []
@@ -57,7 +67,6 @@ def graf_orcamento_liberacao():
             fisico.append(float(m.getFisicoPercentual()))
             financeiro.append(float(m.getFinanceiroPercentual()))
 
-#    plt.title("\Medição Física da Obra x Liberação Financeira (em %)", fontdict={'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
         if tipo == "valor":
             df = pd.DataFrame(
                 {'Físico': fisico, 'Financeiro': financeiro, 'Orçado': orcado}, index=index)
@@ -68,7 +77,7 @@ def graf_orcamento_liberacao():
     ax = df.plot.barh()
     ax.set_xlabel('Valor em milhões')
     plt.legend(loc='lower left', bbox_to_anchor=(0, -0.2),
-               fontsize=8, ncols=3)  # Adicionar a legenda fora do gráfico
+               fontsize=8, ncols=3)
 
     grafC = graficoController()
 
@@ -82,26 +91,28 @@ def graf_orcamento_liberacao():
 
     plt.savefig(grafNome, bbox_inches='tight')
 
-    return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    return grafNome
 
 
 @grafico_bp.route('/graf_progresso_obra', methods=['GET'])
+@login_required
 def graf_progresso_obra():
 
     # Gráfico de linhas
     # PROGRESSO FÍSICO DA OBRA (Previsto x Realizado)
 
-    idEmpreend  = IdEmpreend().get()
+    idEmpreend = IdEmpreend().get()
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
-    mesInicio  = request.args.get("mesInicio")
-    anoInicio  = request.args.get("anoInicio")
-    mesFinal   = request.args.get("mesFinal")
-    anoFinal   = request.args.get("anoFinal")
+    mesInicio = request.args.get("mesInicio")
+    anoInicio = request.args.get("anoInicio")
+    mesFinal = request.args.get("mesFinal")
+    anoFinal = request.args.get("anoFinal")
 
     geral = geralController()
     preC = medicaoController()
-    preS = preC.consultarMedicoesPorPeriodo(idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
+    preS = preC.consultarMedicoesPorPeriodo(
+        idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
 
     fig, ax = plt.subplots(1, 1)
 
@@ -159,50 +170,39 @@ def graf_progresso_obra():
 
 
 @grafico_bp.route('/graf_indices_garantia_I', methods=['GET'])
+@login_required
 def graf_indices_garantia_I():
-    # ÍNDICES DE GARANTIA I
+    # ÍNDICES DE GARANTIA
+    idEmpreend = IdEmpreend().get()
+    mes = request.args.get("mesV")
+    ano = request.args.get("anoV")
 
-    idEmpreend  = IdEmpreend().get()
-    mesVigencia = request.args.get("mesVigencia")
-    anoVigencia = request.args.get("anoVigencia")
-    mesInicio  = request.args.get("mesInicio")
-    anoInicio  = request.args.get("anoInicio")
-    mesFinal   = request.args.get("mesFinal")
-    anoFinal   = request.args.get("anoFinal")
+    mesVigenciaIni = '01'
+    anoVigenciaIni = '2024'
+    mesVigenciaFim = '04'
+    anoVigenciaFim = '2024'
 
-#    idEmpreend  = 57
-#    mesVigencia = "05"
-#    anoVigencia = "2024"
-#    mesInicio   = '04'
-#    anoInicio   = '2025'
-#    mesFinal    = '05'
-#    anoFinal    = '2025'
-
-#    geral = geralController()
+    geral = geralController()
     empC = empreendimentoController()
     empS = empC.consultarEmpreendimentoPeloId(idEmpreend)
-    indiceGar = empS.getIndiceGarantia()
-    vlrPlanoEmp = empS.getVlPlanoEmp()
-#    preC = medicaoController()
     uniC = unidadeController()
-    uniS = uniC.consultarUnidadeRecebibeis(idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
+    uniS = uniC.consultarUnidadeRecebibeis(idEmpreend)
 
-    x1 = []
-    y1 = []
-    y2 = []
+    grafNome = gerar_graf_indices_garantia_I(idEmpreend, mes, ano)
 
-    for u in uniS:
-        x1.append(u.getMesVigencia() + '/' + u.getAnoVigencia())
-        y1.append(indiceGar)
-        ttPago = u.getTtPago() + u.getTtUnidade()
-        indice = ttPago/vlrPlanoEmp
-        y2.append(round(float(indice), 2))
- 
-    linhas = [0.2, 0.4, 0.6, 0.8,  1.00, 1.20, 1.40, 1.60]
+    return render_template(".html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+def gerar_graf_indices_garantia_I(idEmpreend, mes, ano):
+    x1 = ['jan', 'fev', 'mar', 'abr']
+    y1 = [1.20, 1.20, 1.20, 1.20]
+    y2 = [1.00, 1.23, 1.29, 1.42]
+
+    linhas = [1.00, 1.10, 1.20, 1.30, 1.40, 1.50, 1.60]
     plt.hlines(linhas, 0, 3, '#9feafc')
 
-    plt.plot(x1, y1, label = 'IC Estipulado em contrato')
-    plt.plot(x1, y2, label = 'IC Recebiveis + estoque')
+    plt.plot(x1, y1, label='IC Estipulado em contrato')
+    plt.plot(x1, y2, label='IC Recebiveis + estoque')
 
     annotationsy1 = y1
     annotationsy2 = y2
@@ -213,7 +213,7 @@ def graf_indices_garantia_I():
     plt.ylim(0.01, 1.6)
 
     plt.title("Índices de garantia previsto x existente", fontdict={
-              'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
+        'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
 
     for xi, yi, text in zip(x1, y1, annotationsy1):
         plt.annotate(text, xy=(xi, yi), xycoords='data',
@@ -227,81 +227,60 @@ def graf_indices_garantia_I():
     plt.tight_layout()    # Ajustar o layout para evitar cortes
     plt.margins(0.1, 0.1)  # Ajustar margens da caixa x gráfico
 
-
     grafC = graficoController()
 
-    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
+    diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'graf_indices_garantia_I.png'
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
-
-    return render_template("indices_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    return grafNome
 
 
 @grafico_bp.route('/graf_indices_garantia_II', methods=['GET'])
+@login_required
 def graf_indices_garantia_II():
-    # ÍNDICES DE GARANTIA II
+    # ÍNDICES DE GARANTIA
 
-    idEmpreend  = IdEmpreend().get()
-    mesVigencia = request.args.get("mesVigencia")
-    anoVigencia = request.args.get("anoVigencia")
-    mesInicio   = request.args.get("mesInicio")
-    anoInicio   = request.args.get("anoInicio")
-    mesFinal    = request.args.get("mesFinal")
-    anoFinal    = request.args.get("anoFinal")
+    idEmpreend = 55
+    mes = "12"
+    ano = "2024"
+    mesVigenciaIni = '01'
+    anoVigenciaIni = '2024'
+    mesVigenciaFim = '04'
+    anoVigenciaFim = '2024'
 
-#    idEmpreend  = 57
-#    mesVigencia = "05"
-#    anoVigencia = "2024"
-#    mesInicio   = '04'
-#    anoInicio   = '2025'
-#    mesFinal    = '05'
-#    anoFinal    = '2025'
+    geral = geralController()
+    preC = medicaoController()
+    preS = preC.consultarMedicoesPorPeriodo(
+        idEmpreend, mesVigenciaIni, anoVigenciaIni, mesVigenciaFim, anoVigenciaFim)
 
-    empC = empreendimentoController()
-    empS = empC.consultarEmpreendimentoPeloId(idEmpreend)
-    indiceGar = empS.getIndiceGarantia()
-    vlrPlanoEmp = empS.getVlPlanoEmp()
-#    preC = medicaoController()
-    uniC = unidadeController()
-    uniS = uniC.consultarUnidadeRecebibeis(idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
-
-    x1 = []
-    y1 = []
-    y2 = []
-
-    for u in uniS:
-        x1.append(u.getMesVigencia() + '/' + u.getAnoVigencia())
-        ttPago = u.getTtPago()
-        indiceY1 = ttPago/vlrPlanoEmp
-        y1.append(round(float(indiceY1), 2))
-        ttEstoque = u.getTtUnidade()
-        indiceY2       = ttEstoque/vlrPlanoEmp
-        y2.append(round(float(indiceY2), 2))
+    x1 = ['jan', 'fev', 'mar', 'abr']
+    y3 = [0.10, 0.15, 0.20, 0.29]
+    y4 = [0.90, 1.08, 1.09, 1.13]
 
     linhas = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5,
               0.6, 0.7, 0.8, 0.9, 1.00, 1.10, 1.20]
 
     plt.hlines(linhas, 0, 3, '#9feafc')
-    plt.plot(x1, y1, label='IC Recebiveis')
-    plt.plot(x1, y2, label='IC Estoque')
+    plt.plot(x1, y3, label='IC Recebiveis')
+    plt.plot(x1, y4, label='IC Estoque')
 
-    annotationsy3 = y1
-    annotationsy4 = y2
+    annotationsy3 = y3
+    annotationsy4 = y4
 
-    plt.scatter(x1, y1, s=20)
-    plt.scatter(x1, y2, s=20)
+    plt.scatter(x1, y3, s=20)
+    plt.scatter(x1, y4, s=20)
 
     plt.ylim(0.0, 1.2)
 
     plt.title("Índices de garantia previsto x existente", fontdict={
               'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
 
-    for xi, yi, text in zip(x1, y1, annotationsy3):
+    for xi, yi, text in zip(x1, y3, annotationsy3):
         plt.annotate(text, xy=(xi, yi), xycoords='data',
                      xytext=(3, 10), textcoords='offset points')
-    for xi, yi, text in zip(x1, y2, annotationsy4):
+    for xi, yi, text in zip(x1, y4, annotationsy4):
         plt.annotate(text, xy=(xi, yi), xycoords='data',
                      xytext=(3, -10), textcoords='offset points')
 
@@ -312,24 +291,28 @@ def graf_indices_garantia_II():
 
     grafC = graficoController()
 
-    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
+    idEmpreend = str(55)  # preciso montar esse informação
+    mes = "12"
+    ano = "2024"
+
+    diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'graf_indices_garantia_II.png'
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
 
-    return render_template("indices_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    return
 
 
 @grafico_bp.route('/graf_vendas', methods=['GET'])
+@login_required
 def graf_vendas():
     # Gráfico de rosca
     # ÍNDICES DE VENDAS
 
-    idEmpreend  = IdEmpreend().get()
-    mesVigencia = request.args.get("mesVigencia")
-    anoVigencia = request.args.get("anoVigencia")
-
+    idEmpreend = str(55)  # preciso montar esse informação
+    mes = "12"
+    ano = "2024"
     unidc = unidadeController()
     unid = unidc.consultarUnidadeVendas(idEmpreend)
 
@@ -372,44 +355,33 @@ def graf_vendas():
 
     grafC = graficoController()
 
-    diretorio = grafC.montaDir(idEmpreend, str(mesVigencia), str(anoVigencia))
+    diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'graf_vendas.png'
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
 
-    return render_template("vendas_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    return
 
-#def formatar_percentual(pct, all_values, total):
-#    # Retorna o valor diretamente sem somar
-##    total = sum(all_values)  # Soma total (se necessário para referência)
-#    valor = all_values[int(pct / 100 * total)]  # Valor individual
-#    return f"{valor:.1f}"  # Formata o valor com uma casa decimal
-
-def formatar_percentual(pct, all_values):
-    # Retorna o valor diretamente do array `all_values`
-    index = int(round(pct / 100 * len(all_values)))  # Calcula o índice com base no percentual
-    if index < len(all_values):
-        return f"{all_values[index]:.1f}"  # Retorna o valor formatado
-    return ""
 
 @grafico_bp.route('/graf_chaves', methods=['GET'])
+@login_required
 def graf_chaves():
     # ÍNDICES DE CHAVES
-    idEmpreend  = IdEmpreend().get()
-    mesVigencia = request.args.get("mesVigencia")
-    anoVigencia = request.args.get("anoVigencia")
 
+    idEmpreend = str(55)  # preciso montar esse informação
+    mes = "12"
+    ano = "2024"
     unidc = unidadeController()
     unid = unidc.consultarUnidadeChaves(idEmpreend)
 
     labels = ['Chaves', 'Pré-chaves', 'Pós-chaves']
 
-#    total = unid.getTtChaves() + unid.getTtPreChaves() + unid.getTtPosChaves()
-    total       = unid.getQtUnidade()
-    perChave    = unid.getTtChaves()              # / unid.getQtUnidade()
-    perPreChave = unid.getTtPreChaves()        # / unid.getQtUnidade()
-    perPosChave = unid.getTtPosChaves()        # / unid.getQtUnidade()
+    total = unid.getTtChaves() + unid.getTtPreChaves() + unid.getTtPosChaves()
+
+    perChave = unid.getTtChaves() / total
+    perPreChave = unid.getTtPreChaves() / total
+    perPosChave = unid.getTtPosChaves() / total
 
     sizes = [perChave, perPreChave, perPosChave]
 #    print('sizes = ', sizes)
@@ -423,108 +395,13 @@ def graf_chaves():
 
     grafC = graficoController()
 
-    diretorio = grafC.montaDir(idEmpreend, str(mesVigencia), str(anoVigencia))
+    idEmpreend = str(55)  # preciso montar esse informação
+    mes = "12"
+    ano = "2024"
+
+    diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'graf_chaves.png'
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
-
-    return render_template("chaves_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
-
-@grafico_bp.route('/graf_chaves2', methods=['GET'])
-def graf_chaves2():
-    # ÍNDICES DE CHAVES
-    idEmpreend  = IdEmpreend().get()
-    mesVigencia = request.args.get("mesVigencia")
-    anoVigencia = request.args.get("anoVigencia")
-
-    unidc = unidadeController()
-    unid = unidc.consultarUnidadeChaves(idEmpreend)
-
-#    total = unid.getTtChaves() + unid.getTtPreChaves() + unid.getTtPosChaves()
-    total       = unid.getQtUnidade()
-    perChave    = unid.getTtChaves()              # / unid.getQtUnidade()
-    perPreChave = unid.getTtPreChaves()        # / unid.getQtUnidade()
-    perPosChave = unid.getTtPosChaves()        # / unid.getQtUnidade()
-
-    # Valores de entrada
-    valores = [perChave, perPreChave, perPosChave]
-#    total = 120  # Total fornecido manualmente
-    
-    # Descrições fixas
-    labels = ['Chaves', 'Pré-chaves', 'Pós-chaves']
-
-    # Cálculo dos percentuais
-    percentuais = [(v / total) * 100 for v in valores]
-
-    # Rótulos com descrição, valor e percentual
-    rotulos = [f'{label}: {v} ({p:.1f}%)' for label, v, p in zip(labels, valores, percentuais)]
-
-    # Criação do gráfico de pizza
-    plt.figure(figsize=(8,8))
-    plt.pie(valores, labels=rotulos, startangle=90)
-#    plt.title('Distribuição por Categoria')
-    plt.axis('equal')
-#    plt.show()
-
-    grafC = graficoController()
-
-    diretorio = grafC.montaDir(idEmpreend, str(mesVigencia), str(anoVigencia))
-    grafC.criaDir(diretorio)
-    grafNome = diretorio + 'graf_chaves.png'
-
-    plt.savefig(grafNome)  # , bbox_inches='tight')
-
-    return render_template("chaves_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
-
-@grafico_bp.route('/graf_chaves3', methods=['GET'])
-def graf_chaves3():
-    # ÍNDICES DE CHAVES
-    idEmpreend  = IdEmpreend().get()
-    mesVigencia = request.args.get("mesVigencia")
-    anoVigencia = request.args.get("anoVigencia")
-
-    unidc = unidadeController()
-    unid = unidc.consultarUnidadeChaves(idEmpreend)
-
-#    total = unid.getTtChaves() + unid.getTtPreChaves() + unid.getTtPosChaves()
-    total       = unid.getQtUnidade()
-    perChave    = unid.getTtChaves()              # / unid.getQtUnidade()
-    perPreChave = unid.getTtPreChaves()        # / unid.getQtUnidade()
-    perPosChave = unid.getTtPosChaves()        # / unid.getQtUnidade()
-
-    # Valores de entrada
-    valores = [perChave, perPreChave, perPosChave]
-#    total = 120  # Total fornecido manualmente
-    
-    # Descrições fixas
-    labels = ['Chaves', 'Pré-chaves', 'Pós-chaves']
-
-    # Função para mostrar valor e percentual dentro da fatia
-    def formatar_autopct(pct, all_vals):
-        valor = int(round(pct * total / 100.0))
-        return f'{valor}\n({pct:.1f}%)'
-
-    # Criando o gráfico
-    fig, ax = plt.subplots(figsize=(7, 7))
-    wedges, texts, autotexts = ax.pie(
-    valores,
-    autopct=lambda pct: formatar_autopct(pct, valores),
-    startangle=90,
-    textprops=dict(color="white", fontsize=10)
-    )
-
-    # Adiciona as descrições fora das fatias
-    ax.legend(wedges, labels, title="Categorias", loc="center left", bbox_to_anchor=(1, 0, 0.5, 1))
-
-    plt.axis('equal')
-
-    grafC = graficoController()
-
-    diretorio = grafC.montaDir(idEmpreend, str(mesVigencia), str(anoVigencia))
-    grafC.criaDir(diretorio)
-    grafNome = diretorio + 'graf_chaves.png'
-
-    plt.savefig(grafNome)  # , bbox_inches='tight')
-
-    return render_template("chaves_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    return

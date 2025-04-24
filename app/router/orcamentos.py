@@ -1,23 +1,24 @@
-from flask import Blueprint, request, render_template, redirect, session, current_app
-from utils.CtrlSessao import IdEmpreend, DtCarga, MesVigencia, AnoVigencia, NmEmpreend, IdOrca
-from controller.orcamentoController import orcamentoController
-from dto.orcamento import orcamento
+from flask import Blueprint, request, render_template, redirect
 
-import os
+from utils.CtrlSessao import IdEmpreend, DtCarga, MesVigencia, AnoVigencia, NmEmpreend
+from controller.orcamentoController import orcamentoController
+from decorators.login_riquired import login_required
+from utils.helper import allowed_file
+from dto.orcamento import orcamento
 import utils.converter as converter
-from utils.helper import protectedPage, allowed_file
 
 orca_bp = Blueprint('orcamentos', __name__)
 
 
 @orca_bp.route('/abrir_cad_orcamento')
+@login_required
 def abrir_cad_orcamento():
-    return render_template("Orcamento_item.html", idEmpreend=IdEmpreend().get())
+    return render_template("orcamento_item.html", idEmpreend=IdEmpreend().get())
 
 
 @orca_bp.route('/tratar_orcamentos')
+@login_required
 def tratar_orcamentos():
-    protectedPage()
 
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
@@ -48,6 +49,7 @@ def tratar_orcamentos():
 
 
 @orca_bp.route('/consultar_orcamento_data')
+@login_required
 def consultar_orcamento_data():
     dtCarga = request.args.get("dtCarga")
     ano = request.args.get("anoV")
@@ -90,14 +92,16 @@ def upload_arquivo_orcamentos():
 
 
 @orca_bp.route('/editar_item_orcamento', methods=['GET'])
+@login_required
 def editar_item_orcamento():
     idOrc = request.args.get("idOrcamento")
     orcC = orcamentoController()
     item = orcC.consultarOrcamentoPeloId(idOrc)
-    return render_template("Orcamento_item.html", item=item)
+    return render_template("orcamento_item.html", item=item)
 
 
 @orca_bp.route('/excluir_item_orcamento')
+@login_required
 def excluir_item_orcamento():
     idOrc = request.args.get("idOrcamento")
     orcC = orcamentoController()
@@ -106,6 +110,7 @@ def excluir_item_orcamento():
 
 
 @orca_bp.route('/excluir_orcamento')
+@login_required
 def excluir_orcamento():
     idEmpreend = IdEmpreend().get()
     mes = request.args.get('mesV')

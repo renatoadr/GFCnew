@@ -1,8 +1,9 @@
-from flask import Blueprint, Request, request, render_template, redirect
+from flask import Blueprint, request, render_template, redirect
 from controller.contaController import contaController
-from utils.helper import allowed_file, protectedPage
+from utils.helper import allowed_file
 from utils.CtrlSessao import IdEmpreend, NmEmpreend, DtCarga, AnoVigencia, MesVigencia
 from utils.converter import converterStrToFloat
+from decorators.login_riquired import login_required
 from dto.conta import conta
 
 contas_corrente_bp = Blueprint('contas_corrente', __name__)
@@ -32,8 +33,8 @@ def upload_arquivo_contas():
 
 
 @contas_corrente_bp.route('/tratar_contas')
+@login_required
 def tratar_contas():
-    protectedPage()
 
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
@@ -68,8 +69,8 @@ def tratar_contas():
 
 
 @contas_corrente_bp.route('/consultar_conta_data')
+@login_required
 def consultar_conta():
-    protectedPage()
     data = request.args.get('dtCarga')
     ano = request.args.get('anoV')
     mes = request.args.get('mesV')
@@ -91,8 +92,8 @@ def consultar_conta():
 
 
 @contas_corrente_bp.route('/editar_conta')
+@login_required
 def editar_conta():
-    protectedPage()
     id = request.args.get('id')
     contC = contaController()
     conta = contC.conta_por_id(id)
@@ -100,8 +101,8 @@ def editar_conta():
 
 
 @contas_corrente_bp.route('/abrir_cad_conta')
+@login_required
 def cadastrar_conta():
-    protectedPage()
     return render_template("cad_conta.html")
 
 
@@ -126,6 +127,7 @@ def criar_conta():
 
 
 @contas_corrente_bp.route('/excluir_conta_carga')
+@login_required
 def excluir_conta_carga():
     mes = request.args.get('mesV')
     ano = request.args.get('anoV')
@@ -136,6 +138,7 @@ def excluir_conta_carga():
 
 
 @contas_corrente_bp.route('/excluir_conta')
+@login_required
 def excluir_conta():
     id = request.args.get('idConta')
     contC = contaController()

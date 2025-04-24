@@ -106,7 +106,7 @@ $(function(){
       $("#estado").val('');
     },
     onComplete: function(cep) {
-      $.getJSON('https://brasilapi.com.br/api/cep/v2/' + cep.replace('-', ''), function(data){
+      $.getJSON('//brasilapi.com.br/api/cep/v2/' + cep.replace('-', ''), function(data){
         $("#logradouro").val(data.street);
         $("#bairro").val(data.neighborhood);
         $("#estado").val(data.state);
@@ -124,7 +124,7 @@ $(function(){
     }
   });
 
-  $.getJSON('https://brasilapi.com.br/api/banks/v1', function(data) {
+  $.getJSON('//brasilapi.com.br/api/banks/v1', function(data) {
     const listaBancos = data.sort(function (ba, bb) {
       return ba.name < bb.name ? -1 : 1
     });
@@ -133,7 +133,7 @@ $(function(){
     }
   });
 
-  $.getJSON('http://servicodados.ibge.gov.br/api/v1/localidades/estados', function (data) {
+  $.getJSON('//servicodados.ibge.gov.br/api/v1/localidades/estados', function (data) {
     listaEstados = data.sort(function (da, db) {
       return da.sigla < db.sigla ? -1 : 1
     });
@@ -150,7 +150,7 @@ $(function(){
       return est.sigla === selecionado
     })
     if (!estado) return;
-    $.getJSON(`http://servicodados.ibge.gov.br/api/v1/localidades/estados/${estado.id}/municipios`, function (data) {
+    $.getJSON(`//servicodados.ibge.gov.br/api/v1/localidades/estados/${estado.id}/municipios`, function (data) {
       const cidades = data.sort(function (da, db) {
         return da.nome < db.nome ? -1 : 1
       });

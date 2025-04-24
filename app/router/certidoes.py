@@ -1,15 +1,15 @@
 from flask import Blueprint, request, render_template, redirect
 from controller.certidaoController import certidaoController
+from decorators.login_riquired import login_required
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
-from utils.helper import protectedPage
 from dto.certidao import certidao
 
 cert_bp = Blueprint('certidoes', __name__)
 
 
 @cert_bp.route('/tratar_certidoes')
+@login_required
 def tratar_certidoes():
-    protectedPage()
 
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")

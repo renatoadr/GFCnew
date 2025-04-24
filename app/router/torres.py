@@ -1,17 +1,17 @@
-from flask import Blueprint, request, render_template, redirect, url_for, flash
+from decorators.login_riquired import login_required
+from flask import Blueprint, request, render_template, redirect, flash
 
 from controller.torreController import torreController
 from controller.unidadeController import unidadeController
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
-from utils.helper import protectedPage
 from dto.torre import torre
 
 torre_bp = Blueprint('torres', __name__)
 
 
 @torre_bp.route('/tratar_torres')
+@login_required
 def tratartorres():
-    protectedPage()
 
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
@@ -42,6 +42,7 @@ def tratartorres():
 
 
 @torre_bp.route('/abrir_cad_torre')
+@login_required
 def abrir_cad_torre():
 
     idEmpreend = request.form.get("idEmpreend")
@@ -112,6 +113,7 @@ def cadastrar_torre():
 
 
 @torre_bp.route('/excluir_torre')
+@login_required
 def excluir_torre():
     torreC = torreController()
     idTorre = request.args.get('idTorre')
@@ -129,6 +131,7 @@ def excluir_torre():
 
 
 @torre_bp.route('/copiar_torre')
+@login_required
 def editar_torre():
     idT = request.args.get("idTorre")
 

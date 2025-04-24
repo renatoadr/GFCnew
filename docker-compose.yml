@@ -23,7 +23,7 @@ services:
       - dbnet
 
   app:
-    image: gfcapp:1.0.2
+    image: gfcapp:1.0.5
     restart: always
     build:
       context: .
@@ -42,6 +42,8 @@ services:
         condition: service_healthy
     links:
       - db
+    expose:
+      - 8080
     networks:
       - dbnet
       - proxynet

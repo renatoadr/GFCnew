@@ -1,20 +1,17 @@
 from flask import Blueprint, request, render_template, redirect
 from controller.unidadeController import unidadeController
 from controller.torreController import torreController
+from decorators.login_riquired import login_required
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
-from utils.helper import protectedPage
 import utils.converter as converter
 from dto.unidade import unidade
-from datetime import date
-
 
 unidade_bp = Blueprint('unidades', __name__)
 
 
 @unidade_bp.route('/tratar_unidades')
+@login_required
 def tratarunidades():
-
-    protectedPage()
 
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
@@ -94,6 +91,7 @@ def cadastrar_unidade():
 
 
 @unidade_bp.route('/editar_unidade')
+@login_required
 def editar_unidade():
     idUni = request.args.get("idUnidade")
 
@@ -123,6 +121,7 @@ def editar_unidade():
 
 
 @unidade_bp.route('/consultar_unidade')
+@login_required
 def consultar_unidade():
 
     ctrlTorre = torreController()
@@ -145,6 +144,7 @@ def consultar_unidade():
 
 
 @unidade_bp.route('/excluir_unidade')
+@login_required
 def excluir_unidade():
     idUnidade = request.args.get('idUnidade')
     unidc = unidadeController()

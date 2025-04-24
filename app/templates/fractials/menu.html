@@ -52,6 +52,12 @@
       {% if category == 'error' and message %}
       <p class="alert alert-danger text-center mt-4"> {{ message }} </p>
       {% endif %}
+      {% if category == 'warning' and message %}
+      <p class="alert alert-warning text-center mt-4"> {{ message }} </p>
+      {% endif %}
+      {% if category == 'info' and message %}
+      <p class="alert alert-info text-center mt-4"> {{ message }} </p>
+      {% endif %}
       {% endfor %}
     </div>
   </div>

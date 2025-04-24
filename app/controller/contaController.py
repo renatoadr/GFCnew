@@ -68,7 +68,7 @@ class contaController:
             listaContas.append(n)
         return listaContas
 
-    def consultarContaPelaCarga(self, idEmpreend,dtCarga):
+    def consultarContaPelaCarga(self, idEmpreend, dtCarga):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor(dictionary=True)
 
@@ -98,13 +98,34 @@ class contaController:
             listaItens.append(m)
 
 
-
 #        print('------------------------')
 #        print('------------------------')
         cursor.close()
         MySql.close(self.__connection)
 #        print ('-----------------> ', dados)
 #        print ('-----------------> ', listaItens)
+
+        return listaItens
+
+    def consultarContaPelaVigencia(self, idEmpreend, mes, ano):
+        query = f"SELECT id_empreendimento, mes_vigencia, ano_vigencia, vl_liberacao, vl_aporte_construtora, vl_receita_recebiveis, vl_pagto_obra, vl_pagto_rh, vl_diferenca, vl_saldo FROM {MySql.DB_NAME}.tb_contas where id_empreendimento = %s AND mes_vigencia = %s AND ano_vigencia = %s;"
+
+        lista = MySql.getAll(query, (idEmpreend, mes, ano))
+
+        listaItens = []
+
+        for x in lista:
+            m = conta()
+            m.setMesVigencia(x['mes_vigencia'])
+            m.setAnoVigencia(x['ano_vigencia'])
+            m.setVlLiberacao(x['vl_liberacao'])
+            m.setVlAporteConstrutora(x['vl_aporte_construtora'])
+            m.setVlReceitaRecebiveis(x['vl_receita_recebiveis'])
+            m.setVlPagtoObra(x['vl_pagto_obra'])
+            m.setVlPagtoRh(x['vl_pagto_rh'])
+            m.setVlDiferenca(x['vl_diferenca'])
+            m.setVlSaldo(x['vl_saldo'])
+            listaItens.append(m)
 
         return listaItens
 
@@ -145,7 +166,8 @@ class contaController:
                 tabela.at[linha, 'Valor Pagamento RH']))
             vlDiferenca = float(converterStrToFloat(
                 tabela.at[linha, 'Valor Diferença']))
-            vlSaldo = float(converterStrToFloat(tabela.at[linha, 'Valor Saldo']))
+            vlSaldo = float(converterStrToFloat(
+                tabela.at[linha, 'Valor Saldo']))
 
             query = "INSERT INTO " + MySql.DB_NAME + \
                 ".tb_contas (id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, vl_liberacao, vl_aporte_construtora, vl_receita_recebiveis, vl_pagto_obra, vl_pagto_rh, vl_diferenca, vl_saldo ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"

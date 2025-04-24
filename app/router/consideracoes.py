@@ -1,16 +1,16 @@
-from flask import Blueprint, request, render_template, redirect, url_for, flash
+from flask import Blueprint, request, render_template, redirect
 
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
-from utils.helper import protectedPage
 from controller.consideracaoController import consideracaoController
+from decorators.login_riquired import login_required
 import datetime
 
 consideracoes_bp = Blueprint('consideracoes', __name__)
 
 
 @consideracoes_bp.route('/consideracoes')
+@login_required
 def tratartorres():
-    protectedPage()
 
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
