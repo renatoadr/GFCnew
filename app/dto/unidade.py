@@ -28,7 +28,8 @@ class unidade:
     __ttPosChaves = -1
     __ttStatus = -1
     __ttEstoque = -1
-    __ttVenda = -1
+    __TtPago = -1
+    __TtUnidade = -1
     __nmComprador = ''
 
     #Getters
@@ -77,8 +78,10 @@ class unidade:
         return self.__ttStatus
     def getTtEstoque(self):
         return self.__ttEstoque
-    def getTtVenda(self):
-        return self.__ttVenda
+    def getTtPago(self):
+        return self.__TtPago
+    def getTtUnidade(self):
+        return self.__TtUnidade
     def getNmComprador(self):
         return self.__nmComprador
 
@@ -128,7 +131,9 @@ class unidade:
         self.__ttStatus = param
     def setTtEstoque(self, param):
         self.__ttEstoque = param
-    def setTtVenda(self, param):
-        self.__ttVenda = param
+    def setTtPago(self, param):
+        self.__TtPago = param
+    def setTtUnidade(self, param):
+        self.__TtUnidade = param
     def setNmComprador(self, param):
         self.__nmComprador = param

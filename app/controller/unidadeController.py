@@ -148,9 +148,8 @@ class unidadeController:
 
         print('+++++++++ consultarUnidadeChaves ++++++++++++++++++')
 
-        query = "select count(id_unidade), sum(vl_chaves), sum(vl_pre_chaves), sum(vl_pos_chaves) from " + \
-            MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + \
-                idEmpreend + " and status != 'distrato'"
+#        query = "select count(id_unidade), count(vl_chaves), count(vl_pre_chaves), count(vl_pos_chaves) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + idEmpreend + " and status = 'Vendido' and ac_historico is null"
+        query = "SELECT COUNT(id_unidade) AS total_unidades, COUNT(CASE WHEN vl_chaves > 0 THEN 1 END) AS total_chaves, COUNT(CASE WHEN vl_pre_chaves > 0 THEN 1 END) AS total_pre_chaves, COUNT(CASE WHEN vl_pos_chaves > 0 THEN 1 END) AS total_pos_chaves FROM " + MySql.DB_NAME + ".tb_unidades WHERE id_empreendimento = " + idEmpreend + " AND status = 'Vendido' AND ac_historico IS NULL"
 
         print(query)
 
@@ -183,7 +182,7 @@ class unidadeController:
         print('+++++++++ consultarUnidadeVendas ++++++++++++++++++')
 
         query = "select status, count(id_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(
-            idEmpreend) + " and status != 'distrato' group by status"
+            idEmpreend) + " and status != 'distrato' and ac_historico is null group by status"
         print(query)
 
         cursor.execute(query)
@@ -203,14 +202,20 @@ class unidadeController:
 
         return listaVendas
 
-    def consultarUnidadeRecebibeis(self, idEmpreend):
+    def consultarUnidadeRecebibeis(self, idEmpreend, mesIni, anoIni, mesFim, anoFim):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
         print('+++++++++ consultarUnidadeRecebibeis ++++++++++++++++++')
 
-        query = "select status, sum(vl_pago), sum(vl_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(
-            idEmpreend) + " and status in ('vendido', 'estoque') group  by status"
+#        query = "select vl_pago from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' " + " and ac_historico is null" 
+ 
+        if anoIni == anoFim:
+                query =  "select mes_vigencia, ano_vigencia, sum(vl_pago), sum(vl_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status in ('Vendido', 'Estoque') and ac_historico is null and ((mes_vigencia >= '" + mesIni + "' and ano_vigencia = '" + anoIni + "') and (mes_vigencia <= '" + mesFim + "' and ano_vigencia = '" + anoFim + "')) group by ano_vigencia, mes_vigencia"
+                print('===========> com and')
+        else:
+                query =  "select mes_vigencia, ano_vigencia, sum(vl_pago), sum(vl_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status in ('Vendido', 'Estoque') and ac_historico is null and ((mes_vigencia >= '" + mesIni + "' and ano_vigencia = '" + anoIni + "') or  (mes_vigencia <= '" + mesFim + "' and ano_vigencia = '" + anoFim + "')) group by ano_vigencia, mes_vigencia"
+                print('===========> com or')
 
         print(query)
 
@@ -221,9 +226,10 @@ class unidadeController:
 
         for x in lista:
             u = unidade()
-            u.setStatus(x[0])
-            u.setTtVenda(x[1])
-            u.setTtEstoque(x[2])
+            u.setMesVigencia(x[0])
+            u.setAnoVigencia(x[1])
+            u.setTtPago(x[2])
+            u.setTtUnidade(x[3])
             listaVendas.append(u)
 
         cursor.close()

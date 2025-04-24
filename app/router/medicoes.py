@@ -138,7 +138,7 @@ def salvar_item_medicao():
     med.setPercRealizadoPeriodo(converter.converterStrToFloat(request.form.get('percRealizadoPeriodo')))
 
     med.setPercRealizadoAcumulado(med.getPercRealizadoPeriodo() + med.getPercRealizadoAcumulado())
-    med.setPercDiferenca(med.getPercPrevistoAcumulado() - med.getPercRealizadoAcumulado())
+    med.setPercDiferenca(med.getPercRealizadoAcumulado() - med.getPercPrevistoAcumulado())
 
     medC = medicaoController()
     medC.salvarItemMedicao(med)

@@ -533,16 +533,17 @@ def tab_certidoes():
 @tabela_bp.route('/tab_acomp_financeiro')
 def tab_acomp_financeiro():
 
-    #    tipo = request.args.get("tipo")
-    #    idEmpreend = request.args.get("idEmpreend")
-    #    dtCarga = request.args.get("dtCarga")
+    idEmpreend = IdEmpreend().get()
+    mesVigencia = request.args.get("mesVigencia")
+    anoVigencia = request.args.get("anoVigencia")
 
     idEmpreend = 55
-    dtCarga = '2024-12-30 16:57:31'
+    mesVigencia = '05'
+    anoVigencia = '2025'
 
     geral = geralController()
     finC = financeiroController()
-    finS = finC.consultarFinanceiroPelaData(idEmpreend, dtCarga)
+    finS = finC.consultarFinanceiroPelaData(idEmpreend)
     fig, ax = plt.subplots(1, 1)
 
     data = []
@@ -591,15 +592,13 @@ def tab_acomp_financeiro():
 
     grafC = graficoController()
 
-    idEmpreend = str(55)  # preciso montar esse informação
-    mes = "12"
-    ano = "2024"
-
-    diretorio = grafC.montaDir(idEmpreend, mes, ano)
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_acomp_financeiro.png'
 
     plt.savefig(grafNome)
+
+    return render_template("financeiro_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
 @tabela_bp.route('/tab_medicoes')

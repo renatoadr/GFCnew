@@ -40,7 +40,7 @@ class financeiroController:
         MySql.close(self.__connection)
         return listaNotas
 
-    def consultarFinanceiroPelaData(self, idEmpreend, dtCarga):
+    def consultarFinanceiroPelaData(self, idEmpreend):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor(dictionary=True)   
 

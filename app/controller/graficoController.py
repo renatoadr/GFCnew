@@ -380,11 +380,9 @@ class graficoController:
     def montaDir(self, idEmpreend, mes, ano, relatorio=False):
 
         if relatorio:
-            diretorio = self.app.config['DIRSYS'] + \
-                "Relatorios" + self.app.config['BARRADIR']
+            diretorio = self.app.config['DIRSYS'] + "Relatorios" + self.app.config['BARRADIR']
         else:
-            diretorio = self.app.config['DIRSYS'] + str(
-                idEmpreend) + self.app.config['BARRADIR'] + ano + "_" + mes + self.app.config['BARRADIR']
+            diretorio = self.app.config['DIRSYS'] + str(idEmpreend) + self.app.config['BARRADIR'] + ano + "_" + mes + self.app.config['BARRADIR']
 
         return (diretorio)
 
