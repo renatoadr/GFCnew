@@ -38,37 +38,10 @@ Ou para apenas visualizar o projeto rode
 flask --app main.py
 ```
 ### Deploy
-O projeto roda no EC2 usando docker. Para subir uma imagem da aplicação, necessário subir a versão da imagem no docker compose e depois realizar os comandos abaixo:
-
-#### Gerar Imagem Atualizada
-Depois de alterar a versão no docker compose:
-```docker
- app:
-    image: gfcapp:1.0.1
+O projeto roda no EC2 usando docker. Para subir uma imagem da aplicação, basta rodar o comando abaixo:
+``` sh
+./deploy.sh
 ```
-
-Realize o comando de build
-```sh
-docker-compose build app
-```
-
-#### Salvar praparar a imagem
-Após realizar o build, salva a cópia da imagem buildada
-```sh
-docker save > gfcapp_1.0.1.tar
-```
-
-Depois suba a imagem que foi gerada para o EC2 e carregue no docker com o comando
-```sh
-docker load < gfcapp_1.0.1.tar
-```
-
-Altere a versão da imagem do app no docker compose no EC2 e rode o comando para atualizar o container
-```sh
-docker-compose up -d
-```
-
-**Obs: Vale lembrar que deletar a imagem antiga bem como o seu container, funcionará melhor o fluxo de atualização no EC2**
 
 ### Comandos para gerenciamento do Docker
 Para visualizar os logs

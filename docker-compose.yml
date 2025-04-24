@@ -23,7 +23,7 @@ services:
       - dbnet
 
   app:
-    image: gfcapp:1.0.5
+    image: gfcapp:1.0.5.7
     restart: always
     build:
       context: .
@@ -33,6 +33,7 @@ services:
       DB_HOST: db
       DB_USER: "root"
       DB_NAME: "db_gfc"
+      temp: "/tmp"
     volumes:
       - ./GFC:/app_gfc/GFC
     secrets:
