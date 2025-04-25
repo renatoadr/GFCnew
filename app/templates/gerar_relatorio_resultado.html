@@ -1,0 +1,46 @@
+<!-- Template: gerar_relatorio_resultado  -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Visualizando insumos para o relatório</title>
+  {% include 'fractials/head.html' %}
+</head>
+
+<body>
+  {% include 'fractials/menu.html' %}
+
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <h2 class="title title-page">
+            <span><i class="fa-solid fa-chart-pie"></i> Visualizando insumos para o
+              relatório</span><strong>{{session.nmEmpreend}}</strong>
+          </h2>
+        </div>
+        <div class="col-6 d-flex justify-content-end align-items-center">
+          <a href="/home" class="btn btn-outline-dark">
+            <i class="fa-solid fa-caret-left"></i>
+            Voltar
+          </a>
+        </div>
+      </div>
+
+      <div class="d-flex">
+        {% for item in opcoes %}
+        <div class="w-50">
+          <h4>{{item[1]}}</h4>
+          <img src="/ver_insumo/{{ano}}/{{mes}}/{{item[0]}}">
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+  </main>
+  {% include 'fractials/footer.html' %}
+</body>
+
+</html>

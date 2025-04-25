@@ -109,6 +109,20 @@ def graf_progresso_obra():
     mesFinal = request.args.get("mesFinal")
     anoFinal = request.args.get("anoFinal")
 
+    grafNome = gerar_graf_progresso_obra(
+        idEmpreend,
+        mesVigencia,
+        anoVigencia,
+        mesInicio,
+        anoInicio,
+        mesFinal,
+        anoFinal
+    )
+
+    return render_template("medicoes_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+def gerar_graf_progresso_obra(idEmpreend, mesVigencia, anoVigencia, mesInicio, anoInicio, mesFinal, anoFinal):
     geral = geralController()
     preC = medicaoController()
     preS = preC.consultarMedicoesPorPeriodo(
@@ -165,8 +179,7 @@ def graf_progresso_obra():
     grafNome = diretorio + 'graf_progresso_obra.png'
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
-
-    return render_template("medicoes_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    return grafNome
 
 
 @grafico_bp.route('/graf_indices_garantia_I', methods=['GET'])
@@ -251,6 +264,20 @@ def graf_indices_garantia_II():
     anoVigenciaFim = '2024'
 
     geral = geralController()
+    grafNome = gerar_graf_indices_garantia_II(
+        idEmpreend,
+        mes,
+        ano,
+        mesVigenciaIni,
+        anoVigenciaIni,
+        mesVigenciaFim,
+        anoVigenciaFim
+    )
+
+    return render_template(".html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+def gerar_graf_indices_garantia_II(idEmpreend, mes, ano, mesVigenciaIni, anoVigenciaIni, mesVigenciaFim, anoVigenciaFim):
     preC = medicaoController()
     preS = preC.consultarMedicoesPorPeriodo(
         idEmpreend, mesVigenciaIni, anoVigenciaIni, mesVigenciaFim, anoVigenciaFim)
@@ -275,7 +302,7 @@ def graf_indices_garantia_II():
     plt.ylim(0.0, 1.2)
 
     plt.title("Índices de garantia previsto x existente", fontdict={
-              'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
+        'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
 
     for xi, yi, text in zip(x1, y3, annotationsy3):
         plt.annotate(text, xy=(xi, yi), xycoords='data',
@@ -291,17 +318,13 @@ def graf_indices_garantia_II():
 
     grafC = graficoController()
 
-    idEmpreend = str(55)  # preciso montar esse informação
-    mes = "12"
-    ano = "2024"
-
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'graf_indices_garantia_II.png'
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
 
-    return
+    return grafNome
 
 
 @grafico_bp.route('/graf_vendas', methods=['GET'])
@@ -313,6 +336,13 @@ def graf_vendas():
     idEmpreend = str(55)  # preciso montar esse informação
     mes = "12"
     ano = "2024"
+
+    grafNome = gerar_graf_vendas(idEmpreend, mes, ano)
+
+    return render_template(".html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+def gerar_graf_vendas(idEmpreend, mes, ano):
     unidc = unidadeController()
     unid = unidc.consultarUnidadeVendas(idEmpreend)
 
@@ -351,7 +381,7 @@ def graf_vendas():
                     horizontalalignment=horizontalalignment, **kw)
 
     ax.set_title("Vendas", fontdict={
-                 'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
+        'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
 
     grafC = graficoController()
 
@@ -361,7 +391,7 @@ def graf_vendas():
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
 
-    return
+    return grafNome
 
 
 @grafico_bp.route('/graf_chaves', methods=['GET'])
@@ -372,6 +402,13 @@ def graf_chaves():
     idEmpreend = str(55)  # preciso montar esse informação
     mes = "12"
     ano = "2024"
+
+    grafNome = gerar_graf_chaves(idEmpreend, mes, ano)
+
+    return render_template(".html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+def gerar_graf_chaves(idEmpreend, mes, ano):
     unidc = unidadeController()
     unid = unidc.consultarUnidadeChaves(idEmpreend)
 
@@ -395,13 +432,9 @@ def graf_chaves():
 
     grafC = graficoController()
 
-    idEmpreend = str(55)  # preciso montar esse informação
-    mes = "12"
-    ano = "2024"
-
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'graf_chaves.png'
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
-    return
+    return grafNome

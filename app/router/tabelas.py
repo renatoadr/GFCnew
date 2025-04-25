@@ -312,8 +312,16 @@ def tab_garantias_geral():
     anoVigencia = request.args.get("anoVigencia")
 
     geral = geralController()
+
+    grafNome = gerar_tab_garantias_geral(
+        idEmpreend, mesVigencia, anoVigencia, tipo)
+
+    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+def gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia):
     ponC = garantiaController()
-    ponS = ponC.consultargarantiaatual(idEmpreend, tipo)
+    ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
 
     fig, ax = plt.subplots(1, 1)
 
@@ -380,8 +388,7 @@ def tab_garantias_geral():
     grafNome = diretorio + 'tab_garantias_geral.png'
 
     plt.savefig(grafNome)
-
-    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    return grafNome
 
 
 @tabela_bp.route('/tab_garantias_obra')
@@ -394,11 +401,16 @@ def tab_garantias_obra():
     anoVigencia = request.args.get("anoVigencia")
 
     geral = geralController()
+
+    grafNome = gerar_tab_garantias_obra(idEmpreend, mesVigencia, anoVigencia)
+
+    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+def gerar_tab_garantias_obra(idEmpreend, mesVigencia, anoVigencia):
     ponC = garantiaController()
-    ponS = ponC.consultargarantiaatual(idEmpreend, tipo)
-
+    ponS = ponC.consultargarantiaatual(idEmpreend, 'Obra')
     fig, ax = plt.subplots(1, 1)
-
     data = []
 
     for p in ponS:
@@ -462,8 +474,7 @@ def tab_garantias_obra():
     grafNome = diretorio + 'tab_garantias_obra.png'
 
     plt.savefig(grafNome)
-
-    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    return grafNome
 
 
 @tabela_bp.route('/tab_certidoes')
@@ -474,7 +485,12 @@ def tab_certidoes():
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
 
-    geral = geralController()
+    grafNome = gerar_tab_certidoes(idEmpreend, mesVigencia, anoVigencia)
+
+    return render_template("certidoes_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+def gerar_tab_certidoes(idEmpreend, mes, ano):
     certC = certidaoController()
     certS = certC.consultarCertidoesGraf(idEmpreend)
 
@@ -543,13 +559,12 @@ def tab_certidoes():
 
     grafC = graficoController()
 
-    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
+    diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_certidoes.png'
 
     plt.savefig(grafNome)
-
-    return render_template("certidoes_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    return grafNome
 
 
 @tabela_bp.route('/tab_acomp_financeiro')
@@ -638,6 +653,20 @@ def tab_medicoes():
     mesFinal = request.args.get("mesFinal")
     anoFinal = request.args.get("anoFinal")
 
+    grafNome = gerar_tab_medicoes(
+        idEmpreend,
+        mesVigencia,
+        anoVigencia,
+        mesInicio,
+        anoInicio,
+        mesFinal,
+        anoFinal
+    )
+
+    return render_template("medicoes_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+def gerar_tab_medicoes(idEmpreend, mesVigencia, anoVigencia, mesInicio, anoInicio, mesFinal, anoFinal):
     geral = geralController()
     preC = medicaoController()
 
@@ -706,7 +735,7 @@ def tab_medicoes():
 
     plt.savefig(grafNome)
 
-    return render_template("medicoes_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    return grafNome
 
 
 @tabela_bp.route('/tab_orcamento_liberacao')

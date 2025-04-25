@@ -1,4 +1,4 @@
-<!-- Template: relatorio  -->
+<!-- Template: gerar_relatorio  -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -85,7 +85,7 @@
                   <td>
                     <input type="checkbox" id="{{opt[0]}}" name="opcoes_relatorio" value="{{opt[0]}}" />
                   </td>
-                  <td>{{opt[2]}}</td>
+                  <td><label for="{{opt[0]}}">{{opt[2]}}</label></td>
                   <td>
                     <label for="{{opt[0]}}">{{opt[1]}}</label>
                   </td>
@@ -96,6 +96,59 @@
           </div>
         </div>
 
+        <p class="border-start border-5 p-3 pt-0 pb-0 h5 mb-2 mt-4 border-primary">Selecione o intervalo de datas</p>
+        <div class="mt-3 mb-5 p-3 bg-light border border-dark-subtle rounded-4">
+          <div class="row">
+
+            <div class="col-6">
+              <div class="form-floating">
+                <div class="form-floating">
+                  <input type="month" min="2000-01" max="3000-12" name="intervaloInicio" id="dataInicio"
+                    class="form-control" placeholder="" />
+                  <label for="dataInicio">Início do Intervalo</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-6">
+              <div class="form-floating">
+                <div class="form-floating">
+                  <input type="month" min="2000-01" max="3000-12" name="finalIntervalo" id="finalIntervalo"
+                    class="form-control" placeholder="" />
+                  <label for="finalIntervalo">Final do Intervalo</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="row mt-4">
+          <div class="col-12">
+            <table class="table table-striped">
+              <thead class="table-light">
+                <tr>
+                  <th>
+                    <input type="checkbox" name="all" value="todos" />
+                  </th>
+                  <th>Gerado</th>
+                  <th>Insumo</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for optr in opcoesComRange %}
+                <tr>
+                  <td>
+                    <input type="checkbox" id="{{optr[0]}}" name="opcoes_relatorio_range" value="{{optr[0]}}" />
+                  </td>
+                  <td><label for="{{optr[0]}}">{{optr[2]}}</label></td>
+                  <td>
+                    <label for="{{optr[0]}}">{{optr[1]}}</label>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
         <div class="row mt-5 justify-content-center">
           <div class="col-3">
             <a href="/home" class="btn btn-secondary w-100">Cancelar</a>
