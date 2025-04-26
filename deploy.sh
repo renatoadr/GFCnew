@@ -40,7 +40,7 @@ versao_atual=${imgVersao[1]}
 IFS='.' read -r -a semver <<< "$versao_atual"
 versao_build=$(( semver[3] + 1))
 semver[3]=$versao_build
-nova_versao=$(IFS=. ; log "${semver[*]}")
+nova_versao=$(IFS=. ; echo "${semver[*]}")
 nome_arquivo="${nome_image}_${nova_versao}.tar"
 
 log "Alterando versão do deploy no docker-compose"
