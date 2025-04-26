@@ -148,17 +148,11 @@ class unidadeController:
 
         print('+++++++++ consultarUnidadeChaves ++++++++++++++++++')
 
-#        query = "select count(id_unidade), count(vl_chaves), count(vl_pre_chaves), count(vl_pos_chaves) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + idEmpreend + " and status = 'Vendido' and ac_historico is null"
-        query = "SELECT COUNT(id_unidade) AS total_unidades, COUNT(CASE WHEN vl_chaves > 0 THEN 1 END) AS total_chaves, COUNT(CASE WHEN vl_pre_chaves > 0 THEN 1 END) AS total_pre_chaves, COUNT(CASE WHEN vl_pos_chaves > 0 THEN 1 END) AS total_pos_chaves FROM " + MySql.DB_NAME + ".tb_unidades WHERE id_empreendimento = " + idEmpreend + " AND status = 'Vendido' AND ac_historico IS NULL"
-
-        print(query)
+#        query = "SELECT COUNT(id_unidade) AS total_unidades, COUNT(CASE WHEN vl_chaves > 0 THEN 1 END) AS total_chaves, COUNT(CASE WHEN vl_pre_chaves > 0 THEN 1 END) AS total_pre_chaves, COUNT(CASE WHEN vl_pos_chaves > 0 THEN 1 END) AS total_pos_chaves FROM " + MySql.DB_NAME + ".tb_unidades WHERE id_empreendimento = " + idEmpreend + " AND status = 'Vendido' AND ac_historico IS NULL"
+        query = "SELECT COUNT(id_unidade) AS total_unidades, COUNT(CASE WHEN vl_chaves > 0 THEN 1 END) AS total_chaves, COUNT(CASE WHEN vl_pre_chaves > 0 THEN 1 END) AS total_pre_chaves, COUNT(CASE WHEN vl_pos_chaves > 0 THEN 1 END) AS total_pos_chaves FROM " + MySql.DB_NAME + ".tb_unidades WHERE id_empreendimento = " + idEmpreend + " AND (vl_chaves > 0 or vl_pre_chaves > 0 or vl_pos_chaves > 0 ) AND status = 'Vendido' AND ac_historico IS NULL"
 
         cursor.execute(query)
-
         linha = cursor.fetchone()
-        print('+++++++++++++++++++++++++++')
-
-        print('+++++++++++++++++++++++++++')
 
         linhaU = unidade()
         linhaU.setQtUnidade(linha[0])
@@ -166,10 +160,6 @@ class unidadeController:
         linhaU.setTtPreChaves(linha[2])
         linhaU.setTtPosChaves(linha[3])
 
-        print('------------------------')
-        print(linhaU.getQtUnidade(), linhaU.getTtChaves(),
-              linhaU.getTtPreChaves(), linhaU.getTtPosChaves())
-        print('------------------------')
         cursor.close()
         MySql.close(self.__connection)
 
@@ -181,8 +171,7 @@ class unidadeController:
 
         print('+++++++++ consultarUnidadeVendas ++++++++++++++++++')
 
-        query = "select status, count(id_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(
-            idEmpreend) + " and status != 'distrato' and ac_historico is null group by status"
+        query = "select status, count(id_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status != 'distrato' and ac_historico is null group by status"
         print(query)
 
         cursor.execute(query)
@@ -210,12 +199,14 @@ class unidadeController:
 
 #        query = "select vl_pago from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' " + " and ac_historico is null" 
  
-        if anoIni == anoFim:
-                query =  "select mes_vigencia, ano_vigencia, sum(vl_pago), sum(vl_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status in ('Vendido', 'Estoque') and ac_historico is null and ((mes_vigencia >= '" + mesIni + "' and ano_vigencia = '" + anoIni + "') and (mes_vigencia <= '" + mesFim + "' and ano_vigencia = '" + anoFim + "')) group by ano_vigencia, mes_vigencia"
-                print('===========> com and')
-        else:
-                query =  "select mes_vigencia, ano_vigencia, sum(vl_pago), sum(vl_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status in ('Vendido', 'Estoque') and ac_historico is null and ((mes_vigencia >= '" + mesIni + "' and ano_vigencia = '" + anoIni + "') or  (mes_vigencia <= '" + mesFim + "' and ano_vigencia = '" + anoFim + "')) group by ano_vigencia, mes_vigencia"
-                print('===========> com or')
+#        if anoIni == anoFim:
+#                query =  "select mes_vigencia, ano_vigencia, sum(vl_pago) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' and ac_historico is null and ((mes_vigencia >= '" + mesIni + "' and ano_vigencia = '" + anoIni + "') and (mes_vigencia <= '" + mesFim + "' and ano_vigencia = '" + anoFim + "')) group by ano_vigencia, mes_vigencia"
+#                print('===========> com and')
+#        else:
+#                query =  "select mes_vigencia, ano_vigencia, sum(vl_pago) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' and ac_historico is null and ((mes_vigencia >= '" + mesIni + "' and ano_vigencia = '" + anoIni + "') or  (mes_vigencia <= '" + mesFim + "' and ano_vigencia = '" + anoFim + "')) group by ano_vigencia, mes_vigencia"
+#                print('===========> com or')
+
+        query =  "select mes_vigencia, ano_vigencia, SUM(CASE WHEN status = 'Estoque' THEN vl_unidade ELSE 0 END) AS total_unidade, SUM(CASE WHEN status = 'Vendido' THEN vl_pago ELSE 0 END) AS total_pago from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and ac_historico is null and (ano_vigencia > '" + anoIni + "' OR (ano_vigencia = '" + anoIni + "' AND mes_vigencia >= '" + mesIni + "')) AND (ano_vigencia < '" + anoFim + "' OR (ano_vigencia = '" + anoFim + "' AND mes_vigencia <= '" + mesFim + "')) group by ano_vigencia, mes_vigencia order by ano_vigencia, mes_vigencia"
 
         print(query)
 
@@ -228,8 +219,8 @@ class unidadeController:
             u = unidade()
             u.setMesVigencia(x[0])
             u.setAnoVigencia(x[1])
-            u.setTtPago(x[2])
-            u.setTtUnidade(x[3])
+            u.setTtUnidade(x[2])
+            u.setTtPago(x[3])
             listaVendas.append(u)
 
         cursor.close()
@@ -237,6 +228,40 @@ class unidadeController:
         MySql.close(self.__connection)
 
         return listaVendas
+    def consultarUnidadeEstoque(self, idEmpreend, mesIni, anoIni, mesFim, anoFim):
+        self.__connection = MySql.connect()
+        cursor = self.__connection.cursor()
+
+        print('+++++++++ consultarUnidadeRecebibeis ++++++++++++++++++')
+
+#        query = "select vl_pago from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' " + " and ac_historico is null" 
+ 
+        if anoIni == anoFim:
+                query =  "select mes_vigencia, ano_vigencia, sum(vl_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Estoque' and ac_historico is null and ((mes_vigencia >= '" + mesIni + "' and ano_vigencia = '" + anoIni + "') and (mes_vigencia <= '" + mesFim + "' and ano_vigencia = '" + anoFim + "')) group by ano_vigencia, mes_vigencia"
+                print('===========> com and')
+        else:
+                query =  "select mes_vigencia, ano_vigencia, sum(vl_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Estoque' and ac_historico is null and ((mes_vigencia >= '" + mesIni + "' and ano_vigencia = '" + anoIni + "') or  (mes_vigencia <= '" + mesFim + "' and ano_vigencia = '" + anoFim + "')) group by ano_vigencia, mes_vigencia"
+                print('===========> com or')
+
+        print(query)
+
+        cursor.execute(query)
+
+        lista = cursor.fetchall()
+        listaEstoque = []
+
+        for x in lista:
+            u = unidade()
+            u.setMesVigencia(x[0])
+            u.setAnoVigencia(x[1])
+            u.setTtUnidade(x[2])
+            listaEstoque.append(u)
+
+        cursor.close()
+
+        MySql.close(self.__connection)
+
+        return listaEstoque
 
     def salvarUnidade(self, unidade):
         self.__connection = MySql.connect()

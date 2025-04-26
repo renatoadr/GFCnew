@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, redirect, current_app, fl
 
 from controller.financeiroController import financeiroController
 from controller.orcamentoController import orcamentoController
-from router.graficos import gerar_graf_orcamento_liberacao, gerar_graf_indices_garantia_I
+from router.graficos import gerar_graf_orcamento_liberacao
 from controller.contaController import contaController
 from controller.notaController import notaController
 from router.tabelas import gerar_tab_conta_corrente, gerar_tab_notas, gerar_tab_orcamento_liberacao, gerar_tab_acomp_financeiro
@@ -16,8 +16,7 @@ gerar_relatorio_bp = Blueprint('gerar_relatorios', __name__)
 opcoes = [
     ['graf_indices_garantia_I', 'Gráfico de Índices de Garantias I', 'Não'],
     ['graf_indices_garantia_II', 'Gráfico de Índices de Garantias II', 'Não'],
-    ['graf_orcamento_liberacao_valor',
-     'Gráfico do Orçamento para Liberação de Valor', 'Não'],
+    ['graf_orcamento_liberacao_valor','Gráfico do Orçamento para Liberação de Valor', 'Não'],
     ['graf_progresso_obra', 'Gráfico do Progresso da Obra', 'Não'],
     ['graf_chaves', 'Gráfico de Liberação das Chaves', 'Não'],
     ['graf_vendas', 'Gráfico de Vendas', 'Não'],

@@ -173,32 +173,41 @@ def graf_progresso_obra():
 @login_required
 def graf_indices_garantia_I():
     # ÍNDICES DE GARANTIA
-    idEmpreend = IdEmpreend().get()
-    mes = request.args.get("mesV")
-    ano = request.args.get("anoV")
+#    idEmpreend = IdEmpreend().get()
+#    mesVigencia = request.args.get("mesVigencia")
+#    anoVigencia = request.args.get("anoVigencia")
+#    mesInicio = request.args.get("mesInicio")
+#    anoInicio = request.args.get("anoInicio")
+#    mesFinal = request.args.get("mesFinal")
+#    anoFinal = request.args.get("anoFinal")
 
-    mesVigenciaIni = '01'
-    anoVigenciaIni = '2024'
-    mesVigenciaFim = '04'
-    anoVigenciaFim = '2024'
+    idEmpreend = 57
+    mesVigencia = '04'
+    anoVigencia = '2025'
+    mesInicio = '01'
+    anoInicio = '2025'
+    mesFinal = '05'
+    anoFinal = '2025'
 
     geral = geralController()
     empC = empreendimentoController()
     empS = empC.consultarEmpreendimentoPeloId(idEmpreend)
+    VlPlanoEmp = empS.getVlPlanoEmp()
+    IndiceGarantia = empS.getIndiceGarantia()
+
     uniC = unidadeController()
-    uniS = uniC.consultarUnidadeRecebibeis(idEmpreend)
+    recS = uniC.consultarUnidadeRecebibeis(idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
+ 
+    x1 = []
+    y1 = []
+    y2 = []
 
-    grafNome = gerar_graf_indices_garantia_I(idEmpreend, mes, ano)
+    for u in recS: 
+        x1.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
+        y1.append(IndiceGarantia)
+        y2.append((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp)
 
-    return render_template(".html", grafNome=grafNome, version=random.randint(1, 100000))
-
-
-def gerar_graf_indices_garantia_I(idEmpreend, mes, ano):
-    x1 = ['jan', 'fev', 'mar', 'abr']
-    y1 = [1.20, 1.20, 1.20, 1.20]
-    y2 = [1.00, 1.23, 1.29, 1.42]
-
-    linhas = [1.00, 1.10, 1.20, 1.30, 1.40, 1.50, 1.60]
+    linhas = [ 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]
     plt.hlines(linhas, 0, 3, '#9feafc')
 
     plt.plot(x1, y1, label='IC Estipulado em contrato')
@@ -229,12 +238,13 @@ def gerar_graf_indices_garantia_I(idEmpreend, mes, ano):
 
     grafC = graficoController()
 
-    diretorio = grafC.montaDir(idEmpreend, mes, ano)
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'graf_indices_garantia_I.png'
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
-    return grafNome
+ 
+    return render_template("indices_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
 @grafico_bp.route('/graf_indices_garantia_II', methods=['GET'])
@@ -242,45 +252,60 @@ def gerar_graf_indices_garantia_I(idEmpreend, mes, ano):
 def graf_indices_garantia_II():
     # ÍNDICES DE GARANTIA
 
-    idEmpreend = 55
-    mes = "12"
-    ano = "2024"
-    mesVigenciaIni = '01'
-    anoVigenciaIni = '2024'
-    mesVigenciaFim = '04'
-    anoVigenciaFim = '2024'
+#    idEmpreend = IdEmpreend().get()
+#    mesVigencia = request.args.get("mesVigencia")
+#    anoVigencia = request.args.get("anoVigencia")
+#    mesInicio = request.args.get("mesInicio")
+#    anoInicio = request.args.get("anoInicio")
+#    mesFinal = request.args.get("mesFinal")
+#    anoFinal = request.args.get("anoFinal")
+
+    idEmpreend = 57
+    mesVigencia = '04'
+    anoVigencia = '2025'
+    mesInicio = '01'
+    anoInicio = '2025'
+    mesFinal = '05'
+    anoFinal = '2025'
 
     geral = geralController()
-    preC = medicaoController()
-    preS = preC.consultarMedicoesPorPeriodo(
-        idEmpreend, mesVigenciaIni, anoVigenciaIni, mesVigenciaFim, anoVigenciaFim)
+    empC = empreendimentoController()
+    empS = empC.consultarEmpreendimentoPeloId(idEmpreend)
+    VlPlanoEmp = empS.getVlPlanoEmp()
 
-    x1 = ['jan', 'fev', 'mar', 'abr']
-    y3 = [0.10, 0.15, 0.20, 0.29]
-    y4 = [0.90, 1.08, 1.09, 1.13]
+    uniC = unidadeController()
+    recS = uniC.consultarUnidadeRecebibeis(idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
+ 
+    x1 = []
+    y1 = []
+    y2 = []
 
-    linhas = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5,
-              0.6, 0.7, 0.8, 0.9, 1.00, 1.10, 1.20]
+    for u in recS: 
+        x1.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
+        y1.append(u.getTtPago() / VlPlanoEmp)
+        y2.append(u.getTtUnidade() / VlPlanoEmp)
+
+    linhas = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.00, 1.10, 1.20]
 
     plt.hlines(linhas, 0, 3, '#9feafc')
-    plt.plot(x1, y3, label='IC Recebiveis')
-    plt.plot(x1, y4, label='IC Estoque')
+    plt.plot(x1, y1, label='IC Recebiveis')
+    plt.plot(x1, y2, label='IC Estoque')
 
-    annotationsy3 = y3
-    annotationsy4 = y4
+    annotationsy1 = y1
+    annotationsy2 = y2
 
-    plt.scatter(x1, y3, s=20)
-    plt.scatter(x1, y4, s=20)
+    plt.scatter(x1, y1, s=20)
+    plt.scatter(x1, y2, s=20)
 
     plt.ylim(0.0, 1.2)
 
     plt.title("Índices de garantia previsto x existente", fontdict={
               'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
 
-    for xi, yi, text in zip(x1, y3, annotationsy3):
+    for xi, yi, text in zip(x1, y1, annotationsy1):
         plt.annotate(text, xy=(xi, yi), xycoords='data',
                      xytext=(3, 10), textcoords='offset points')
-    for xi, yi, text in zip(x1, y4, annotationsy4):
+    for xi, yi, text in zip(x1, y2, annotationsy2):
         plt.annotate(text, xy=(xi, yi), xycoords='data',
                      xytext=(3, -10), textcoords='offset points')
 
@@ -291,17 +316,13 @@ def graf_indices_garantia_II():
 
     grafC = graficoController()
 
-    idEmpreend = str(55)  # preciso montar esse informação
-    mes = "12"
-    ano = "2024"
-
-    diretorio = grafC.montaDir(idEmpreend, mes, ano)
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'graf_indices_garantia_II.png'
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
 
-    return
+    return render_template("indices_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
 @grafico_bp.route('/graf_vendas', methods=['GET'])
@@ -310,9 +331,12 @@ def graf_vendas():
     # Gráfico de rosca
     # ÍNDICES DE VENDAS
 
-    idEmpreend = str(55)  # preciso montar esse informação
-    mes = "12"
-    ano = "2024"
+    idEmpreend = IdEmpreend().get()
+    mesVigencia = request.args.get("mesVigencia")
+    anoVigencia = request.args.get("anoVigencia")
+    mesVigencia = '04'
+    anoVigencia = '2025'
+
     unidc = unidadeController()
     unid = unidc.consultarUnidadeVendas(idEmpreend)
 
@@ -330,8 +354,7 @@ def graf_vendas():
 
     for n in unid:
         perc = round((n.getTtStatus()/soma)*100)
-        texto = str(n.getTtStatus()) + " " + \
-            n.getStatus() + " (" + str(perc) + "%)"
+        texto = str(n.getTtStatus()) + " " + n.getStatus() + " (" + str(perc) + "%)"
         recipe.append(texto)
 
     wedges, texts = ax.pie(data, wedgeprops=dict(width=0.5), startangle=-40)
@@ -347,7 +370,7 @@ def graf_vendas():
         horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
         connectionstyle = f"angle,angleA=0,angleB={ang}"
         kw["arrowprops"].update({"connectionstyle": connectionstyle})
-        ax.annotate(recipe[i], xy=(x, y), xytext=(1.35*np.sign(x), 1.4*y),
+        ax.annotate(recipe[i], xy=(x, y), xytext=(0.7*np.sign(x), 1.1*y),
                     horizontalalignment=horizontalalignment, **kw)
 
     ax.set_title("Vendas", fontdict={
@@ -355,13 +378,13 @@ def graf_vendas():
 
     grafC = graficoController()
 
-    diretorio = grafC.montaDir(idEmpreend, mes, ano)
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'graf_vendas.png'
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
 
-    return
+    return render_template("vendas_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
 @grafico_bp.route('/graf_chaves', methods=['GET'])
@@ -369,19 +392,20 @@ def graf_vendas():
 def graf_chaves():
     # ÍNDICES DE CHAVES
 
-    idEmpreend = str(55)  # preciso montar esse informação
-    mes = "12"
-    ano = "2024"
+    idEmpreend = IdEmpreend().get()
+    mesVigencia = request.args.get("mesVigencia")
+    anoVigencia = request.args.get("anoVigencia")
+#    mesVigencia = '04'
+#    anoVigencia = '2025'
+
     unidc = unidadeController()
     unid = unidc.consultarUnidadeChaves(idEmpreend)
 
     labels = ['Chaves', 'Pré-chaves', 'Pós-chaves']
 
-    total = unid.getTtChaves() + unid.getTtPreChaves() + unid.getTtPosChaves()
-
-    perChave = unid.getTtChaves() / total
-    perPreChave = unid.getTtPreChaves() / total
-    perPosChave = unid.getTtPosChaves() / total
+    perChave = unid.getTtChaves()        # / unid.getQtUnidade()
+    perPreChave = unid.getTtPreChaves()  # / unid.getQtUnidade()
+    perPosChave = unid.getTtPosChaves()  # / unid.getQtUnidade()
 
     sizes = [perChave, perPreChave, perPosChave]
 #    print('sizes = ', sizes)
@@ -395,13 +419,11 @@ def graf_chaves():
 
     grafC = graficoController()
 
-    idEmpreend = str(55)  # preciso montar esse informação
-    mes = "12"
-    ano = "2024"
-
-    diretorio = grafC.montaDir(idEmpreend, mes, ano)
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'graf_chaves.png'
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
-    return
+    
+    return render_template("chaves_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+

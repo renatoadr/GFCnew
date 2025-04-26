@@ -13,7 +13,6 @@ relatorio_bp = Blueprint('relatorios', __name__)
 @login_required
 def gerar_relatorio():
 
-    #    grafC = graficoController()
     grafC = graficoController()
 
     idEmpreend = request.args.get("idEmpreend")
@@ -41,7 +40,6 @@ def gerar_relatorio():
                 mensagem = mensagem + ' # ' + n
         else:
             c = canvas.Canvas(dirRelatorio + nomePdf)
-
             pagina = 1
             grafC.pdfPag1(c, diretorio, pagina)
             c.showPage()
@@ -63,25 +61,25 @@ def gerar_relatorio():
             pagina += 1
             grafC.pdfPag7(c, diretorio, pagina)
             c.showPage()
-            if os.path.isfile(diretorio+"foto_1.jpeg"):
+            if os.path.isfile(diretorio+"foto_1.jpeg") or os.path.isfile(diretorio+"foto_1.png"):
                 pagina += 1
                 grafC.pdfPag8(c, diretorio, pagina)
                 c.showPage()
-                if os.path.isfile(diretorio+"foto_7.jpeg"):
+                if os.path.isfile(diretorio+"foto_7.jpeg") or os.path.isfile(diretorio+"foto_7.png"):
                     pagina += 1
                     grafC.pdfPag9(c, diretorio, pagina)
                     c.showPage()
-                    if os.path.isfile(diretorio+"foto_13.jpeg"):
+                    if os.path.isfile(diretorio+"foto_13.jpeg") or os.path.isfile(diretorio+"foto_13.png"):
                         pagina += 1
                         grafC.pdfPag10(c, diretorio, pagina)
                         c.showPage()
-                        if os.path.isfile(diretorio+"foto_19.jpeg"):
+                        if os.path.isfile(diretorio+"foto_19.jpeg") or os.path.isfile(diretorio+"foto_19.png"):
                             pagina += 1
                             grafC.pdfPag11(c, diretorio, pagina)
                             c.showPage()
-
+    
             pagina += 1
-            grafC.pdfPag12(c, diretorio, pagina)
+            grafC.pdfPag12(c, diretorio, pagina, idEmpreend, mes, ano)
             c.showPage()
             c.save()
             mensagem = "RELATORIO GERADO COM SUCESSO"
@@ -96,32 +94,32 @@ def gerar_relatorio():
     return render_template("relatorio.html", arquivos=arqS, listaMes=meses, listaAno=anos, apelido=apelido, idEmpreend=idEmpreend, mensagem=mensagem)
 
 
-@relatorio_bp.route('/tratar_graficos_tabelas')
-@login_required
-def tratar_graficos_tabelas():
-    idEmpreend = request.args.get("idEmpreend")
-    nmEmpreend = request.args.get("nmEmpreend")
-
-    if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
-        return redirect('/home')
-
-    if idEmpreend is None:
-        idEmpreend = IdEmpreend().get()
-    else:
-        IdEmpreend().set(idEmpreend)
-
-    if nmEmpreend is None:
-        nmEmpreend = NmEmpreend().get()
-    else:
-        NmEmpreend().set(nmEmpreend)
-
-    ctrl = garantiaController()
-    items = ctrl.list(idEmpreend)
-
-    if not items:
-        return redirect('/atualizar_garantia')
-
-    obras = filter(lambda it: it.tipo == 'Obra', items)
-    gerais = filter(lambda it: it.tipo == 'Geral', items)
-
-    return render_template('graf_tab.html', obras=obras, gerais=gerais)
+#@relatorio_bp.route('/tratar_graficos_tabelas')
+#@login_required
+#def tratar_graficos_tabelas():
+#    idEmpreend = request.args.get("idEmpreend")
+#    nmEmpreend = request.args.get("nmEmpreend")
+#
+#    if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
+#        return redirect('/home')
+#
+#    if idEmpreend is None:
+#        idEmpreend = IdEmpreend().get()
+#    else:
+#        IdEmpreend().set(idEmpreend)
+#
+#    if nmEmpreend is None:
+#        nmEmpreend = NmEmpreend().get()
+#    else:
+#        NmEmpreend().set(nmEmpreend)
+#
+#    ctrl = garantiaController()
+#    items = ctrl.list(idEmpreend)
+#
+#    if not items:
+#        return redirect('/atualizar_garantia')
+#
+#    obras = filter(lambda it: it.tipo == 'Obra', items)
+#    gerais = filter(lambda it: it.tipo == 'Geral', items)
+#
+#    return render_template('graf_tab.html', obras=obras, gerais=gerais)

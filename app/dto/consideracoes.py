@@ -2,24 +2,31 @@ class consideracoes:
     __qualidade1 = ''
     __qualidade2 = ''
     __qualidade3 = ''
+    __qualidade4 = ''
     __servico1 = ''
     __servico2 = ''
     __servico3 = ''
+    __servico4 = ''
     __efetivoEstoque1 = ''
     __efetivoEstoque2 = ''
     __efetivoEstoque3 = ''
+    __efetivoEstoque4 = ''
     __empreiteiro1 = ''
     __empreiteiro2 = ''
     __empreiteiro3 = ''
+    __empreiteiro4 = ''
     __estoque1 = ''
     __estoque2 = ''
     __estoque3 = ''
+    __estoque4 = ''
     __conclusao1 = ''
     __conclusao2 = ''
     __conclusao3 = ''
+    __conclusao4 = ''
     __consideracao1 = ''
     __consideracao2 = ''
     __consideracao3 = ''
+    __consideracao4 = ''
     __responsavel = ''
     __crea = ''
 
@@ -41,6 +48,12 @@ class consideracoes:
     def setQualidade3(self, param):
         self.__qualidade3 = param
 
+    def setQualidade4(self, param):
+        self.__qualidade4 = param
+
+    def getQualidade4(self):
+        return self.__qualidade4
+
     def getServico1(self):
         return self.__servico1
 
@@ -58,6 +71,12 @@ class consideracoes:
 
     def setServico3(self, param):
         self.__servico3 = param
+
+    def getServico4(self):
+        return self.__servico4
+
+    def setServico4(self, param):
+        self.__servico4 = param
 
     def getEfetivoEstoque1(self):
         return self.__efetivoEstoque1
@@ -77,6 +96,12 @@ class consideracoes:
     def setEfetivoEstoque3(self, param):
         self.__efetivoEstoque3 = param
 
+    def getEfetivoEstoque4(self):
+        return self.__efetivoEstoque4
+
+    def setEfetivoEstoque4(self, param):
+        self.__efetivoEstoque4 = param
+
     def getEmpreiteiro1(self):
         return self.__empreiteiro1
 
@@ -94,6 +119,12 @@ class consideracoes:
 
     def setEmpreiteiro3(self, param):
         self.__empreiteiro3 = param
+
+    def getEmpreiteiro4(self):
+        return self.__empreiteiro4
+
+    def setEmpreiteiro4(self, param):
+        self.__empreiteiro4 = param
 
     def getEstoque1(self):
         return self.__estoque1
@@ -113,6 +144,12 @@ class consideracoes:
     def setEstoque3(self, param):
         self.__estoque3 = param
 
+    def getEstoque4(self):
+        return self.__estoque4
+
+    def setEstoque4(self, param):
+        self.__estoque4 = param
+
     def getConclusao1(self):
         return self.__conclusao1
 
@@ -131,6 +168,12 @@ class consideracoes:
     def setConclusao3(self, param):
         self.__conclusao3 = param
 
+    def getConclusao4(self):
+        return self.__conclusao4
+
+    def setConclusao4(self, param):
+        self.__conclusao4 = param
+
     def getConsideracao1(self):
         return self.__consideracao1
 
@@ -148,6 +191,12 @@ class consideracoes:
 
     def setConsideracao3(self, param):
         self.__consideracao3 = param
+
+    def getConsideracao4(self):
+        return self.__consideracao4
+
+    def setConsideracao4(self, param):
+        self.__consideracao4 = param
 
     def getResponsavel(self):
         return self.__responsavel

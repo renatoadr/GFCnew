@@ -555,16 +555,28 @@ def tab_certidoes():
 @tabela_bp.route('/tab_acomp_financeiro')
 @login_required
 def tab_acomp_financeiro():
-    idEmpreend = IdEmpreend().get()
-    dtCarga = request.args.get("dtCarga")
-    mesVigencia = str(request.args.get('mesV')).zfill(2)
-    anoVigencia = str(request.args.get('anoV'))
 
+    #    idEmpreend = IdEmpreend().get()
+#    mesVigencia = request.args.get("mesVigencia")
+#    anoVigencia = request.args.get("anoVigencia")
+#    mesInicio = request.args.get("mesInicio")
+#    anoInicio = request.args.get("anoInicio")
+#    mesFinal = request.args.get("mesFinal")
+#    anoFinal = request.args.get("anoFinal")
+
+    idEmpreend = 57
+    mesVigencia = '04'
+    anoVigencia = '2025'
+    mesInicio = '01'
+    anoInicio = '2025'
+    mesFinal = '05'
+    anoFinal = '2025'
+    
     finC = financeiroController()
-    finS = finC.consultarFinanceiroPelaData(idEmpreend, dtCarga)
-    grafNome = gerar_tab_acomp_financeiro(
-        idEmpreend, mesVigencia, anoVigencia, finS)
-    return render_template(".html", grafNome=grafNome, version=random.randint(1, 100000))
+    finS = finC.consultarFinanceiroPelaData(idEmpreend, mesVigencia, anoVigencia)
+    grafNome = gerar_tab_acomp_financeiro(idEmpreend, mesVigencia, anoVigencia, finS)
+
+    return render_template("financeiro_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
 def gerar_tab_acomp_financeiro(idEmpreend, mes, ano, finS):
