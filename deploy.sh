@@ -3,77 +3,99 @@
 pasta_servidor=gfc_app
 nome_image=gfcapp
 
-echo "[GFC_DEPLOY] Iniciando deploy...."
+log() {
+  echo -e "\033[0;34m[GFC_DEPLOY]\033[0m $1"
+}
 
-echo "[GFC_DEPLOY] Baixando versão mais recente do repositório"
-git checkout main
+log "Iniciando deploy...."
+
+log "Verificando se tem arquivo pendente..."
+arquivos_mod=$(git status -s)
+if [ -n "$arquivos_mod" ]; then
+  log "O deploy foi finalizado com erro. Existe modificações não comitadas"
+  exit
+fi
+
+log "Verificando se está na branch main..."
+current_branch=$(git branch --show-current)
+if [ "$current_branch" != "main" ]; then
+  log "Alterando para branch principal"
+  git checkout main
+fi
+
+log "Baixando versão mais recente do repositório"
 git pull
 
-exit
+log "Verificando se tem conflitos..."
+arquivos_mod=$(git status -s)
+if [ -n "$arquivos_mod" ]; then
+  log "O deploy foi finalizado. Existem conflitos para resolver ou arquivos para comitar"
+  exit
+fi
 
-echo "[GFC_DEPLOY] Preparando versão..."
+log "Preparando versão..."
 imagem_atual=$(cat docker-compose.yml | grep "image: ${nome_image}" | awk '{print $2}')
 IFS=':' read -r -a imgVersao <<< "$imagem_atual"
 versao_atual=${imgVersao[1]}
 IFS='.' read -r -a semver <<< "$versao_atual"
 versao_build=$(( semver[3] + 1))
 semver[3]=$versao_build
-nova_versao=$(IFS=. ; echo "${semver[*]}")
+nova_versao=$(IFS=. ; log "${semver[*]}")
 nome_arquivo="${nome_image}_${nova_versao}.tar"
 
-echo "[GFC_DEPLOY] Alterando versão do deploy no docker-compose"
+log "Alterando versão do deploy no docker-compose"
 sed -i "s/image: ${imagem_atual}/image: gfcapp:${nova_versao}/" docker-compose.yml
 
-echo "[GFC_DEPLOY] Alterado Versao Atual: ${versao_atual} para Nova versão: ${nova_versao}"
+log "Alterado Versao Atual: ${versao_atual} para Nova versão: ${nova_versao}"
 
-echo "[GFC_DEPLOY] Removendo imagem antiga"
+log "Removendo imagem antiga"
 docker rmi "${imagem_atual}"
 
-echo "[GFC_DEPLOY] Iniciando build da aplicação"
+log "Iniciando build da aplicação"
 docker-compose build app
 
-echo "[GFC_DEPLOY] Salvando cópia da imagem... Aguarde alguns minutos..."
+log "Salvando cópia da imagem... Aguarde alguns minutos..."
 docker save gfcapp -o "${nome_arquivo}"
 
-echo "[GFC_DEPLOY] Aguarde, comprimindo o arquivo..."
+log "Aguarde, comprimindo o arquivo..."
 gzip -v "${nome_arquivo}"
 
-echo "[GFC_DEPLOY] Enviando imagem para o servidor"
+log "Enviando imagem para o servidor"
 scp -i "chavegfc.pem" "${nome_arquivo}.gz" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com:~/${pasta_servidor}
 
-echo "[GFC_DEPLOY] Removendo arquivos de configuração do servidor"
+log "Removendo arquivos de configuração do servidor"
 ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && rm -f docker-compose.yml gunicorn_config.py nginx.conf"
 
-echo "[GFC_DEPLOY] Enviando novos arquivos de configuração para o servidor"
+log "Enviando novos arquivos de configuração para o servidor"
 scp -i "chavegfc.pem" docker-compose.yml gunicorn_config.py nginx.conf ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com:~/${pasta_servidor}
 
-echo "[GFC_DEPLOY] Parando os containers no servidor"
+log "Parando os containers no servidor"
 ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && docker-compose down"
 
-echo "[GFC_DEPLOY] Removendo imagem antiga da aplicação no servidor"
+log "Removendo imagem antiga da aplicação no servidor"
 ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "docker rmi ${imagem_atual}"
 
-echo "[GFC_DEPLOY] Descompactando imagem no servidor...."
+log "Descompactando imagem no servidor...."
 ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && gzip -vd ${nome_arquivo}.gz"
 
-echo "[GFC_DEPLOY] Carregando para o docker do servidor a nova imagem. Aguarde alguns minutos..."
+log "Carregando para o docker do servidor a nova imagem. Aguarde alguns minutos..."
 ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && docker load < ${nome_arquivo}"
 
-echo "[GFC_DEPLOY] Recriando os containers no servidor"
+log "Recriando os containers no servidor"
 ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && docker-compose up -d"
 
-echo "[GFC_DEPLOY] Deletando imagem do diretório do servidor"
+log "Deletando imagem do diretório do servidor"
 ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && rm -f ${nome_arquivo} ${nome_arquivo}.gz"
 
-echo "[GFC_DEPLOY] Deletando imagem salva no diretório local"
+log "Deletando imagem salva no diretório local"
 rm -f "${nome_arquivo}" "${nome_arquivo}.gz"
 
-echo "[GFC_DEPLOY] Removendo imagem nova do docker local"
+log "Removendo imagem nova do docker local"
 docker rmi "${nome_image}:${nova_versao}"
 
-echo "[GFC_DEPLOY] Enviando alteração da versão da aplicação para o repositório"
+log "Enviando alteração da versão da aplicação para o repositório"
 git add docker-compose.yml
 git commit -m "Novo deploy versao: ${nova_versao}"
 git push
 
-echo "[GFC_DEPLOY] Deploy concluído!"
+log "Deploy concluído!"
