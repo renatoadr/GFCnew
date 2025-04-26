@@ -12,6 +12,7 @@ dist/
 GFC
 data_db
 *.tar
+*.gz
 db_password.txt
 *.pem
 certs
