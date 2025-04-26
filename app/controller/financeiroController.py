@@ -8,7 +8,7 @@ from dto.financeiro import financeiro
 class financeiroController:
     __connection = None
 
-    def consultarFinanceiroPelaData(self, idEmpreend, dtCarga):
+    def consultarFinanceiroPelaData(self, idEmpreend, mes, ano):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor(dictionary=True)
 

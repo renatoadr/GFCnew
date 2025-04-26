@@ -20,114 +20,6 @@ import random
 tabela_bp = Blueprint('tabelas', __name__)
 
 
-@tabela_bp.route('/tab_inadimplencia')
-@login_required
-def tab_inadimplencia():
-    #    tipo = request.args.get("tipo")
-    #    idEmpreend = request.args.get("idEmpreend")
-    #    dtCarga = request.args.get("dtCarga")
-
-    idEmpreend = 55
-    mesIni = '10'
-    anoIni = '2024'
-    mesFim = '01'
-    anoFim = '2025'
-
-    geral = geralController()
-    inaC = inadimplenciaController()
-    inaS = inaC.consultarInadimplenciaPelaData(
-        idEmpreend, mesIni, anoIni, mesFim, anoFim)
-
-    column_labels = []
-    mesTeste = ''
-    anoTeste = ''
-    atrasoTeste = True
-
-    column_labels.append('Atraso')
-
-    for m in inaS:
-        if m.getOrdem() == 1:
-            column_labels.append(geral.formatammmaa(
-                m.getMesVigencia(), m.getAnoVigencia()))
-        else:
-            break
-
-#    print('++++++++ column_labels', column_labels )
-
-    data = []
-
-    periodoTeste = True
-    ordemTeste = 1
-    dd = []
-    tamanho = len(inaS)
-#    print ('===============> ', tamanho)
-    posicao = 0
-
-    while posicao < tamanho:
-        print('a ', posicao, tamanho)
-        m = inaS[posicao]
-        print('b ', ordemTeste, m.getOrdem())
-        if ordemTeste == m.getOrdem():
-            if len(dd) == 0:
-                dd.append(m.getPeriodo())
-            dd.append(m.getQtUnidades())
-        else:
-            data.append(dd)
-            dd = []
-            dd.append(m.getPeriodo())
-            dd.append(m.getQtUnidades())
-            ordemTeste += 1
-        posicao += 1
-    data.append(dd)
-
-#    print('++++++++ Data', data )
-
-    title_text = 'Inadimplência'
-    fig, ax = plt.subplots(1, 1)
-
-    # Definir tamanho das células
-    cell_width = 0.6  # Largura de cada célula
-    cell_height = 0.2  # Altura de cada célula
-    # Calcular o tamanho total da figura com base no número de células
-    num_rows = len(data) + 1  # +1 para incluir os cabeçalhos
-    num_cols = len(column_labels)
-    fig_width = num_cols * cell_width
-    fig_height = num_rows * cell_height
-    # Criar a figura com o tamanho calculado
-    fig, ax = plt.subplots(figsize=(fig_width, fig_height))
-
-    # Remove os eixos do gráfico, deixando apenas a tabela visível.
-    ax.axis("off")
-    tabela = ax.table(cellText=data, colLabels=column_labels, loc="center")
-    # Desativa o ajuste automático do tamanho da fonte. Isso permite que você defina manualmente o tamanho da fonte.
-    tabela.auto_set_font_size(False)
-    tabela.set_fontsize(8)
-#    tabela.scale(2,1)
-
-#   Ajustando o tamanho das colunas
-    for x in range(0, num_cols):
-        tabela.auto_set_column_width(x)
-#   colocando cor de fundo no cabeçalho
-    for (row, col), cell in tabela.get_celld().items():
-        if row == 0:
-            cell.set_facecolor("lightblue")
-
-    grafC = graficoController()
-
-    idEmpreend = 55  # preciso montar esse informação
-    mes = "12"
-    ano = "2024"
-
-    diretorio = grafC.montaDir(idEmpreend, mes, ano)
-    grafC.criaDir(diretorio)
-    grafNome = diretorio + 'tab_inadimplencia.png'
-
-#    plt.savefig(grafNome, edgecolor=fig.get_edgecolor(), facecolor=fig.get_facecolor(), dpi=150 )
-    plt.savefig(grafNome)  # , bbox_inches='tight')
-
-    return
-
-
 @tabela_bp.route('/tab_notas')
 @login_required
 def tab_notas():
@@ -394,9 +286,7 @@ def gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia):
 @tabela_bp.route('/tab_garantias_obra')
 @login_required
 def tab_garantias_obra():
-
     idEmpreend = IdEmpreend().get()
-    tipo = request.args.get("tipo")
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
 
@@ -571,15 +461,16 @@ def gerar_tab_certidoes(idEmpreend, mes, ano):
 @login_required
 def tab_acomp_financeiro():
     idEmpreend = IdEmpreend().get()
-    dtCarga = request.args.get("dtCarga")
-    mesVigencia = str(request.args.get('mesV')).zfill(2)
-    anoVigencia = str(request.args.get('anoV'))
+    mesVigencia = request.args.get("mesVigencia")
+    anoVigencia = request.args.get("anoVigencia")
 
     finC = financeiroController()
-    finS = finC.consultarFinanceiroPelaData(idEmpreend, dtCarga)
+    finS = finC.consultarFinanceiroPelaData(
+        idEmpreend, mesVigencia, anoVigencia)
     grafNome = gerar_tab_acomp_financeiro(
         idEmpreend, mesVigencia, anoVigencia, finS)
-    return render_template(".html", grafNome=grafNome, version=random.randint(1, 100000))
+
+    return render_template("financeiro_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
 def gerar_tab_acomp_financeiro(idEmpreend, mes, ano, finS):
