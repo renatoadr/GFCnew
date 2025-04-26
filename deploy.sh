@@ -5,6 +5,12 @@ nome_image=gfcapp
 
 echo "[GFC_DEPLOY] Iniciando deploy...."
 
+echo "[GFC_DEPLOY] Baixando versão mais recente do repositório"
+git checkout main
+git pull
+
+exit
+
 echo "[GFC_DEPLOY] Preparando versão..."
 imagem_atual=$(cat docker-compose.yml | grep "image: ${nome_image}" | awk '{print $2}')
 IFS=':' read -r -a imgVersao <<< "$imagem_atual"
@@ -64,5 +70,10 @@ rm -f "${nome_arquivo}" "${nome_arquivo}.gz"
 
 echo "[GFC_DEPLOY] Removendo imagem nova do docker local"
 docker rmi "${nome_image}:${nova_versao}"
+
+echo "[GFC_DEPLOY] Enviando alteração da versão da aplicação para o repositório"
+git add docker-compose.yml
+git commit -m "Novo deploy versao: ${nova_versao}"
+git push
 
 echo "[GFC_DEPLOY] Deploy concluído!"

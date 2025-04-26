@@ -29,11 +29,14 @@
         </div>
       </div>
 
-      <div class="d-flex">
+      <div class="d-flex flex-wrap justify-content-between">
         {% for item in opcoes %}
-        <div class="w-50">
-          <h4>{{item[1]}}</h4>
-          <img src="/ver_insumo/{{ano}}/{{mes}}/{{item[0]}}">
+        <div class="box-grafico">
+          <h4 class="border border-5 border-bottom-0 border-primary border-top-0 p-2"
+            style="border-right: none !important;">{{item[1]}}</h4>
+          <a href="/ver_insumo/{{mes}}/{{ano}}/{{item[0]}}" data-title="{{item[1]}}" data-lightbox="{{item[0]}}">
+            <img src="/ver_insumo/{{mes}}/{{ano}}/{{item[0]}}" class="w-100">
+          </a>
         </div>
         {% endfor %}
       </div>

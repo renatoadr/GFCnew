@@ -78,16 +78,21 @@ def gerar_relatorio():
     )
 
 
-@gerar_relatorio_bp.route('/gerar_insumos', methods=['POST'])
+@gerar_relatorio_bp.route('/gerar_insumos', methods=['POST', 'GET'])
 def gerar_insumos():
     insumos = request.form.getlist('opcoes_relatorio')
     insumosIntervalo = request.form.getlist('opcoes_relatorio_range')
     mes = request.form.get('mes_vigencia')
     ano = request.form.get('ano_vigencia')
+
+    if (not mes or not ano) or (not insumos and not insumosIntervalo):
+        return redirect('/gerar_insumos_relatorios')
     inicioIntervalo = request.form.get('intervaloInicio')
     finalIntervalo = request.form.get('finalIntervalo')
-    initAno, initMes = inicioIntervalo.split('-')
-    endAno, endMes = finalIntervalo.split('-')
+    initAno, initMes = inicioIntervalo.split(
+        '-') if inicioIntervalo else [None, None]
+    endAno, endMes = finalIntervalo.split(
+        '-') if finalIntervalo else [None, None]
 
     if insumos:
         for ins in insumos:
@@ -95,7 +100,11 @@ def gerar_insumos():
                 fn = globals()[ins]
                 fn(mes, ano)
 
-    if insumosIntervalo:
+    if initAno and initMes and endAno and endMes and insumosIntervalo:
+        if int(f"{initMes}{initAno}") > int(f"{endMes}{endAno}"):
+            initMes = endMes
+            initAno = endAno
+
         for ins in insumosIntervalo:
             if ins in insumosIntervalo:
                 fn = globals()[ins]
@@ -103,27 +112,32 @@ def gerar_insumos():
 
     todasOpcoes = opcoes.copy()
     todasOpcoes.extend(opcoesComRange)
-    todosInsumos = insumos.extend(inicioIntervalo)
+    todosInsumos = insumos.copy()
+
+    if initAno and initMes and endAno and endMes:
+        todosInsumos.extend(insumosIntervalo)
+
     opcoesView = []
     for ins in todosInsumos:
         item = next(it for it in todasOpcoes if it[0] == ins)
-        opcoesView.append(item)
+        if existe_insumo(ins, mes, ano):
+            opcoesView.append(item)
 
     return render_template('gerar_relatorio_resultado.html', opcoes=opcoesView, mes=mes, ano=ano)
 
 
 @gerar_relatorio_bp.route('/ver_insumo/<mes>/<ano>/<arquivo>')
 def ver_insumo(mes, ano, arquivo):
-    dirPath = os.path.abspath(__name__).replace(__name__, '')
-    file = os.path.join(
-        dirPath,
+    pathFile = os.path.join(
         current_app.config['DIRSYS'],
         IdEmpreend().get(),
-        mes,
-        ano,
+        f"{ano}_{mes}",
         arquivo
     )
-    return send_file(file)
+    if os.path.exists(f"{pathFile}.png"):
+        return send_file(f"{pathFile}.png")
+    elif os.path.exists(f"{pathFile}.jpg"):
+        return send_file(f"{pathFile}.jpg")
 
 
 def graf_orcamento_liberacao_valor(mes, ano):

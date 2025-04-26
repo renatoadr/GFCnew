@@ -259,3 +259,12 @@ main {
   box-shadow: none;
   border-color: #86b7fe;
 }
+
+.box-grafico {
+  width: 46%;
+  border: #ccc solid 1px;
+  padding: 20px;
+  margin-bottom: 80px;
+  border-radius: 5px;
+}
+

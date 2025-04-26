@@ -73,7 +73,7 @@
               <thead class="table-light">
                 <tr>
                   <th>
-                    <input type="checkbox" name="all" value="todos" />
+                    <input type="checkbox" name="all_opcoes_relatorio" />
                   </th>
                   <th>Gerado</th>
                   <th>Insumo</th>
@@ -127,7 +127,7 @@
               <thead class="table-light">
                 <tr>
                   <th>
-                    <input type="checkbox" name="all" value="todos" />
+                    <input type="checkbox" name="all_opcoes_relatorio_range" />
                   </th>
                   <th>Gerado</th>
                   <th>Insumo</th>
@@ -174,6 +174,26 @@
       delete requireds.rules;
       const config = GFC.getConfigValidateForm(requireds);
       $("#formVigencia").validate(config);
+      $('input[name="all_opcoes_relatorio"]').change(function () {
+        if ($(this).is(':checked')) {
+          $('input[name="opcoes_relatorio"]').prop('checked', true);
+        } else {
+          $('input[name="opcoes_relatorio"]').prop('checked', false);
+        }
+      });
+      $('input[name="all_opcoes_relatorio_range"]').change(function () {
+        if ($(this).is(':checked')) {
+          $('input[name="opcoes_relatorio_range"]').prop('checked', true);
+        } else {
+          $('input[name="opcoes_relatorio_range"]').prop('checked', false);
+        }
+      });
+      $('input[name="opcoes_relatorio_range"]').change(function () {
+        $('input[name="all_opcoes_relatorio_range"]').prop('checked', false);
+      });
+      $('input[name="opcoes_relatorio"]').change(function () {
+        $('input[name="all_opcoes_relatorio"]').prop('checked', false);
+      });
     });
   </script>
 </body>
