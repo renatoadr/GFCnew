@@ -63,6 +63,15 @@ gzip -v "${nome_arquivo}"
 log "Enviando imagem para o servidor"
 scp -i "chavegfc.pem" "${nome_arquivo}.gz" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com:~/${pasta_servidor}
 
+log "Descompactando imagem no servidor...."
+ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && gzip -vd ${nome_arquivo}.gz"
+
+log "Carregando para o docker do servidor a nova imagem. Aguarde alguns minutos..."
+ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && docker load < ${nome_arquivo}"
+
+log "Removendo imagem antiga da aplicação no servidor"
+ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "docker rmi ${imagem_atual}"
+
 log "Removendo arquivos de configuração do servidor"
 ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && rm -f docker-compose.yml gunicorn_config.py nginx.conf"
 
@@ -71,15 +80,6 @@ scp -i "chavegfc.pem" docker-compose.yml gunicorn_config.py nginx.conf ec2-user@
 
 log "Parando os containers no servidor"
 ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && docker-compose down"
-
-log "Removendo imagem antiga da aplicação no servidor"
-ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "docker rmi ${imagem_atual}"
-
-log "Descompactando imagem no servidor...."
-ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && gzip -vd ${nome_arquivo}.gz"
-
-log "Carregando para o docker do servidor a nova imagem. Aguarde alguns minutos..."
-ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && docker load < ${nome_arquivo}"
 
 log "Recriando os containers no servidor"
 ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && docker-compose up -d"
