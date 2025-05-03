@@ -1,0 +1,186 @@
+<!-- Template: cliente -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Cadastro Usuário</title>
+  {% include 'fractials/head.html' %}
+</head>
+
+<body>
+  {% include 'fractials/menu.html' %}
+
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <h2 class="title title-page">
+            <i class="fa-solid fa-users"></i> {{ 'Editar' if criacao==false else 'Cadastrar' }} Usuário
+          </h2>
+        </div>
+      </div>
+
+      <form action="{{'/salvar_alteracao_usuario' if criacao==false else '/cadastrar_usuario' }}" method="post"
+        id="formUsuario">
+        <div class="row">
+          <div class="col-6">
+
+            <div class="row">
+              <div class="col-6">
+                <div class="form-floating">
+                  <select type="text" name="tpCpfCnpj" id="tpCpfCnpj" class="form-control" placeholder=""
+                    value="{{ cliente.getTpCpfCnpj() if cliente}}" {% if criacao==false %} readonly disabled {% endif
+                    %}>
+                    <option value="">Selecione</option>
+                    <option value="CPF" {% if cliente and cliente.getTpCpfCnpj()=='CPF' %} selected {% endif %}>Físico
+                    </option>
+                    <option value="CNPJ" {% if cliente and cliente.getTpCpfCnpj()=='CNPJ' %} selected {% endif %}>
+                      Jurídico</option>
+                  </select>
+                  <label for="tpCpfCnpj">Tipo de cliente</label>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="form-floating">
+                  <input type="text" name="cpfCnpj" id="cpfCnpj" disabled class="form-control" placeholder=""
+                    value="{{ cliente.getCpfCnpj() if cliente}}" maxlength="15" {% if criacao==false %} readonly
+                    disabled {% endif %} />
+                  <label for="cpfCnpj">Selecione o tipo</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-3">
+
+                <div class="form-floating mt-4">
+                  <input type="text" name="ddd" id="ddd" class="form-control 2num" placeholder=""
+                    value="{{ cliente.getDdd() if cliente}}" maxlength="2" />
+                  <label for="ddd">DDD</label>
+                </div>
+
+              </div>
+              <div class="col-9">
+
+                <div class="form-floating mt-4">
+                  <input type="text" name="tel" id="tel" class="form-control tel" placeholder=""
+                    value="{{ cliente.getTel() if cliente}}" maxlength="9" />
+                  <label for="tel">Telefone</label>
+                </div>
+
+              </div>
+            </div>
+
+          </div>
+          <div class="col-6">
+
+            <div class="form-floating ">
+              <input type="text" name="nmCliente" id="nmCliente" class="form-control" placeholder=""
+                value="{{ cliente.getNmCliente() if cliente}}" maxlength="100" />
+              <label for="nmCliente">Nome do cliente</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="email" name="email" id="email" class="form-control email" placeholder=""
+                value="{{ cliente.getEmail() if cliente}}" maxlength="50" />
+              <label for="email">Email</label>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="row mt-5 justify-content-center d-flex">
+          <div class="col-3">
+            <a href="/tratar_clientes" class="btn btn-secondary w-100">Cancelar</a>
+          </div>
+          <div class="col-3 offset-1">
+            <button type="submit" class="btn btn-success w-100" id="submit" disabled>{{ 'Salvar' if criacao==false
+              else
+              'Criar' }}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  {% include 'fractials/footer.html' %}
+  <script>
+    $(function () {
+      $("#submit").removeAttr('disabled');
+      $('#tpCpfCnpj').change(function (evt) {
+        let tipo = evt.currentTarget.value;
+        let ipt = $('#cpfCnpj');
+        let label = $('label[for="cpfCnpj"]');
+        label.text(tipo);
+
+        if (tipo === 'CPF') {
+          ipt.addClass('cpf');
+          ipt.removeClass('cnpj');
+          ipt.attr('maxlength', 15);
+          $('.cpf').mask('000.000.000-00', { reverse: true });
+        } else {
+          ipt.removeClass('cpf');
+          ipt.addClass('cnpj');
+          ipt.attr('maxlength', 18);
+          $('.cnpj').mask('00.000.000/0000-00', { reverse: true });
+        }
+        $('#cpfCnpj-error').hide();
+        ipt.removeClass('is-invalid');
+        ipt.removeAttr('disabled');
+        ipt.val('');
+      })
+      const requireds = GFC.getRequiredFields("formCliente")
+      requireds.rules.cnpj = {
+        required: true,
+        cnpj: true
+      }
+      requireds.rules.ddd = {
+        required: true,
+        minlength: 2
+      }
+      requireds.rules.email = {
+        required: true,
+        email: true
+      }
+      requireds.rules.tel = {
+        required: true,
+        minlength: 9
+      }
+      requireds.rules.cpf = {
+        required: true,
+        cpf: true
+      }
+      requireds.messages.cpfCnpj = {
+        required: GFC_MESSAGES.REQUIRED,
+        cnpj: GFC_MESSAGES.CNPJ,
+        cpf: GFC_MESSAGES.CPF
+      }
+      requireds.messages.ddd = {
+        required: GFC_MESSAGES.REQUIRED,
+        minlength: GFC_MESSAGES.MIN_LENGTH(2)
+      }
+      requireds.messages.tel = {
+        required: GFC_MESSAGES.REQUIRED,
+        minlength: GFC_MESSAGES.MIN_LENGTH(9)
+      }
+      requireds.messages.email = {
+        required: GFC_MESSAGES.REQUIRED,
+        email: GFC_MESSAGES.EMAIL
+      }
+
+      $("#formCliente").validate(GFC.getConfigValidateForm(requireds));
+    })
+  </script>
+  {% if cliente %}
+  <script>
+    $(function () {
+      $('#tpCpfCnpj').trigger('change');
+      $('#cpfCnpj').val("{{cliente.getCpfCnpj()}}");
+    });
+  </script>
+  {% endif %}
+</body>
+
+</html>

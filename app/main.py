@@ -12,6 +12,7 @@ from router.emprendimento import empreend_bp
 from router.relatorios import relatorio_bp
 from router.medicoes import medicoes_bp
 from router.garantia import garantia_bp
+from router.usuarios import usuarios_bp
 from router.unidades import unidade_bp
 from router.graficos import grafico_bp
 from router.clientes import cliente_bp
@@ -37,6 +38,7 @@ app.register_blueprint(relatorio_bp)
 app.register_blueprint(empreend_bp)
 app.register_blueprint(medicoes_bp)
 app.register_blueprint(garantia_bp)
+app.register_blueprint(usuarios_bp)
 app.register_blueprint(grafico_bp)
 app.register_blueprint(unidade_bp)
 app.register_blueprint(cliente_bp)

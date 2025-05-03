@@ -1,0 +1,82 @@
+<!-- Template: lista_cliente -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Listagem de Usuáiros do sistema</title>
+  {% include 'fractials/head.html' %}
+</head>
+
+<body>
+  {% include 'fractials/menu.html' %}
+  {% include 'fractials/submenu.html' %}
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <h2 class="title title-page">
+            <i class="fa-solid fa-user-gear"></i> Usuários
+          </h2>
+        </div>
+        <div class="col-6">
+          <div class="row h-100">
+            <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
+              <a href="/abrir_cad_usuario" class="btn btn-primary">
+                <i class="fa-solid fa-circle-plus"></i>
+                Novo Usuário
+              </a>
+            </div>
+            <div class="col-3 d-flex justify-content-end align-items-center">
+              <a href="/home" class="btn btn-outline-dark">
+                <i class="fa-solid fa-home"></i>
+                Início
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <table class="table table-striped">
+            <thead class="table-light">
+              <tr>
+                <th>email</th>
+                <th>Nome</th>
+                <th>Tipo de acesso</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for usr in usuarios %}
+              <tr>
+                <td>{{ usr.getEmail() }}</td>
+                <td>{{ usr.getNmUsuario() }}</td>
+                <td>{{ usr.getTpAcesso() }}</td>
+                <td>
+                  <a href="/editar_usuario?id={{usr.getIdUsuario()}}" data-bs-toggle="tooltip" data-bs-title="Editar">
+                    <i class="fa-solid fa-pencil text-warning"></i>
+                  </a>
+                </td>
+                <td>
+                  <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir">
+                    <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
+                      data-modal-exclude-title="Usuário"
+                      data-modal-exclude-action="/excluir_usuario?id={{usr.getIdUsuario()}}"
+                      data-modal-exclude-text="Deseja realmente excluir o usuário <strong>{{usr.getNmUsuario()}}</strong>?"></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  {% include 'fractials/footer.html' %}
+</body>
+
+</html>
