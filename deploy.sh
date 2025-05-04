@@ -72,7 +72,7 @@ try
   du -hs "${nome_arquivo}.gz"
 
   log "Enviando imagem para o servidor"
-  scp -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com:${pasta_servidor} "${nome_arquivo}.gz"
+  scp -i "chavegfc.pem" "${nome_arquivo}.gz" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com:${pasta_servidor}
 
   log "Descompactando imagem no servidor...."
   ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && gzip -vd ${nome_arquivo}.gz"
