@@ -3,9 +3,14 @@
 pasta_servidor=/home/ec2-user/gfc_app
 nome_image=gfcapp
 server_connect=ec2-user@100.28.173.23
+path_chave=chavegfc.pem
 
 log() {
   echo -e "\033[0;34m[GFC_DEPLOY]\033[0m $1"
+}
+
+execSeverCommand() {
+  ssh -i "${path_chave}" "${server_connect}" "$1"
 }
 
 
@@ -73,31 +78,31 @@ try
   du -hs "${nome_arquivo}.gz"
 
   log "Enviando imagem para o servidor"
-  scp -i "chavegfc.pem" "${nome_arquivo}.gz" "${server_connect}":${pasta_servidor}
+  pscp -i "${path_chave}" "${nome_arquivo}.gz" "${server_connect}":${pasta_servidor}
 
   log "Descompactando imagem no servidor...."
-  ssh -i "chavegfc.pem" "${server_connect}" "cd ${pasta_servidor} && gzip -vd ${nome_arquivo}.gz"
+  execSeverCommand "cd ${pasta_servidor} && gzip -vd ${nome_arquivo}.gz"
 
   log "Carregando para o docker do servidor a nova imagem. Aguarde alguns minutos..."
-  ssh -i "chavegfc.pem" "${server_connect}" "cd ${pasta_servidor} && docker load < ${nome_arquivo}"
+  execSeverCommand "cd ${pasta_servidor} && docker load < ${nome_arquivo}"
 
   log "Removendo imagem antiga da aplicação no servidor"
-  ssh -i "chavegfc.pem" "${server_connect}" "docker rmi ${imagem_atual}"
+  execSeverCommand "docker rmi ${imagem_atual}"
 
   log "Removendo arquivos de configuração do servidor"
-  ssh -i "chavegfc.pem" "${server_connect}" "cd ${pasta_servidor} && rm -f docker-compose.yml gunicorn_config.py nginx.conf"
+  execSeverCommand "cd ${pasta_servidor} && rm -f docker-compose.yml gunicorn_config.py nginx.conf"
 
   log "Enviando novos arquivos de configuração para o servidor"
-  scp -i "chavegfc.pem" docker-compose.yml gunicorn_config.py nginx.conf "${server_connect}":${pasta_servidor}
+  scp -i "${path_chave}" docker-compose.yml gunicorn_config.py nginx.conf "${server_connect}":${pasta_servidor}
 
   log "Parando os containers no servidor"
-  ssh -i "chavegfc.pem" "${server_connect}" "cd ${pasta_servidor} && docker-compose down"
+  execSeverCommand "cd ${pasta_servidor} && docker-compose down"
 
   log "Recriando os containers no servidor"
-  ssh -i "chavegfc.pem" "${server_connect}" "cd ${pasta_servidor} && docker-compose up -d"
+  execSeverCommand "cd ${pasta_servidor} && docker-compose up -d"
 
   log "Deletando imagem do diretório do servidor"
-  ssh -i "chavegfc.pem" "${server_connect}" "cd ${pasta_servidor} && rm -f ${nome_arquivo} ${nome_arquivo}.gz"
+  execSeverCommand "cd ${pasta_servidor} && rm -f ${nome_arquivo} ${nome_arquivo}.gz"
 
   log "Deletando imagem salva no diretório local"
   rm -f "${nome_arquivo}" "${nome_arquivo}.gz"
