@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, redirect
 from utils.CtrlSessao import IdEmpreend, NmEmpreend, IdMedicao
 from controller.medicaoController import medicaoController
-from decorators.login_riquired import login_required
+from utils.security import login_required
 from werkzeug.utils import secure_filename
 from utils.helper import allowed_file
 import utils.converter as converter

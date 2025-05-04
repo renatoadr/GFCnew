@@ -51,7 +51,7 @@
         <div class="col-6">
 
           <div class="form-floating mt-6">
-            <select type="text" name="estadualStatus" id="estadualStatus" class="form-control"
+            <select name="estadualStatus" id="estadualStatus" class="form-control"
               value="{{ certidoes.getEstadualStatus() if certidoes}}">
               <option value="">Selecione</option>
               <option value="Positiva" {% if certidoes and certidoes.getEstadualStatus()=='Positiva' %} selected {%
@@ -65,7 +65,7 @@
           </div>
 
           <div class="form-floating mt-4">
-            <select type="text" name="fgtsStatus" id="fgtsStatus" class="form-control"
+            <select name="fgtsStatus" id="fgtsStatus" class="form-control"
               value="{{ certidoes.getFgtsStatus() if certidoes}}">
               <option value="">Selecione</option>
               </option>
@@ -84,7 +84,7 @@
             <label for="fgtsStatus">FGTS</label>
           </div>
           <div class="form-floating mt-4">
-            <select type="text" name="municipalStatus" id="municipalStatus" class="form-control"
+            <select name="municipalStatus" id="municipalStatus" class="form-control"
               value="{{ certidoes.getMunicipalStatus() if certidoes}}">
               <option value="">Selecione</option>
               </option>
@@ -102,7 +102,7 @@
           </div>
 
           <div class="form-floating mt-4">
-            <select type="text" name="srfInssStatus" id="srfInssStatus" class="form-control"
+            <select name="srfInssStatus" id="srfInssStatus" class="form-control"
               value="{{ certidoes.getSrfInssStatus() if certidoes}}">
               <option value="">Selecione</option>
               <option value="Positiva" {% if certidoes and certidoes.getSrfInssStatus()=='Positiva' %} selected {% endif
@@ -119,7 +119,7 @@
           </div>
 
           <div class="form-floating mt-4">
-            <select type="text" name="trabalhistaStatus" id="trabalhistaStatus" class="form-control"
+            <select name="trabalhistaStatus" id="trabalhistaStatus" class="form-control"
               value="{{ certidoes.getTrabalhistaStatus() if certidoes}}">
               <option value="">Selecione</option>
               <option value="Positiva" {% if certidoes and certidoes.getTrabalhistaStatus()=='Positiva' %} selected {%

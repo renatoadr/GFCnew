@@ -6,7 +6,7 @@ from router.graficos import gerar_graf_orcamento_liberacao, gerar_graf_indices_g
 from controller.contaController import contaController
 from controller.notaController import notaController
 from router.tabelas import gerar_tab_conta_corrente, gerar_tab_notas, gerar_tab_orcamento_liberacao, gerar_tab_acomp_financeiro, gerar_tab_certidoes, gerar_tab_garantias_geral, gerar_tab_garantias_obra, gerar_tab_medicoes
-from decorators.login_riquired import login_required
+from utils.security import login_required
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from utils.flash_message import flash_message
 from utils.logger import logger
@@ -222,8 +222,10 @@ def tab_acomp_financeiro(mes, ano):
 
 def graf_indices_garantia_I(mes, ano, mesInit, anoInit, mesFinal, anoFinal):
     try:
-        gerar_graf_indices_garantia_I(
-            IdEmpreend().get(), mes, ano, mesInit, anoInit, mesFinal, anoFinal)
+        if not gerar_graf_indices_garantia_I(
+                IdEmpreend().get(), mes, ano, mesInit, anoInit, mesFinal, anoFinal):
+            flash_message.warning(
+                'Não foram encontrados dados para gerar o gráfico de índices de garantias I')
     except Exception as error:
         logger.error('Erro ao gerar gráfico de índices de garantia I', error)
         flash_message.error('Erro ao gerar gráfico de índices de garantia I')
@@ -231,8 +233,10 @@ def graf_indices_garantia_I(mes, ano, mesInit, anoInit, mesFinal, anoFinal):
 
 def graf_indices_garantia_II(mes, ano, mesInit, anoInit, mesFinal, anoFinal):
     try:
-        gerar_graf_indices_garantia_II(
-            IdEmpreend().get(), mes, ano, mesInit, anoInit, mesFinal, anoFinal)
+        if not gerar_graf_indices_garantia_II(
+                IdEmpreend().get(), mes, ano, mesInit, anoInit, mesFinal, anoFinal):
+            flash_message.warning(
+                'Não foram encontrados dados para gerar o gráfico de índices de garantias II')
     except Exception as error:
         logger.error('Erro ao gerar gráfico de índices de garantia II', error)
         flash_message.error('Erro ao gerar gráfico de índices de garantia II')
@@ -240,8 +244,10 @@ def graf_indices_garantia_II(mes, ano, mesInit, anoInit, mesFinal, anoFinal):
 
 def graf_progresso_obra(mes, ano, mesInit, anoInit, mesFinal, anoFinal):
     try:
-        gerar_graf_progresso_obra(
-            IdEmpreend().get(), mes, ano, mesInit, anoInit, mesFinal, anoFinal)
+        if not gerar_graf_progresso_obra(
+                IdEmpreend().get(), mes, ano, mesInit, anoInit, mesFinal, anoFinal):
+            flash_message.warning(
+                'Não foram encontrados dados para gerar o gráfico de progresso da obra')
     except Exception as error:
         logger.error('Erro ao gerar gráfico do progresso da obra', error)
         flash_message.error('Erro ao gerar gráfico do progresso da obra')
@@ -249,8 +255,12 @@ def graf_progresso_obra(mes, ano, mesInit, anoInit, mesFinal, anoFinal):
 
 def tab_medicoes(mes, ano, mesInit, anoInit, mesFinal, anoFinal):
     try:
-        gerar_tab_medicoes(IdEmpreend().get(), mes, ano,
-                           mesInit, anoInit, mesFinal, anoFinal)
+        if not gerar_tab_medicoes(
+            IdEmpreend().get(), mes, ano,
+            mesInit, anoInit, mesFinal, anoFinal
+        ):
+            flash_message.warning(
+                'Não foram encontrados dados para gerar a tabela de medições')
     except Exception as error:
         logger.error('Erro a tabela de medições', error)
         flash_message.error('Erro a tabela de medições')
@@ -268,7 +278,9 @@ def graf_chaves(mes, ano):
 
 def graf_vendas(mes, ano):
     try:
-        gerar_graf_vendas(IdEmpreend().get(), mes, ano)
+        if not gerar_graf_vendas(IdEmpreend().get(), mes, ano):
+            flash_message.warning(
+                'Não foram encontrados dados para gerar o gráfico de vendas')
     except Exception as error:
         logger.error(
             'Erro ao gerar o gráfico de vendas', error)
@@ -277,7 +289,9 @@ def graf_vendas(mes, ano):
 
 def tab_certidoes(mes, ano):
     try:
-        gerar_tab_certidoes(IdEmpreend().get(), mes, ano)
+        if not gerar_tab_certidoes(IdEmpreend().get(), mes, ano):
+            flash_message.warning(
+                'Não foram encontrados dados para gerar a tabela de certidões')
     except Exception as error:
         logger.error(
             'Erro ao gerar a tabela de certidões', error)
@@ -286,7 +300,9 @@ def tab_certidoes(mes, ano):
 
 def tab_garantias_geral(mes, ano):
     try:
-        gerar_tab_garantias_geral(IdEmpreend().get(), mes, ano)
+        if not gerar_tab_garantias_geral(IdEmpreend().get(), mes, ano):
+            flash_message.warning(
+                'Não foram encontrados dados para gerar a tabela de garantias gerais')
     except Exception as error:
         logger.error(
             'Erro ao gerar a tabela de garantias gerais', error)
@@ -295,7 +311,9 @@ def tab_garantias_geral(mes, ano):
 
 def tab_garantias_obra(mes, ano):
     try:
-        gerar_tab_garantias_obra(IdEmpreend().get(), mes, ano)
+        if not gerar_tab_garantias_obra(IdEmpreend().get(), mes, ano):
+            flash_message.warning(
+                'Não foram encontrados dados para gerar a tabela de garantias de obra')
     except Exception as error:
         logger.error(
             'Erro ao gerar a tabela de garantias da obra', error)

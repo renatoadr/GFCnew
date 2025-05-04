@@ -1,4 +1,4 @@
-from decorators.login_riquired import login_required
+from utils.security import login_required
 from flask import Blueprint, request, render_template, current_app, redirect, flash, jsonify, send_file
 from utils.logger import logger
 from utils.CtrlSessao import IdEmpreend, NmEmpreend

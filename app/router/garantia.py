@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, redirect, flash
 from controller.garantiaController import garantiaController
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
-from decorators.login_riquired import login_required
+from utils.security import login_required
 from datetime import datetime
 
 garantia_bp = Blueprint('garantias', __name__)

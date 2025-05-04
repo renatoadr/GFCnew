@@ -28,7 +28,7 @@
           </a>
         </div>
       </div>
-
+      {% if opcoes %}
       <div class="d-flex flex-wrap justify-content-between">
         {% for item in opcoes %}
         <div class="box-grafico">
@@ -40,6 +40,9 @@
         </div>
         {% endfor %}
       </div>
+      {% else %}
+      <p class="alert alert-dark text-center">Não há registros de tabelas ou gráficos para apresentar</p>
+      {% endif %}
 
     </div>
   </main>

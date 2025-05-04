@@ -29,7 +29,7 @@
         <div class="row">
           <div class="col-6">
             <div class="form-floating">
-              <select type="text" name="idTorre" id="idTorre" class="form-control" placeholder=""
+              <select name="idTorre" id="idTorre" class="form-control" placeholder=""
                 value="{{ unidade.getIdTorre() if unidade }}" readonly>
                 <option value="">Selecione</option>
                 {% for t in listaTorres %}
@@ -50,7 +50,7 @@
               </div>
               <div class="col-6">
                 <div class="form-floating">
-                  <select type="text" name="status" id="status" class="form-control" placeholder=""
+                  <select name="status" id="status" class="form-control" placeholder=""
                     value="{{ unidade.getStatus() if unidade }}" {% if modo=='consulta' %} readonly {% endif %}>
                     {% for sts in listaStatus %}
                     <option value="{{ sts }}" {% if unidade and unidade.getStatus()==sts %} selected {% endif %}>
@@ -93,7 +93,7 @@
               </div>
               <div class="col-6">
                 <div class="form-floating">
-                  <select type="text" name="financiado" id="financiado" class="form-control" placeholder=""
+                  <select name="financiado" id="financiado" class="form-control" placeholder=""
                     value="{{ unidade.getFinanciado() if unidade }}" {% if modo=='consulta' %} readonly {% endif %}>
                     <option value="">Selecione</option>
                     <option value="Sim" {% if unidade and unidade.getFinanciado()=='Sim' %} selected {% endif %}>

@@ -53,6 +53,8 @@ app.register_blueprint(nota_bp)
 app.register_blueprint(foto_bp)
 app.register_blueprint(api_bp)
 
+app.permanent_session_lifetime.seconds
+
 
 def init(app):
     config = configparser.ConfigParser()

@@ -68,6 +68,9 @@ class certidaoController:
 
         linha = cursor.fetchone()
 
+        if not linha:
+            return None
+
         cert = certidao()
         cert.setEstadualStatus(linha['estadual_status'])
         cert.setEstadualValidade(linha['estadual_validade'])

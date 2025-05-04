@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template
 
 from controller.graficoController import graficoController
 from controller.geralController import geralController
-from decorators.login_riquired import login_required
+from utils.security import login_required
 from reportlab.pdfgen import canvas
 import os
 
@@ -77,7 +77,7 @@ def gerar_relatorio():
                             pagina += 1
                             grafC.pdfPag11(c, diretorio, pagina)
                             c.showPage()
-    
+
             pagina += 1
             grafC.pdfPag12(c, diretorio, pagina, idEmpreend, mes, ano)
             c.showPage()
@@ -94,9 +94,9 @@ def gerar_relatorio():
     return render_template("relatorio.html", arquivos=arqS, listaMes=meses, listaAno=anos, apelido=apelido, idEmpreend=idEmpreend, mensagem=mensagem)
 
 
-#@relatorio_bp.route('/tratar_graficos_tabelas')
-#@login_required
-#def tratar_graficos_tabelas():
+# @relatorio_bp.route('/tratar_graficos_tabelas')
+# @login_required
+# def tratar_graficos_tabelas():
 #    idEmpreend = request.args.get("idEmpreend")
 #    nmEmpreend = request.args.get("nmEmpreend")
 #

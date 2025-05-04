@@ -1,16 +1,16 @@
-from flask import Blueprint, request, render_template, redirect, flash
+from flask import Blueprint, request, render_template, redirect
 from controller.usuarioController import usuarioController
-from utils.helper import protectedPage
-import utils.converter as converter
+from utils.security import login_required, permission_access
 from dto.usuario import usuario
+from enums.tipo_acessos import TipoAcessos
 
 usuarios_bp = Blueprint('usuarios', __name__)
 
 
 @usuarios_bp.route('/tratar_usuarios')
+@login_required
+@permission_access(TipoAcessos.ADM)
 def tratarusuarios():
-    protectedPage()
-
     usrCtrl = usuarioController()
     usrs = usrCtrl.lista_usuarios()
 
@@ -18,74 +18,58 @@ def tratarusuarios():
 
 
 @usuarios_bp.route('/abrir_cad_usuario')
+@login_required
+@permission_access(TipoAcessos.ADM)
 def abrir_cad_usuario():
-    return render_template("usuario.html")
+    return render_template("usuario.html", tipos=TipoAcessos.to_list())
 
 
-@usuarios_bp.route('/cadastrar_usuarios', methods=['POST'])
+@usuarios_bp.route('/cadastrar_usuario', methods=['POST'])
 def cadastrar_usuarios():
-    cli = usuarios()
-    cli.setCpfCnpj(converter.removeAlpha(request.form.get('cpfCnpj')))
-    cli.setTpCpfCnpj(request.form.get('tpCpfCnpj'))
-    cli.setNmusuarios(request.form.get('nmusuarios'))
-    cli.setDdd(request.form.get('ddd'))
-    cli.setTel(converter.removeAlpha(request.form.get('tel')))
-    cli.setEmail(request.form.get('email'))
-    cliC = usuariosController()
-
-    if (cliC.existeusuarios(cli.getCpfCnpj())):
-        cli.setCpfCnpj(converter.maskCpfOrCnpj(cli.getCpfCnpj()))
-        flash('Este documento já está em uso. Informe outro número de documento.',
-              category='error')
-        return render_template(
-            "usuarios.html",
-            usuarios=cli,
-            criacao=True,
-        )
-
-    cliC.inserirusuarios(cli)
-    return redirect("/tratar_usuarios")
+    user = getForm()
+    ctrlUser = usuarioController()
+    ctrlUser.cadastrar_usuario(user)
+    return redirect('/tratar_usuarios')
 
 
-@usuarios_bp.route('/editar_usuarios')
+@usuarios_bp.route('/editar_usuario')
+@login_required
+@permission_access(TipoAcessos.ADM)
 def editar_usuarios():
-    idCli = request.args.get("cpfCnpj")
-    cliC = usuariosController()
-    usuarios = cliC.consultarusuariosPeloId(idCli)
-    if usuarios is None:
+    idUser = request.args.get("id")
+    ctrlUser = usuarioController()
+    usuario = ctrlUser.get_usuario_pelo_id(idUser)
+    if usuario is None:
         return redirect('/tratar_usuarios')
 
-    usuarios.setCpfCnpj(converter.maskCpfOrCnpj(usuarios.getCpfCnpj()))
-    return render_template("usuarios.html", usuarios=usuarios, criacao=False)
+    return render_template("usuario.html", user=usuario, tipos=TipoAcessos.to_list())
 
 
-@usuarios_bp.route('/salvar_alteracao_usuarios', methods=['POST'])
+@usuarios_bp.route('/salvar_alteracao_usuario', methods=['POST'])
 def salvar_alteracao_usuarios():
-    cli = usuarios()
-    cli.setCpfCnpj(converter.removeAlpha(request.form.get('cpfCnpj')))
-    cli.setTpCpfCnpj(request.form.get('tpCpfCnpj'))
-    cli.setNmusuarios(request.form.get('nmusuarios'))
-    cli.setDdd(request.form.get('ddd'))
-    cli.setTel(converter.removeAlpha(request.form.get('tel')))
-    cli.setEmail(request.form.get('email'))
+    user = getForm()
+    ctrlUser = usuarioController()
+    ctrlUser.atulizar_usuario(user)
 
-    cliC = usuariosController()
-    cliC.salvarusuarios(cli)
+    if user.getSenha():
+        ctrlUser.alterar_senha(user.getSenha(), user.getIdUsuario())
 
     return redirect("/tratar_usuarios")
 
 
-@usuarios_bp.route('/excluir_usuarios')
+@usuarios_bp.route('/excluir_usuario')
 def excluir_usuarios():
+    idUser = request.args.get('id')
+    cliC = usuarioController()
+    cliC.excluir_usuario(idUser)
+    return redirect("/tratar_usuarios")
 
-    idCli = request.args.get('cpfCnpj')
-#    idEmpreend = request.args.get('idEmpreend')
 
-    print('--------------excluir_usuarios -------------')
-    print(idCli)
-
-    cliC = usuariosController()
-    cliC.excluirusuarios(idCli)
-    cliS = cliC.consultarusuarios()
-
-    return render_template("lista_usuarios.html", usuarios=cliS)
+def getForm() -> usuario:
+    user = usuario()
+    user.setIdUsuario(request.form.get('id_user'))
+    user.setEmail(request.form.get('email_user'))
+    user.setNmUsuario(request.form.get('nm_user').title())
+    user.setSenha(request.form.get('pass_user'))
+    user.setTpAcesso(request.form.get('tp_access'))
+    return user

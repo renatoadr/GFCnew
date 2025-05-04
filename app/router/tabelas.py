@@ -11,7 +11,7 @@ from controller.medicaoController import medicaoController
 from controller.contaController import contaController
 from controller.geralController import geralController
 from controller.notaController import notaController
-from decorators.login_riquired import login_required
+from utils.security import login_required
 from utils.CtrlSessao import IdEmpreend
 from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
@@ -215,6 +215,9 @@ def gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia):
     ponC = garantiaController()
     ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
 
+    if not ponS:
+        return ''
+
     fig, ax = plt.subplots(1, 1)
 
     data = []
@@ -300,6 +303,10 @@ def tab_garantias_obra():
 def gerar_tab_garantias_obra(idEmpreend, mesVigencia, anoVigencia):
     ponC = garantiaController()
     ponS = ponC.consultargarantiaatual(idEmpreend, 'Obra')
+
+    if not ponS:
+        return ''
+
     fig, ax = plt.subplots(1, 1)
     data = []
 
@@ -383,6 +390,9 @@ def tab_certidoes():
 def gerar_tab_certidoes(idEmpreend, mes, ano):
     certC = certidaoController()
     certS = certC.consultarCertidoesGraf(idEmpreend)
+
+    if not certS:
+        return ''
 
     fig, ax = plt.subplots(1, 1)
     print(certS)
@@ -565,6 +575,9 @@ def gerar_tab_medicoes(idEmpreend, mesVigencia, anoVigencia, mesInicio, anoInici
 
     preS = preC.consultarMedicoesPorPeriodo(
         idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
+
+    if not preS:
+        return ''
 
     fig, ax = plt.subplots(1, 1)
 

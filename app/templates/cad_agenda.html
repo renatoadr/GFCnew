@@ -24,7 +24,7 @@
       <div class="row mb-4">
         <div class="col-4">
           <div class="form-floating">
-            <select type="text" name="status" id="status" class="form-control" placeholder="" value="">
+            <select name="status" id="status" class="form-control" placeholder="" value="">
               <option value="">Selecione</option>
               <option value="Não Iniciado">Não Iniciado</option>
               <option value="Em Andamento">Em Andamento</option>
@@ -42,7 +42,7 @@
         <div class="col-6">
 
           <div class="form-floating">
-            <select type="text" name="atividade" id="atividade" class="form-control" placeholder="" value="">
+            <select name="atividade" id="atividade" class="form-control" placeholder="" value="">
               <option value="">Selecione</option>
               {% for opt in atividades %}
               <option value="{{opt.chave}}">{{opt.valor}}</option>

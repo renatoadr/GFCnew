@@ -4,7 +4,7 @@ from controller.empreendimentoController import empreendimentoController
 from controller.agendaController import agendaController
 from dto.agenda import agenda
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
-from decorators.login_riquired import login_required
+from utils.security import login_required
 
 agenda_bp = Blueprint('agendas', __name__)
 

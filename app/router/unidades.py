@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, redirect
 from controller.unidadeController import unidadeController
 from controller.torreController import torreController
-from decorators.login_riquired import login_required
+from utils.security import login_required
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
 import utils.converter as converter
 from dto.unidade import unidade

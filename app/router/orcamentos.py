@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, redirect
 
 from utils.CtrlSessao import IdEmpreend, DtCarga, MesVigencia, AnoVigencia, NmEmpreend
 from controller.orcamentoController import orcamentoController
-from decorators.login_riquired import login_required
+from utils.security import login_required
 from utils.helper import allowed_file
 from dto.orcamento import orcamento
 import utils.converter as converter

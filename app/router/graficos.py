@@ -1,4 +1,4 @@
-from decorators.login_riquired import login_required
+from utils.security import login_required
 from flask import Blueprint, request, render_template, send_file
 from controller.empreendimentoController import empreendimentoController
 from controller.orcamentoController import orcamentoController
@@ -128,6 +128,9 @@ def gerar_graf_progresso_obra(idEmpreend, mesVigencia, anoVigencia, mesInicio, a
     preS = preC.consultarMedicoesPorPeriodo(
         idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
 
+    if not preS:
+        return ''
+
     fig, ax = plt.subplots(1, 1)
 
     x1 = []
@@ -204,12 +207,15 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     geral = geralController()
     empC = empreendimentoController()
     empS = empC.consultarEmpreendimentoPeloId(idEmpreend)
+
     VlPlanoEmp = empS.getVlPlanoEmp()
     IndiceGarantia = empS.getIndiceGarantia()
 
     uniC = unidadeController()
     recS = uniC.consultarUnidadeRecebibeis(
         idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
+    if not recS:
+        return ''
 
     x1 = []
     y1 = []
@@ -289,6 +295,9 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
     recS = uniC.consultarUnidadeRecebibeis(
         idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
 
+    if not recS:
+        return ''
+
     x1 = []
     y1 = []
     y2 = []
@@ -357,6 +366,9 @@ def graf_vendas():
 def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia):
     unidc = unidadeController()
     unid = unidc.consultarUnidadeVendas(idEmpreend)
+
+    if not unid:
+        return ''
 
     fig, ax = plt.subplots(figsize=(6, 3), subplot_kw=dict(aspect="equal"))
 

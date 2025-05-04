@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, redirect
 from controller.empreendimentoController import empreendimentoController
-from decorators.login_riquired import login_required
+from utils.security import login_required
 from dto.empreendimento import empreendimento
 import utils.converter as converter
 

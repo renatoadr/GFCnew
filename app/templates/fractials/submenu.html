@@ -9,10 +9,12 @@
         <a href="/tratar_clientes" class="nav-link  p-3"><i class="fa-solid fa-users"></i>
           Clientes</a>
       </li>
+      {% if session.eh_adm %}
       <li class="nav-item">
         <a href="/tratar_usuarios" class="nav-link  p-3"><i class="fa-solid fa-user-gear"></i>
           Usuários</a>
       </li>
+      {% endif %}
     </ul>
   </div>
 </nav>

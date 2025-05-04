@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, redirect
 from controller.certidaoController import certidaoController
-from decorators.login_riquired import login_required
+from utils.security import login_required
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from dto.certidao import certidao
 

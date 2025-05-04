@@ -1,6 +1,8 @@
 from flask import Blueprint, request, render_template, redirect, session, url_for, send_from_directory
+from models.User import User
 from controller.usuarioController import usuarioController
 from controller.geralController import geralController
+from utils.security import login_user, logout_user, has_user_logged
 import re
 
 init_bp = Blueprint('inicio', __name__)
@@ -59,7 +61,7 @@ def login():
     if re.search('Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini', request.user_agent.string, re.IGNORECASE):
         return redirect('/m')
 
-    if session.get('logged_in') == True:
+    if has_user_logged():
         return redirect('/home')
     return render_template("login.html")
 
@@ -72,13 +74,22 @@ def valida_login():
     usu = usuC.consultarAcesso(email, senha)
 
     if usu:
-        session['logged_in'] = True
-        session['email'] = email
-        session['nome'] = usu.getNmUsuario()
+        logedIn = User(
+            usu.getIdUsuario(),
+            usu.getNmUsuario(),
+            usu.getEmail(),
+            usu.getTpAcesso()
+        )
+        login_user(logedIn)
         return redirect('/home')
     else:
-        session['logged_in'] = False
+        logout_user()
         return render_template("login.html", mensagem='Falha no login, verifique o usuário e a senha')
+
+
+@init_bp.route('/sem_permissao')
+def sem_permissao():
+    return render_template("sem_permissao.html")
 
 
 @init_bp.route('/lista_relatorios', methods=['GET'])
@@ -105,9 +116,7 @@ def lista_relatorios():
 
 @init_bp.route('/logout')
 def logout():
-    session.pop('email', None)
-    session.pop('logged_in', None)
-    session.pop('nome', None)
+    logout_user()
     return redirect("/")
 
 

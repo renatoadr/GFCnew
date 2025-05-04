@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, redirect
 
 from utils.CtrlSessao import IdEmpreend, NmEmpreend, DtCarga, AnoVigencia, MesVigencia
-from decorators.login_riquired import login_required
+from utils.security import login_required
 from controller.notaController import notaController
 from utils.converter import converterStrToFloat
 from utils.helper import allowed_file

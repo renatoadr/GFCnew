@@ -2,7 +2,7 @@ from flask import Blueprint, request, render_template, redirect
 
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from controller.consideracaoController import consideracaoController
-from decorators.login_riquired import login_required
+from utils.security import login_required
 import datetime
 
 consideracoes_bp = Blueprint('consideracoes', __name__)

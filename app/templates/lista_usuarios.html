@@ -45,7 +45,8 @@
               <tr>
                 <th>email</th>
                 <th>Nome</th>
-                <th>Tipo de acesso</th>
+                <th class="text-center">Tipo de acesso</th>
+                <th colspan="2" class="text-center">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -53,19 +54,21 @@
               <tr>
                 <td>{{ usr.getEmail() }}</td>
                 <td>{{ usr.getNmUsuario() }}</td>
-                <td>{{ usr.getTpAcesso() }}</td>
-                <td>
+                <td class="text-center">{{ usr.getTpAcesso() }}</td>
+                <td class="text-center">
                   <a href="/editar_usuario?id={{usr.getIdUsuario()}}" data-bs-toggle="tooltip" data-bs-title="Editar">
                     <i class="fa-solid fa-pencil text-warning"></i>
                   </a>
                 </td>
-                <td>
+                <td class="text-center">
+                  {% if usr.getIdUsuario() > 1 %}
                   <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir">
                     <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
                       data-modal-exclude-title="Usuário"
                       data-modal-exclude-action="/excluir_usuario?id={{usr.getIdUsuario()}}"
                       data-modal-exclude-text="Deseja realmente excluir o usuário <strong>{{usr.getNmUsuario()}}</strong>?"></i>
                   </a>
+                  {% endif %}
                 </td>
               </tr>
               {% endfor %}

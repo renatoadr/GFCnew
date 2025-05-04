@@ -3,7 +3,7 @@ from controller.contaController import contaController
 from utils.helper import allowed_file
 from utils.CtrlSessao import IdEmpreend, NmEmpreend, DtCarga, AnoVigencia, MesVigencia
 from utils.converter import converterStrToFloat
-from decorators.login_riquired import login_required
+from utils.security import login_required
 from dto.conta import conta
 
 contas_corrente_bp = Blueprint('contas_corrente', __name__)

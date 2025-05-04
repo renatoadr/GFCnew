@@ -52,7 +52,7 @@
           <div class="row">
             <div class="col-5">
               <div class="form-floating mt-4">
-                <select type="text" name="estado" id="estado" class="form-control" placeholder=""
+                <select name="estado" id="estado" class="form-control" placeholder=""
                   value="{{ empreend.getEstado() if empreend}}">
                   <option value="">Selecione o estado</option>
                 </select>
@@ -98,7 +98,7 @@
           </div>
 
           <div class="form-floating mt-4">
-            <select type="text" name="nmBanco" id="nmBanco" class="form-control" placeholder=""
+            <select name="nmBanco" id="nmBanco" class="form-control" placeholder=""
               value="{{ empreend.getNmBanco() if empreend}}">
               <option>Selecione o banco</option>
             </select>
