@@ -268,3 +268,22 @@ main {
   border-radius: 5px;
 }
 
+.submenu {
+  display: none;
+  position: absolute;
+  background: #fff;
+  z-index: 10;
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  left: -125px;
+  top: 64px;
+  border-radius: 0 0 5px 5px;
+  box-shadow: rgba(0, 0, 0, .3) 0 1px 2px 0;
+}
+
+.submenu li {
+  list-style: none;
+  padding: 12px 14px;
+  border-bottom: #f1f1f1 solid 1px;
+}

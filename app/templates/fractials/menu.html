@@ -21,11 +21,19 @@
                 class="h4">{{session.nome_usuario}}</strong>
             </p>
           </div>
-          <div class="col-5 d-flex flex-column justify-content-center">
-            <a href="{{'/logout_m' if session.m_logged_in == true else '/logout'}}" class="btn btn-danger">
-              <i class="fa-solid fa-right-from-bracket"></i>
-              Sair
-            </a>
+          <div class="col-5 d-flex flex-column justify-content-center position-relative">
+            <button type="button" class="btn bg-transparent" id="submenu_action">
+              <i class="fa-solid fa-bars fa-2x text-white"></i>
+            </button>
+            <ul class="submenu" id="submenu_perfil">
+              <li><a class="dropdown-item" href="/minha-conta">Conta</a></li>
+              <li>
+                <a href="{{'/logout_m' if session.m_logged_in == true else '/logout'}}"
+                  class="btn btn-danger btn-sm w-100">
+                  <i class="fa-solid fa-right-from-bracket"></i>
+                  Sair</a>
+              </li>
+            </ul>
           </div>
         </div>
       </div>

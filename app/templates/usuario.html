@@ -25,6 +25,7 @@
       <form action="{{'/salvar_alteracao_usuario' if user else '/cadastrar_usuario' }}" method="post" id="formUsuario">
         <input type="hidden" name="id_user" value="{{ user.getIdUsuario() if user }}" />
         <div class="row">
+          {% if tipos %}
           <div class="col-6">
             <div class="form-floating">
               <select name="tp_access" id="tipo" class="form-control required" placeholder=""
@@ -39,6 +40,7 @@
               <label for="tipo">Tipo de Acesso</label>
             </div>
           </div>
+          {% endif %}
           <div class="col-6">
             <div class="form-floating ">
               <input type="text" name="nm_user" id="name" class="form-control required" placeholder=""
@@ -67,7 +69,8 @@
 
         <div class="row mt-5 justify-content-center d-flex">
           <div class="col-3">
-            <a href="/tratar_usuarios" class="btn btn-secondary w-100">Cancelar</a>
+            <a href="{{ '/tratar_usuarios' if session.is_root else '/home' }}"
+              class="btn btn-secondary w-100">Cancelar</a>
           </div>
           <div class="col-3 offset-1">
             <button type="submit" class="btn btn-success w-100" id="submit">{{ 'Salvar' if user

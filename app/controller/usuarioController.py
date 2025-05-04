@@ -9,7 +9,7 @@ import bcrypt
 
 class usuarioController:
 
-    def lista_usuarios(self):
+    def lista_usuarios(self) -> list[usuario]:
         query = f"SELECT id_usuario, email, tp_acesso, nm_usuario FROM {MySql.DB_NAME}.tb_usuarios ORDER BY id_usuario"
         users = MySql.getAll(query)
         list = []

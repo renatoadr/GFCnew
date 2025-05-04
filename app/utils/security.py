@@ -28,14 +28,14 @@ def permission_access(tipo: TipoAcessos):
 def login_user(user: User):
     session['user_logged'] = user.to_string()
     session['nome_usuario'] = user.name.split(' ')[0]
-    session['eh_adm'] = user.profile == 'ADM'
+    session['is_root'] = user.profile == TipoAcessos.RT.name
     session.modified = True
 
 
 def logout_user():
     session.pop('user_logged', None)
     session.pop('nome_usuario', None)
-    session.pop('eh_adm', None)
+    session.pop('is_root', None)
     session.modified = True
 
 

@@ -188,4 +188,17 @@ $(function(){
       $(this).addClass('bg-body active')
     }
   })
+
+  $("#submenu_action").click(function() {
+    const svg = $(this).children('svg')
+    const subMenu = $('#submenu_perfil')
+    if (svg.hasClass('fa-xmark')) {
+      svg.addClass('fa-bars');
+      svg.removeClass('fa-xmark');
+      subMenu.hide('fast')
+    } else {
+      svg.addClass('fa-xmark');
+      subMenu.show('fast')
+    }
+  });
 });

@@ -222,14 +222,14 @@ CREATE TABLE IF NOT EXISTS `tb_usuario_empreendimento` (
 CREATE TABLE IF NOT EXISTS `tb_usuarios` (
   `id_usuario` int NOT NULL AUTO_INCREMENT,
   `email` varchar(50) DEFAULT NULL,
-  `senha` varchar(12) DEFAULT NULL,
+  `senha` varchar(100) DEFAULT NULL,
   `tp_acesso` varchar(15) DEFAULT NULL,
   `nm_usuario` varchar(100) DEFAULT NULL,
   PRIMARY KEY (`id_usuario`),
   KEY `idx_email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `tb_consideracoes` (
+CREATE TABLE IF NOT EXISTS  `tb_consideracoes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `campo` varchar(20) NOT NULL,
   `texto` varchar(120) NOT NULL,
@@ -241,3 +241,7 @@ CREATE TABLE `tb_consideracoes` (
   `ano_vigencia` int NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+INSERT INTO `db_gfc`.`tb_consideracoes`(`email`, `senha`, `tp_acesso`, `nm_usuario`)
+VALUES (`adm@gfcpro.com.br`, `$2b$06$S0KOp/YN3wdyzc6JlF68Eugmhjh5wIzLmO9PVDGtildPudAtsQqTq`, `RT`, `Renato Adriano`)

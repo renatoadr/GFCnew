@@ -8,8 +8,12 @@ class User:
         self.__name = name
         self.__email = email
         self.__profile = profile
-        self.__logged_in = datetime.now(
-        ) if loggedIn is None else datetime.fromisoformat(loggedIn)
+        if isinstance(loggedIn, datetime):
+            self.__logged_in = loggedIn
+        elif isinstance(loggedIn, str):
+            self.__logged_in = datetime.fromisoformat(loggedIn)
+        else:
+            self.__logged_in = datetime.now()
 
     @property
     def id(self) -> int:
