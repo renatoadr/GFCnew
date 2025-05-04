@@ -1,6 +1,6 @@
 #! /bin/bash
 
-pasta_servidor=gfc_app
+pasta_servidor=/home/ec2-user/gfc_app
 nome_image=gfcapp
 
 log() {
@@ -10,6 +10,9 @@ log() {
 
 try
   log "Iniciando deploy...."
+
+  log "Removendo arqivos de builds anteriores..."
+  rm -f *.tar *.gz
 
   log "Verificando se tem arquivo pendente..."
   arquivos_mod=$(git status -s)
@@ -69,7 +72,7 @@ try
   du -hs "${nome_arquivo}.gz"
 
   log "Enviando imagem para o servidor"
-  rsync -i "chavegfc.pem" -avz --partial --inplace rsync://ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com:~/${pasta_servidor} "${nome_arquivo}.gz"
+  scp -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com:${pasta_servidor} "${nome_arquivo}.gz"
 
   log "Descompactando imagem no servidor...."
   ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && gzip -vd ${nome_arquivo}.gz"
@@ -84,7 +87,7 @@ try
   ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && rm -f docker-compose.yml gunicorn_config.py nginx.conf"
 
   log "Enviando novos arquivos de configuração para o servidor"
-  scp -i "chavegfc.pem" docker-compose.yml gunicorn_config.py nginx.conf ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com:~/${pasta_servidor}
+  scp -i "chavegfc.pem" docker-compose.yml gunicorn_config.py nginx.conf ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com:${pasta_servidor}
 
   log "Parando os containers no servidor"
   ssh -i "chavegfc.pem" ec2-user@ec2-100-28-173-23.compute-1.amazonaws.com "cd ${pasta_servidor} && docker-compose down"
