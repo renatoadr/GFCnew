@@ -89,6 +89,7 @@ class notaController:
 
         return listaItens
 
+
     def consultarNotaPelaVigencia(self, idEmpreend, mes, ano):
         query = f"SELECT id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, produto, vl_nota_fiscal, vl_estoque FROM {MySql.DB_NAME}.tb_notas WHERE id_empreendimento = %s AND mes_vigencia = %s AND ano_vigencia = %s;"
 

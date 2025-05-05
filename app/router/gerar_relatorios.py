@@ -18,8 +18,12 @@ gerar_relatorio_bp = Blueprint('gerar_relatorios', __name__)
 opcoes = [
     ['graf_orcamento_liberacao_valor',
      'Gráfico do Orçamento para Liberação de Valor', 'Não'],
-    ['graf_chaves', 'Gráfico de Liberação das Chaves', 'Não'],
-    ['graf_vendas', 'Gráfico de Vendas', 'Não'],
+    ['graf_chaves_perc', 'Gráfico de Liberação das Chaves (%)', 'Não'],
+    ['graf_chaves_valor', 'Gráfico de Liberação das Chaves (R$)', 'Não'],
+    ['graf_garantias_geral', 'Gráfico de Garantias Geral', 'Não'],
+    ['graf_garantias_obra', 'Gráfico de Garantias da Obra', 'Não'],
+    ['graf_vendas_perc', 'Gráfico de Vendas (%)', 'Não'],
+    ['graf_vendas_valor', 'Gráfico de Vendas (R$)', 'Não'],
     ['tab_acomp_financeiro', 'Tabela de Acompanhamento Financeiro', 'Não'],
     ['tab_conta_corrente', 'Tabela das Contas Correntes', 'Não'],
     ['tab_notas', 'Tabela das Notas', 'Não'],
@@ -191,8 +195,7 @@ def tab_notas(mes, ano):
 def tab_orcamento_liberacao(mes, ano):
     try:
         medC = orcamentoController()
-        medS = medC.consultarOrcamentoPelaVigencia(
-            IdEmpreend().get(), mes, ano)
+        medS = medC.consultarOrcamentoPelaVigencia(IdEmpreend().get(), mes, ano)
         if medS:
             gerar_tab_orcamento_liberacao(IdEmpreend().get(), mes, ano, medS)
         else:
@@ -206,11 +209,14 @@ def tab_orcamento_liberacao(mes, ano):
 
 def tab_acomp_financeiro(mes, ano):
     try:
-        finC = financeiroController()
-        finS = finC.consultarFinanceiroPelaVigencia(
-            IdEmpreend().get(), mes, ano)
+        finC = orcamentoController()
+        finS = finC.consultarOrcamentoPelaVigencia(IdEmpreend().get(), mes, ano)
+
+        notC = notaController()
+        notS = notC.consultarNotaPelaVigencia(IdEmpreend().get(), mes, ano)
+
         if finS:
-            gerar_tab_acomp_financeiro(IdEmpreend().get(), mes, ano, finS)
+            gerar_tab_acomp_financeiro(IdEmpreend().get(), mes, ano, finS, notS)
         else:
             flash('Não há dados para gerar a tabela de acompanhamento financeiro')
     except Exception as error:
@@ -256,23 +262,39 @@ def tab_medicoes(mes, ano, mesInit, anoInit, mesFinal, anoFinal):
         flash_message.error('Erro a tabela de medições')
 
 
-def graf_chaves(mes, ano):
+def graf_chaves_perc(mes, ano):
     try:
-        if not gerar_graf_chaves(IdEmpreend().get(), mes, ano):
+        if not gerar_graf_chaves(IdEmpreend().get(), mes, ano, 'perc'):
             flash_message.warning(
-                'Não foram encontrados dados para gerar o gráfico de chaves')
+                'Não foram encontrados dados para gerar o gráfico de chaves ')
     except Exception as error:
-        logger.error('Erro ao gerar o gráfico de chaves', error)
-        flash_message.error('Erro ao gerar o gráfico de chaves')
+        logger.error('Erro ao gerar o gráfico de chaves (%)', error)
+        flash_message.error('Erro ao gerar o gráfico de chaves (%)')
 
-
-def graf_vendas(mes, ano):
+def graf_chaves_valor(mes, ano):
     try:
-        gerar_graf_vendas(IdEmpreend().get(), mes, ano)
+        if not gerar_graf_chaves(IdEmpreend().get(), mes, ano, 'valor'):
+            flash_message.warning(
+                'Não foram encontrados dados para gerar o gráfico de chaves (R$)')
     except Exception as error:
-        logger.error(
-            'Erro ao gerar o gráfico de vendas', error)
-        flash_message.error('Erro ao gerar o gráfico de vendas')
+        logger.error('Erro ao gerar o gráfico de chaves (R$)', error)
+        flash_message.error('Erro ao gerar o gráfico de chaves (R$)')
+
+
+def graf_vendas_perc(mes, ano):
+    try:
+        gerar_graf_vendas(IdEmpreend().get(), mes, ano, 'perc')
+    except Exception as error:
+        logger.error('Erro ao gerar o gráfico de vendas (%)', error)
+        flash_message.error('Erro ao gerar o gráfico de vendas (%)')
+
+
+def graf_vendas_valor(mes, ano):
+    try:
+        gerar_graf_vendas(IdEmpreend().get(), mes, ano, 'valor')
+    except Exception as error:
+        logger.error('Erro ao gerar o gráfico de vendas (R$)', error)
+        flash_message.error('Erro ao gerar o gráfico de vendas (R$)')
 
 
 def tab_certidoes(mes, ano):

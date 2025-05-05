@@ -286,7 +286,7 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
     VlPlanoEmp = empS.getVlPlanoEmp()
 
     uniC = unidadeController()
-    recS = uniC.consultarUnidadeRecebibeis(
+    recS = uniC.consultarUnidadeRecebibeisNOVA(
         idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
 
     x1 = []
@@ -349,14 +349,14 @@ def graf_vendas():
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
 
-    grafNome = gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia)
+    grafNome = gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia, 'perc')
 
-    return render_template(".html", grafNome=grafNome, version=random.randint(1, 100000))
+    return render_template("vendas_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia):
+def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia, tipo):
     unidc = unidadeController()
-    unid = unidc.consultarUnidadeVendas(idEmpreend)
+    unid = unidc.consultarUnidadeVendas(idEmpreend, tipo)
 
     fig, ax = plt.subplots(figsize=(6, 3), subplot_kw=dict(aspect="equal"))
 
@@ -370,11 +370,17 @@ def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia):
 
     recipe = []
 
-    for n in unid:
-        perc = round((n.getTtStatus()/soma)*100)
-        texto = str(n.getTtStatus()) + " " + \
+    if tipo == 'valor':
+        for n in unid:
+#            texto = str(n.getTtStatus()/1000)+ " " + n.getStatus() + " (mil)"
+            texto = f"{n.getTtStatus()/1000:,.0f}".replace(",", ".") + " " + n.getStatus() + " (mil)"
+            recipe.append(texto)
+    else:
+        for n in unid:
+            perc = round((n.getTtStatus()/soma)*100)
+            texto = str(n.getTtStatus()) + " " + \
             n.getStatus() + " (" + str(perc) + "%)"
-        recipe.append(texto)
+            recipe.append(texto) 
 
     wedges, texts = ax.pie(data, wedgeprops=dict(width=0.5), startangle=-40)
 
@@ -389,17 +395,20 @@ def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia):
         horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
         connectionstyle = f"angle,angleA=0,angleB={ang}"
         kw["arrowprops"].update({"connectionstyle": connectionstyle})
-        ax.annotate(recipe[i], xy=(x, y), xytext=(0.7*np.sign(x), 1.1*y),
+        ax.annotate(recipe[i], xy=(x, y), xytext=(1.1*np.sign(x), 1.4*y),
                     horizontalalignment=horizontalalignment, **kw)
 
-    ax.set_title("Vendas", fontdict={
-                 'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
+#    ax.set_title("Vendas", fontdict={'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
 
     grafC = graficoController()
 
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'graf_vendas.png'
+    if tipo == 'valor':
+        grafNome = diretorio + 'graf_vendas_valor.png'
+    else:
+        grafNome = diretorio + 'graf_vendas_perc.png'
+#    grafNome = diretorio + 'graf_vendas.png'   
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
 
@@ -415,39 +424,65 @@ def graf_chaves():
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
 
-    grafNome = gerar_graf_chaves(idEmpreend, mesVigencia, anoVigencia)
 
-    return render_template(".html", grafNome=grafNome, version=random.randint(1, 100000))
+    grafNome = gerar_graf_chaves(idEmpreend, mesVigencia, anoVigencia, 'perc')
+
+    return render_template("chaves_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-def gerar_graf_chaves(idEmpreend, mesVigencia, anoVigencia):
+def gerar_graf_chaves(idEmpreend, mesVigencia, anoVigencia, tipo):
     unidc = unidadeController()
-    unid = unidc.consultarUnidadeChaves(idEmpreend)
+    unid = unidc.consultarUnidadeChaves(idEmpreend, tipo)
 
     labels = ['Chaves', 'Pré-chaves', 'Pós-chaves']
 
-    perChave = unid.getTtChaves()        # / unid.getQtUnidade()
-    perPreChave = unid.getTtPreChaves()  # / unid.getQtUnidade()
-    perPosChave = unid.getTtPosChaves()  # / unid.getQtUnidade()
+    if tipo == 'valor':
+        perChave = unid.getTtChaves()       / 1000
+        perPreChave = unid.getTtPreChaves() / 1000
+        perPosChave = unid.getTtPosChaves() / 1000
+    else:
+        perChave    = unid.getTtChaves()     / unid.getQtUnidade() * 100
+        perPreChave = unid.getTtPreChaves()  / unid.getQtUnidade() * 100
+        perPosChave = unid.getTtPosChaves()  / unid.getQtUnidade() * 100
 
     if not perChave and not perPreChave and not perPosChave:
         return ''
 
     sizes = [perChave, perPreChave, perPosChave]
-#    print('sizes = ', sizes)
 
-    fig1, ax1 = plt.subplots()
+    # Configuração do gráfico de barras
+    fig, ax = plt.subplots(figsize=(8, 6))  # Define o tamanho da figura
+#    bars = ax.bar(labels, sizes, color=['blue', 'orange', 'green'])
+    bars = ax.bar(labels, sizes, color=['blue', 'orange', 'green'], width=0.3)
+    # Adiciona rótulos nas barras
+    for bar in bars:
+        height = bar.get_height()
+        ax.text(bar.get_x() + bar.get_width() / 2, height, f'{height:.0f}', 
+                ha='center', va='bottom', fontsize=12)
 
-    ax1.pie(sizes, labels=labels, autopct='%1.1f%%', shadow=False,
-            startangle=90, textprops={'fontsize': 16})
+    # Configurações do gráfico
+#    ax.set_title('Distribuição de Chaves', fontsize=16, fontweight='bold')
+    if tipo == 'valor':
+        ax.set_ylabel('R$/mil ' + '(' + str(unid.getQtUnidade()) + ' Unid)', fontsize=14)
+    else:
+        ax.set_ylabel('% ' + '(' + str(unid.getQtUnidade()) + ' Unid)', fontsize=14)
 
-    ax1.axis('equal')
+#    ax.set_xlabel('Categorias', fontsize=14)
+    ax.tick_params(axis='both', labelsize=12)
+
+    # Remover as linhas superior e direita da caixa
+    ax.spines['top'].set_visible(False)
+    ax.spines['right'].set_visible(False)
 
     grafC = graficoController()
 
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'graf_chaves.png'
+    if tipo == 'valor':
+        grafNome = diretorio + 'graf_chaves_valor.png'
+    else:
+        grafNome = diretorio + 'graf_chaves_perc.png'
+#    grafNome = diretorio + 'graf_chaves.png'
 
-    plt.savefig(grafNome)  # , bbox_inches='tight')
+    plt.savefig(grafNome, bbox_inches='tight')
     return grafNome

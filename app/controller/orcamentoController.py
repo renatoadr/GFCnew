@@ -116,6 +116,52 @@ class orcamentoController:
 
         return listaItens
 
+
+    def consultarOrcamentoPelaVigencia(self, idEmpreend, mesVigencia, anoVigencia):
+        self.__connection = MySql.connect()
+        cursor = self.__connection.cursor(dictionary=True)
+
+        query = "select id_orcamento, id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, item, orcado_valor, fisico_valor, fisico_percentual, fisico_saldo, financeiro_valor, financeiro_percentual, financeiro_saldo from " + MySql.DB_NAME + ".tb_orcamentos where id_empreendimento = '" + str(idEmpreend) + "' and mes_vigencia = '" +  mesVigencia + "' and ano_vigencia = '" +  anoVigencia + "'"
+
+        print(query)
+
+        cursor.execute(query)
+
+#        linha = cursor.fetchone()
+        print('++++++++++++ consultarOrcamentoPelaVigencia +++++++++++++++')
+#        print (linha)
+#        print('+++++++++++++++++++++++++++')
+
+        lista = cursor.fetchall()
+
+        listaItens = []
+
+        for x in lista:
+            m = orcamento()
+            m.setIdOrcamento(x['id_orcamento'])
+            m.setIdEmpreend(x['id_empreendimento'])
+            m.setMesVigencia(x['mes_vigencia'])
+            m.setAnoVigencia(x['ano_vigencia'])
+            m.setDtCarga(x['dt_carga'])
+            m.setItem(x['item'])
+            m.setOrcadoValor(x['orcado_valor'])
+            m.setFisicoValor(x['fisico_valor'])
+            m.setFisicoPercentual(x['fisico_percentual'])
+            m.setFisicoSaldo(x['fisico_saldo'])
+            m.setFinanceiroValor(x['financeiro_valor'])
+            m.setFinanceiroPercentual(x['financeiro_percentual'])
+            m.setFinanceiroSaldo(x['financeiro_saldo'])
+            listaItens.append(m)
+
+        print('------------------------')
+        print('------------------------')
+        cursor.close()
+        MySql.close(self.__connection)
+        print('-----------------> ', listaItens)
+
+        return listaItens
+
+
     def consultarOrcamentoPeloId(self, idOrcamento):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor(dictionary=True)
