@@ -142,13 +142,24 @@ class graficoController:
                     mask='auto')   # preserveAspectRatio=True
         c.setFont('Helvetica-Bold', 14)
         c.setFillColor("black")
-        c.drawString(30, 400, "Qualificação dos Recebíveis")
+        c.drawString(30, 450, "Recebíveis por unidades produzidas")
 
-        imgFotoObra = diretorio + "graf_chaves.png"
-        c.drawImage(imgFotoObra, 30, 200, width=200, height=150,
+        imgFotoObra = diretorio + "graf_chaves_perc.png"
+        c.drawImage(imgFotoObra, 30, 270, width=200, height=150,
                     mask='auto')   # preserveAspectRatio=True
-        imgFotoObra = diretorio + "graf_vendas.png"
-        c.drawImage(imgFotoObra, 220, 200, width=330, height=150,
+        imgFotoObra = diretorio + "graf_vendas_perc.png"
+        c.drawImage(imgFotoObra, 220, 270, width=330, height=150,
+                    mask='auto')   # preserveAspectRatio=True
+        
+        c.setFont('Helvetica-Bold', 14)
+        c.setFillColor("black")
+        c.drawString(30, 215, "Financeiro a receber")
+        
+        imgFotoObra = diretorio + "graf_chaves_valor.png"
+        c.drawImage(imgFotoObra, 30, 35, width=200, height=150,
+                    mask='auto')   # preserveAspectRatio=True
+        imgFotoObra = diretorio + "graf_vendas_valor.png"
+        c.drawImage(imgFotoObra, 220, 35, width=330, height=150,
                     mask='auto')   # preserveAspectRatio=True
 
         c.setFont('Helvetica', 10)
@@ -591,10 +602,16 @@ class graficoController:
         foto = diretorio + "graf_indices_garantia_II.png"
         if not os.path.isfile(foto):
             listaErro.append('5ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "graf_chaves.png"
+        foto = diretorio + "graf_chaves_perc.png"
         if not os.path.isfile(foto):
             listaErro.append('5ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "graf_vendas.png"
+        foto = diretorio + "graf_chaves_valor.png"
+        if not os.path.isfile(foto):
+            listaErro.append('5ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "graf_vendas_perc.png"
+        if not os.path.isfile(foto):
+            listaErro.append('5ª pag - ' + foto + ' não encontrado')
+        foto = diretorio + "graf_vendas_valor.png"
         if not os.path.isfile(foto):
             listaErro.append('5ª pag - ' + foto + ' não encontrado')
 

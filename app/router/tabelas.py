@@ -474,27 +474,62 @@ def tab_acomp_financeiro():
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
 
-    finC = financeiroController()
-    finS = finC.consultarFinanceiroPelaData(
-        idEmpreend, mesVigencia, anoVigencia)
-    grafNome = gerar_tab_acomp_financeiro(
-        idEmpreend, mesVigencia, anoVigencia, finS)
+    medC = orcamentoController()
+    medS = medC.consultarOrcamentoPelaVigencia(idEmpreend, mesVigencia, anoVigencia)
+    notC = notaController()
+    notS = notC.consultarNotaPelaVigencia(idEmpreend, mesVigencia, anoVigencia)
 
+    grafNome = gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS)
+    grafNome = gerar_tab_acomp_financeiro(idEmpreend, mesVigencia, anoVigencia, medS, notS)
+    
     return render_template("financeiro_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-def gerar_tab_acomp_financeiro(idEmpreend, mes, ano, finS):
+def gerar_tab_acomp_financeiro(idEmpreend, mesVigencia, anoVigencia, medS, notS):
     geral = geralController()
     fig, ax = plt.subplots(1, 1)
 
     data = []
+    somaOrcadoValor = 0
+    somaFisicoValor = 0
+#    somaFisicoSaldo = 0
+    somaFinanceiroValor = 0
+#    somaFinanceiroSaldo = 0
 
-    for m in finS:
-        dd = []
-        dd.append(m.getHistorico())
-        dd.append(geral.formataPerc(m.getPercFinanceiro(), 0))
-        dd.append(geral.formataNumero(m.getVlFinanceiro(), 'R$'))
+    for m in medS:
+        somaOrcadoValor += 0 if m.getOrcadoValor() is None else m.getOrcadoValor()
+        somaFisicoValor += 0 if m.getFisicoValor() is None else m.getFisicoValor()
+#        somaFisicoSaldo += 0 if m.getFisicoSaldo() is None else m.getFisicoSaldo()
+        somaFinanceiroValor += 0 if m.getFinanceiroValor() is None else m.getFinanceiroValor()
+#        somaFinanceiroSaldo += 0 if m.getFinanceiroSaldo() is None else m.getFinanceiroSaldo()
+
+    # incluindo a linha de totais
+    somaFisicoPercentual = somaFisicoValor/somaOrcadoValor*100
+    somaFinanceiroPercentual = somaFinanceiroValor/somaOrcadoValor*100
+
+# 'Aditamento'
+
+#    somaVlNotaFiscal = 0
+    somaVlEstoque = 0
+
+    for n in notS:
+#        somaVlNotaFiscal += n.getVlNotaFiscal()
+        somaVlEstoque += n.getVlEstoque()
+
+    dd = ['Físico executado', geral.formataPerc(somaFisicoPercentual, 0), geral.formataNumero(somaFisicoValor, 'R$')] 
+    data.append(dd) 
+    dd = ['Financeiro liberado', geral.formataPerc(somaFinanceiroPercentual, 0), geral.formataNumero(somaFinanceiroValor, 'R$')]
+    data.append(dd) 
+    if somaVlEstoque != 0:
+        dd = ['Estoque (material)', ' ', geral.formataNumero(somaVlEstoque, 'R$')]
         data.append(dd)
+
+#    for m in finS:
+#        dd = []
+#        dd.append(m.getHistorico())
+#        dd.append(geral.formataPerc(m.getPercFinanceiro(), 0))
+#        dd.append(geral.formataNumero(m.getVlFinanceiro(), 'R$'))
+#        data.append(dd)
 
     column_labels = ["                            ",
                      "         ", "                "]
@@ -533,7 +568,7 @@ def gerar_tab_acomp_financeiro(idEmpreend, mes, ano, finS):
 
     grafC = graficoController()
 
-    diretorio = grafC.montaDir(idEmpreend, mes, ano)
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     grafNome = diretorio + 'tab_acomp_financeiro.png'
 
