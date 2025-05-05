@@ -64,6 +64,8 @@ class geralController:
 
         #        print('----------- listar_arquivos_com_prefixo -------------')
         #        print('++++++++++++++++++++++', diretorio, prefixo )
+        if not os.path.exists(diretorio):
+            os.makedirs(diretorio)
 
         return [arquivo for arquivo in os.listdir(diretorio)
                 if os.path.isfile(os.path.join(diretorio, arquivo)) and arquivo.startswith(prefixo)]
