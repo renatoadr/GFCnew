@@ -1,6 +1,5 @@
 from flask import Blueprint, request, render_template, redirect, current_app, flash, send_file
 
-from controller.financeiroController import financeiroController
 from controller.orcamentoController import orcamentoController
 from router.graficos import gerar_graf_orcamento_liberacao, gerar_graf_indices_garantia_I, gerar_graf_indices_garantia_II, gerar_graf_chaves, gerar_graf_vendas, gerar_graf_progresso_obra
 from controller.contaController import contaController
@@ -20,8 +19,6 @@ opcoes = [
      'Gráfico do Orçamento para Liberação de Valor', 'Não'],
     ['graf_chaves_perc', 'Gráfico de Liberação das Chaves (%)', 'Não'],
     ['graf_chaves_valor', 'Gráfico de Liberação das Chaves (R$)', 'Não'],
-    ['graf_garantias_geral', 'Gráfico de Garantias Geral', 'Não'],
-    ['graf_garantias_obra', 'Gráfico de Garantias da Obra', 'Não'],
     ['graf_vendas_perc', 'Gráfico de Vendas (%)', 'Não'],
     ['graf_vendas_valor', 'Gráfico de Vendas (R$)', 'Não'],
     ['tab_acomp_financeiro', 'Tabela de Acompanhamento Financeiro', 'Não'],

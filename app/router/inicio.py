@@ -1,9 +1,10 @@
-from flask import Blueprint, request, render_template, redirect, session, url_for, send_from_directory
+from flask import Blueprint, request, render_template, redirect, session, url_for, send_from_directory, current_app
 from models.User import User
 from controller.usuarioController import usuarioController
 from controller.geralController import geralController
 from utils.security import login_user, logout_user, has_user_logged
 import re
+import os
 
 init_bp = Blueprint('inicio', __name__)
 
@@ -101,8 +102,9 @@ def lista_relatorios():
 
 #    print('==========lista_relatorios==========', apelido)
     gerC = geralController()
-    diretorio = "c://GFC//Relatorios"
-    arqS = gerC.listar_arquivos_com_prefixo(diretorio, apelido)
+    diretorio = os.path.join(current_app.config['DIRSYS'], 'Relatorios')
+    arqS = gerC.listar_arquivos_com_prefixo(
+        os.path.normpath(diretorio), apelido)
 #    print ('=========== lista de arquivos   ', arqS)
     print('=========== lista de arquivos   ', arqS)
     if mobile:
@@ -123,6 +125,6 @@ def logout():
 @init_bp.route('/download_arquivo', methods=['GET'])
 def download_arquivo():
     arquivo = request.args.get('arquivo')
-    diretorio = "c://GFC//Relatorios"
+    diretorio = os.path.join(current_app.config['DIRSYS'], 'Relatorios')
     print('+++++++++++++', arquivo)
-    return send_from_directory(diretorio, arquivo, as_attachment=True)
+    return send_from_directory(os.path.normpath(diretorio), arquivo, as_attachment=True)
