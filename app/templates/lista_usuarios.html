@@ -61,7 +61,7 @@
                   </a>
                 </td>
                 <td class="text-center">
-                  {% if usr.getIdUsuario() > 1 %}
+                  {% if usr.getTpAcesso() != 'ROOT' %}
                   <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir">
                     <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
                       data-modal-exclude-title="Usuário"
