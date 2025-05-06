@@ -9,7 +9,7 @@ log() {
   echo -e "\033[0;34m[GFC_DEPLOY]\033[0m $1"
 }
 
-execSeverCommand() {
+ecSrCom() {
   ssh -i "${path_chave}" "${server_connect}" "$1"
 }
 
@@ -77,32 +77,35 @@ try
   log "Tamanho da imagem após a compactação..."
   du -hs "${nome_arquivo}.gz"
 
-  log "Enviando imagem para o servidor"
-  pscp -i "${path_chave}" "${nome_arquivo}.gz" "${server_connect}":${pasta_servidor}
+  log "Enviando imagem para o servidor via sftp"
+  sftp -i "${path_chave}" "${server_connect}" <<EOF
+  put "${nome_arquivo}.gz" "${pasta_servidor}"
+  exit
+EOF
 
   log "Descompactando imagem no servidor...."
-  execSeverCommand "cd ${pasta_servidor} && gzip -vd ${nome_arquivo}.gz"
+  ecSrCom "cd ${pasta_servidor} && gzip -vd ${nome_arquivo}.gz"
 
   log "Carregando para o docker do servidor a nova imagem. Aguarde alguns minutos..."
-  execSeverCommand "cd ${pasta_servidor} && docker load < ${nome_arquivo}"
+  ecSrCom "cd ${pasta_servidor} && docker load < ${nome_arquivo}"
 
   log "Removendo imagem antiga da aplicação no servidor"
-  execSeverCommand "docker rmi ${imagem_atual}"
+  ecSrCom "docker rmi ${imagem_atual}"
 
   log "Removendo arquivos de configuração do servidor"
-  execSeverCommand "cd ${pasta_servidor} && rm -f docker-compose.yml gunicorn_config.py nginx.conf"
+  ecSrCom "cd ${pasta_servidor} && rm -f docker-compose.yml gunicorn_config.py nginx.conf"
 
   log "Enviando novos arquivos de configuração para o servidor"
   scp -i "${path_chave}" docker-compose.yml gunicorn_config.py nginx.conf "${server_connect}":${pasta_servidor}
 
   log "Parando os containers no servidor"
-  execSeverCommand "cd ${pasta_servidor} && docker-compose down"
+  ecSrCom "cd ${pasta_servidor} && docker-compose down"
 
   log "Recriando os containers no servidor"
-  execSeverCommand "cd ${pasta_servidor} && docker-compose up -d"
+  ecSrCom "cd ${pasta_servidor} && docker-compose up -d"
 
   log "Deletando imagem do diretório do servidor"
-  execSeverCommand "cd ${pasta_servidor} && rm -f ${nome_arquivo} ${nome_arquivo}.gz"
+  ecSrCom "cd ${pasta_servidor} && rm -f ${nome_arquivo} ${nome_arquivo}.gz"
 
   log "Deletando imagem salva no diretório local"
   rm -f "${nome_arquivo}" "${nome_arquivo}.gz"
