@@ -1,0 +1,87 @@
+<!-- Template: banco -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Cadastro Banco</title>
+  {% include 'fractials/head.html' %}
+</head>
+
+<body>
+  {% include 'fractials/menu.html' %}
+
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <h2 class="title title-page">
+            <i class="fa-solid fa-building-columns"></i> {{ 'Editar' if banco else 'Cadastrar' }} Banco
+          </h2>
+        </div>
+      </div>
+
+      <form action="{{'/salvar_alteracao_banco' if banco else '/cadastrar_banco' }}" method="post" id="formbanco">
+        <div class="row">
+
+          <div class="col-4">
+            <div class="form-floating ">
+              <input type="text" name="ispb" id="ispb" class="form-control 10num" placeholder=""
+                value="{{ banco.getIspb() if banco}}" maxlength="10" />
+              <label for="ispb">ISPB</label>
+            </div>
+          </div>
+
+          <div class="col-3">
+            <div class="form-floating ">
+              <input type="text" name="codigo" id="codigo" class="form-control required 4num" placeholder=""
+                value="{{ banco.getCodigo() if banco}}" maxlength="3" />
+              <label for="codigo">Código</label>
+            </div>
+          </div>
+
+          <div class="col-5">
+            <div class="form-floating ">
+              <input type="text" name="descricao" id="descricao" class="form-control required" placeholder=""
+                value="{{ banco.getDescricao() if banco}}" maxlength="60" />
+              <label for="descricao">Descrição</label>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-12">
+            <div class="form-floating ">
+              <input type="text" name="desc_completa" id="desc_completa" class="form-control" placeholder=""
+                value="{{ banco.getDescricaoCompleta() if banco}}" maxlength="120" />
+              <label for="desc_completa">Descrição Completa</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-5 justify-content-center d-flex">
+          <div class="col-3">
+            <a href="/home" class="btn btn-secondary w-100">Cancelar</a>
+          </div>
+          <div class="col-3 offset-1">
+            <button type="submit" class="btn btn-success w-100" id="submit">{{ 'Salvar' if banco
+              else 'Criar' }}</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  {% include 'fractials/footer.html' %}
+  <script>
+    $(function () {
+      const requireds = GFC.getRequiredFields("formbanco")
+      delete requireds.rules;
+      $("#formbanco").validate(GFC.getConfigValidateForm(requireds));
+    })
+  </script>
+</body>
+
+</html>

@@ -1,9 +1,5 @@
-from flask import session, current_app
+from flask import current_app
 import os
-
-
-def is_logged():
-    return session['logged_in'] == True
 
 
 def allowed_file(filename):

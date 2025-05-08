@@ -2,7 +2,8 @@ from flask import Blueprint, request, render_template, redirect, session, url_fo
 from models.User import User
 from controller.usuarioController import usuarioController
 from controller.geralController import geralController
-from utils.security import login_user, logout_user, has_user_logged
+from controller.empreendimentoController import empreendimentoController
+from utils.security import login_user, logout_user, has_user_logged, has_user_mobile_logged, logout_user_mobile, get_user_logged_mobile, login_user_mobile
 import re
 import os
 
@@ -11,7 +12,13 @@ init_bp = Blueprint('inicio', __name__)
 
 @init_bp.route('/m')
 def mlogin():
-    if session.get('m_logged_in') == True:
+    if not re.search(
+        'Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini',
+        request.user_agent.string,
+        re.IGNORECASE
+    ):
+        return redirect('/')
+    if has_user_mobile_logged():
         return redirect('/mobile/home')
     if request.args.get('mensagem') is not None:
         return render_template("mobile/login.html", mensagem=request.args.get('mensagem'))
@@ -26,34 +33,34 @@ def valida_login_m():
     usu = usuC.consultarAcesso(email, senha)
 
     if usu:
-        session['m_logged_in'] = True
-        session['m_email'] = email
-        session['nome'] = usu.getNmUsuario()
-        session['m_user_id'] = usu.getIdUsuario()
+        login_user_mobile(User(
+            usu.getIdUsuario(),
+            usu.getNmUsuario(),
+            usu.getEmail(),
+            usu.getTpAcesso(),
+            usu.getCodBanco()
+        ))
+        logout_user()
 
         return redirect('/mobile/home')
     else:
-        session['m_logged_in'] = False
         return redirect(url_for(".mlogin", mensagem='Falha no login, verifique o usuário e a senha'))
 
 
 @init_bp.route('/mobile/home')
 def home_m():
-    idUsuario = session.get('m_user_id')
-    if idUsuario is None:
+    sUs = get_user_logged_mobile()
+    if not has_user_mobile_logged():
         redirect('/m')
 
-    usuC = usuarioController()
-    uApelidos = usuC.consultarApelidos(idUsuario)
+    usuC = empreendimentoController()
+    uApelidos = usuC.consultarApelidos(sUs.codBank)
     return render_template("mobile/home.html", apelidos=uApelidos)
 
 
 @init_bp.route('/logout_m')
 def logout_m():
-    session.pop('m_email', None)
-    session.pop('m_logged_in', None)
-    session.pop('nome', None)
-    session.pop('m_user_id', None)
+    logout_user_mobile()
     return redirect("/m")
 
 
@@ -75,13 +82,14 @@ def valida_login():
     usu = usuC.consultarAcesso(email, senha)
 
     if usu:
-        logedIn = User(
+        login_user(User(
             usu.getIdUsuario(),
             usu.getNmUsuario(),
             usu.getEmail(),
-            usu.getTpAcesso()
-        )
-        login_user(logedIn)
+            usu.getTpAcesso(),
+            usu.getCodBanco()
+        ))
+        logout_user_mobile()
         return redirect('/home')
     else:
         logout_user()

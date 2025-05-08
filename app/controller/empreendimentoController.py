@@ -9,15 +9,12 @@ from utils.dbContext import MySql
 class empreendimentoController:
     __connection = None
 
-    def __init__(self):
-        pass
-
     def inserirEmpreendimento(self, empreend):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
         query = "INSERT INTO " + MySql.DB_NAME + \
-            """.tb_empreendimentos (apelido, nm_empreendimento, logradouro, bairro, cidade, estado, cep, nm_incorporador, nm_construtor, nm_banco, cpf_cnpj_engenheiro, vl_plano_empresario, indice_garantia, previsao_entrega) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+            """.tb_empreendimentos (apelido, nm_empreendimento, logradouro, bairro, cidade, estado, cep, nm_incorporador, nm_construtor, cod_banco, cpf_cnpj_engenheiro, vl_plano_empresario, indice_garantia, previsao_entrega) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
         print(query)
         cursor.execute(query, (
@@ -30,7 +27,7 @@ class empreendimentoController:
             empreend.getCep(),
             empreend.getNmIncorp(),
             empreend.getNmConstrutor(),
-            empreend.getNmBanco(),
+            empreend.getCodBanco(),
             empreend.getCpfCnpjEngenheiro(),
             empreend.getVlPlanoEmp(),
             empreend.getIndiceGarantia(),
@@ -42,27 +39,25 @@ class empreendimentoController:
         cursor.close()
         MySql.close(self.__connection)
 
-    def consultarEmpreendimentos(self):
-        self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()
+    def consultarEmpreendimentos(self, codBank):
+        query = f"select * from  {MySql.DB_NAME}.tb_empreendimentos "
 
-        query = "select * from " + MySql.DB_NAME + ".tb_empreendimentos"
-
-        cursor.execute(query)
-
-        lista = cursor.fetchall()
+        lista = []
+        if codBank and codBank != 'None' and int(codBank) > 0:
+            query += "where cod_banco = %s"
+            lista = MySql.getAll(query, (codBank,))
+        else:
+            lista = MySql.getAll(query)
 
         listaEmps = []
 
         for x in lista:
-            e = empreendimento()
-            e.setIdEmpreend(x[0])
-            e.setNmEmpreend(x[1])
-            e.setApelido(x[2])
-            listaEmps.append(e)
+            emp = empreendimento()
+            emp.setIdEmpreend(x["id_empreendimento"])
+            emp.setNmEmpreend(x["nm_empreendimento"])
+            emp.setApelido(x["apelido"])
+            listaEmps.append(emp)
 
-        cursor.close()
-        MySql.close(self.__connection)
         return listaEmps
 
     def consultarEmpreendimentoPeloId(self, idEmpreend):
@@ -86,7 +81,7 @@ class empreendimentoController:
         linhaE.setApelido('' if linha['apelido'] is None else linha['apelido'])
         linhaE.setIdEmpreend(linha['id_empreendimento'])
         linhaE.setNmEmpreend(linha['nm_empreendimento'])
-        linhaE.setNmBanco(linha['nm_banco'])
+        linhaE.setCodBanco(linha['cod_banco'])
         linhaE.setNmIncorp(linha['nm_incorporador'])
         linhaE.setNmConstrutor(linha['nm_construtor'])
         linhaE.setLogradouro(linha['logradouro'])
@@ -137,7 +132,7 @@ class empreendimentoController:
          cep = %s,
          nm_incorporador = %s,
          nm_construtor = %s,
-         nm_banco = %s,
+         cod_banco = %s,
          cpf_cnpj_engenheiro = %s,
          vl_plano_empresario = %s,
          indice_garantia = %s,
@@ -155,7 +150,7 @@ class empreendimentoController:
             empreend.getCep(),
             empreend.getNmIncorp(),
             empreend.getNmConstrutor(),
-            empreend.getNmBanco(),
+            empreend.getCodBanco(),
             empreend.getCpfCnpjEngenheiro(),
             empreend.getVlPlanoEmp(),
             empreend.getIndiceGarantia(),
@@ -167,3 +162,27 @@ class empreendimentoController:
         print(cursor.rowcount, "Empreendimento atualizado com sucesso")
         cursor.close()
         MySql.close(self.__connection)
+
+    def consultarApelidos(self, codBank: int):
+        query = f"SELECT * FROM {MySql.DB_NAME}.tb_empreendimentos where cod_banco = %s ORDER BY apelido"
+
+        lista = []
+        listaA = []
+
+        if codBank and codBank != 'None' and int(codBank) > 0:
+            lista = MySql.getAll(query, (codBank,))
+
+        for row in lista:
+            emp = empreendimento()
+            emp.setApelido(row['apelido'])
+            emp.setNmConstrutor(row['nm_construtor'])
+            emp.setNmEmpreend(row['nm_empreendimento'])
+            emp.setNmIncorp(row['nm_incorporador'])
+            emp.setLogradouro(row['logradouro'])
+            emp.setCidade(row['cidade'])
+            emp.setBairro(row['bairro'])
+            emp.setEstado(row['estado'])
+            emp.setCep(row['cep'])
+            listaA.append(emp)
+
+        return listaA

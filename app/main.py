@@ -20,6 +20,7 @@ from router.orcamentos import orca_bp
 from router.certidoes import cert_bp
 from router.tabelas import tabela_bp
 from router.agenda import agenda_bp
+from router.bancos import bancos_bp
 from router.torres import torre_bp
 from router.inicio import init_bp
 from router.notas import nota_bp
@@ -45,6 +46,7 @@ app.register_blueprint(cliente_bp)
 app.register_blueprint(filtros_bp)
 app.register_blueprint(tabela_bp)
 app.register_blueprint(agenda_bp)
+app.register_blueprint(bancos_bp)
 app.register_blueprint(torre_bp)
 app.register_blueprint(cert_bp)
 app.register_blueprint(orca_bp)

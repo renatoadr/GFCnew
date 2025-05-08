@@ -13,10 +13,12 @@ ecSrCom() {
   ssh -i "${path_chave}" "${server_connect}" "$1"
 }
 
+
+log "Iniciando deploy...."
+
 handle_error() {
   local exit_code=$?
   log "Erro no processo de deploy. Desfazendo processo..."
-
   log "Removendo arquivos compactados da imagem..."
   rm -f "${nome_arquivo}" "${nome_arquivo}.gz"
 
@@ -30,18 +32,22 @@ handle_error() {
   exit $exit_code
 }
 
+if [ $1 == "--re" ]; then
+  log "Realizando redeploy e limpando o stage...."
+  log "Removendo arquivos compactados da imagem..."
+  rm -f *.tar *.gz
+  log "Desfazendo versão do compose..."
+  git checkout docker-compose.yml
+  log "Reiniciado o fluxo de deploy!"
+fi
+
 trap 'handle_error' ERR
-
-log "Iniciando deploy...."
-
-log "Removendo arqivos de builds anteriores..."
-rm -f *.tar *.gz
 
 log "Verificando se tem arquivo pendente..."
 arquivos_mod=$(git status -s)
 if [ -n "$arquivos_mod" ]; then
   log "O deploy foi finalizado com erro. Existe modificações não comitadas"
-  exit
+  exit 1
 fi
 
 log "Verificando se está na branch main..."
@@ -58,7 +64,7 @@ log "Verificando se tem conflitos..."
 arquivos_mod=$(git status -s)
 if [ -n "$arquivos_mod" ]; then
   log "O deploy foi finalizado. Existem conflitos para resolver ou arquivos para comitar"
-  exit
+  exit 1
 fi
 
 log "Preparando versão..."
@@ -75,9 +81,6 @@ log "Alterando versão do deploy no docker-compose"
 sed -i "s/image: ${imagem_atual}/image: ${nome_image}:${nova_versao}/" docker-compose.yml
 
 log "Alterado Versao Atual: ${versao_atual} para Nova versão: ${nova_versao}"
-
-log "Removendo imagem antiga"
-docker rmi "${imagem_atual}"
 
 log "Iniciando build da aplicação"
 docker-compose build app
@@ -96,8 +99,8 @@ du -hs "${nome_arquivo}.gz"
 
 log "Enviando imagem para o servidor via sftp"
 sftp -i "${path_chave}" "${server_connect}" <<EOF
-put "${nome_arquivo}.gz" "${pasta_servidor}"
-exit
+  put "${nome_arquivo}.gz" "${pasta_servidor}"
+  exit
 EOF
 
 log "Carregando para o docker do servidor a nova imagem. Aguarde alguns minutos..."
@@ -137,16 +140,3 @@ git tag -a v"${nova_versao}" -m "Nova versão da aplicação v${nova_versao}"
 git push --tags
 
 log "Deploy concluído!"
-
-log "Erro no processo de deploy. Desfazendo processo..."
-
-log "Removendo arquivos compactados da imagem..."
-rm -f "${nome_arquivo}" "${nome_arquivo}.gz"
-
-log "Removendo imagem nova do docker..."
-docker rmi "${nome_image}:${nova_versao}"
-
-log "Desfazendo versão do compose..."
-git checkout docker-compose.yml
-
-log "Deploy desfeito!"

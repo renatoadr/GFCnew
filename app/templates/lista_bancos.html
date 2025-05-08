@@ -1,11 +1,11 @@
-<!-- Template: lista_cliente -->
+<!-- Template: lista_bancos -->
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>GFC - Listagem de Usuáiros do sistema</title>
+  <title>GFC - Listagem de Bancos</title>
   {% include 'fractials/head.html' %}
 </head>
 
@@ -17,15 +17,15 @@
       <div class="row">
         <div class="col-6">
           <h2 class="title title-page">
-            <i class="fa-solid fa-user-gear"></i> Usuários
+            <i class="fa-solid fa-building-columns"></i> Bancos
           </h2>
         </div>
         <div class="col-6">
           <div class="row h-100">
             <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
-              <a href="/abrir_cad_usuario" class="btn btn-primary">
-                <i class="fa-solid fa-circle-plus"></i>
-                Novo Usuário
+              <a href="/abrir_cad_banco" class="btn btn-primary">
+                <i class="fa-solid fa-building-columns"></i>
+                Novo Banco
               </a>
             </div>
             <div class="col-3 d-flex justify-content-end align-items-center">
@@ -43,32 +43,32 @@
           <table class="table table-striped">
             <thead class="table-light">
               <tr>
-                <th>email</th>
-                <th>Nome</th>
-                <th class="text-center">Tipo de acesso</th>
+                <th>ISPB</th>
+                <th>Código</th>
+                <th>Descrição</th>
+                <th>Descrição Completa</th>
                 <th colspan="2" class="text-center">Ações</th>
               </tr>
             </thead>
             <tbody>
-              {% for usr in usuarios %}
+              {% for bk in bancos %}
               <tr>
-                <td>{{ usr.getEmail() }}</td>
-                <td>{{ usr.getNmUsuario() }}</td>
-                <td class="text-center">{{ usr.getTpAcesso() }}</td>
+                <td>{{ bk.getIspb() }}</td>
+                <td>{{ bk.getCodigo() }}</td>
+                <td>{{ bk.getDescricao() }}</td>
+                <td>{{ bk.getDescricaoCompleta() }}</td>
                 <td class="text-center">
-                  <a href="/editar_usuario?id={{usr.getIdUsuario()}}" data-bs-toggle="tooltip" data-bs-title="Editar">
+                  <a href="/editar_banco?cod={{bk.getCodBanco()}}" data-bs-toggle="tooltip" data-bs-title="Editar">
                     <i class="fa-solid fa-pencil text-warning"></i>
                   </a>
                 </td>
                 <td class="text-center">
-                  {% if usr.getTpAcesso() != 'Root' %}
                   <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir">
                     <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
-                      data-modal-exclude-title="Usuário"
-                      data-modal-exclude-action="/excluir_usuario?id={{usr.getIdUsuario()}}"
-                      data-modal-exclude-text="Deseja realmente excluir o usuário <strong>{{usr.getNmUsuario()}}</strong>?"></i>
+                      data-modal-exclude-title="Banco"
+                      data-modal-exclude-action="/excluir_banco?cod={{bk.getCodBanco()}}"
+                      data-modal-exclude-text="Deseja realmente excluir o banco <strong>{{bk.getDescricao()}}</strong>?"></i>
                   </a>
-                  {% endif %}
                 </td>
               </tr>
               {% endfor %}

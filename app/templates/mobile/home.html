@@ -1,4 +1,4 @@
-<!--                                          mobile home.html-->
+<!-- mobile home.html-->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,7 +10,6 @@
 </head>
 
 <body>
-
   {% include 'fractials/menu.html' %}
   <main>
     <div class="container">
@@ -29,6 +28,7 @@
               </tr>
             </thead>
             <tbody>
+              {% if apelidos %}
               {% for e in apelidos %}
               <tr>
                 <td>{{ e.getApelido() }}</td>
@@ -40,6 +40,11 @@
                 </td>
               </tr>
               {% endfor %}
+              {% else %}
+              <tr>
+                <td colspan="2" class="text-center">Não existem empreendimentos</td>
+              </tr>
+              {% endif %}
             </tbody>
           </table>
         </div>

@@ -83,6 +83,8 @@ $(function(){
 
   $('.4num').mask('9999', {reverse: true});
 
+  $('.10num').mask('9999999999', {reverse: true});
+
   $('.2num').mask('99', {reverse: true});
 
   $('.cpf').mask('000.000.000-00', {reverse: true});
@@ -121,15 +123,6 @@ $(function(){
   $('.email').mask("A", {
     translation: {
         "A": { pattern: /[\w@\-.+]/, recursive: true }
-    }
-  });
-
-  $.getJSON('//brasilapi.com.br/api/banks/v1', function(data) {
-    const listaBancos = data.sort(function (ba, bb) {
-      return ba.name < bb.name ? -1 : 1
-    });
-    for (let banco of listaBancos) {
-      $('#nmBanco').append(`<option value="${banco.name}">${banco.name}</option>`);
     }
   });
 

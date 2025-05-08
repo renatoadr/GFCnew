@@ -15,7 +15,7 @@
   <main>
     <div class="container">
       <div class="row">
-        <div class="col-6">
+        <div class="col-sm-12">
           <h2 class="title title-page">
             <i class="fa-solid fa-user-gear"></i> {{ 'Editar' if user else 'Cadastrar' }} Usuário
           </h2>
@@ -24,11 +24,13 @@
 
       <form action="{{'/salvar_alteracao_usuario' if user else '/cadastrar_usuario' }}" method="post" id="formUsuario">
         <input type="hidden" name="id_user" value="{{ user.getIdUsuario() if user }}" />
+        <input type="hidden" name="pfl" value="{{ user.getTpAcesso() if user }}" />
         <div class="row">
           {% if tipos %}
-          <div class="col-6">
+          <div class="col-md-6 col-sm-12">
             <div class="form-floating">
-              <select name="tp_access" id="tipo" class="form-control required" placeholder=""
+              <select name="tp_access" id="tipo"
+                class="form-control {{'required' if (user and user.getTpAcesso() != 'RT') or not user}}" placeholder=""
                 value="{{ user.getTpAcesso() if user}}">
                 <option value="">Selecione</option>
                 {% for tp in tipos %}
@@ -41,7 +43,7 @@
             </div>
           </div>
           {% endif %}
-          <div class="col-6">
+          <div class="col-md-6 col-sm-12">
             <div class="form-floating ">
               <input type="text" name="nm_user" id="name" class="form-control required" placeholder=""
                 value="{{ user.getNmUsuario() if user}}" maxlength="100" />
@@ -51,14 +53,14 @@
         </div>
 
         <div class="row">
-          <div class="col-6">
+          <div class="col-md-6 col-sm-12">
             <div class="form-floating mt-4">
               <input type="email" name="email_user" id="email" class="form-control email required" placeholder=""
                 value="{{ user.getEmail() if user}}" maxlength="50" />
               <label for="email">Email</label>
             </div>
           </div>
-          <div class="col-6">
+          <div class="col-md-6 col-sm-12">
             <div class="form-floating mt-4">
               <input type="password" name="pass_user" id="senha" class="form-control {{ 'required' if not user }}"
                 placeholder="" value="" maxlength="10" />
@@ -66,6 +68,25 @@
             </div>
           </div>
         </div>
+        {% if (user and (user.getTpAcesso() == 'RT' or user.getTpAcesso() == 'ADM')) or not user %}
+        <div class="row">
+          <div class="col-md-6 col-sm-12">
+            <div class="form-floating mt-4">
+              <select name="cod_banco" id="codBanco" class="form-control" placeholder=""
+                value="{{ user.getCodBanco() if user}}">
+                <option value="">Selecione o banco</option>
+                {% for bk in bancos %}
+                <option value="{{bk.getCodigo()}}" {% if user and user.getCodBanco()==bk.getCodigo() %} selected {%
+                  endif %}>
+                  {{bk.getCodigo()}} - {{bk.getDescricao()}}
+                </option>
+                {% endfor %}
+              </select>
+              <label for="codBanco">Banco Associado</label>
+            </div>
+          </div>
+        </div>
+        {% endif %}
 
         <div class="row mt-5 justify-content-center d-flex">
           <div class="col-3">

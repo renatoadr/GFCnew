@@ -98,11 +98,17 @@
           </div>
 
           <div class="form-floating mt-4">
-            <select name="nmBanco" id="nmBanco" class="form-control" placeholder=""
-              value="{{ empreend.getNmBanco() if empreend}}">
+            <select name="codBanco" id="codBanco" class="form-control" placeholder=""
+              value="{{ empreend.getCodBanco() if empreend}}">
               <option>Selecione o banco</option>
+              {% for bk in bancos %}
+              <option value="{{bk.getCodigo()}}" {% if empreend and empreend.getCodBanco()==bk.getCodigo() %} selected
+                {% endif %}>
+                {{bk.getCodigo()}} - {{bk.getDescricao()}}
+              </option>
+              {% endfor %}
             </select>
-            <label for="nmBanco">Banco</label>
+            <label for="codBanco">Banco</label>
           </div>
 
           <div class="row mt-4">
@@ -199,10 +205,6 @@
         setTimeout(function () {
           $('#cidade').val(document.querySelector('#cidade').getAttribute('value'));
         }, 500);
-      }, 500);
-
-      setTimeout(function () {
-        $('#nmBanco').val(document.querySelector('#nmBanco').getAttribute('value'));
       }, 500);
     });
   </script>

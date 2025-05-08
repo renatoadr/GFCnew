@@ -7,7 +7,7 @@
             <a href="/home" class="text-decoration-none d-block"><img src="../static/imgs/gfc.png" alt="Home" /></a>
           </div>
           <div class="col-7">
-            <a href="/home" class="text-decoration-none d-block">
+            <a href="{{'/home' if session.has_user_logged else '/mobile/home'}}" class="text-decoration-none d-block">
               <h1 class="text-white m-0">GFC</h1>
             </a>
           </div>
@@ -17,8 +17,8 @@
       <div class="col-6 d-flex justify-content-end">
         <div class="row">
           <div class="col-7">
-            <p class="text-white text-end m-0"><small>Seja bem vindo,</small> <strong
-                class="h4">{{session.nome_usuario}}</strong>
+            <p class="text-white text-end m-0"><small>Seja bem vindo,</small> <strong class="h4">{{session.nome_usuario
+                if not session.has_user_mobile_logged else session.name_user_mobile}}</strong>
             </p>
           </div>
           <div class="col-5 d-flex flex-column justify-content-center position-relative">
@@ -28,7 +28,7 @@
             <ul class="submenu" id="submenu_perfil">
               <li><a class="dropdown-item" href="/minha-conta">Conta</a></li>
               <li>
-                <a href="{{'/logout_m' if session.m_logged_in == true else '/logout'}}"
+                <a href="{{'/logout_m' if session.has_user_mobile_logged else '/logout'}}"
                   class="btn btn-danger btn-sm w-100">
                   <i class="fa-solid fa-right-from-bracket"></i>
                   Sair</a>
