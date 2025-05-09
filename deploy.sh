@@ -32,7 +32,7 @@ handle_error() {
   exit $exit_code
 }
 
-if [ $1 == "--re" ]; then
+if [ "$1" == "--re" ]; then
   log "Realizando redeploy e limpando o stage...."
   log "Removendo arquivos compactados da imagem..."
   rm -f *.tar *.gz
@@ -99,8 +99,8 @@ du -hs "${nome_arquivo}.gz"
 
 log "Enviando imagem para o servidor via sftp"
 sftp -i "${path_chave}" "${server_connect}" <<EOF
-  put "${nome_arquivo}.gz" "${pasta_servidor}"
-  exit
+put "${nome_arquivo}.gz" "${pasta_servidor}"
+exit
 EOF
 
 log "Carregando para o docker do servidor a nova imagem. Aguarde alguns minutos..."
