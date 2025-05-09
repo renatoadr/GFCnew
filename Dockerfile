@@ -2,6 +2,12 @@ FROM python:3.13-bullseye
 
 WORKDIR /app_gfc
 
+RUN apt-get update -y
+
+RUN apt-get install -y libx11-dev
+
+RUN apt-get install -y python3-tk
+
 RUN pip install --upgrade pip
 
 RUN python -m venv .venv
