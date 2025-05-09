@@ -58,15 +58,14 @@
                 <td>{{ bk.getDescricao() }}</td>
                 <td>{{ bk.getDescricaoCompleta() }}</td>
                 <td class="text-center">
-                  <a href="/editar_banco?cod={{bk.getCodBanco()}}" data-bs-toggle="tooltip" data-bs-title="Editar">
+                  <a href="/editar_banco?cod={{bk.getCodigo()}}" data-bs-toggle="tooltip" data-bs-title="Editar">
                     <i class="fa-solid fa-pencil text-warning"></i>
                   </a>
                 </td>
                 <td class="text-center">
                   <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir">
                     <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
-                      data-modal-exclude-title="Banco"
-                      data-modal-exclude-action="/excluir_banco?cod={{bk.getCodBanco()}}"
+                      data-modal-exclude-title="Banco" data-modal-exclude-action="/excluir_banco?cod={{bk.getCodigo()}}"
                       data-modal-exclude-text="Deseja realmente excluir o banco <strong>{{bk.getDescricao()}}</strong>?"></i>
                   </a>
                 </td>
