@@ -20,8 +20,6 @@ opcoes = [
      'Gráfico do Orçamento para Liberação de Valor', 'Não'],
     ['graf_chaves_perc', 'Gráfico de Liberação das Chaves (%)', 'Não'],
     ['graf_chaves_valor', 'Gráfico de Liberação das Chaves (R$)', 'Não'],
-    ['graf_garantias_geral', 'Gráfico de Garantias Geral', 'Não'],
-    ['graf_garantias_obra', 'Gráfico de Garantias da Obra', 'Não'],
     ['graf_vendas_perc', 'Gráfico de Vendas (%)', 'Não'],
     ['graf_vendas_valor', 'Gráfico de Vendas (R$)', 'Não'],
     ['tab_acomp_financeiro', 'Tabela de Acompanhamento Financeiro', 'Não'],

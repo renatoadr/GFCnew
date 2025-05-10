@@ -234,28 +234,49 @@ class graficoController:
         c.setFont('Helvetica-Bold', 14)
         c.setFillColor("black")
         c.drawString(30, 800, "Relatório fotográfico")
+        
         if os.path.isfile(diretorio+"foto_1.png"):
-           imgFotoObra = diretorio + "foto_1.png"
-           c.drawImage(imgFotoObra, 30, 550, width=250, height=200, mask='auto')   # preserveAspectRatio=True
+            imgFotoObra = diretorio + "foto_1.png"
+            c.drawImage(imgFotoObra, 30, 550, width=250, height=200, mask='auto')   # preserveAspectRatio=True
+        elif os.path.isfile(diretorio+"foto_1.jpeg"):
+            imgFotoObra = diretorio + "foto_1.jpeg"
+            c.drawImage(imgFotoObra, 30, 550, width=250, height=200, mask='auto')   # preserveAspectRatio=True
+        
+        
         if os.path.isfile(diretorio+"foto_2.png"):
             imgFotoObra = diretorio + "foto_2.png"
             c.drawImage(imgFotoObra, 310, 550, width=250, height=200, mask='auto')   # preserveAspectRatio=True
+        elif os.path.isfile(diretorio+"foto_2.jpeg"):
+            imgFotoObra = diretorio + "foto_2.Jpeg"
+            c.drawImage(imgFotoObra, 310, 550, width=250, height=200, mask='auto')   # preserveAspectRatio=True
+
         if os.path.isfile(diretorio+"foto_3.png"):
             imgFotoObra = diretorio + "foto_3.png"
-            c.drawImage(imgFotoObra, 30, 295, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
+            c.drawImage(imgFotoObra, 30, 295, width=250, height=200, mask='auto')   # preserveAspectRatio=True
+        elif os.path.isfile(diretorio+"foto_3.jpeg"):
+            imgFotoObra = diretorio + "foto_3.Jpeg"
+            c.drawImage(imgFotoObra, 30, 295, width=250, height=200, mask='auto')   # preserveAspectRatio=True
+
         if os.path.isfile(diretorio+"foto_4.png"):
             imgFotoObra = diretorio + "foto_4.png"
-            c.drawImage(imgFotoObra, 310, 295, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
+            c.drawImage(imgFotoObra, 310, 295, width=250, height=200, mask='auto')   # preserveAspectRatio=True
+        elif os.path.isfile(diretorio+"foto_4.jpeg"):
+            imgFotoObra = diretorio + "foto_4.Jpeg"
+            c.drawImage(imgFotoObra, 310, 295, width=250, height=200, mask='auto')  # preserveAspectRatio=True
+
         if os.path.isfile(diretorio+"foto_5.png"):
             imgFotoObra = diretorio + "foto_5.png"
-            c.drawImage(imgFotoObra, 30,  45, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
+            c.drawImage(imgFotoObra, 30,  45, width=250, height=200, mask='auto')   # preserveAspectRatio=True
+        elif os.path.isfile(diretorio+"foto_5.jpeg"):   
+            imgFotoObra = diretorio + "foto_5.Jpeg"
+            c.drawImage(imgFotoObra, 30,  45, width=250, height=200, mask='auto')   # preserveAspectRatio=True
+
         if os.path.isfile(diretorio+"foto_6.png"):
             imgFotoObra = diretorio + "foto_6.png"
-            c.drawImage(imgFotoObra, 310,  45, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
+            c.drawImage(imgFotoObra, 310,  45, width=250, height=200, mask='auto')   # preserveAspectRatio=True
+        elif os.path.isfile(diretorio+"foto_6.jpeg"):
+            imgFotoObra = diretorio + "foto_6.Jpeg"
+            c.drawImage(imgFotoObra, 310,  45, width=250, height=200, mask='auto')   # preserveAspectRatio=True 
 
         c.setFont('Helvetica', 10)
         c.drawString(570, 10, str(pagina))

@@ -218,7 +218,7 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     for u in recS:
         x1.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
         y1.append(IndiceGarantia)
-        y2.append((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp)
+        y2.append(round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp,2))
 
     linhas = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7,
               0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]
@@ -295,8 +295,8 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
 
     for u in recS:
         x1.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
-        y1.append(u.getTtPago() / VlPlanoEmp)
-        y2.append(u.getTtUnidade() / VlPlanoEmp)
+        y1.append(round(u.getTtPago() / VlPlanoEmp,2))
+        y2.append(round(u.getTtUnidade() / VlPlanoEmp,2))
 
     linhas = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5,
               0.6, 0.7, 0.8, 0.9, 1.00, 1.10, 1.20]
