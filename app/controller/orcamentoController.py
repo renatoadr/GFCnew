@@ -262,6 +262,17 @@ class orcamentoController:
             orcado = float(tabela.at[linha, 'Orçado'])
             fisicoP = float(tabela.at[linha, 'Físico %'])
             financR = float(tabela.at[linha, 'Financeiro R$'])
+
+
+            # Substituir valores NaN por 0
+            if pd.isna(orcado):
+                orcado = 0.0
+            if pd.isna(fisicoP):
+                fisicoP = 0.0
+            if pd.isna(financR):
+                financR = 0.0
+
+
             if financR > 0:
                 financP = (financR/orcado) * 100
             else:

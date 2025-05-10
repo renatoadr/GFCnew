@@ -203,29 +203,53 @@ class graficoController:
         c.setFillColor("black")
         c.drawString(30, 800, "Relatório fotográfico")
 
-        imgTemp = os.path.join(diretorio, "foto_1.png")
-        if os.path.isfile(imgTemp):
-            c.drawImage(imgTemp, 30, 550, width=250, height=200, mask='auto')
+        imgTemp = os.path.join(diretorio, "foto_1")
+        if os.path.isfile(f"{imgTemp}.png"):
+            c.drawImage(f"{imgTemp}.png", 30, 550,
+                        width=250, height=200, mask='auto')
+        else:
+            c.drawImage(f"{imgTemp}.jpeg", 30, 550,
+                        width=250, height=200, mask='auto')
 
-        imgTemp = os.path.join(diretorio, "foto_2.png")
-        if os.path.isfile(imgTemp):
-            c.drawImage(imgTemp, 310, 550, width=250, height=200, mask='auto')
+        imgTemp = os.path.join(diretorio, "foto_2")
+        if os.path.isfile(f"{imgTemp}.png"):
+            c.drawImage(f"{imgTemp}.png", 310, 550,
+                        width=250, height=200, mask='auto')
+        else:
+            c.drawImage(f"{imgTemp}.jpeg", 310, 550,
+                        width=250, height=200, mask='auto')
 
-        imgTemp = os.path.join(diretorio, "foto_3.png")
-        if os.path.isfile(imgTemp):
-            c.drawImage(imgTemp, 30, 295, width=250, height=200, mask='auto')
+        imgTemp = os.path.join(diretorio, "foto_3")
+        if os.path.isfile(f"{imgTemp}.png"):
+            c.drawImage(f"{imgTemp}.png", 30, 295,
+                        width=250, height=200, mask='auto')
+        else:
+            c.drawImage(f"{imgTemp}.jpeg", 30, 295,
+                        width=250, height=200, mask='auto')
 
-        imgTemp = os.path.join(diretorio, "foto_4.png")
-        if os.path.isfile(imgTemp):
-            c.drawImage(imgTemp, 310, 295, width=250, height=200, mask='auto')
+        imgTemp = os.path.join(diretorio, "foto_4")
+        if os.path.isfile(f"{imgTemp}.png"):
+            c.drawImage(f"{imgTemp}.png", 310, 295,
+                        width=250, height=200, mask='auto')
+        else:
+            c.drawImage(f"{imgTemp}.jpeg", 310, 295,
+                        width=250, height=200, mask='auto')
 
-        imgTemp = os.path.join(diretorio, "foto_5.png")
-        if os.path.isfile(imgTemp):
-            c.drawImage(imgTemp, 30,  45, width=250, height=200, mask='auto')
+        imgTemp = os.path.join(diretorio, "foto_5")
+        if os.path.isfile(f"{imgTemp}.png"):
+            c.drawImage(f"{imgTemp}.png", 30,  45,
+                        width=250, height=200, mask='auto')
+        else:
+            c.drawImage(f"{imgTemp}.jpeg", 30,  45,
+                        width=250, height=200, mask='auto')
 
-        imgTemp = os.path.join(diretorio, "foto_6.png")
-        if os.path.isfile(imgTemp):
-            c.drawImage(imgTemp, 310,  45, width=250, height=200, mask='auto')
+        imgTemp = os.path.join(diretorio, "foto_6")
+        if os.path.isfile(f"{imgTemp}.png"):
+            c.drawImage(f"{imgTemp}.png", 310,  45,
+                        width=250, height=200, mask='auto')
+        else:
+            c.drawImage(f"{imgTemp}.jpeg", 310,  45,
+                        width=250, height=200, mask='auto')
 
         c.setFont('Helvetica', 10)
         c.drawString(570, 10, str(pagina))
