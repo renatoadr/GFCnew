@@ -46,7 +46,7 @@
                 <div class="form-floating">
                   <input type="text" name="cpfCnpj" id="cpfCnpj" disabled class="form-control" placeholder=""
                     value="{{ cliente.getCpfCnpj() if cliente}}" maxlength="15" {% if criacao==false %} readonly
-                    disabled {% endif %} />
+                    disabled {% endif %}>
                   <label for="cpfCnpj">Selecione o tipo</label>
                 </div>
               </div>
@@ -57,7 +57,7 @@
 
                 <div class="form-floating mt-4">
                   <input type="text" name="ddd" id="ddd" class="form-control 2num" placeholder=""
-                    value="{{ cliente.getDdd() if cliente}}" maxlength="2" />
+                    value="{{ cliente.getDdd() if cliente}}" maxlength="2">
                   <label for="ddd">DDD</label>
                 </div>
 
@@ -66,7 +66,7 @@
 
                 <div class="form-floating mt-4">
                   <input type="text" name="tel" id="tel" class="form-control tel" placeholder=""
-                    value="{{ cliente.getTel() if cliente}}" maxlength="9" />
+                    value="{{ cliente.getTel() if cliente}}" maxlength="9">
                   <label for="tel">Telefone</label>
                 </div>
 
@@ -78,13 +78,13 @@
 
             <div class="form-floating ">
               <input type="text" name="nmCliente" id="nmCliente" class="form-control" placeholder=""
-                value="{{ cliente.getNmCliente() if cliente}}" maxlength="100" />
+                value="{{ cliente.getNmCliente() if cliente}}" maxlength="100">
               <label for="nmCliente">Nome do cliente</label>
             </div>
 
             <div class="form-floating mt-4">
               <input type="email" name="email" id="email" class="form-control email" placeholder=""
-                value="{{ cliente.getEmail() if cliente}}" maxlength="50" />
+                value="{{ cliente.getEmail() if cliente}}" maxlength="50">
               <label for="email">Email</label>
             </div>
 

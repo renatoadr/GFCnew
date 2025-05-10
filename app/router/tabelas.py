@@ -1,8 +1,6 @@
 
 from flask import Blueprint, request, render_template
 
-from controller.inadimplenciaController import inadimplenciaController
-from controller.financeiroController import financeiroController
 from controller.orcamentoController import orcamentoController
 from controller.certidaoController import certidaoController
 from controller.garantiaController import garantiaController
@@ -16,6 +14,7 @@ from utils.CtrlSessao import IdEmpreend
 from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
 import random
+import os
 
 tabela_bp = Blueprint('tabelas', __name__)
 
@@ -105,7 +104,7 @@ def gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS):
 
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'tab_notas.png'
+    grafNome = os.path.join(diretorio, 'tab_notas.png')
 
     plt.savefig(grafNome)
 
@@ -187,7 +186,7 @@ def gerar_tab_conta_corrente(idEmpreend, mesVigencia, anoVigencia, conS):
 
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'tab_conta_corrente.png'
+    grafNome = os.path.join(diretorio, 'tab_conta_corrente.png')
 
     plt.savefig(grafNome)
 
@@ -280,7 +279,7 @@ def gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia):
 
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'tab_garantias_geral.png'
+    grafNome = os.path.join(diretorio, 'tab_garantias_geral.png')
 
     plt.savefig(grafNome)
     return grafNome
@@ -368,7 +367,7 @@ def gerar_tab_garantias_obra(idEmpreend, mesVigencia, anoVigencia):
 
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'tab_garantias_obra.png'
+    grafNome = os.path.join(diretorio, 'tab_garantias_obra.png')
 
     plt.savefig(grafNome)
     return grafNome
@@ -461,7 +460,7 @@ def gerar_tab_certidoes(idEmpreend, mes, ano):
 
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'tab_certidoes.png'
+    grafNome = os.path.join(diretorio, 'tab_certidoes.png')
 
     plt.savefig(grafNome)
     return grafNome
@@ -475,13 +474,15 @@ def tab_acomp_financeiro():
     anoVigencia = request.args.get("anoVigencia")
 
     medC = orcamentoController()
-    medS = medC.consultarOrcamentoPelaVigencia(idEmpreend, mesVigencia, anoVigencia)
+    medS = medC.consultarOrcamentoPelaVigencia(
+        idEmpreend, mesVigencia, anoVigencia)
     notC = notaController()
     notS = notC.consultarNotaPelaVigencia(idEmpreend, mesVigencia, anoVigencia)
 
     grafNome = gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS)
-    grafNome = gerar_tab_acomp_financeiro(idEmpreend, mesVigencia, anoVigencia, medS, notS)
-    
+    grafNome = gerar_tab_acomp_financeiro(
+        idEmpreend, mesVigencia, anoVigencia, medS, notS)
+
     return render_template("financeiro_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
@@ -513,15 +514,18 @@ def gerar_tab_acomp_financeiro(idEmpreend, mesVigencia, anoVigencia, medS, notS)
     somaVlEstoque = 0
 
     for n in notS:
-#        somaVlNotaFiscal += n.getVlNotaFiscal()
+        #        somaVlNotaFiscal += n.getVlNotaFiscal()
         somaVlEstoque += n.getVlEstoque()
 
-    dd = ['Físico executado', geral.formataPerc(somaFisicoPercentual, 0), geral.formataNumero(somaFisicoValor, 'R$')] 
-    data.append(dd) 
-    dd = ['Financeiro liberado', geral.formataPerc(somaFinanceiroPercentual, 0), geral.formataNumero(somaFinanceiroValor, 'R$')]
-    data.append(dd) 
+    dd = ['Físico executado', geral.formataPerc(
+        somaFisicoPercentual, 0), geral.formataNumero(somaFisicoValor, 'R$')]
+    data.append(dd)
+    dd = ['Financeiro liberado', geral.formataPerc(
+        somaFinanceiroPercentual, 0), geral.formataNumero(somaFinanceiroValor, 'R$')]
+    data.append(dd)
     if somaVlEstoque != 0:
-        dd = ['Estoque (material)', ' ', geral.formataNumero(somaVlEstoque, 'R$')]
+        dd = ['Estoque (material)', ' ',
+              geral.formataNumero(somaVlEstoque, 'R$')]
         data.append(dd)
 
 #    for m in finS:
@@ -570,7 +574,7 @@ def gerar_tab_acomp_financeiro(idEmpreend, mesVigencia, anoVigencia, medS, notS)
 
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'tab_acomp_financeiro.png'
+    grafNome = os.path.join(diretorio, 'tab_acomp_financeiro.png')
 
     plt.savefig(grafNome)
 
@@ -670,7 +674,7 @@ def gerar_tab_medicoes(idEmpreend, mesVigencia, anoVigencia, mesInicio, anoInici
 
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'tab_medicoes.png'
+    grafNome = os.path.join(diretorio, 'tab_medicoes.png')
 
     plt.savefig(grafNome)
 
@@ -776,7 +780,7 @@ def gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS):
 
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'tab_orcamento_liberacao.png'
+    grafNome = os.path.join(diretorio, 'tab_orcamento_liberacao.png')
 
     plt.savefig(grafNome)
 

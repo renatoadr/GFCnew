@@ -28,7 +28,7 @@
           <div class="col-4">
             <div class="form-floating ">
               <input type="text" name="ispb" id="ispb" class="form-control 10num" placeholder=""
-                value="{{ banco.getIspb() if banco}}" maxlength="10" />
+                value="{{ banco.getIspb() if banco}}" maxlength="10">
               <label for="ispb">ISPB</label>
             </div>
           </div>
@@ -36,7 +36,7 @@
           <div class="col-3">
             <div class="form-floating ">
               <input type="text" name="codigo" id="codigo" class="form-control required 4num" placeholder=""
-                value="{{ banco.getCodigo() if banco}}" maxlength="3" />
+                value="{{ banco.getCodigo() if banco}}" maxlength="3">
               <label for="codigo">Código</label>
             </div>
           </div>
@@ -44,7 +44,7 @@
           <div class="col-5">
             <div class="form-floating ">
               <input type="text" name="descricao" id="descricao" class="form-control required" placeholder=""
-                value="{{ banco.getDescricao() if banco}}" maxlength="60" />
+                value="{{ banco.getDescricao() if banco}}" maxlength="60">
               <label for="descricao">Descrição</label>
             </div>
           </div>
@@ -55,7 +55,7 @@
           <div class="col-12">
             <div class="form-floating ">
               <input type="text" name="desc_completa" id="desc_completa" class="form-control" placeholder=""
-                value="{{ banco.getDescricaoCompleta() if banco}}" maxlength="120" />
+                value="{{ banco.getDescricaoCompleta() if banco}}" maxlength="120">
               <label for="desc_completa">Descrição Completa</label>
             </div>
           </div>

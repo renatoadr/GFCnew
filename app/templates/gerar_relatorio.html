@@ -50,7 +50,7 @@
             <div class="form-floating">
               <div class="form-floating">
                 <input type="text" name="ano" id="anoVigencia" class="form-control  4num required" min="2000" max="3000"
-                  placeholder="" value="{{ano if ano}}" maxlength="4" />
+                  placeholder="" value="{{ano if ano}}" maxlength="4">
                 <label for="anoVigencia">Ano Vigência</label>
               </div>
             </div>
@@ -64,8 +64,8 @@
 
       {% if mes and ano %}
       <form action="/gerar_insumos" method="POST">
-        <input type="hidden" name="mes_vigencia" value="{{mes}}" />
-        <input type="hidden" name="ano_vigencia" value="{{ano}}" />
+        <input type="hidden" name="mes_vigencia" value="{{mes}}">
+        <input type="hidden" name="ano_vigencia" value="{{ano}}">
 
         <div class="row mt-4">
           <div class="col-12">
@@ -73,7 +73,7 @@
               <thead class="table-light">
                 <tr>
                   <th>
-                    <input type="checkbox" name="all_opcoes_relatorio" />
+                    <input type="checkbox" name="all_opcoes_relatorio">
                   </th>
                   <th>Gerado</th>
                   <th>Insumo</th>
@@ -83,7 +83,7 @@
                 {% for opt in opcoes %}
                 <tr>
                   <td>
-                    <input type="checkbox" id="{{opt[0]}}" name="opcoes_relatorio" value="{{opt[0]}}" />
+                    <input type="checkbox" id="{{opt[0]}}" name="opcoes_relatorio" value="{{opt[0]}}">
                   </td>
                   <td><label for="{{opt[0]}}">{{opt[2]}}</label></td>
                   <td>
@@ -104,7 +104,7 @@
               <div class="form-floating">
                 <div class="form-floating">
                   <input type="month" min="2000-01" max="3000-12" name="intervaloInicio" id="dataInicio"
-                    class="form-control" placeholder="" />
+                    class="form-control" placeholder="">
                   <label for="dataInicio">Início do Intervalo</label>
                 </div>
               </div>
@@ -114,7 +114,7 @@
               <div class="form-floating">
                 <div class="form-floating">
                   <input type="month" min="2000-01" max="3000-12" name="finalIntervalo" id="finalIntervalo"
-                    class="form-control" placeholder="" />
+                    class="form-control" placeholder="">
                   <label for="finalIntervalo">Final do Intervalo</label>
                 </div>
               </div>
@@ -127,7 +127,7 @@
               <thead class="table-light">
                 <tr>
                   <th>
-                    <input type="checkbox" name="all_opcoes_relatorio_range" />
+                    <input type="checkbox" name="all_opcoes_relatorio_range">
                   </th>
                   <th>Gerado</th>
                   <th>Insumo</th>
@@ -137,7 +137,7 @@
                 {% for optr in opcoesComRange %}
                 <tr>
                   <td>
-                    <input type="checkbox" id="{{optr[0]}}" name="opcoes_relatorio_range" value="{{optr[0]}}" />
+                    <input type="checkbox" id="{{optr[0]}}" name="opcoes_relatorio_range" value="{{optr[0]}}">
                   </td>
                   <td><label for="{{optr[0]}}">{{optr[2]}}</label></td>
                   <td>

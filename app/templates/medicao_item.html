@@ -26,15 +26,15 @@
 
       <form action="{{'/salvar_item_medicao' if medicao else '/incluir_item_medicao'}}" id="formIncluirMedicao"
         method="POST">
-        <input type="hidden" name="idMedicao" value="{{ medicao.getIdMedicao() if medicao }}" />
-        <input type="hidden" name="idEmpreend" value="{{ medicao.getIdEmpreend()}}" />
-        <input type="hidden" name="dtCarga" value="{{ medicao.getDtCarga()}}" />
+        <input type="hidden" name="idMedicao" value="{{ medicao.getIdMedicao() if medicao }}">
+        <input type="hidden" name="idEmpreend" value="{{ medicao.getIdEmpreend()}}">
+        <input type="hidden" name="dtCarga" value="{{ medicao.getDtCarga()}}">
 
         <div class="row">
           <div class="col-12">
             <div class="form-floating mt-4">
               <input type="text" name="nrMedicao" id="nrMedicao" class="form-control" placeholder="" readonly
-                value="{{ medicao.getNrMedicao() if medicao }}" maxlength="3" />
+                value="{{ medicao.getNrMedicao() if medicao }}" maxlength="3">
               <label for="nrMedicao">Medição</label>
             </div>
           </div>
@@ -45,25 +45,25 @@
 
             <div class="form-floating mt-4">
               <input type="text" name="mesVigencia" id="mesVigencia" class="form-control" placeholder="" readonly
-                readonly value="{{ medicao.getMesVigencia() if medicao }}" maxlength="2" />
+                readonly value="{{ medicao.getMesVigencia() if medicao }}" maxlength="2">
               <label for="mesVigencia">Mês Vigência</label>
             </div>
 
             <div class="form-floating mt-4">
               <input type="text" name="percPrevistoAcumulado" id="percPrevistoAcumulado" class="form-control money"
-                placeholder="" readonly value="{{ medicao.getPercPrevistoAcumulado() if medicao }}" maxlength="5" />
+                placeholder="" readonly value="{{ medicao.getPercPrevistoAcumulado() if medicao }}" maxlength="5">
               <label for="percPrevistoAcumulado">Previsto Acumulado %</label>
             </div>
 
             <div class="form-floating mt-4">
               <input type="text" name="percRealizadoAcumulado" id="percRealizadoAcumulado" class="form-control percent"
-                placeholder="" readonly value="{{ medicao.getPercRealizadoAcumulado() if medicao }}" maxlength="5" />
+                placeholder="" readonly value="{{ medicao.getPercRealizadoAcumulado() if medicao }}" maxlength="5">
               <label for="percRealizadoAcumulado">Realizado Acumulado %</label>
             </div>
 
             <div class="form-floating mt-4">
               <input type="text" name="percDiferenca" id="percDiferenca" class="form-control money" placeholder=""
-                readonly value="{{ medicao.getPercDiferenca() if medicao }}" maxlength="5" />
+                readonly value="{{ medicao.getPercDiferenca() if medicao }}" maxlength="5">
               <label for="percDiferenca">Diferença %</label>
             </div>
           </div>
@@ -71,19 +71,19 @@
           <div class="col-6">
             <div class="form-floating mt-4">
               <input type="text" name="anoVigencia" id="anoVigencia" class="form-control" placeholder="" readonly
-                value="{{ medicao.getAnoVigencia() if medicao }}" maxlength="4" />
+                value="{{ medicao.getAnoVigencia() if medicao }}" maxlength="4">
               <label for="anoVigencia">Ano Vigência</label>
             </div>
 
             <div class="form-floating mt-4">
               <input type="text" name="percPrevistoPeriodo" id="percPrevistoPeriodo" class="form-control money"
-                placeholder="" readonly value="{{ medicao.getPercPrevistoPeriodo() if medicao }}" maxlength="5" />
+                placeholder="" readonly value="{{ medicao.getPercPrevistoPeriodo() if medicao }}" maxlength="5">
               <label for="percPrevistoPeriodo">Previsto Período %</label>
             </div>
 
             <div class="form-floating mt-4">
               <input type="text" name="percRealizadoPeriodo" id="percRealizadoPeriodo" class="form-control money"
-                placeholder="" value="{{ medicao.getPercRealizadoPeriodo() if medicao }}" maxlength="5" />
+                placeholder="" value="{{ medicao.getPercRealizadoPeriodo() if medicao }}" maxlength="5">
               <label for="percRealizadoPeriodo">Realizado Período %</label>
             </div>
 
@@ -91,8 +91,8 @@
         </div>
 
         <div class="d-flex mt-5 justify-content-center gap-5">
-          <input type="hidden" name="idMedicao" value="{{ medicao.getIdMedicao() }}" />
-          <input type="hidden" name="idEmpreend" value="{{ medicao.getIdEmpreend() }}" />
+          <input type="hidden" name="idMedicao" value="{{ medicao.getIdMedicao() }}">
+          <input type="hidden" name="idEmpreend" value="{{ medicao.getIdEmpreend() }}">
           <a href="/tratar_medicoes" class="btn btn-secondary w-25">Cancelar</a>
           {% if modo != 'consulta' %}
           <button type="submit" class="btn btn-success w-25">{{'Salvar' if medicao else 'Criar'}}</button>

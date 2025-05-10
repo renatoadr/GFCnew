@@ -21,13 +21,13 @@
     </div>
 
     <form action="{{ '/salvar_nota' if nota else '/criar_nota' }}" method="POST" id="formNota">
-      <input type="hidden" name="idNota" value="{{nota.getIdNota() if nota}}" />
+      <input type="hidden" name="idNota" value="{{nota.getIdNota() if nota}}">
 
       <div class="row">
         <div class="col-12">
           <div class="form-floating mt-4">
             <input type="text" name="produto" id="produto" class="form-control" placeholder=""
-              value="{{nota.getProduto() if nota}}" maxlength="100" />
+              value="{{nota.getProduto() if nota}}" maxlength="100">
             <label for="produto">Produto</label>
           </div>
         </div>
@@ -37,14 +37,14 @@
         <div class="col-6">
           <div class="form-floating mt-4">
             <input type="text" name="vlNotaFiscal" id="vlNotaFiscal" class="form-control money" placeholder=""
-              value="{{nota.getVlNotaFiscal() if nota}}" maxlength="20" />
+              value="{{nota.getVlNotaFiscal() if nota}}" maxlength="20">
             <label for="vlNotaFiscal">Valor na Nota Fiscal</label>
           </div>
         </div>
         <div class="col-6">
           <div class="form-floating mt-4">
             <input type="text" name="vlEstoque" id="vlEstoque" class="form-control money" placeholder=""
-              value="{{nota.getVlEstoque() if nota}}" maxlength="20" />
+              value="{{nota.getVlEstoque() if nota}}" maxlength="20">
             <label for="vlEstoque">Valor no Estoque</label>
           </div>
         </div>

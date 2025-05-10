@@ -12,6 +12,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 import random
+import os
 
 grafico_bp = Blueprint('graficos', __name__)
 
@@ -85,9 +86,11 @@ def gerar_graf_orcamento_liberacao(idEmpreend, mes, ano, tipo, medS):
     grafC.criaDir(diretorio)
 
     if tipo == "valor":
-        grafNome = diretorio + 'graf_orcamento_liberacao_valor.png'
+        grafNome = os.path.join(
+            diretorio, 'graf_orcamento_liberacao_valor.png')
     else:
-        grafNome = diretorio + 'graf_orcamento_liberacao_percentual.png'
+        grafNome = os.path.join(
+            diretorio, 'graf_orcamento_liberacao_percentual.png')
 
     plt.savefig(grafNome, bbox_inches='tight')
 
@@ -179,7 +182,7 @@ def gerar_graf_progresso_obra(idEmpreend, mesVigencia, anoVigencia, mesInicio, a
 
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'graf_progresso_obra.png'
+    grafNome = os.path.join(diretorio, 'graf_progresso_obra.png')
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
     return grafNome
@@ -214,6 +217,7 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     uniC = unidadeController()
     recS = uniC.consultarUnidadeRecebibeis(
         idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
+
     if not recS:
         return ''
 
@@ -260,7 +264,7 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
 
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'graf_indices_garantia_I.png'
+    grafNome = os.path.join(diretorio, 'graf_indices_garantia_I.png')
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
     return grafNome
@@ -341,7 +345,7 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
 
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
-    grafNome = diretorio + 'graf_indices_garantia_II.png'
+    grafNome = os.path.join(diretorio, 'graf_indices_garantia_II.png')
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
 
@@ -384,15 +388,16 @@ def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia, tipo):
 
     if tipo == 'valor':
         for n in unid:
-#            texto = str(n.getTtStatus()/1000)+ " " + n.getStatus() + " (mil)"
-            texto = f"{n.getTtStatus()/1000:,.0f}".replace(",", ".") + " " + n.getStatus() + " (mil)"
+            #            texto = str(n.getTtStatus()/1000)+ " " + n.getStatus() + " (mil)"
+            texto = f"{n.getTtStatus()/1000:,.0f}".replace(",", ".") + \
+                " " + n.getStatus() + " (mil)"
             recipe.append(texto)
     else:
         for n in unid:
             perc = round((n.getTtStatus()/soma)*100)
             texto = str(n.getTtStatus()) + " " + \
-            n.getStatus() + " (" + str(perc) + "%)"
-            recipe.append(texto) 
+                n.getStatus() + " (" + str(perc) + "%)"
+            recipe.append(texto)
 
     wedges, texts = ax.pie(data, wedgeprops=dict(width=0.5), startangle=-40)
 
@@ -417,10 +422,10 @@ def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia, tipo):
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     if tipo == 'valor':
-        grafNome = diretorio + 'graf_vendas_valor.png'
+        grafNome = os.path.join(diretorio, 'graf_vendas_valor.png')
     else:
-        grafNome = diretorio + 'graf_vendas_perc.png'
-#    grafNome = diretorio + 'graf_vendas.png'   
+        grafNome = os.path.join(diretorio, 'graf_vendas_perc.png')
+#    grafNome = diretorio + 'graf_vendas.png'
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
 
@@ -436,7 +441,6 @@ def graf_chaves():
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
 
-
     grafNome = gerar_graf_chaves(idEmpreend, mesVigencia, anoVigencia, 'perc')
 
     return render_template("chaves_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
@@ -449,13 +453,16 @@ def gerar_graf_chaves(idEmpreend, mesVigencia, anoVigencia, tipo):
     labels = ['Chaves', 'Pré-chaves', 'Pós-chaves']
 
     if tipo == 'valor':
-        perChave = unid.getTtChaves()       / 1000
-        perPreChave = unid.getTtPreChaves() / 1000
-        perPosChave = unid.getTtPosChaves() / 1000
+        perChave = unid.getTtChaves() / 1000 if unid.getTtChaves() > 0 else 0
+        perPreChave = unid.getTtPreChaves() / 1000 if unid.getTtPreChaves() > 0 else 0
+        perPosChave = unid.getTtPosChaves() / 1000 if unid.getTtPosChaves() > 0 else 0
     else:
-        perChave    = unid.getTtChaves()     / unid.getQtUnidade() * 100
-        perPreChave = unid.getTtPreChaves()  / unid.getQtUnidade() * 100
-        perPosChave = unid.getTtPosChaves()  / unid.getQtUnidade() * 100
+        perChave = unid.getTtChaves() / unid.getQtUnidade() * \
+            100 if unid.getTtChaves() and unid.getQtUnidade() else 0
+        perPreChave = unid.getTtPreChaves() / unid.getQtUnidade() * \
+            100 if unid.getTtPreChaves() and unid.getQtUnidade() else 0
+        perPosChave = unid.getTtPosChaves() / unid.getQtUnidade() * \
+            100 if unid.getTtPosChaves() and unid.getQtUnidade() else 0
 
     if not perChave and not perPreChave and not perPosChave:
         return ''
@@ -469,15 +476,17 @@ def gerar_graf_chaves(idEmpreend, mesVigencia, anoVigencia, tipo):
     # Adiciona rótulos nas barras
     for bar in bars:
         height = bar.get_height()
-        ax.text(bar.get_x() + bar.get_width() / 2, height, f'{height:.0f}', 
+        ax.text(bar.get_x() + bar.get_width() / 2, height, f'{height:.0f}',
                 ha='center', va='bottom', fontsize=12)
 
     # Configurações do gráfico
 #    ax.set_title('Distribuição de Chaves', fontsize=16, fontweight='bold')
     if tipo == 'valor':
-        ax.set_ylabel('R$/mil ' + '(' + str(unid.getQtUnidade()) + ' Unid)', fontsize=14)
+        ax.set_ylabel(
+            'R$/mil ' + '(' + str(unid.getQtUnidade()) + ' Unid)', fontsize=14)
     else:
-        ax.set_ylabel('% ' + '(' + str(unid.getQtUnidade()) + ' Unid)', fontsize=14)
+        ax.set_ylabel(
+            '% ' + '(' + str(unid.getQtUnidade()) + ' Unid)', fontsize=14)
 
 #    ax.set_xlabel('Categorias', fontsize=14)
     ax.tick_params(axis='both', labelsize=12)
@@ -491,9 +500,9 @@ def gerar_graf_chaves(idEmpreend, mesVigencia, anoVigencia, tipo):
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     if tipo == 'valor':
-        grafNome = diretorio + 'graf_chaves_valor.png'
+        grafNome = os.path.join(diretorio, 'graf_chaves_valor.png')
     else:
-        grafNome = diretorio + 'graf_chaves_perc.png'
+        grafNome = os.path.join(diretorio, 'graf_chaves_perc.png')
 #    grafNome = diretorio + 'graf_chaves.png'
 
     plt.savefig(grafNome, bbox_inches='tight')

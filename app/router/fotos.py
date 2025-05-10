@@ -263,21 +263,22 @@ def redimensionar(file):
         img = Image.open(file)
     except:
         pass
-    nSize = 700
+    nWSize = 1280
+    nHSize = 720
     nWidth = 0
     nHeight = 0
 
     if img.width > img.height:
-        razao = nSize / img.width
-        nWidth = nSize
+        razao = nWSize / img.width
+        nWidth = nWSize
         nHeight = img.height * razao
     elif img.width < img.height:
-        razao = nSize / img.height
-        nHeight = nSize
+        razao = nHSize / img.height
+        nHeight = nHSize
         nWidth = img.width * razao
     else:
-        nWidth = nSize
-        nHeight = nSize
+        nWidth = nWSize
+        nHeight = nWSize
     return img.resize((int(nWidth), int(nHeight)))
 
 

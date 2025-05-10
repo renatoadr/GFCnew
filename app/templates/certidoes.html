@@ -26,13 +26,13 @@
         <div class="row">
           <div class="col-4">
             <div class="form-floating">
-              <input type="text" name="mesVigencia" id="mesVigencia" class="form-control" placeholder="" />
+              <input type="text" name="mesVigencia" id="mesVigencia" class="form-control" placeholder="">
               <label for="mesVigencia">Mês Vigencia</label>
             </div>
           </div>
           <div class="col-4">
             <div class="form-floating">
-              <input type="text" name="anoVigencia" id="anoVigencia" class="form-control" placeholder="" />
+              <input type="text" name="anoVigencia" id="anoVigencia" class="form-control" placeholder="">
               <label for="anoVigencia">Ano Vigencia</label>
             </div>
           </div>
@@ -140,13 +140,13 @@
         <div class="col-6">
           <div class="form-floating">
             <input type="date" name="estadualValidade" id="estadualValidade" class="form-control" placeholder=""
-              value="{{ certidoes.getEstadualValidade() if certidoes}}" />
+              value="{{ certidoes.getEstadualValidade() if certidoes}}">
             <label for="estadualValidade">Validade</label>
           </div>
 
           <div class="form-floating mt-4">
             <input type="date" name="fgtsValidade" id="fgtsValidade" class="form-control" placeholder=""
-              value="{{ certidoes.getFgtsValidade() if certidoes}}" />
+              value="{{ certidoes.getFgtsValidade() if certidoes}}">
             <label for="fgtsValidade">Validade</label>
           </div>
 
@@ -158,13 +158,13 @@
 
           <div class="form-floating mt-4">
             <input type="date" name="srfInssValidade" id="srfInssValidade" class="form-control" placeholder=""
-              value="{{ certidoes.getSrfInssValidade() if certidoes}}" />
+              value="{{ certidoes.getSrfInssValidade() if certidoes}}">
             <label for="srfInssValidade">Validade</label>
           </div>
 
           <div class="form-floating mt-4">
             <input type="date" name="trabalhistaValidade" id="trabalhistaValidade" class="form-control" placeholder=""
-              value="{{ certidoes.getTrabalhistaValidade() if certidoes}}" />
+              value="{{ certidoes.getTrabalhistaValidade() if certidoes}}">
             <label for="trabalhistaValidade">Validade</label>
           </div>
 
@@ -174,7 +174,7 @@
       <div class="row mt-5 justify-content-center d-flex">
         <div class="col-3">
           <a href="/home" class="btn btn-secondary w-100">Cancelar</a>
-          <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}" />
+          <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}">
         </div>
         <div class="col-3 offset-1">
           <button type="submit" class="btn btn-success w-100">{{ 'Salvar' if certidoes else 'Criar' }}</button>

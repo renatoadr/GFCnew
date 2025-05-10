@@ -1,9 +1,7 @@
 # controller or business logic
 # Trata base de UNIDADES
 
-from controller.torreController import torreController
 from controller.clienteController import clienteController
-from dto.cliente import cliente
 from dto.unidade import unidade
 from utils.dbContext import MySql
 import locale
@@ -150,15 +148,11 @@ class unidadeController:
         print('+++++++++ consultarUnidadeChaves ++++++++++++++++++')
 
         if tipo == 'valor':
-            query = "SELECT COUNT(id_unidade) AS total_unidades, sum(vl_chaves) AS total_chaves, sum(vl_pre_chaves) AS total_pre_chaves, sum(vl_pos_chaves) AS total_pos_chaves FROM " + \
-                MySql.DB_NAME + ".tb_unidades WHERE id_empreendimento = " + idEmpreend + \
-                " AND (vl_chaves > 0 or vl_pre_chaves > 0 or vl_pos_chaves > 0 ) AND status != 'distrato' AND ac_historico IS NULL"
+            query = f"SELECT COUNT(id_unidade) AS total_unidades, sum(vl_chaves) AS total_chaves, sum(vl_pre_chaves) AS total_pre_chaves, sum(vl_pos_chaves) AS total_pos_chaves FROM {MySql.DB_NAME}.tb_unidades WHERE id_empreendimento = %s AND (vl_chaves > 0 or vl_pre_chaves > 0 or vl_pos_chaves > 0 ) AND status != 'distrato' AND ac_historico IS NULL"
         else:
-            query = "SELECT COUNT(id_unidade) AS total_unidades, COUNT(CASE WHEN vl_chaves > 0 THEN 1 END) AS total_chaves, COUNT(CASE WHEN vl_pre_chaves > 0 THEN 1 END) AS total_pre_chaves, COUNT(CASE WHEN vl_pos_chaves > 0 THEN 1 END) AS total_pos_chaves FROM " + \
-                MySql.DB_NAME + ".tb_unidades WHERE id_empreendimento = " + idEmpreend + \
-                " AND (vl_chaves > 0 or vl_pre_chaves > 0 or vl_pos_chaves > 0 ) AND status != 'distrato' AND ac_historico IS NULL"
+            query = f"SELECT COUNT(id_unidade) AS total_unidades, COUNT(CASE WHEN vl_chaves > 0 THEN 1 END) AS total_chaves, COUNT(CASE WHEN vl_pre_chaves > 0 THEN 1 END) AS total_pre_chaves, COUNT(CASE WHEN vl_pos_chaves > 0 THEN 1 END) AS total_pos_chaves FROM {MySql.DB_NAME}.tb_unidades WHERE id_empreendimento = %s AND (vl_chaves > 0 or vl_pre_chaves > 0 or vl_pos_chaves > 0 ) AND status != 'distrato' AND ac_historico IS NULL"
 
-        cursor.execute(query)
+        cursor.execute(query, (idEmpreend,))
         linha = cursor.fetchone()
 
         linhaU = unidade()
@@ -177,8 +171,8 @@ class unidadeController:
         cursor = self.__connection.cursor()
 
         print('+++++++++ consultarUnidadeVendas ++++++++++++++++++')
- 
-        if tipo == 'valor': 
+
+        if tipo == 'valor':
             query = "select status, sum(vl_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(
                 idEmpreend) + " and status != 'distrato' and ac_historico is null group by status"
         else:
@@ -242,7 +236,6 @@ class unidadeController:
 
         return listaVendas
 
-
     def consultarUnidadeRecebibeisNOVA(self, idEmpreend, mesIni, anoIni, mesFim, anoFim):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
@@ -272,7 +265,6 @@ class unidadeController:
         MySql.close(self.__connection)
 
         return listaVendas
-
 
     def consultarUnidadeEstoque(self, idEmpreend, mesIni, anoIni, mesFim, anoFim):
         self.__connection = MySql.connect()

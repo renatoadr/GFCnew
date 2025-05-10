@@ -23,8 +23,8 @@
       </div>
 
       <form action="{{'/salvar_alteracao_usuario' if user else '/cadastrar_usuario' }}" method="post" id="formUsuario">
-        <input type="hidden" name="id_user" value="{{ user.getIdUsuario() if user }}" />
-        <input type="hidden" name="pfl" value="{{ user.getTpAcesso() if user }}" />
+        <input type="hidden" name="id_user" value="{{ user.getIdUsuario() if user }}">
+        <input type="hidden" name="pfl" value="{{ user.getTpAcesso() if user }}">
         <div class="row">
           {% if tipos %}
           <div class="col-md-6 col-sm-12">
@@ -46,7 +46,7 @@
           <div class="col-md-6 col-sm-12">
             <div class="form-floating ">
               <input type="text" name="nm_user" id="name" class="form-control required" placeholder=""
-                value="{{ user.getNmUsuario() if user}}" maxlength="100" />
+                value="{{ user.getNmUsuario() if user}}" maxlength="100">
               <label for="name">Nome do usuário</label>
             </div>
           </div>
@@ -56,19 +56,19 @@
           <div class="col-md-6 col-sm-12">
             <div class="form-floating mt-4">
               <input type="email" name="email_user" id="email" class="form-control email required" placeholder=""
-                value="{{ user.getEmail() if user}}" maxlength="50" />
+                value="{{ user.getEmail() if user}}" maxlength="50">
               <label for="email">Email</label>
             </div>
           </div>
           <div class="col-md-6 col-sm-12">
             <div class="form-floating mt-4">
               <input type="password" name="pass_user" id="senha" class="form-control {{ 'required' if not user }}"
-                placeholder="" value="" maxlength="10" />
+                placeholder="" value="" maxlength="10">
               <label for="senha">Senha</label>
             </div>
           </div>
         </div>
-        {% if (user and (user.getTpAcesso() == 'RT' or user.getTpAcesso() == 'ADM')) or not user %}
+        {% if session.is_adm %}
         <div class="row">
           <div class="col-md-6 col-sm-12">
             <div class="form-floating mt-4">

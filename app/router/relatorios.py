@@ -2,6 +2,7 @@ from flask import Blueprint, request, render_template
 
 from controller.graficoController import graficoController
 from controller.geralController import geralController
+from utils.flash_message import flash_message
 from utils.security import login_required
 from reportlab.pdfgen import canvas
 import os
@@ -30,14 +31,12 @@ def gerar_relatorio():
     nomePdf = apelido + "-" + ano + "-" + mes + ".pdf"
 
     if grafC.verificaDir(diretorio) == False:
-        # Verifica se o diretório de graficos e fotos foi criado
-        mensagem = "Não existem dados para o relatório"
+        flash_message.info("Não existem dados para o relatório")
     else:
         # Verifica se existem graficos e fotos para o relatório
         if len(erros) > 0:
-            mensagem = ''
             for n in erros:
-                mensagem = mensagem + ' # ' + n
+                flash_message.error(n)
         else:
             c = canvas.Canvas(dirRelatorio + nomePdf)
             pagina = 1
@@ -61,19 +60,27 @@ def gerar_relatorio():
             pagina += 1
             grafC.pdfPag7(c, diretorio, pagina)
             c.showPage()
-            if os.path.isfile(diretorio+"foto_1.jpeg") or os.path.isfile(diretorio+"foto_1.png"):
+
+            foto1 = os.path.normpath(f"{diretorio}/foto_1")
+            if os.path.isfile(f"{foto1}.jpeg") or os.path.isfile(f"{foto1}.png"):
                 pagina += 1
                 grafC.pdfPag8(c, diretorio, pagina)
                 c.showPage()
-                if os.path.isfile(diretorio+"foto_7.jpeg") or os.path.isfile(diretorio+"foto_7.png"):
+
+                foto7 = os.path.normpath(f"{diretorio}/foto_7")
+                if os.path.isfile(f"{foto7}.jpeg") or os.path.isfile(f"{foto7}.png"):
                     pagina += 1
                     grafC.pdfPag9(c, diretorio, pagina)
                     c.showPage()
-                    if os.path.isfile(diretorio+"foto_13.jpeg") or os.path.isfile(diretorio+"foto_13.png"):
+
+                    foto13 = os.path.normpath(f"{diretorio}/foto_13")
+                    if os.path.isfile(f"{foto13}.jpeg") or os.path.isfile(f"{foto13}.png"):
                         pagina += 1
                         grafC.pdfPag10(c, diretorio, pagina)
                         c.showPage()
-                        if os.path.isfile(diretorio+"foto_19.jpeg") or os.path.isfile(diretorio+"foto_19.png"):
+
+                        foto19 = os.path.normpath(f"{diretorio}/foto_19")
+                        if os.path.isfile(f"{foto19}.jpeg") or os.path.isfile(f"{foto19}.png"):
                             pagina += 1
                             grafC.pdfPag11(c, diretorio, pagina)
                             c.showPage()
@@ -82,7 +89,7 @@ def gerar_relatorio():
             grafC.pdfPag12(c, diretorio, pagina, idEmpreend, mes, ano)
             c.showPage()
             c.save()
-            mensagem = "RELATORIO GERADO COM SUCESSO"
+            flash_message.success("RELATORIO GERADO COM SUCESSO")
 
     gerC = geralController()
     arqS = gerC.listar_arquivos_com_prefixo(dirRelatorio, apelido)
@@ -91,35 +98,4 @@ def gerar_relatorio():
              '06', '07', '08', '09', '10', '11', '12']
     anos = ['    ', '2025', '2026', '2027', '2028', '2029', '2030']
 
-    return render_template("relatorio.html", arquivos=arqS, listaMes=meses, listaAno=anos, apelido=apelido, idEmpreend=idEmpreend, mensagem=mensagem)
-
-
-# @relatorio_bp.route('/tratar_graficos_tabelas')
-# @login_required
-# def tratar_graficos_tabelas():
-#    idEmpreend = request.args.get("idEmpreend")
-#    nmEmpreend = request.args.get("nmEmpreend")
-#
-#    if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
-#        return redirect('/home')
-#
-#    if idEmpreend is None:
-#        idEmpreend = IdEmpreend().get()
-#    else:
-#        IdEmpreend().set(idEmpreend)
-#
-#    if nmEmpreend is None:
-#        nmEmpreend = NmEmpreend().get()
-#    else:
-#        NmEmpreend().set(nmEmpreend)
-#
-#    ctrl = garantiaController()
-#    items = ctrl.list(idEmpreend)
-#
-#    if not items:
-#        return redirect('/atualizar_garantia')
-#
-#    obras = filter(lambda it: it.tipo == 'Obra', items)
-#    gerais = filter(lambda it: it.tipo == 'Geral', items)
-#
-#    return render_template('graf_tab.html', obras=obras, gerais=gerais)
+    return render_template("relatorio.html", arquivos=arqS, listaMes=meses, listaAno=anos, apelido=apelido, idEmpreend=idEmpreend)

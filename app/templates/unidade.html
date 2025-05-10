@@ -44,7 +44,7 @@
               <div class="col-6">
                 <div class="form-floating">
                   <input type="text" name="unidade" id="unidade" class="form-control alphanum" placeholder=""
-                    value="{{ unidade.getUnidade() if unidade }}" maxlength="15" readonly />
+                    value="{{ unidade.getUnidade() if unidade }}" maxlength="15" readonly>
                   <label for="unidade">Unidade</label>
                 </div>
               </div>
@@ -68,7 +68,7 @@
                 <div class="form-floating mt-4">
                   <input type="text" name="mesVigencia" id="mesVigencia" class="form-control 2num" placeholder=""
                     value="{{ unidade.getMesVigencia() if unidade }}" maxlength="2" {% if modo=='consulta' %} readonly
-                    {% endif %} />
+                    {% endif %}>
                   <label for="mesVigencia">Mês</label>
                 </div>
               </div>
@@ -76,7 +76,7 @@
                 <div class="form-floating mt-4">
                   <input type="text" name="anoVigencia" id="anoVigencia" class="form-control 4num" placeholder=""
                     value="{{ unidade.getAnoVigencia() if unidade }}" maxlength="4" {% if modo=='consulta' %} readonly
-                    {% endif %} />
+                    {% endif %}>
                   <label for="anoVigencia">Ano</label>
                 </div>
               </div>
@@ -87,7 +87,7 @@
                 <div class="form-floating">
                   <input type="text" name="vlUnidade" id="vlUnidade" class="form-control money" placeholder=""
                     value="{{ unidade.getVlUnidade() if unidade }}" maxlength="18" {% if modo=='consulta' %} readonly {%
-                    endif %} />
+                    endif %}>
                   <label for="vlUnidade">Valor Unidade</label>
                 </div>
               </div>
@@ -116,7 +116,7 @@
                     value="{{ unidade.getCpfComprador() if unidade}}">
                   <input type="text" name="nmComprador" id="nmComprador" class="form-control" placeholder=""
                     value="{{ unidade.getNmComprador() if unidade and unidade.getNmComprador() is not none  }}" {% if
-                    modo=='consulta' %} readonly {% endif %} />
+                    modo=='consulta' %} readonly {% endif %}>
                   <label for="nmComprador">Comprador</label>
                 </div>
               </div>
@@ -137,7 +137,7 @@
                 <div class="form-floating">
                   <input type="text" name="vlPago" id="vlPago" class="form-control money" placeholder=""
                     value="{{ unidade.getVlPago() if unidade }}" maxlength="18" {% if modo=='consulta' %} readonly {%
-                    endif %} />
+                    endif %}>
                   <label for="vlPago">Valor pago</label>
                 </div>
               </div>
@@ -145,7 +145,7 @@
                 <div class="form-floating ">
                   <input type="text" name="vlChaves" id="vlChaves" class="form-control money" placeholder=""
                     value="{{ unidade.getVlChaves() if unidade }}" maxlength="20" {% if modo=='consulta' %} readonly {%
-                    endif %} />
+                    endif %}>
                   <label for="vlChaves">Valor das chaves</label>
                 </div>
               </div>
@@ -156,7 +156,7 @@
                 <div class="form-floating ">
                   <input type="text" name="vlPreChaves" id="vlPreChaves" class="form-control money" placeholder=""
                     value="{{ unidade.getVlPreChaves() if unidade }}" maxlength="20" {% if modo=='consulta' %} readonly
-                    {% endif %} />
+                    {% endif %}>
                   <label for="vlPreChaves">Valor pré-chaves</label>
                 </div>
               </div>
@@ -164,7 +164,7 @@
                 <div class="form-floating">
                   <input type="text" name="vlPosChaves" id="vlPosChaves" class="form-control money" placeholder=""
                     value="{{ unidade.getVlPosChaves() if unidade }}" maxlength="20" {% if modo=='consulta' %} readonly
-                    {% endif %} />
+                    {% endif %}>
                   <label for="vlPosChaves">Valor pós-chaves</label>
                 </div>
               </div>

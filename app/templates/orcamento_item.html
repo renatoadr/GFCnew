@@ -26,14 +26,14 @@
 
       <form action="{{'/salvar_item_orcamento' if item else '/incluir_item_orcamento'}}" id="formIncluirOrcamento"
         method="POST">
-        <input type="hidden" name="idOrcamento" value="{{ item.getIdOrcamento() if item }}" />
-        <input type="hidden" name="idEmpreend" value="{{ item.getIdEmpreend() if item else idEmpreend}}" />
+        <input type="hidden" name="idOrcamento" value="{{ item.getIdOrcamento() if item }}">
+        <input type="hidden" name="idEmpreend" value="{{ item.getIdEmpreend() if item else idEmpreend}}">
 
         <div class="row">
           <div class="col-6">
             <div class="form-floating mt-4">
               <input type="text" name="item" id="item" class="form-control" placeholder="" {% if modo=='consulta' %}
-                readonly {% endif %} value="{{ item.getItem() if item }}" maxlength="50" />
+                readonly {% endif %} value="{{ item.getItem() if item }}" maxlength="50">
               <label for="item">Item</label>
             </div>
           </div>
@@ -41,7 +41,7 @@
           <div class="col-6">
             <div class="form-floating mt-4">
               <input type="text" name="orcadoValor" id="orcadoValor" class="form-control money" placeholder="" {% if
-                modo=='consulta' %} readonly {% endif %} value="{{ item.getOrcadoValor() if item }}" maxlength="20" />
+                modo=='consulta' %} readonly {% endif %} value="{{ item.getOrcadoValor() if item }}" maxlength="20">
               <label for="orcadoValor">Valor Orçado</label>
             </div>
           </div>
@@ -51,20 +51,20 @@
           <div class="col-6">
             <div class="form-floating mt-4">
               <input type="text" name="fisicoValor" id="fisicoValor" class="form-control money" placeholder="" readonly
-                value="{{ item.getFisicoValor() if item }}" maxlength="20" />
+                value="{{ item.getFisicoValor() if item }}" maxlength="20">
               <label for="fisicoValor">Físico (R$)</label>
             </div>
 
             <div class="form-floating mt-4">
               <input type="text" name="fisicoPercentual" id="fisicoPercentual" class="form-control percent"
                 placeholder="" {% if modo=='consulta' %} readonly {% endif %}
-                value="{{ item.getFisicoPercentual() if item }}" maxlength="6" />
+                value="{{ item.getFisicoPercentual() if item }}" maxlength="6">
               <label for="fisicoPercentual">Físico %</label>
             </div>
 
             <div class="form-floating mt-4">
               <input type="text" name="fisicoSaldo" id="fisicoSaldo" class="form-control money" placeholder="" readonly
-                value="{{ item.getFisicoSaldo() if item }}" maxlength="20" />
+                value="{{ item.getFisicoSaldo() if item }}" maxlength="20">
               <label for="fisicoSaldo">Físico saldo</label>
             </div>
           </div>
@@ -72,19 +72,19 @@
             <div class="form-floating mt-4">
               <input type="text" name="financeiroValor" id="financeiroValor" class="form-control money" placeholder=""
                 {% if modo=='consulta' %} readonly {% endif %} value="{{ item.getFinanceiroValor() if item }}"
-                maxlength="20" />
+                maxlength="20">
               <label for="financeiroValor">Financeiro (R$)</label>
             </div>
 
             <div class="form-floating mt-4">
               <input type="text" name="financeiroPercentual" id="financeiroPercentual" class="form-control percent"
-                placeholder="" readonly value="{{ item.getFinanceiroPercentual() if item }}" maxlength="8" />
+                placeholder="" readonly value="{{ item.getFinanceiroPercentual() if item }}" maxlength="8">
               <label for="financeiroPercentual">Financeiro (%)</label>
             </div>
 
             <div class="form-floating mt-4">
               <input type="text" name="financeiroSaldo" id="financeiroSaldo" class="form-control money" placeholder=""
-                readonly value="{{ item.getFinanceiroSaldo() if item }}" maxlength="20" />
+                readonly value="{{ item.getFinanceiroSaldo() if item }}" maxlength="20">
               <label for="financeiroSaldo">Financeiro saldo</label>
             </div>
           </div>

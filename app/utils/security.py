@@ -41,6 +41,7 @@ def login_user(user: User):
     session['user_logged'] = user.to_string()
     session['nome_usuario'] = user.name.split(' ')[0]
     session['is_root'] = user.profile == TipoAcessos.RT.name
+    session['is_adm'] = user.profile == TipoAcessos.RT.name or user.profile == TipoAcessos.ADM.name
     session.modified = True
 
 
@@ -55,6 +56,7 @@ def logout_user():
     session.pop('user_logged', None)
     session.pop('nome_usuario', None)
     session.pop('is_root', None)
+    session.pop('is_adm', None)
     session.modified = True
 
 

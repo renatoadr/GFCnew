@@ -27,25 +27,25 @@
 
           <div class="form-floating">
             <input type="text" name="idEmpreendimento" id="idEmpreendimento" class="form-control" placeholder=""
-              readonly value="{{ empreend.getIdEmpreend() if empreend}}" />
+              readonly value="{{ empreend.getIdEmpreend() if empreend}}">
             <label for="idEmpreendimento">Codigo do Empreendimento</label>
           </div>
 
           <div class="form-floating mt-4">
             <input type="text" name="nmEmpreendimento" id="nmEmpreendimento" class="form-control" placeholder=""
-              value="{{ empreend.getNmEmpreend() if empreend}}" maxlength="100" />
+              value="{{ empreend.getNmEmpreend() if empreend}}" maxlength="100">
             <label for="nmEmpreendimento">Nome</label>
           </div>
 
           <div class="form-floating mt-4">
             <input type="text" name="apelido" id="apelido" class="form-control" placeholder=""
-              value="{{ empreend.getApelido() if empreend}}" maxlength="10" />
+              value="{{ empreend.getApelido() if empreend}}" maxlength="10">
             <label for="apelido">Apelido</label>
           </div>
 
           <div class="form-floating mt-4">
             <input type="text" name="cep" id="cep" class="form-control cep" placeholder=""
-              value="{{ empreend.getCep() if empreend}}" maxlength="9" />
+              value="{{ empreend.getCep() if empreend}}" maxlength="9">
             <label for="cep">CEP</label>
           </div>
 
@@ -72,13 +72,13 @@
 
           <div class="form-floating mt-4">
             <input type="text" name="logradouro" id="logradouro" class="form-control" placeholder=""
-              value="{{ empreend.getLogradouro() if empreend}}" maxlength="100" />
+              value="{{ empreend.getLogradouro() if empreend}}" maxlength="100">
             <label for="logradouro">Endereço</label>
           </div>
 
           <div class="form-floating mt-4">
             <input type="text" name="bairro" id="bairro" class="form-control" placeholder=""
-              value="{{ empreend.getBairro() if empreend}}" maxlength="50" />
+              value="{{ empreend.getBairro() if empreend}}" maxlength="50">
             <label for="bairro">Bairro</label>
           </div>
 
@@ -87,20 +87,20 @@
         <div class="col-6">
           <div class="form-floating">
             <input type="text" name="nmIncorp" id="nmIncorp" class="form-control" placeholder=""
-              value="{{ empreend.getNmIncorp() if empreend}}" maxlength="100" />
+              value="{{ empreend.getNmIncorp() if empreend}}" maxlength="100">
             <label for="nmIncorp">Incorporador</label>
           </div>
 
           <div class="form-floating mt-4">
             <input type="text" name="nmConstrutor" id="nmConstrutor" class="form-control" placeholder=""
-              value="{{ empreend.getNmConstrutor() if empreend}}" maxlength="100" />
+              value="{{ empreend.getNmConstrutor() if empreend}}" maxlength="100">
             <label for="nmConstrutor">Construtora</label>
           </div>
 
           <div class="form-floating mt-4">
             <select name="codBanco" id="codBanco" class="form-control" placeholder=""
               value="{{ empreend.getCodBanco() if empreend}}">
-              <option>Selecione o banco</option>
+              <option value="">Selecione o banco</option>
               {% for bk in bancos %}
               <option value="{{bk.getCodigo()}}" {% if empreend and empreend.getCodBanco()==bk.getCodigo() %} selected
                 {% endif %}>
@@ -117,7 +117,7 @@
                 <input type="hidden" id="cpfCnpjEngenheiro" name="cpfCnpjEngenheiro"
                   value="{{ empreend.getCpfCnpjEngenheiro() if empreend}}">
                 <input type="text" id="nmEngenheiro" class="form-control" placeholder=""
-                  value="{{ empreend.getNmEngenheiro() if empreend}}" maxlength="100" />
+                  value="{{ empreend.getNmEngenheiro() if empreend}}" maxlength="100">
                 <label for="nmEngenheiro">Nome do engenheiro</label>
               </div>
             </div>
@@ -134,19 +134,19 @@
 
           <div class="form-floating mt-4">
             <input type="text" name="vlPlanoEmp" id="vlPlanoEmp" class="form-control money" placeholder=""
-              value="{{ empreend.getVlPlanoEmp() if empreend}}" maxlength="16" />
+              value="{{ empreend.getVlPlanoEmp() if empreend}}" maxlength="16">
             <label for="vlPlanoEmp">Valor do Plano Empresário</label>
           </div>
 
           <div class="form-floating mt-4">
             <input type="text" name="indiceGarantia" id="indiceGarantia" class="form-control percent10" placeholder=""
-              value="{{ empreend.getIndiceGarantia() if empreend}}" maxlength="6" />
+              value="{{ empreend.getIndiceGarantia() if empreend}}" maxlength="6">
             <label for="indiceGarantia">Indice de Garantia Contratado</label>
           </div>
 
           <div class="form-floating mt-4">
             <input type="date" name="previsaoEntrega" id="previsaoEntrega" class="form-control" placeholder=""
-              value="{{ empreend.getPrevisaoEntrega() if empreend}}" />
+              value="{{ empreend.getPrevisaoEntrega() if empreend}}">
             <label for="previsaoEntrega">Previsão de entrega</label>
           </div>
 

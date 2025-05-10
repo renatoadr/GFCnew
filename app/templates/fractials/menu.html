@@ -4,7 +4,7 @@
       <div class="col-5 col-lg-2 col-md-3">
         <div class="row">
           <div class="col-4">
-            <a href="/home" class="text-decoration-none d-block"><img src="../static/imgs/gfc.png" alt="Home" /></a>
+            <a href="/home" class="text-decoration-none d-block"><img src="../static/imgs/gfc.png" alt="Home"></a>
           </div>
           <div class="col-7">
             <a href="{{'/mobile/home' if session.has_user_mobile_logged else '/home'}}"
@@ -66,6 +66,9 @@
       {% endif %}
       {% if category == 'info' and message %}
       <p class="alert alert-info text-center mt-4"> {{ message }} </p>
+      {% endif %}
+      {% if category == 'success' and message %}
+      <p class="alert alert-success text-center mt-4"> {{ message }} </p>
       {% endif %}
       {% endfor %}
     </div>

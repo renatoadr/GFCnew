@@ -20,7 +20,7 @@ handle_error() {
   local exit_code=$?
   log "Erro no processo de deploy. Desfazendo processo..."
   log "Removendo arquivos compactados da imagem..."
-  rm -f "${nome_arquivo}" "${nome_arquivo}.gz"
+  rm -f *.tar *.gz
 
   log "Removendo imagem nova do docker..."
   docker rmi "${nome_image}:${nova_versao}"

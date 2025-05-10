@@ -15,6 +15,10 @@ class flash_message:
         flash(message, category='info')
 
     @staticmethod
+    def success(message: str):
+        flash(message, category='success')
+
+    @staticmethod
     def has_error():
         return flash_message.has('error')
 
@@ -25,6 +29,10 @@ class flash_message:
     @staticmethod
     def has_info():
         return flash_message.has('info')
+
+    @staticmethod
+    def has_success():
+        return flash_message.has('success')
 
     @staticmethod
     def has(category: str):

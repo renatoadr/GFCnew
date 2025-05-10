@@ -22,21 +22,21 @@
       </div>
 
       <form action="/upload_arquivo_fotos" method="POST" id="formUpload" enctype="multipart/form-data">
-        <input type="hidden" name="camposCapa" value="{{camposCapa}}" />
-        <input type="hidden" name="qtd3D" value="{{qtd3D}}" />
-        <input type="hidden" name="qtdObra" value="{{qtdObra}}" />
+        <input type="hidden" name="camposCapa" value="{{camposCapa}}">
+        <input type="hidden" name="qtd3D" value="{{qtd3D}}">
+        <input type="hidden" name="qtdObra" value="{{qtdObra}}">
         <div class="row mb-5">
           <div class="col-6">
             <div class="form-floating">
               <input type="text" name="mesVigencia" id="mesVigencia" class="form-control" readonly maxlength="2"
-                placeholder="" value="{{(mesV|string).zfill(2)}}" />
+                placeholder="" value="{{(mesV|string).zfill(2)}}">
               <label for="mesVigencia">Mês Vigência</label>
             </div>
           </div>
           <div class="col-6">
             <div class="form-floating">
               <input type="text" name="anoVigencia" id="anoVigencia" class="form-control" readonly placeholder=""
-                value="{{anoV}}" maxlength="4" />
+                value="{{anoV}}" maxlength="4">
               <label for="anoVigencia">Ano Vigência</label>
             </div>
           </div>
@@ -52,7 +52,7 @@
                 <div class="bg-body-tertiary border border-1 w-100 mt-4 p-3 rounded">
                   <label for="{{field}}" class="form-label"><strong>{{name}}</strong></label>
                   {% if file in fotosCarregadas %}
-                  <img src="/obter_imagem/{{fotosCarregadas[file]}}" class="img-thumbnail w-100 mt-2 mb-2" />
+                  <img src="/obter_imagem/{{fotosCarregadas[file]}}" class="img-thumbnail w-100 mt-2 mb-2">
                   {% endif %}
                   <input type="file" class="form-control upload {{'required' if file not in fotosCarregadas}}"
                     id="{{field}}" name="{{field}}" accept="image/png, image/jpeg">
@@ -73,7 +73,7 @@
                   <label for="foto_3D_{{idx}}" class="form-label"><strong>Foto 3D {{idx}}</strong></label>
                   {% set fileName = "foto_3D_{}".format(idx) %}
                   {% if fileName in fotosCarregadas %}
-                  <img src="/obter_imagem/{{fotosCarregadas[fileName]}}" class="img-thumbnail w-100 mt-2 mb-2" />
+                  <img src="/obter_imagem/{{fotosCarregadas[fileName]}}" class="img-thumbnail w-100 mt-2 mb-2">
                   {% endif %}
                   <input type="file" class="form-control upload {{'required' if fileName not in fotosCarregadas}}"
                     id="foto_3D_1" name="foto_3D_{{idx}}" accept="image/png, image/jpeg">
@@ -96,7 +96,7 @@
                   <label for="foto_{{idx}}" class="form-label"><strong>Foto {{idx}}</strong></label>
                   {% set fileName = "foto_{}".format(idx) %}
                   {% if fileName in fotosCarregadas %}
-                  <img src="/obter_imagem/{{fotosCarregadas[fileName]}}" class="img-thumbnail w-100 mt-2 mb-2" />
+                  <img src="/obter_imagem/{{fotosCarregadas[fileName]}}" class="img-thumbnail w-100 mt-2 mb-2">
                   {% endif %}
                   <input type="file"
                     class="form-control upload fotosObra {{'required' if fileName not in fotosCarregadas}}"

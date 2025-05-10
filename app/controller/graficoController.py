@@ -1,25 +1,23 @@
 # controller or business logic
 # Tratamento de gáficos
 
-from flask import Flask, request, render_template, redirect, url_for, flash, send_file, session, current_app
+from flask import current_app
 from controller.consideracaoController import consideracaoController
-from dto.orcamento import orcamento
-from utils.dbContext import MySql
-from werkzeug.utils import secure_filename
-
-import pandas as pd
 import os
-import numpy as np
-import easygui
 
 
 class graficoController:
-    __connection = None
     app = None
 
     def __init__(self):
         self.app = current_app
         pass
+
+    def getPathImgs(self, img):
+        path = os.path.split(__file__)
+        base = os.path.basename(path[0])
+        path = path[0].replace(base, '')
+        return os.path.join(path, 'static', 'imgs', img)
 
     def pdfPag1(self, c, diretorio, pagina):
         #   Primeira Página
@@ -29,7 +27,7 @@ class graficoController:
         agenteFinanc = 'Agente financeiro: ' + 'Banco Público'
         vistoria = '2ª' + ' Vistoria - Período de Medição: ' + '20/11/2024 à 20/12/2024'
 
-        logo = "C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\franca.jpg"
+        logo = self.getPathImgs("franca.jpg")
         c.drawImage(logo, 450, 800, width=90, height=30,
                     mask='auto')  # preserveAspectRatio=True,
         c.setFont('Helvetica-Bold', 24)
@@ -43,17 +41,16 @@ class graficoController:
         c.drawString(300, 600, 'Evolução em 3D')
         c.drawString(40, 350, 'Foto Atual')
 
-        foto = diretorio + "perspectiva.png"
-        c.drawImage(foto,  40, 420, width=220, height=150, mask='auto')
-        foto = diretorio + "evolucao_3D_1.png"
-        c.drawImage(foto, 300, 380, width=300, height=200, mask='auto')
-        foto = diretorio + "foto_atual.jpeg"
-        c.drawImage(foto,  40, 180, width=220, height=150, mask='auto')
-        foto = diretorio + "evolucao_3D_2.png"
-        c.drawImage(foto, 350, 150, width=200, height=200, mask='auto')
-        logo = "C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\legenda 2.png"
-        c.drawImage(logo, 420, 100, width=150, height=25,
-                    mask='auto')  # preserveAspectRatio=True,
+        c.drawImage(os.path.join(diretorio, "perspectiva.png"),
+                    40, 420, width=220, height=150, mask='auto')
+        c.drawImage(os.path.join(diretorio, "evolucao_3D_1.png"),
+                    300, 380, width=300, height=200, mask='auto')
+        c.drawImage(os.path.join(diretorio, "foto_atual.jpeg"),
+                    40, 180, width=220, height=150, mask='auto')
+        c.drawImage(os.path.join(diretorio, "evolucao_3D_2.png"),
+                    350, 150, width=200, height=200, mask='auto')
+        c.drawImage(self.getPathImgs("legenda_2.png"), 420,
+                    100, width=150, height=25, mask='auto')
 
         c.setFont('Helvetica', 10)
         c.drawString(40,  95, 'Riscos relacionados ao orçamento e prazo;')
@@ -65,30 +62,25 @@ class graficoController:
 
     def pdfPag2(self, c, diretorio, pagina):
         #   Segunda Página
-
-        logo = "C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\franca.jpg"
-        c.drawImage(logo, 450, 800, width=100, height=40,
-                    mask='auto')  # preserveAspectRatio=True,
+        c.drawImage(self.getPathImgs("franca.jpg"), 450,
+                    800, width=100, height=40, mask='auto')
 
         c.setFont('Helvetica-Bold', 14)
         c.setFillColor("black")
         c.drawString(30, 780, "Comparativo: Previsto x Realizado Físico (%)")
-        imgFotoObra = diretorio + "tab_medicoes.png"
-        c.drawImage(imgFotoObra, 30, 450, width=520, height=300,
-                    mask='auto')   # preserveAspectRatio=True
-        imgFotoObra = diretorio + "graf_progresso_obra.png"
-        c.drawImage(imgFotoObra, 30, 100, width=520, height=300,
-                    mask='auto')   # preserveAspectRatio=True
+
+        c.drawImage(os.path.join(diretorio, "tab_medicoes.png"),
+                    30, 450, width=520, height=300, mask='auto')
+        c.drawImage(os.path.join(diretorio, "graf_progresso_obra.png"),
+                    30, 100, width=520, height=300, mask='auto')
 
         c.setFont('Helvetica', 10)
         c.drawString(570, 10, str(pagina))
 
     def pdfPag3(self, c, diretorio, pagina):
         #   Terceira Página
-
-        logo = "C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\franca.jpg"
-        c.drawImage(logo, 450, 800, width=90, height=30,
-                    mask='auto')  # preserveAspectRatio=True,
+        c.drawImage(self.getPathImgs("franca.jpg"), 450,
+                    800, width=90, height=30, mask='auto')
 
         c.setFont('Helvetica-Bold', 14)
         c.setFillColor("black")
@@ -96,287 +88,261 @@ class graficoController:
         c.drawString(30, 640, "Medição e liberação financeira por item orçado")
         c.drawString(30, 300, "Demonstrativo de uso do orçamento")
 
-        imgFotoObra = diretorio + "tab_acomp_financeiro.png"
-        c.drawImage(imgFotoObra, 30, 685, width=280, height=80,
-                    mask='auto')   # preserveAspectRatio=True
-        imgFotoObra = diretorio + "graf_orcamento_liberacao_valor.png"
-        c.drawImage(imgFotoObra, 30, 340, width=530, height=260,
-                    mask='auto')   # preserveAspectRatio=True
-        imgFotoObra = diretorio + "tab_orcamento_liberacao.png"
-        c.drawImage(imgFotoObra, 30, 30, width=530, height=260,
-                    mask='auto')   # preserveAspectRatio=True
+        c.drawImage(os.path.join(diretorio, "tab_acomp_financeiro.png"),
+                    30, 685, width=280, height=80, mask='auto')
+        c.drawImage(os.path.join(diretorio, "graf_orcamento_liberacao_valor.png"),
+                    30, 340, width=530, height=260, mask='auto')
+        c.drawImage(os.path.join(diretorio, "tab_orcamento_liberacao.png"),
+                    30, 30, width=530, height=260, mask='auto')
 
         c.setFont('Helvetica', 10)
         c.drawString(570, 10, str(pagina))
 
     def pdfPag4(self, c, diretorio, pagina):
         #   Quarta Página
-
-        logo = "C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\franca.jpg"
-        c.drawImage(logo, 450, 800, width=90, height=30,
-                    mask='auto')  # preserveAspectRatio=True,
+        c.drawImage(self.getPathImgs("franca.jpg"), 450,
+                    800, width=90, height=30, mask='auto')
 
         c.setFont('Helvetica-Bold', 14)
         c.setFillColor("black")
         c.drawString(30, 780, "Controle de pagamento a fornecedores")
-#        c.drawString(30, 250,"Obrigações formais")
-        imgFotoObra = diretorio + "tab_notas.png"
-        c.drawImage(imgFotoObra, 20, 360, width=530, height=400,
-                    mask='auto')   # preserveAspectRatio=True
-        imgFotoObra = diretorio + "graf_indices_garantia_I.png"
-        c.drawImage(imgFotoObra, 30, 30, width=510, height=300,
-                    mask='auto')   # preserveAspectRatio=True
+#       c.drawString(30, 250,"Obrigações formais")
+
+        c.drawImage(os.path.join(diretorio, "tab_notas.png"),
+                    20, 360, width=530, height=400, mask='auto')
+        c.drawImage(os.path.join(diretorio, "graf_indices_garantia_I.png"),
+                    30, 30, width=510, height=300, mask='auto')
 
         c.setFont('Helvetica', 10)
         c.drawString(570, 10, str(pagina))
 
     def pdfPag5(self, c, diretorio, pagina):
         #   Quinta Página
+        c.drawImage(self.getPathImgs("franca.jpg"), 450,
+                    800, width=90, height=30, mask='auto')
+        c.drawImage(os.path.join(diretorio, "graf_indices_garantia_II.png"),
+                    30, 500, width=510, height=300, mask='auto')
 
-        logo = "C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\franca.jpg"
-        c.drawImage(logo, 450, 800, width=90, height=30,
-                    mask='auto')  # preserveAspectRatio=True,
-
-        imgFotoObra = diretorio + "graf_indices_garantia_II.png"
-        c.drawImage(imgFotoObra, 30, 500, width=510, height=300,
-                    mask='auto')   # preserveAspectRatio=True
         c.setFont('Helvetica-Bold', 14)
         c.setFillColor("black")
         c.drawString(30, 450, "Recebíveis por unidades produzidas")
 
-        imgFotoObra = diretorio + "graf_chaves_perc.png"
-        c.drawImage(imgFotoObra, 30, 270, width=200, height=150,
-                    mask='auto')   # preserveAspectRatio=True
-        imgFotoObra = diretorio + "graf_vendas_perc.png"
-        c.drawImage(imgFotoObra, 220, 270, width=330, height=150,
-                    mask='auto')   # preserveAspectRatio=True
-        
+        c.drawImage(os.path.join(diretorio, "graf_chaves_perc.png"),
+                    30, 270, width=200, height=150, mask='auto')
+        c.drawImage(os.path.join(diretorio, "graf_vendas_perc.png"),
+                    220, 270, width=330, height=150, mask='auto')
+
         c.setFont('Helvetica-Bold', 14)
         c.setFillColor("black")
         c.drawString(30, 215, "Financeiro a receber")
-        
-        imgFotoObra = diretorio + "graf_chaves_valor.png"
-        c.drawImage(imgFotoObra, 30, 35, width=200, height=150,
-                    mask='auto')   # preserveAspectRatio=True
-        imgFotoObra = diretorio + "graf_vendas_valor.png"
-        c.drawImage(imgFotoObra, 220, 35, width=330, height=150,
-                    mask='auto')   # preserveAspectRatio=True
+
+        c.drawImage(os.path.join(diretorio, "graf_chaves_valor.png"),
+                    30, 35, width=200, height=150, mask='auto')
+        c.drawImage(os.path.join(diretorio, "graf_vendas_valor.png"),
+                    220, 35, width=330, height=150, mask='auto')
 
         c.setFont('Helvetica', 10)
         c.drawString(570, 10, str(pagina))
 
     def pdfPag6(self, c, diretorio, pagina):
         #   Sexta Página
-
-        logo = "C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\franca.jpg"
-        c.drawImage(logo, 450, 800, width=90, height=30,
-                    mask='auto')  # preserveAspectRatio=True,
+        c.drawImage(self.getPathImgs("franca.jpg"), 450,
+                    800, width=90, height=30, mask='auto')
 
         c.setFont('Helvetica-Bold', 14)
         c.setFillColor("black")
         c.drawString(30, 780, "Evolução de saldo em conta corrente")
-        imgFotoObra = diretorio + "tab_conta_corrente.png"
-        c.drawImage(imgFotoObra, 40, 650, width=400, height=60,
-                    mask='auto')   # preserveAspectRatio=True
+
+        c.drawImage(os.path.join(diretorio, "tab_conta_corrente.png"),
+                    40, 650, width=400, height=60, mask='auto')
+
         c.setFont('Helvetica-Bold', 14)
         c.setFillColor("black")
         c.drawString(200, 360, "Pontos de atenção")
         c.drawString(30, 340, "Garantias")
         c.drawString(30, 180, "Certidões")
 
-        imgFotoObra = diretorio + "tab_garantias_geral.png"
-        c.drawImage(imgFotoObra, 20, 220, width=300, height=100,
-                    mask='auto')   # preserveAspectRatio=True
-        imgFotoObra = diretorio + "tab_garantias_obra.png"
-        c.drawImage(imgFotoObra, 290, 220, width=300, height=100,
-                    mask='auto')   # preserveAspectRatio=True
-        imgFotoObra = diretorio + "tab_certidoes.png"
-        c.drawImage(imgFotoObra, 20, 60, width=250, height=100,
-                    mask='auto')   # preserveAspectRatio=True
+        c.drawImage(os.path.join(diretorio, "tab_garantias_geral.png"),
+                    20, 220, width=300, height=100, mask='auto')
+        c.drawImage(os.path.join(diretorio, "tab_garantias_obra.png"),
+                    290, 220, width=300, height=100, mask='auto')
+        c.drawImage(os.path.join(diretorio, "tab_certidoes.png"),
+                    20, 60, width=250, height=100, mask='auto')
 
         c.setFont('Helvetica', 10)
         c.drawString(570, 10, str(pagina))
 
     def pdfPag7(self, c, diretorio, pagina):
         #   Setima Página
-
-        logo = "C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\franca.jpg"
-        c.drawImage(logo, 450, 800, width=90, height=30,
-                    mask='auto')  # preserveAspectRatio=True,
+        c.drawImage(self.getPathImgs("franca.jpg"), 450,
+                    800, width=90, height=30, mask='auto')
 
         c.setFont('Helvetica-Bold', 14)
         c.setFillColor("black")
         c.drawString(
             30, 780, "Imagens 3D projetadas retratando a realidade da obra")
-        imgFotoObra = diretorio + "foto_3D_1.png"
-        c.drawImage(imgFotoObra, 30, 550, width=250, height=200,
-                    mask='auto')   # preserveAspectRatio=True
-        imgFotoObra = diretorio + "foto_3D_2.png"
-        c.drawImage(imgFotoObra, 310, 550, width=250, height=200,
-                    mask='auto')   # preserveAspectRatio=True
-        imgFotoObra = diretorio + "foto_3D_3.png"
-        c.drawImage(imgFotoObra, 30, 280, width=250, height=200,
-                    mask='auto')   # preserveAspectRatio=True
-        logo = "C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\legenda 2.png"
-        c.drawImage(logo, 420, 100, width=150, height=25,
-                    mask='auto')  # preserveAspectRatio=True,
+
+        c.drawImage(os.path.join(diretorio, "foto_3D_1.png"),
+                    30, 550, width=250, height=200, mask='auto')
+        c.drawImage(os.path.join(diretorio, "foto_3D_2.png"),
+                    310, 550, width=250, height=200, mask='auto')
+        c.drawImage(os.path.join(diretorio, "foto_3D_3.png"),
+                    30, 280, width=250, height=200, mask='auto')
+        c.drawImage(self.getPathImgs("legenda_2.png"), 420,
+                    100, width=150, height=25, mask='auto')
 
         c.setFont('Helvetica', 10)
         c.drawString(570, 10, str(pagina))
 
     def pdfPag8(self, c, diretorio, pagina):
         #   Oitava Página
-
-        logo = "C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\franca.jpg"
-        c.drawImage(logo, 450, 800, width=90, height=30,
-                    mask='auto')  # preserveAspectRatio=True,
+        c.drawImage(self.getPathImgs("franca.jpg"), 450,
+                    800, width=90, height=30, mask='auto')
 
         c.setFont('Helvetica-Bold', 14)
         c.setFillColor("black")
         c.drawString(30, 800, "Relatório fotográfico")
-        if os.path.isfile(diretorio+"foto_1.png"):
-           imgFotoObra = diretorio + "foto_1.png"
-           c.drawImage(imgFotoObra, 30, 550, width=250, height=200, mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_2.png"):
-            imgFotoObra = diretorio + "foto_2.png"
-            c.drawImage(imgFotoObra, 310, 550, width=250, height=200, mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_3.png"):
-            imgFotoObra = diretorio + "foto_3.png"
-            c.drawImage(imgFotoObra, 30, 295, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_4.png"):
-            imgFotoObra = diretorio + "foto_4.png"
-            c.drawImage(imgFotoObra, 310, 295, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_5.png"):
-            imgFotoObra = diretorio + "foto_5.png"
-            c.drawImage(imgFotoObra, 30,  45, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_6.png"):
-            imgFotoObra = diretorio + "foto_6.png"
-            c.drawImage(imgFotoObra, 310,  45, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
+
+        imgTemp = os.path.join(diretorio, "foto_1.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 30, 550, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_2.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 310, 550, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_3.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 30, 295, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_4.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 310, 295, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_5.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 30,  45, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_6.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 310,  45, width=250, height=200, mask='auto')
 
         c.setFont('Helvetica', 10)
         c.drawString(570, 10, str(pagina))
 
     def pdfPag9(self, c, diretorio, pagina):
         #   Nona Página
-
-        logo = "C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\franca.jpg"
-        c.drawImage(logo, 450, 800, width=90, height=30,
-                    mask='auto')  # preserveAspectRatio=True,
+        c.drawImage(self.getPathImgs("franca.jpg"), 450,
+                    800, width=90, height=30, mask='auto')
 
         c.setFont('Helvetica-Bold', 14)
         c.setFillColor("black")
         c.drawString(30, 800, "Relatório fotográfico")
-        imgFotoObra = diretorio + "foto_7.png"
-        c.drawImage(imgFotoObra, 30, 550, width=250, height=200,
-                    mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_8.png"):
-            imgFotoObra = diretorio + "foto_8.png"
-            c.drawImage(imgFotoObra, 310, 550, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_9.png"):
-            imgFotoObra = diretorio + "foto_9.png"
-            c.drawImage(imgFotoObra, 30, 295, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_10.png"):
-            imgFotoObra = diretorio + "foto_10.png"
-            c.drawImage(imgFotoObra, 310, 295, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_11.png"):
-            imgFotoObra = diretorio + "foto_11.png"
-            c.drawImage(imgFotoObra, 30,  45, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_12.png"):
-            imgFotoObra = diretorio + "foto_12.png"
-            c.drawImage(imgFotoObra, 310,  45, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
+
+        imgTemp = os.path.join(diretorio, "foto_7.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 30, 550, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_8.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 310, 550, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_9.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 30, 295, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_10.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 310, 295, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_11.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 30,  45, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_12.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 310,  45, width=250, height=200, mask='auto')
 
         c.setFont('Helvetica', 10)
         c.drawString(570, 10, str(pagina))
 
     def pdfPag10(self, c, diretorio, pagina):
         #   Décima Página
-
-        logo = "C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\franca.jpg"
-        c.drawImage(logo, 450, 800, width=90, height=30,
-                    mask='auto')  # preserveAspectRatio=True,
+        c.drawImage(self.getPathImgs("franca.jpg"), 450,
+                    800, width=90, height=30, mask='auto')
 
         c.setFont('Helvetica-Bold', 14)
         c.setFillColor("black")
         c.drawString(30, 800, "Relatório fotográfico")
-        imgFotoObra = diretorio + "foto_13.png"
-        c.drawImage(imgFotoObra, 30, 550, width=250, height=200,
-                    mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_14.png"):
-            imgFotoObra = diretorio + "foto_14.png"
-            c.drawImage(imgFotoObra, 310, 550, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_15.png"):
-            imgFotoObra = diretorio + "foto_15.png"
-            c.drawImage(imgFotoObra, 30, 295, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_16.png"):
-            imgFotoObra = diretorio + "foto_16.png"
-            c.drawImage(imgFotoObra, 310, 295, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_17.png"):
-            imgFotoObra = diretorio + "foto_17.png"
-            c.drawImage(imgFotoObra, 30,  45, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_18.png"):
-            imgFotoObra = diretorio + "foto_18.png"
-            c.drawImage(imgFotoObra, 310,  45, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
+
+        imgTemp = os.path.join(diretorio, "foto_13.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 30, 550, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_14.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 310, 550, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_15.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 30, 295, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_16.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 310, 295, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_17.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 30,  45, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_18.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 310,  45, width=250, height=200, mask='auto')
 
         c.setFont('Helvetica', 10)
         c.drawString(570, 10, str(pagina))
 
     def pdfPag11(self, c, diretorio, pagina):
         #   Décima Primeira Página
-
-        logo = "C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\franca.jpg"
-        c.drawImage(logo, 450, 800, width=90, height=30,
-                    mask='auto')  # preserveAspectRatio=True,
+        c.drawImage(self.getPathImgs("franca.jpg"), 450,
+                    800, width=90, height=30, mask='auto')
 
         c.setFont('Helvetica-Bold', 14)
         c.setFillColor("black")
         c.drawString(30, 800, "Relatório fotográfico")
-        imgFotoObra = diretorio + "foto_19.png"
-        c.drawImage(imgFotoObra, 30, 550, width=250, height=200,
-                    mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_20.png"):
-            imgFotoObra = diretorio + "foto_20.png"
-            c.drawImage(imgFotoObra, 310, 550, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_21.png"):
-            imgFotoObra = diretorio + "foto_21.png"
-            c.drawImage(imgFotoObra, 30, 295, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_22.png"):
-            imgFotoObra = diretorio + "foto_22.png"
-            c.drawImage(imgFotoObra, 310, 295, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_23.png"):
-            imgFotoObra = diretorio + "foto_23.png"
-            c.drawImage(imgFotoObra, 30,  45, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
-        if os.path.isfile(diretorio+"foto_24.png"):
-            imgFotoObra = diretorio + "foto_24.png"
-            c.drawImage(imgFotoObra, 310,  45, width=250, height=200,
-                        mask='auto')   # preserveAspectRatio=True
+
+        imgTemp = os.path.join(diretorio, "foto_19.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 30, 550, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_20.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 310, 550, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_21.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 30, 295, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_22.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 310, 295, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_23.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 30,  45, width=250, height=200, mask='auto')
+
+        imgTemp = os.path.join(diretorio, "foto_24.png")
+        if os.path.isfile(imgTemp):
+            c.drawImage(imgTemp, 310,  45, width=250, height=200, mask='auto')
 
         c.setFont('Helvetica', 10)
         c.drawString(570, 10, str(pagina))
 
     def pdfPag12(self, c, diretorio, pagina, idEmpreend, mes, ano):
         #   Décima Segunda Página
- 
-        logo = os.path.normpath("C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\franca.jpg")
-          
-        c.drawImage(logo, 450, 800, width=90, height=30, mask='auto')  # preserveAspectRatio=True,
+
+        c.drawImage(self.getPathImgs("franca.jpg"), 450,
+                    800, width=90, height=30, mask='auto')
 
         consC = consideracaoController()
         consS = consC.listar_campos(idEmpreend, mes, ano)
@@ -428,7 +394,7 @@ class graficoController:
             lin -= 15
             c.drawString(40, lin, "\u2022 " + consS.getEfetivoEstoque1())
         if consS.getEfetivoEstoque2() != "":
-            lin -= 15   
+            lin -= 15
             c.drawString(40, lin, "\u2022 " + consS.getEfetivoEstoque2())
         if consS.getEfetivoEstoque3() != "":
             lin -= 15
@@ -451,8 +417,8 @@ class graficoController:
             lin -= 15
             c.drawString(40, lin, "\u2022 " + consS.getEmpreiteiro3())
         if consS.getEmpreiteiro4() != "":
-           lin -= 15
-           c.drawString(40, lin, "\u2022 " + consS.getEmpreiteiro4())
+            lin -= 15
+            c.drawString(40, lin, "\u2022 " + consS.getEmpreiteiro4())
 
         c.setFont('Helvetica-Bold', 12)
         lin -= 20
@@ -479,8 +445,8 @@ class graficoController:
             lin -= 15
             c.drawString(40, lin, "\u2022 " + consS.getConclusao1())
         if consS.getConclusao2() != "":
-           lin -= 15
-           c.drawString(40, lin, "\u2022 " + consS.getConclusao2())
+            lin -= 15
+            c.drawString(40, lin, "\u2022 " + consS.getConclusao2())
         if consS.getConclusao3() != "":
             lin -= 15
             c.drawString(40, lin, "\u2022 " + consS.getConclusao3())
@@ -502,8 +468,8 @@ class graficoController:
             lin -= 15
             c.drawString(40, lin, "\u2022 " + consS.getConsideracao3())
         if consS.getConsideracao4() != "":
-           lin -= 15
-           c.drawString(40, lin, "\u2022 " + consS.getConsideracao4())
+            lin -= 15
+            c.drawString(40, lin, "\u2022 " + consS.getConsideracao4())
 
         c.setFont('Helvetica-Bold', 12)
         lin -= 30
@@ -517,17 +483,16 @@ class graficoController:
         c.drawString(570, 10, str(pagina))
 
     def montaDir(self, idEmpreend, mes, ano, relatorio=False):
-
         if relatorio:
-            diretorio = self.app.config['DIRSYS'] + "Relatorios" + self.app.config['BARRADIR']
+            diretorio = os.path.join(
+                self.app.config['DIRSYS'], "Relatorios")
         else:
-            diretorio = self.app.config['DIRSYS'] + str(idEmpreend) + self.app.config['BARRADIR'] + ano + "_" + mes + self.app.config['BARRADIR']
-
-        return (diretorio)
+            diretorio = os.path.join(
+                self.app.config['DIRSYS'], idEmpreend, f"{ano}_{mes}")
+        return diretorio
 
     def criaDir(self, diretorio):
         # Criar diretórios
-
         if not os.path.exists(diretorio):
             os.makedirs(diretorio)
             print(f"Diretorio '{diretorio}' criado com sucesso.")
@@ -538,8 +503,6 @@ class graficoController:
         return
 
     def verificaDir(self, diretorio):
-        # Criar diretórios
-
         if not os.path.exists(diretorio):
             print(f"Diretorio '{diretorio}' não existe.")
             return False
@@ -548,123 +511,169 @@ class graficoController:
             return True
 
     def verificaArqRelatorio(self, diretorio):
-
         listaErro = []
-#   Primeira Página
+        #   Primeira Página
 
-        foto = "C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\franca.jpg"
+        foto = self.getPathImgs("franca.jpg")
         if not os.path.isfile(foto):
-            listaErro.append('1ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "perspectiva.png"
-        if not os.path.isfile(foto):
-            listaErro.append('1ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "foto_3D_1.png"
-        if not os.path.isfile(foto):
-            listaErro.append('1ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "foto_atual.jpeg"
-        if not os.path.isfile(foto):
-            listaErro.append('1ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "foto_3D_2.png"
-        if not os.path.isfile(foto):
-            listaErro.append('1ª pag - ' + foto + ' não encontrado')
-        foto = "C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\legenda 2.png"
-        if not os.path.isfile(foto):
-            listaErro.append('1ª pag - ' + foto + ' não encontrado')
+            listaErro.append(
+                'A imagem franca.jpg na 1ª página não foi encontrada')
 
-#   Segunda Página
-        foto = diretorio + "tab_medicoes.png"
+        foto = os.path.join(diretorio, "perspectiva.png")
         if not os.path.isfile(foto):
-            listaErro.append('2ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "graf_progresso_obra.png"
+            listaErro.append(
+                'A imagem perspectiva.png na 1ª página não foi encontrada')
+
+        foto = os.path.join(diretorio, "foto_3D_1.png")
         if not os.path.isfile(foto):
-            listaErro.append('2ª pag - ' + foto + ' não encontrado')
+            listaErro.append(
+                'A imagem foto_3D_1.png na 1ª página não foi encontrada')
+
+        foto = os.path.join(diretorio, "foto_atual.jpeg")
+        if not os.path.isfile(foto):
+            listaErro.append(
+                'A imagem foto_atual.jpeg na 1ª página não foi encontrada')
+
+        foto = os.path.join(diretorio, "foto_3D_2.png")
+        if not os.path.isfile(foto):
+            listaErro.append(
+                'A imagem foto_3D_2.png na 1ª página não foi encontrada')
+
+        foto = self.getPathImgs("legenda_2.png")
+        if not os.path.isfile(foto):
+            listaErro.append(
+                'A imagem legenda_2.png na 1ª página não foi encontrada')
+
+        #   Segunda Página
+        foto = os.path.join(diretorio, "tab_medicoes.png")
+        if not os.path.isfile(foto):
+            listaErro.append(
+                'A imagem tab_medicoes.png na 2ª página não foi encontrada')
+
+        foto = os.path.join(diretorio, "graf_progresso_obra.png")
+        if not os.path.isfile(foto):
+            listaErro.append(
+                'A imagem graf_progresso_obra.png na 2ª página não foi encontrada')
 
 #   Terceira Página
-        foto = diretorio + "tab_acomp_financeiro.png"
+        foto = os.path.join(diretorio, "tab_acomp_financeiro.png")
         if not os.path.isfile(foto):
-            listaErro.append('3ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "graf_orcamento_liberacao_valor.png"
+            listaErro.append(
+                'A imagem tab_acomp_financeiro.png na 3ª página não foi encontrada')
+
+        foto = os.path.join(diretorio, "graf_orcamento_liberacao_valor.png")
         if not os.path.isfile(foto):
-            listaErro.append('3ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "tab_orcamento_liberacao.png"
+            listaErro.append(
+                'A imagem graf_orcamento_liberacao_valor.png na 3ª página não foi encontrada')
+
+        foto = os.path.join(diretorio, "tab_orcamento_liberacao.png")
         if not os.path.isfile(foto):
-            listaErro.append('3ª pag - ' + foto + ' não encontrado')
+            listaErro.append(
+                'A imagem tab_orcamento_liberacao.png na 3ª página não foi encontrada')
 
 #   Quarta Página
-        foto = diretorio + "tab_notas.png"
+        foto = os.path.join(diretorio, "tab_notas.png")
         if not os.path.isfile(foto):
-            listaErro.append('4ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "graf_indices_garantia_I.png"
+            listaErro.append(
+                'A imagem tab_notas.png na 4ª página não foi encontrada')
+
+        foto = os.path.join(diretorio, "graf_indices_garantia_I.png")
         if not os.path.isfile(foto):
-            listaErro.append('4ª pag - ' + foto + ' não encontrado')
+            listaErro.append(
+                'A imagem graf_indices_garantia_I.png na 4ª página não foi encontrada')
 
 #   Quinta Página
-        foto = diretorio + "graf_indices_garantia_II.png"
+        foto = os.path.join(diretorio, "graf_indices_garantia_II.png")
         if not os.path.isfile(foto):
-            listaErro.append('5ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "graf_chaves_perc.png"
+            listaErro.append(
+                'A imagem graf_indices_garantia_II.png na 5ª página não foi encontrada')
+
+        foto = os.path.join(diretorio, "graf_chaves_perc.png")
         if not os.path.isfile(foto):
-            listaErro.append('5ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "graf_chaves_valor.png"
+            listaErro.append(
+                'A imagem graf_chaves_perc.png na 5ª página não foi encontrada')
+
+        foto = os.path.join(diretorio, "graf_chaves_valor.png")
         if not os.path.isfile(foto):
-            listaErro.append('5ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "graf_vendas_perc.png"
+            listaErro.append(
+                'A imagem graf_chaves_valor.png na 5ª página não foi encontrada')
+
+        foto = os.path.join(diretorio, "graf_vendas_perc.png")
         if not os.path.isfile(foto):
-            listaErro.append('5ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "graf_vendas_valor.png"
+            listaErro.append(
+                'A imagem graf_vendas_perc.png na 5ª página não foi encontrada')
+
+        foto = os.path.join(diretorio, "graf_vendas_valor.png")
         if not os.path.isfile(foto):
-            listaErro.append('5ª pag - ' + foto + ' não encontrado')
+            listaErro.append(
+                'A imagem graf_vendas_valor.png na 5ª página não foi encontrada')
 
 #   Sexta Página
-        foto = diretorio + "tab_conta_corrente.png"
+        foto = os.path.join(diretorio, "tab_conta_corrente.png")
         if not os.path.isfile(foto):
-            listaErro.append('6ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "tab_garantias_geral.png"
+            listaErro.append(
+                'A imagem tab_conta_corrente.png na 6ª página não foi encontrada')
+
+        foto = os.path.join(diretorio, "tab_garantias_geral.png")
         if not os.path.isfile(foto):
-            listaErro.append('6ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "tab_garantias_obra.png"
+            listaErro.append(
+                'A imagem tab_garantias_geral.png na 6ª página não foi encontrada')
+
+        foto = os.path.join(diretorio, "tab_garantias_obra.png")
         if not os.path.isfile(foto):
-            listaErro.append('6ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "tab_certidoes.png"
+            listaErro.append(
+                'A imagem tab_garantias_obra.png na 6ª página não foi encontrada')
+
+        foto = os.path.join(diretorio, "tab_certidoes.png")
         if not os.path.isfile(foto):
-            listaErro.append('6ª pag - ' + foto + ' não encontrado')
+            listaErro.append(
+                'A imagem tab_certidoes.png na 6ª página não foi encontrada')
+
 #   Setima Página
-        foto = diretorio + "foto_3D_1.png"
+        foto = os.path.join(diretorio, "foto_3D_1.png")
         if not os.path.isfile(foto):
-            listaErro.append('7ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "foto_3D_2.png"
+            listaErro.append(
+                'A imagem foto_3D_1.png na 7ª página não foi encontrada')
+
+        foto = os.path.join(diretorio, "foto_3D_2.png")
         if not os.path.isfile(foto):
-            listaErro.append('7ª pag - ' + foto + ' não encontrado')
-        foto = diretorio + "foto_3D_3.png"
+            listaErro.append(
+                'A imagem foto_3D_2.png na 7ª página não foi encontrada')
+
+        foto = os.path.join(diretorio, "foto_3D_3.png")
         if not os.path.isfile(foto):
-            listaErro.append('7ª pag - ' + foto + ' não encontrado')
-        foto = "C:\\Desafios JavaScript\\gfc\\app\\static\\imgs\\legenda 2.png"
+            listaErro.append(
+                'A imagem foto_3D_3.png na 7ª página não foi encontrada')
+
+        foto = self.getPathImgs("legenda_2.png")
         if not os.path.isfile(foto):
-            listaErro.append('7ª pag - ' + foto + ' não encontrado')
+            listaErro.append(
+                'A imagem legenda_2.png na 7ª página não foi encontrada')
 
 #   Oitava Página
-        fotoJpeg = diretorio + "foto_1.jpeg"
-        fotoPng = diretorio + "foto_1.png"
+        fotoJpeg = os.path.join(diretorio, "foto_1.jpeg")
+        fotoPng = os.path.join(diretorio, "foto_1.png")
         if not (os.path.isfile(fotoJpeg) or os.path.isfile(fotoPng)):
-            listaErro.append('8ª pag - ' + fotoPng + ' não encontrado')
+            listaErro.append(
+                'A imagem foto_1.png ou foto_1.jpeg na 8ª página não foi encontrada')
 
 #   Nona Página
-#        foto = diretorio + "foto_7.jpeg"
+#        foto = os.path.join(diretorio, "foto_7.jpeg")
 #        if not os.path.isfile(foto):
 #            listaErro.append('9ª pag - ' + foto + ' não encontrado')
 #
 #   Décima Página
-#        foto = diretorio + "foto_13.jpeg"
+#        foto = os.path.join(diretorio, "foto_13.jpeg")
 #        if not os.path.isfile(foto):
 #            listaErro.append('10ª pag - ' + foto + ' não encontrado')
 #
 #   Décima Primeira Página
-#        foto = diretorio + "foto_19.jpeg"
+#        foto = os.path.join(diretorio, "foto_19.jpeg")
 #        if not os.path.isfile(foto):
 #            listaErro.append('11ª pag - ' + foto + ' não encontrado')
 
 #   Décima Segunda Página
-#        foto = diretorio + "consideracoes_finais.png"
+#        foto = os.path.join(diretorio, "consideracoes_finais.png"
 #        if not os.path.isfile(foto):
 #            listaErro.append('12ª pag - ' + foto + ' não encontrado')
 
