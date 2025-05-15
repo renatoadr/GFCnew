@@ -218,12 +218,13 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     for u in recS:
         x1.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
         y1.append(IndiceGarantia)
-        y2.append((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp)
+        y2.append(round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2))
 
     linhas = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7,
               0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]
-    plt.hlines(linhas, 0, 3, '#9feafc')
 
+    tamLinha = len(x1) -1
+    plt.hlines(linhas, 0, tamLinha, '#9feafc')
     plt.plot(x1, y1, label='IC Estipulado em contrato')
     plt.plot(x1, y2, label='IC Recebiveis + estoque')
 
@@ -289,37 +290,38 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
     recS = uniC.consultarUnidadeRecebibeisNOVA(
         idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
 
-    x1 = []
-    y1 = []
+    x2 = []
     y2 = []
+    y3 = []
 
     for u in recS:
-        x1.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
-        y1.append(u.getTtPago() / VlPlanoEmp)
-        y2.append(u.getTtUnidade() / VlPlanoEmp)
+        x2.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
+        y2.append(round(u.getTtPago() / VlPlanoEmp,2))
+        y3.append(round(u.getTtUnidade() / VlPlanoEmp,2))
 
     linhas = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5,
               0.6, 0.7, 0.8, 0.9, 1.00, 1.10, 1.20]
 
-    plt.hlines(linhas, 0, 3, '#9feafc')
-    plt.plot(x1, y1, label='IC Recebiveis')
-    plt.plot(x1, y2, label='IC Estoque')
+    tamLinha = len(x2) -1
+    plt.hlines(linhas, 0, tamLinha, '#9feafc')
+    plt.plot(x2, y2, label='IC Recebiveis')
+    plt.plot(x2, y3, label='IC Estoque')
 
-    annotationsy1 = y1
     annotationsy2 = y2
+    annotationsy3 = y3
 
-    plt.scatter(x1, y1, s=20)
-    plt.scatter(x1, y2, s=20)
+    plt.scatter(x2, y2, s=20)
+    plt.scatter(x2, y3, s=20)
 
     plt.ylim(0.0, 1.2)
 
     plt.title("Índices de garantia previsto x existente", fontdict={
               'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
 
-    for xi, yi, text in zip(x1, y1, annotationsy1):
+    for xi, yi, text in zip(x2, y2, annotationsy2):
         plt.annotate(text, xy=(xi, yi), xycoords='data',
                      xytext=(3, 10), textcoords='offset points')
-    for xi, yi, text in zip(x1, y2, annotationsy2):
+    for xi, yi, text in zip(x2, y3, annotationsy3):
         plt.annotate(text, xy=(xi, yi), xycoords='data',
                      xytext=(3, -10), textcoords='offset points')
 

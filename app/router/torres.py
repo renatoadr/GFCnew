@@ -1,10 +1,10 @@
 from decorators.login_riquired import login_required
 from flask import Blueprint, request, render_template, redirect, flash
-
 from controller.torreController import torreController
 from controller.unidadeController import unidadeController
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from dto.torre import torre
+import utils.converter as converter
 
 torre_bp = Blueprint('torres', __name__)
 
@@ -66,6 +66,8 @@ def cadastrar_torre():
     t.setPrefixCobertura(request.form.get('prefixCobertura')
                          if request.form.get('prefixCobertura') else 'Cobertura')
     t.setNumAptUmAndarUm(request.form.get('numApUmAdrUm'))
+    t.setVlrUnidade(converter.converterStrToFloat(request.form.get('vlrUnidade')))
+    t.setVlrCobertura(converter.converterStrToFloat(request.form.get('vlrCobertura')))
 
     torreC = torreController()
     torreC.inserirTorre(t)

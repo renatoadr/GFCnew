@@ -41,7 +41,7 @@ def gerar_relatorio():
         else:
             c = canvas.Canvas(dirRelatorio + nomePdf)
             pagina = 1
-            grafC.pdfPag1(c, diretorio, pagina)
+            grafC.pdfPag1(c, diretorio, pagina, idEmpreend)
             c.showPage()
             pagina += 1
             grafC.pdfPag2(c, diretorio, pagina)

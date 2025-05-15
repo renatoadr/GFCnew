@@ -63,16 +63,35 @@
 
           <div class="col-4">
             <div class="form-floating">
+              <input type="text" name="vlrUnidade" id="vlrUnidade" class="form-control money" placeholder=""
+                value="{{ torre.getVlrUnidade() if torre }}" maxlength="15" />
+              <label for="vlrUnidade">Preço do Apartamento</label>
+            </div>
+          </div>
+        </div>
+
+        <div class="row mt-4">
+          <div class="col-4">
+            <div class="form-floating">
               <input type="text" name="qtdCoberturas" id="qtdCoberturas" class="form-control 2num" placeholder=""
                 value="{{ torre.getQtCobertura() if torre }}" maxlength="1" />
               <label for="qtdCoberturas">Quantidade de coberturas</label>
             </div>
           </div>
+
           <div class="col-4">
             <div class="form-floating">
               <input type="text" name="prefixCobertura" id="prefixCobertura" class="form-control" placeholder=""
                 value="{{ torre.getPrefixCobertura() if torre }}" maxlength="20" />
               <label for="prefixCobertura">Prefixo da cobertura</label>
+            </div>
+          </div>
+
+          <div class="col-4">
+            <div class="form-floating">
+              <input type="text" name="vlrCobertura" id="vlrCobertura" class="form-control money" placeholder=""
+                value="{{ torre.getVlrCobertura() if torre }}" maxlength="15" />
+              <label for="vlrCobertura">Preço da cobertura</label>
             </div>
           </div>
         </div>
