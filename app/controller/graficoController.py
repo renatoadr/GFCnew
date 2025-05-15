@@ -2,6 +2,7 @@
 # Tratamento de gáficos
 
 from flask import current_app
+from controller.empreendimentoController import empreendimentoController
 from controller.consideracaoController import consideracaoController
 import os
 
@@ -19,13 +20,17 @@ class graficoController:
         path = path[0].replace(base, '')
         return os.path.join(path, 'static', 'imgs', img)
 
-    def pdfPag1(self, c, diretorio, pagina):
+    def pdfPag1(self, c, diretorio, pagina, idEmpreend):
         #   Primeira Página
-        construtora = 'Construtora: ' + 'Nacional'
-        empreendimento = 'Empreendimento: ' + 'Flat Norte' + ' - ' + 'End da Obra: ' + \
-            'Rua Paulo Lobo s/n' + ' - ' + 'Centro' + ' - ' + 'Limeira' + ' - ' + 'SP'
-        agenteFinanc = 'Agente financeiro: ' + 'Banco Público'
-        vistoria = '2ª' + ' Vistoria - Período de Medição: ' + '20/11/2024 à 20/12/2024'
+        empC = empreendimentoController()
+        empS = empC.consultarEmpreendimentoPeloId(idEmpreend)
+
+        construtora = 'Construtora: ' + empS.getNmConstrutor()
+        empreendimento = 'Empreendimento: ' + empS.getNmEmpreend() + ' - ' + 'End da Obra: ' + \
+            empS.getLogradouro() + ' - ' + empS.getBairro() + ' - ' + empS.getCidade() + ' - ' + empS.getEstado()
+        agenteFinanc = 'Agente financeiro: ' + empS.getNmBanco()
+        vistoria = '4ª' + ' Vistoria - Período de Medição: ' + '20/03/2025 à 20/04/2025'
+        ##### ATENÇÃO AJUSTAR DADOS DA VISTORIA 
 
         logo = self.getPathImgs("franca.jpg")
         c.drawImage(logo, 450, 800, width=90, height=30,

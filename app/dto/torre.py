@@ -14,6 +14,8 @@ class torre:
     __qtAndar = 0
     __qtCobertura = None
     __numAptUmAndarUm = None
+    __vlrUnidade = -1
+    __vlrCobertura = -1
 
     # Getters
 
@@ -41,6 +43,12 @@ class torre:
     def getNumAptUmAndarUm(self):
         return self.__numAptUmAndarUm
 
+    def getVlrUnidade(self):
+        return self.__vlrUnidade
+
+    def getVlrCobertura(self):
+        return self.__vlrCobertura
+
     # Setters
 
     def setIdTorre(self, param):
@@ -66,3 +74,9 @@ class torre:
 
     def setNumAptUmAndarUm(self, param):
         self.__numAptUmAndarUm = param
+
+    def setVlrUnidade(self, param):
+        self.__vlrUnidade = param  
+
+    def setVlrCobertura(self, param):
+        self.__vlrCobertura = param

@@ -54,7 +54,8 @@ def gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS):
 
     # incluindo a linha de totais
     dd = []
-    dd.append('Estoque em ' + mesVigencia + '/' + anoVigencia)
+    mesEstoque = str(int(mesVigencia) - 1).zfill(2) 
+    dd.append('Estoque em ' + mesEstoque + '/' + anoVigencia)
     dd.append(' ')
     dd.append(geral.formataNumero(somaVlEstoque))
     data.append(dd)

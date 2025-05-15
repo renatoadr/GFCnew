@@ -14,9 +14,9 @@ class torreController:
         cursor = self.__connection.cursor()
 
         queryUnidade = "INSERT INTO " + MySql.DB_NAME + \
-            ".tb_unidades (id_empreendimento, id_torre, unidade, mes_vigencia, ano_vigencia, status) VALUES (%s, %s, %s, %s, %s, %s);"
+            ".tb_unidades (id_empreendimento, id_torre, unidade, mes_vigencia, ano_vigencia, status, vl_unidade) VALUES (%s, %s, %s, %s, %s, %s, %s);"
         queryTorre = "INSERT INTO " + MySql.DB_NAME + \
-            ".tb_torres ( id_empreendimento, nm_torre, qt_unidade, qt_andar, qt_coberturas, prefix_cobertura, num_apt_um_andar_um ) VALUES (%s, %s, %s, %s, %s, %s, %s);"
+            ".tb_torres ( id_empreendimento, nm_torre, qt_unidade, qt_andar, qt_coberturas, prefix_cobertura, num_apt_um_andar_um, vl_unidade, vl_cobertura ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
         dadosUnidade = []
 
@@ -27,7 +27,9 @@ class torreController:
             torre.getQtAndar(),
             torre.getQtCobertura(),
             torre.getPrefixCobertura(),
-            torre.getNumAptUmAndarUm()
+            torre.getNumAptUmAndarUm(),
+            torre.getVlrCobertura(),
+            torre.getVlrUnidade()
         ))
 
         date = datetime.now()
@@ -38,6 +40,8 @@ class torreController:
         qtdCobertura = int(torre.getQtCobertura()
                            ) if torre.getQtCobertura() else 0
         prefix = torre.getPrefixCobertura()
+        vlrUnidade = torre.getVlrUnidade()
+        vlrCobertura = torre.getVlrCobertura()
 
         currentAndar = 1
         currentApt = initAp
@@ -51,7 +55,8 @@ class torreController:
                 currentApt,
                 str(date.month).zfill(2),
                 date.year,
-                'Estoque'
+                'Estoque', 
+                vlrUnidade
             ))
             currentApt += 1
 
@@ -69,7 +74,8 @@ class torreController:
                     f"{prefix} {num}",
                     str(date.month).zfill(2),
                     date.year,
-                    'Estoque'
+                    'Estoque', 
+                    vlrCobertura
                 ))
 
         cursor.executemany(queryUnidade, dadosUnidade)

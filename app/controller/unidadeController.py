@@ -364,3 +364,37 @@ class unidadeController:
     def mudarHistoricoEditado(self, idUnidade):
         query = f"UPDATE {MySql.DB_NAME}.tb_unidades SET ac_historico = 'EDITADO' where id_unidade = %s"
         MySql.exec(query, (idUnidade,))
+
+
+    def teste(self, idEmpreend = 59):
+        self.__connection = MySql.connect()
+        cursor = self.__connection.cursor()
+
+        query1 = "SELECT MIN(CONCAT(ano_vigencia, mes_vigencia)) AS menor_data FROM tb_unidades whare id_empreendimento = " + str(idEmpreend) 
+
+        cursor.execute(query1)
+
+        minAnoMes = cursor.fetchone()
+        print (minAnoMes)
+        
+        query2 =  "select mes_vigencia, ano_vigencia, sum(vl_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " order by id_torre, id_unidade, ano_vigencia, mes_vigencia, status, id_unidade"
+
+        print(query2)
+
+        cursor.execute(query2)
+
+        lista = cursor.fetchall()
+        listaEstoque = []
+
+        for x in lista:
+            u = unidade()
+            u.setMesVigencia(x[0])
+            u.setAnoVigencia(x[1])
+            u.setTtUnidade(x[2])
+            listaEstoque.append(u)
+
+        cursor.close()
+
+        MySql.close(self.__connection)
+
+        return listaEstoque
