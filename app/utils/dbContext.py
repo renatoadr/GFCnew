@@ -27,8 +27,7 @@ class MySql:
         try:
             filePass = open('/run/secrets/db-password', 'r')
             return filePass.read()
-        except Exception as error:
-            logger.error('Não foi encontrado o secret com a senha: ', error)
+        except:
             return os.getenv('DB_PASS')
 
     @staticmethod

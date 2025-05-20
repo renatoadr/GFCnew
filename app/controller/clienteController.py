@@ -1,8 +1,9 @@
-#controller or business logic
+# controller or business logic
 # Trata base de CLIENTES
 
 from dto.cliente import cliente
 from utils.dbContext import MySql
+
 
 class clienteController:
     __connection = None
@@ -10,11 +11,17 @@ class clienteController:
     def __init__(self):
         pass
 
+    @staticmethod
+    def getCliente(cpfCnpj: str) -> str:
+        cliC = clienteController()
+        return cliC.consultaClientePorCpf(cpfCnpj)
+
     def inserirCliente(self, cliente):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
-        query =  "INSERT INTO " + MySql.DB_NAME + ".tb_clientes ( cpf_cnpj, tp_cpf_cnpj, nm_cliente, ddd, tel, email ) VALUES ('" + cliente.getCpfCnpj() + "', '" + cliente.getTpCpfCnpj() + "', '" + cliente.getNmCliente() + "', '" + cliente.getDdd() + "', '" + cliente.getTel() + "', '" + cliente.getEmail() + "')"
+        query = "INSERT INTO " + MySql.DB_NAME + ".tb_clientes ( cpf_cnpj, tp_cpf_cnpj, nm_cliente, ddd, tel, email ) VALUES ('" + cliente.getCpfCnpj(
+        ) + "', '" + cliente.getTpCpfCnpj() + "', '" + cliente.getNmCliente() + "', '" + cliente.getDdd() + "', '" + cliente.getTel() + "', '" + cliente.getEmail() + "')"
 
         print('++++++++++++++++++++++')
         print(query)
@@ -23,20 +30,21 @@ class clienteController:
         cursor.execute(query)
 
         self.__connection.commit()
-        print(cursor.rowcount,"Cliente cadastrado com sucesso")
+        print(cursor.rowcount, "Cliente cadastrado com sucesso")
         cursor.close()
         MySql.close(self.__connection)
 
-    def consultarClientes(self, search = None):
+    def consultarClientes(self, search=None):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
         print('---consultarTorres--')
 
         if search is None:
-          query =  "select * from " + MySql.DB_NAME + ".tb_clientes"
+            query = "select * from " + MySql.DB_NAME + ".tb_clientes"
         else:
-          query =  "select * from " + MySql.DB_NAME + ".tb_clientes where lower(nm_cliente) like '%" + search + "%' "
+            query = "select * from " + MySql.DB_NAME + \
+                ".tb_clientes where lower(nm_cliente) like '%" + search + "%' "
         print('-----------------')
         print(query)
         print('-----------------')
@@ -65,7 +73,8 @@ class clienteController:
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor(dictionary=True)
 
-        query =  "select cpf_cnpj, tp_cpf_cnpj, nm_cliente, ddd, tel, email from " + MySql.DB_NAME + ".tb_clientes where cpf_cnpj = '" + idCli + "'"
+        query = "select cpf_cnpj, tp_cpf_cnpj, nm_cliente, ddd, tel, email from " + \
+            MySql.DB_NAME + ".tb_clientes where cpf_cnpj = '" + idCli + "'"
 
         print(query)
 
@@ -74,10 +83,10 @@ class clienteController:
         linha = cursor.fetchone()
 
         if linha is None:
-          return None
+            return None
 
         print('+++++++++++++++++++++++++++')
-        print (linha)
+        print(linha)
         print(linha['cpf_cnpj'])
         print('+++++++++++++++++++++++++++')
 
@@ -101,9 +110,10 @@ class clienteController:
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
-        query =  "UPDATE " + MySql.DB_NAME + """.tb_clientes SET cpf_cnpj = %s, tp_cpf_cnpj = %s, nm_cliente = %s, ddd = %s, tel = %s, email = %s WHERE cpf_cnpj = %s """
+        query = "UPDATE " + MySql.DB_NAME + \
+            """.tb_clientes SET cpf_cnpj = %s, tp_cpf_cnpj = %s, nm_cliente = %s, ddd = %s, tel = %s, email = %s WHERE cpf_cnpj = %s """
 
-        print (query)
+        print(query)
         cursor.execute(query, (
             cliente.getCpfCnpj(),
             cliente.getTpCpfCnpj(),
@@ -112,20 +122,21 @@ class clienteController:
             cliente.getTel(),
             cliente.getEmail(),
             cliente.getCpfCnpj()
-          )
+        )
         )
 
         self.__connection.commit()
-        print(cursor.rowcount,"Torre atualizada com sucesso")
+        print(cursor.rowcount, "Torre atualizada com sucesso")
         cursor.close()
         MySql.close(self.__connection)
 
-    def excluirCliente(self,cliente):
+    def excluirCliente(self, cliente):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
-        query =  "delete from " + MySql.DB_NAME + ".tb_clientes" + " where cpf_cnpj = " + str(cliente)
-        print (query)
+        query = "delete from " + MySql.DB_NAME + \
+            ".tb_clientes" + " where cpf_cnpj = " + str(cliente)
+        print(query)
 
         cursor.execute(query)
         self.__connection.commit()
@@ -133,21 +144,23 @@ class clienteController:
         MySql.close(self.__connection)
 
     def existeCliente(self, doc):
-      self.__connection = MySql.connect()
-      cursor = self.__connection.cursor()
-      query =  "SELECT COUNT(*) FROM " + MySql.DB_NAME + """.tb_clientes WHERE cpf_cnpj = %s"""
-      cursor.execute(query, (doc,))
-      result = cursor.fetchone()
-      cursor.close()
-      MySql.close(self.__connection)
-      return result[0] > 0
+        self.__connection = MySql.connect()
+        cursor = self.__connection.cursor()
+        query = "SELECT COUNT(*) FROM " + MySql.DB_NAME + \
+            """.tb_clientes WHERE cpf_cnpj = %s"""
+        cursor.execute(query, (doc,))
+        result = cursor.fetchone()
+        cursor.close()
+        MySql.close(self.__connection)
+        return result[0] > 0
 
     def consultaClientePorCpf(self, nrCpf):
-      self.__connection = MySql.connect()
-      cursor = self.__connection.cursor()
-      query =  "SELECT nm_cliente FROM " + MySql.DB_NAME + """.tb_clientes WHERE cpf_cnpj = %s"""
-      cursor.execute(query, (nrCpf,))
-      result = cursor.fetchone()
-      cursor.close()
-      MySql.close(self.__connection)
-      return result[0]
+        self.__connection = MySql.connect()
+        cursor = self.__connection.cursor()
+        query = "SELECT nm_cliente FROM " + MySql.DB_NAME + \
+            """.tb_clientes WHERE cpf_cnpj = %s"""
+        cursor.execute(query, (nrCpf,))
+        result = cursor.fetchone()
+        cursor.close()
+        MySql.close(self.__connection)
+        return result[0]

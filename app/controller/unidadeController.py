@@ -66,8 +66,6 @@ class unidadeController:
         lista = cursor.fetchall()
         listaunids = []
 
-        cliC = clienteController()
-
         for x in lista:
             u = unidade()
             u.setIdUnidade(x['id_unidade'])
@@ -76,7 +74,6 @@ class unidadeController:
             u.setNmTorre(x['nm_torre'])
             u.setUnidade(x['unidade'])
             u.setStatus(x['status'])
-#            print (x['unidade'], x['id_unidade'])
             if x['vl_unidade'] == None:
                 u.setVlUnidade(0.00)
             else:
@@ -88,7 +85,7 @@ class unidadeController:
             if cpfCnpj == None or cpfCnpj == 'None':
                 u.setNmComprador('')
             else:
-                u.setNmComprador(cliC.consultaClientePorCpf(cpfCnpj))
+                u.setNmComprador(clienteController.getCliente(cpfCnpj))
             listaunids.append(u)
 
         cursor.close()
@@ -365,36 +362,93 @@ class unidadeController:
         query = f"UPDATE {MySql.DB_NAME}.tb_unidades SET ac_historico = 'EDITADO' where id_unidade = %s"
         MySql.exec(query, (idUnidade,))
 
+    def gerarInsumoRelatorio(self, idEmpreend, anoVig, mesInicioVig, mesTerminoVig) -> list[unidade]:
+        query = f""" SELECT * FROM {MySql.DB_NAME}.tb_unidades uni
+          WHERE uni.id_empreendimento = %s
+          AND uni.ano_vigencia = %s
+          AND uni.mes_vigencia BETWEEN %s AND %s
+          AND uni.status IN ('Estoque', 'Vendido')
+          AND uni.dt_ocorrencia = (
+              SELECT MAX(dt_ocorrencia) FROM {MySql.DB_NAME}.tb_unidades
+              WHERE unidade = uni.unidade
+              AND ano_vigencia = uni.ano_vigencia
+              AND mes_vigencia = uni.mes_vigencia
+              AND id_empreendimento = uni.id_empreendimento
+              AND uni.status IN ('Estoque', 'Vendido')
+          )
+          GROUP BY uni.unidade, uni.ano_vigencia, uni.mes_vigencia
+          ORDER BY uni.unidade, uni.ano_vigencia, uni.mes_vigencia;
+        """
+        result = []
+        totais = {}
+        totaisList = []
+        data = MySql.getAll(
+            query, (
+                idEmpreend,
+                anoVig,
+                mesInicioVig,
+                mesTerminoVig
+            )
+        )
 
-    def teste(self, idEmpreend = 59):
-        self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()
+        mesTermino = int(mesTerminoVig)
+        for idx, item in enumerate(data):
+            current = item
+            next = data[idx + 1] if idx + 1 < len(data) else None
+            currentVig = int(current['mes_vigencia'])
+            nextVig = int(next['mes_vigencia']) if next else 0
 
-        query1 = "SELECT MIN(CONCAT(ano_vigencia, mes_vigencia)) AS menor_data FROM tb_unidades whare id_empreendimento = " + str(idEmpreend) 
+            result.append(self.mapeamentoUnidade(item))
 
-        cursor.execute(query1)
+            if next and current['unidade'] == next['unidade'] and nextVig - currentVig > 1:
+                for n in range(currentVig + 1, nextVig):
+                    item['mes_vigencia'] = str(n).zfill(2)
+                    result.append(self.mapeamentoUnidade(item))
+            elif next and current['unidade'] != next['unidade'] and currentVig < mesTermino or not next and currentVig < mesTermino:
+                for n in range(currentVig + 1, mesTermino + 1):
+                    item['mes_vigencia'] = str(n).zfill(2)
+                    result.append(self.mapeamentoUnidade(item))
 
-        minAnoMes = cursor.fetchone()
-        print (minAnoMes)
-        
-        query2 =  "select mes_vigencia, ano_vigencia, sum(vl_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " order by id_torre, id_unidade, ano_vigencia, mes_vigencia, status, id_unidade"
+        for uni in result:
+            key = f"{uni.getMesVigencia()}_{uni.getAnoVigencia()}"
+            if not totais.get(key, None):
+                totais[key] = {
+                    "valorUnidade": uni.getVlUnidade(), "valorPago": uni.getVlPago()}
+            else:
+                tt = totais[key]
+                tt = {
+                    "valorUnidade": uni.getVlUnidade() + tt["valorUnidade"],
+                    "valorPago": uni.getVlPago() + tt["valorPago"]
+                }
+                totais[key] = tt
 
-        print(query2)
+        for key, value in totais.items():
+            vigencia = key.split('_')
+            uni = unidade()
+            uni.setMesVigencia(vigencia[0])
+            uni.setAnoVigencia(vigencia[1])
+            uni.setTtUnidade(value["valorUnidade"])
+            uni.setTtPago(value["valorPago"])
+            totaisList.append(uni)
 
-        cursor.execute(query2)
+        return totaisList
 
-        lista = cursor.fetchall()
-        listaEstoque = []
+    def mapeamentoUnidade(self, linha) -> unidade:
+        linhaU = unidade()
+        linhaU.setIdUnidade(linha['id_unidade'])
+        linhaU.setIdTorre(linha['id_torre'])
+        linhaU.setIdEmpreend(linha['id_empreendimento'])
+        linhaU.setUnidade(linha['unidade'])
+        linhaU.setMesVigencia(linha['mes_vigencia'])
+        linhaU.setAnoVigencia(linha['ano_vigencia'])
+        linhaU.setVlUnidade(linha['vl_unidade'] if linha['vl_unidade'] else 0)
+        linhaU.setStatus(linha['status'])
+        linhaU.setCpfComprador(linha['cpf_cnpj_comprador'])
+        linhaU.setVlPago(linha['vl_pago'] if linha['vl_pago'] else 0)
+        linhaU.setDtOcorrencia(linha['dt_ocorrencia'])
+        linhaU.setFinanciado(linha['financiado'])
+        linhaU.setVlChaves(linha['vl_chaves'])
+        linhaU.setVlPreChaves(linha['vl_pre_chaves'])
+        linhaU.setVlPosChaves(linha['vl_pos_chaves'])
 
-        for x in lista:
-            u = unidade()
-            u.setMesVigencia(x[0])
-            u.setAnoVigencia(x[1])
-            u.setTtUnidade(x[2])
-            listaEstoque.append(u)
-
-        cursor.close()
-
-        MySql.close(self.__connection)
-
-        return listaEstoque
+        return linhaU

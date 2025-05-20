@@ -7,7 +7,6 @@ from controller.graficoController import graficoController
 from controller.medicaoController import medicaoController
 from controller.geralController import geralController
 from utils.CtrlSessao import IdEmpreend
-from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
@@ -215,8 +214,8 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     IndiceGarantia = empS.getIndiceGarantia()
 
     uniC = unidadeController()
-    recS = uniC.consultarUnidadeRecebibeis(
-        idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
+    recS = uniC.gerarInsumoRelatorio(
+        idEmpreend, anoInicio, mesInicio, mesFinal)
 
     if not recS:
         return ''
@@ -233,7 +232,7 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     linhas = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7,
               0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]
 
-    tamLinha = len(x1) -1
+    tamLinha = len(x1) - 1
     plt.hlines(linhas, 0, tamLinha, '#9feafc')
     plt.plot(x1, y1, label='IC Estipulado em contrato')
     plt.plot(x1, y2, label='IC Recebiveis + estoque')
@@ -268,6 +267,9 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     grafNome = os.path.join(diretorio, 'graf_indices_garantia_I.png')
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
+
+    plt.close('all')
+
     return grafNome
 
 
@@ -297,45 +299,44 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
     VlPlanoEmp = empS.getVlPlanoEmp()
 
     uniC = unidadeController()
-    recS = uniC.consultarUnidadeRecebibeisNOVA(
-        idEmpreend, mesInicio, anoInicio, mesFinal, anoFinal)
+    recS = uniC.gerarInsumoRelatorio(
+        idEmpreend, anoInicio, mesInicio, mesFinal)
 
     if not recS:
         return ''
 
-    x1 = []
-    y1 = []
-    y2 = []
+    x2 = []
     y3 = []
+    y4 = []
 
     for u in recS:
         x2.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
-        y2.append(round(u.getTtPago() / VlPlanoEmp,2))
-        y3.append(round(u.getTtUnidade() / VlPlanoEmp,2))
+        y3.append(round(u.getTtPago() / VlPlanoEmp, 2))
+        y4.append(round(u.getTtUnidade() / VlPlanoEmp, 2))
 
     linhas = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5,
               0.6, 0.7, 0.8, 0.9, 1.00, 1.10, 1.20]
 
-    tamLinha = len(x2) -1
+    tamLinha = len(x2) - 1
     plt.hlines(linhas, 0, tamLinha, '#9feafc')
-    plt.plot(x2, y2, label='IC Recebiveis')
-    plt.plot(x2, y3, label='IC Estoque')
+    plt.plot(x2, y3, label='IC Recebiveis')
+    plt.plot(x2, y4, label='IC Estoque')
 
-    annotationsy2 = y2
     annotationsy3 = y3
+    annotationsy4 = y4
 
-    plt.scatter(x2, y2, s=20)
     plt.scatter(x2, y3, s=20)
+    plt.scatter(x2, y4, s=20)
 
     plt.ylim(0.0, 1.2)
 
     plt.title("Índices de garantia previsto x existente", fontdict={
               'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
 
-    for xi, yi, text in zip(x2, y2, annotationsy2):
+    for xi, yi, text in zip(x2, y3, annotationsy3):
         plt.annotate(text, xy=(xi, yi), xycoords='data',
                      xytext=(3, 10), textcoords='offset points')
-    for xi, yi, text in zip(x2, y3, annotationsy3):
+    for xi, yi, text in zip(x2, y4, annotationsy4):
         plt.annotate(text, xy=(xi, yi), xycoords='data',
                      xytext=(3, -10), textcoords='offset points')
 
