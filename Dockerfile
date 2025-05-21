@@ -26,10 +26,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY /app/ .
 
-COPY gunicorn_config.py .
-
 COPY gfc_linux.cfg gfc.cfg
 
 EXPOSE 8080
 
-CMD ["gunicorn","--config", "gunicorn_config.py", "main:app"]
+CMD ["waitress-serve","--listen=*:8080", "main:app"]

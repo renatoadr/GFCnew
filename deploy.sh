@@ -107,10 +107,10 @@ log "Carregando para o docker do servidor a nova imagem. Aguarde alguns minutos.
 ecSrCom "cd ${pasta_servidor} && docker load < ${nome_arquivo}.gz"
 
 log "Removendo arquivos de configuração do servidor"
-ecSrCom "cd ${pasta_servidor} && rm -f docker-compose.yml gunicorn_config.py nginx.conf"
+ecSrCom "cd ${pasta_servidor} && rm -f docker-compose.yml nginx.conf"
 
 log "Enviando novos arquivos de configuração para o servidor"
-scp -i "${path_chave}" docker-compose.yml gunicorn_config.py nginx.conf "${server_connect}":${pasta_servidor}
+scp -i "${path_chave}" docker-compose.yml nginx.conf "${server_connect}":${pasta_servidor}
 
 log "Parando os containers no servidor"
 ecSrCom "cd ${pasta_servidor} && docker-compose down"
