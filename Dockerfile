@@ -28,6 +28,6 @@ COPY /app/ .
 
 COPY gfc_linux.cfg gfc.cfg
 
-EXPOSE 8080
+EXPOSE 5000
 
-CMD ["waitress-serve","--listen=*:8080", "main:app"]
+CMD ["waitress-serve","--listen=*:5000", "main:app"]
