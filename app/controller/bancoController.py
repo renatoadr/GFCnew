@@ -45,7 +45,7 @@ class bancoController:
         return None
 
     @staticmethod
-    def getNmBanco(cod: str) -> banco:
+    def getNmBanco(cod: str):
         ctrl = bancoController()
         banco = ctrl.get_banco_pelo_id(cod)
         return None if not banco else banco.getDescricao()
