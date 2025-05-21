@@ -224,18 +224,24 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     y1 = []
     y2 = []
 
+    vlrAnterior = 0
+    varicao = 0
+
     for u in recS:
         x1.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
         y1.append(IndiceGarantia)
         y2.append(round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2))
+        vlrAtual = round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2)
+        variacao = vlrAtual - vlrAnterior
+        vlrAnterior = vlrAtual
+        print(vlrAnterior, vlrAtual, variacao)    
 
-    linhas = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7,
-              0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6]
+    linhas = [1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.8, 1.9, 2.0]
 
     tamLinha = len(x1) - 1
     plt.hlines(linhas, 0, tamLinha, '#9feafc')
     plt.plot(x1, y1, label='IC Estipulado em contrato')
-    plt.plot(x1, y2, label='IC Recebiveis + estoque')
+    plt.plot(x1, y2, label='IC Recebiveis + estoque - Variação no período: ' + str(variacao))
 
     annotationsy1 = y1
     annotationsy2 = y2
@@ -243,7 +249,7 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     plt.scatter(x1, y1, s=20)
     plt.scatter(x1, y2, s=20)
 
-    plt.ylim(0.01, 1.6)
+    plt.ylim(1.0, 2.0)
 
     plt.title("Índices de garantia previsto x existente", fontdict={
         'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
@@ -311,11 +317,14 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
 
     for u in recS:
         x2.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
-        y3.append(round(u.getTtPago() / VlPlanoEmp, 2))
+        if u.getTtPago() > 0:
+            y3.append(round(u.getTtPago() / VlPlanoEmp, 2))
+        else:
+            y3.append(0.0)
         y4.append(round(u.getTtUnidade() / VlPlanoEmp, 2))
 
-    linhas = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5,
-              0.6, 0.7, 0.8, 0.9, 1.00, 1.10, 1.20]
+    linhas = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.00,
+              1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80, 1.90, 2.00]
 
     tamLinha = len(x2) - 1
     plt.hlines(linhas, 0, tamLinha, '#9feafc')
@@ -328,7 +337,7 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
     plt.scatter(x2, y3, s=20)
     plt.scatter(x2, y4, s=20)
 
-    plt.ylim(0.0, 1.2)
+    plt.ylim(0.0, 2.2)
 
     plt.title("Índices de garantia previsto x existente", fontdict={
               'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')

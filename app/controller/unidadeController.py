@@ -376,7 +376,6 @@ class unidadeController:
               AND id_empreendimento = uni.id_empreendimento
               AND uni.status IN ('Estoque', 'Vendido')
           )
-          GROUP BY uni.unidade, uni.ano_vigencia, uni.mes_vigencia
           ORDER BY uni.unidade, uni.ano_vigencia, uni.mes_vigencia;
         """
         result = []
@@ -412,16 +411,20 @@ class unidadeController:
         for uni in result:
             key = f"{uni.getMesVigencia()}_{uni.getAnoVigencia()}"
             if not totais.get(key, None):
-                totais[key] = {
-                    "valorUnidade": uni.getVlUnidade(), "valorPago": uni.getVlPago()}
+                if uni.getStatus() == 'Estoque':
+                    totais[key] = {
+                        "valorUnidade": uni.getVlUnidade(), "valorPago": 0}
+                else:
+                    totais[key] = {"valorUnidade": 0,
+                                   "valorPago": uni.getVlPago()}
             else:
                 tt = totais[key]
-                tt = {
-                    "valorUnidade": uni.getVlUnidade() + tt["valorUnidade"],
-                    "valorPago": uni.getVlPago() + tt["valorPago"]
+                ttNew = {
+                    "valorUnidade": tt["valorUnidade"] + (uni.getVlUnidade() if uni.getStatus() == 'Estoque' else 0),
+                    "valorPago": tt["valorPago"] + (uni.getVlPago() if uni.getStatus() == 'Vendido' else 0)
                 }
-                totais[key] = tt
-
+                totais[key]=ttNew
+                
         for key, value in totais.items():
             vigencia = key.split('_')
             uni = unidade()
