@@ -4,7 +4,7 @@
 from controller.clienteController import clienteController
 from dto.unidade import unidade
 from utils.dbContext import MySql
-import locale
+from utils.logger import logger
 
 
 class unidadeController:
@@ -374,13 +374,18 @@ class unidadeController:
               AND ano_vigencia = uni.ano_vigencia
               AND mes_vigencia = uni.mes_vigencia
               AND id_empreendimento = uni.id_empreendimento
+              AND id_torre = uni.id_torre
               AND uni.status IN ('Estoque', 'Vendido')
           )
-          ORDER BY uni.unidade, uni.ano_vigencia, uni.mes_vigencia;
+          ORDER BY uni.id_torre, uni.unidade, uni.ano_vigencia, uni.mes_vigencia;
         """
         result = []
         totais = {}
         totaisList = []
+
+        print("Buscando unidades para calcular com parametros: ", {
+            "IdEmpreendimento": idEmpreend, "AnoVigencia": anoVig, "MesInicial": mesInicioVig, "MesTermino": mesTerminoVig}, end="\n\n")
+
         data = MySql.getAll(
             query, (
                 idEmpreend,
@@ -390,6 +395,11 @@ class unidadeController:
             )
         )
 
+        print("Encontrado os dados: ", data, end="\n\n")
+        print("Qauntidade de unidades encontradas: ", len(data), end="\n\n")
+
+        print("Realizando o processamento de normalização dos dados...", end="\n\n")
+
         mesTermino = int(mesTerminoVig)
         for idx, item in enumerate(data):
             current = item
@@ -397,34 +407,58 @@ class unidadeController:
             currentVig = int(current['mes_vigencia'])
             nextVig = int(next['mes_vigencia']) if next else 0
 
+            print("Registro corrente: ", item, end="\n\n")
+
             result.append(self.mapeamentoUnidade(item))
 
             if next and current['unidade'] == next['unidade'] and nextVig - currentVig > 1:
                 for n in range(currentVig + 1, nextVig):
                     item['mes_vigencia'] = str(n).zfill(2)
+                    print("Registro clonado mesma unidade: ", item)
                     result.append(self.mapeamentoUnidade(item))
             elif next and current['unidade'] != next['unidade'] and currentVig < mesTermino or not next and currentVig < mesTermino:
                 for n in range(currentVig + 1, mesTermino + 1):
                     item['mes_vigencia'] = str(n).zfill(2)
+                    print("Registro clonado unidade diferente: ", item)
                     result.append(self.mapeamentoUnidade(item))
 
+        print("Quantidade de unidades geradas", len(result) end="\n\n")
+        print("Calculando os totais por mês....", end="\n\n")
+
         for uni in result:
+            print("Totais antes do calculo: ", totais, end="\n\n")
+
             key = f"{uni.getMesVigencia()}_{uni.getAnoVigencia()}"
+
+            print("Vigencia atual: ", key, end="\n\n")
+
+            print("Unidade atual para calculos: ", {"Torre": uni.getIdTorre(
+            ), "Unidade": uni.getUnidade(), "Status": uni.getStatus(), "ValorUnidade": uni.getVlUnidade(), "ValorPago": uni.getVlPago()}, end="\n\n")
+
             if not totais.get(key, None):
                 if uni.getStatus() == 'Estoque':
                     totais[key] = {
                         "valorUnidade": uni.getVlUnidade(), "valorPago": 0}
+                    print(
+                        "Total criado para Status Estoque: ", totais[key], end="\n\n")
                 else:
                     totais[key] = {"valorUnidade": 0,
                                    "valorPago": uni.getVlPago()}
+                    print(
+                        "Total criado para Status Vendido: ", totais[key], end="\n\n")
+
             else:
                 tt = totais[key]
                 ttNew = {
                     "valorUnidade": tt["valorUnidade"] + (uni.getVlUnidade() if uni.getStatus() == 'Estoque' else 0),
                     "valorPago": tt["valorPago"] + (uni.getVlPago() if uni.getStatus() == 'Vendido' else 0)
                 }
-                totais[key]=ttNew
-                
+                print(
+                    f"Total calculdo para vigencia {key}: ", ttNew, end="\n\n")
+                totais[key] = ttNew
+
+        print("Mapeando os objetos das unidades...", end="\n\n")
+
         for key, value in totais.items():
             vigencia = key.split('_')
             uni = unidade()
@@ -432,6 +466,8 @@ class unidadeController:
             uni.setAnoVigencia(vigencia[1])
             uni.setTtUnidade(value["valorUnidade"])
             uni.setTtPago(value["valorPago"])
+            print("Unidade mapeada: ", {
+                  "Vigencia": vigencia, "ValorUnidade": value["valorUnidade"], "ValorPago": value["valorPago"]}, end="\n\n")
             totaisList.append(uni)
 
         return totaisList

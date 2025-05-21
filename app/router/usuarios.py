@@ -133,7 +133,13 @@ def minha_conta():
     sUs = get_user_logged() if has_user_logged() else get_user_logged_mobile()
     ctrlUser = usuarioController()
     usuario = ctrlUser.get_usuario_pelo_id(sUs.id)
-    return render_template("usuario.html", user=usuario)
+    bancos = None
+
+    if sUs.profile in [TipoAcessos.RT.name, TipoAcessos.ADM.name]:
+        ctrlBanco = bancoController()
+        bancos = ctrlBanco.lista_bancos()
+
+    return render_template("usuario.html", user=usuario, bancos=bancos)
 
 
 def getForm() -> usuario:

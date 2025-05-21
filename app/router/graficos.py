@@ -93,6 +93,8 @@ def gerar_graf_orcamento_liberacao(idEmpreend, mes, ano, tipo, medS):
 
     plt.savefig(grafNome, bbox_inches='tight')
 
+    plt.close('all')
+
     return grafNome
 
 
@@ -184,6 +186,7 @@ def gerar_graf_progresso_obra(idEmpreend, mesVigencia, anoVigencia, mesInicio, a
     grafNome = os.path.join(diretorio, 'graf_progresso_obra.png')
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
+    plt.close('all')
     return grafNome
 
 
@@ -361,6 +364,7 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
     grafNome = os.path.join(diretorio, 'graf_indices_garantia_II.png')
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
+    plt.close('all')
 
     return grafNome
 
@@ -441,6 +445,7 @@ def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia, tipo):
 #    grafNome = diretorio + 'graf_vendas.png'
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
+    plt.close('all')
 
     return grafNome
 
@@ -519,4 +524,5 @@ def gerar_graf_chaves(idEmpreend, mesVigencia, anoVigencia, tipo):
 #    grafNome = diretorio + 'graf_chaves.png'
 
     plt.savefig(grafNome, bbox_inches='tight')
+    plt.close('all')
     return grafNome

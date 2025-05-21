@@ -54,7 +54,7 @@ def gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS):
 
     # incluindo a linha de totais
     dd = []
-    mesEstoque = str(int(mesVigencia) - 1).zfill(2) 
+    mesEstoque = str(int(mesVigencia) - 1).zfill(2)
     dd.append('Estoque em ' + mesEstoque + '/' + anoVigencia)
     dd.append(' ')
     dd.append(geral.formataNumero(somaVlEstoque))
@@ -190,7 +190,7 @@ def gerar_tab_conta_corrente(idEmpreend, mesVigencia, anoVigencia, conS):
     grafNome = os.path.join(diretorio, 'tab_conta_corrente.png')
 
     plt.savefig(grafNome)
-
+    plt.close('all')
     return grafNome
 
 
@@ -283,6 +283,7 @@ def gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia):
     grafNome = os.path.join(diretorio, 'tab_garantias_geral.png')
 
     plt.savefig(grafNome)
+    plt.close('all')
     return grafNome
 
 
@@ -371,6 +372,7 @@ def gerar_tab_garantias_obra(idEmpreend, mesVigencia, anoVigencia):
     grafNome = os.path.join(diretorio, 'tab_garantias_obra.png')
 
     plt.savefig(grafNome)
+    plt.close('all')
     return grafNome
 
 
@@ -464,6 +466,7 @@ def gerar_tab_certidoes(idEmpreend, mes, ano):
     grafNome = os.path.join(diretorio, 'tab_certidoes.png')
 
     plt.savefig(grafNome)
+    plt.close('all')
     return grafNome
 
 
@@ -579,6 +582,7 @@ def gerar_tab_acomp_financeiro(idEmpreend, mesVigencia, anoVigencia, medS, notS)
 
     plt.savefig(grafNome)
 
+    plt.close('all')
     return grafNome
 
 
@@ -784,5 +788,5 @@ def gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS):
     grafNome = os.path.join(diretorio, 'tab_orcamento_liberacao.png')
 
     plt.savefig(grafNome)
-
+    plt.close('all')
     return grafNome

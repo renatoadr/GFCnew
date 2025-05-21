@@ -79,7 +79,7 @@ def init(app):
 
 init(app)
 
-if __name__ == "__main__":
+if __name__ == "__main__" or __name__ == "main":
     app.run(host="0.0.0.0", port=5000)
     # app.run(host="192.168.0.11",port=5000)
     # app.run(host="177.195.148.38",port=80)
