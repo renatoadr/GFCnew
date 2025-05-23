@@ -32,7 +32,7 @@ handle_error() {
   exit $exit_code
 }
 
-if [ "$1" == "--re" ]; then
+if [ "$1" == "-r" ]; then
   log "Realizando redeploy e limpando o stage...."
   log "Removendo arquivos compactados da imagem..."
   rm -f *.tar *.gz
@@ -72,9 +72,15 @@ imagem_atual=$(cat docker-compose.yml | grep "image: ${nome_image}" | awk '{prin
 IFS=':' read -r -a imgVersao <<< "$imagem_atual"
 versao_atual=${imgVersao[1]}
 IFS='.' read -r -a semver <<< "$versao_atual"
-versao_build=$(( semver[3] + 1))
-semver[3]=$versao_build
-nova_versao=$(IFS=. ; echo "${semver[*]}")
+
+if [ "$1" = "-v" ] && [ -n "$2" ]; then
+  nova_versao="$2.0"
+else
+  versao_build=$(( semver[3] + 1))
+  semver[3]=$versao_build
+  nova_versao=$(IFS=. ; echo "${semver[*]}")
+fi
+
 nome_arquivo="${nome_image}_${nova_versao}.tar"
 
 log "Alterando versão do deploy no docker-compose"
@@ -98,10 +104,23 @@ log "Tamanho da imagem após a compactação..."
 du -hs "${nome_arquivo}.gz"
 
 log "Enviando imagem para o servidor via sftp"
-sftp -i "${path_chave}" "${server_connect}" <<EOF
+status_image=$(sftp -i "${path_chave}" "${server_connect}" <<EOF
 put "${nome_arquivo}.gz" "${pasta_servidor}"
 exit
 EOF
+)
+
+log "$status_image"
+
+while ["$status_image" = "lost connection"]
+do
+status_image=$(sftp -i "${path_chave}" "${server_connect}" <<EOF
+put "${nome_arquivo}.gz" "${pasta_servidor}"
+exit
+EOF
+)
+log "$status_image"
+done
 
 log "Carregando para o docker do servidor a nova imagem. Aguarde alguns minutos..."
 ecSrCom "cd ${pasta_servidor} && docker load < ${nome_arquivo}.gz"
