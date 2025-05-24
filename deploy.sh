@@ -92,7 +92,7 @@ log "Iniciando build da aplicação"
 docker-compose build app
 
 log "Salvando cópia da imagem... Aguarde alguns minutos..."
-docker save gfcapp -v -o "${nome_arquivo}"
+docker save gfcapp -o "${nome_arquivo}"
 
 log "Tamanho da imagem antes da compactação..."
 du -hs "${nome_arquivo}"
