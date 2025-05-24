@@ -13,8 +13,21 @@ ecSrCom() {
   ssh -i "${path_chave}" "${server_connect}" "$1"
 }
 
+clear_stage() {
+  log "Removendo arquivos compactados da imagem..."
+  rm -f *.tar *.gz
 
-log "Iniciando deploy...."
+  log "Desfazendo versão do compose..."
+  git checkout docker-compose.yml
+
+  log "Removendo imagem local"
+  images=$(docker images -q "$nome_image")
+  if [ -z "$images" ]; then
+    log "Não há imagens para remover"
+  else
+    docker rmi -f "$images"
+  fi
+}
 
 handle_error() {
   local exit_code=$?
@@ -22,26 +35,24 @@ handle_error() {
   log "Removendo arquivos compactados da imagem..."
   rm -f *.tar *.gz
 
-  log "Removendo imagem nova do docker..."
-  docker rmi "${nome_image}:${nova_versao}"
-
-  log "Desfazendo versão do compose..."
-  git checkout docker-compose.yml
+  clear_stage
 
   log "Deploy desfeito!"
   exit $exit_code
 }
 
 if [ "$1" == "-r" ]; then
-  log "Realizando redeploy e limpando o stage...."
-  log "Removendo arquivos compactados da imagem..."
-  rm -f *.tar *.gz
-  log "Desfazendo versão do compose..."
-  git checkout docker-compose.yml
+  log "Realizando a limpeza do stage...."
+
+  clear_stage
+
   log "Reiniciado o fluxo de deploy!"
+  exit 0
 fi
 
 trap 'handle_error' ERR
+
+log "Iniciando deploy...."
 
 log "Verificando se tem arquivo pendente..."
 arquivos_mod=$(git status -s)
@@ -103,27 +114,25 @@ gzip -v "${nome_arquivo}"
 log "Tamanho da imagem após a compactação..."
 du -hs "${nome_arquivo}.gz"
 
-log "Enviando imagem para o servidor via sftp"
-retry_attempts=3
-delay_seconds=3
+log "Enviando imagem para o servidor via scp"
+retry_attempts=5
+delay_seconds=2
 
 while true;
 do
-sftp -v -i "${path_chave}" "${server_connect}" <<EOF
-put "${nome_arquivo}.gz" "${pasta_servidor}"
-exit
-EOF || {
+scp -i "${path_chave}" "${nome_arquivo}.gz" "${server_connect}":${pasta_servidor} || {
   retry_attempts=$((retry_attempts - 1))
   if [ "$retry_attempts" -gt 0 ]; then
       log "Reenvio em $delay_seconds segundos..."
       sleep "$delay_seconds"
       continue
   else
-      log "Erro ao tentar enviar após $retry_attempts tentativas."
+      log "Erro ao tentar enviar após 5 tentativas."
+      clear_stage
+      log "Deploy desfeito!"
       exit 1
   fi
 }
-log "$status_image"
 done
 
 log "Carregando para o docker do servidor a nova imagem. Aguarde alguns minutos..."
