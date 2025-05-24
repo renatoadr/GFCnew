@@ -73,7 +73,7 @@ IFS=':' read -r -a imgVersao <<< "$imagem_atual"
 versao_atual=${imgVersao[1]}
 IFS='.' read -r -a semver <<< "$versao_atual"
 
-if [ "$1" = "-v" ] && [ -n "$2" ]; then
+if [ "$1" == "-v" ] && [ -n "$2" ]; then
   nova_versao="$2.0"
 else
   versao_build=$(( semver[3] + 1))
@@ -104,21 +104,25 @@ log "Tamanho da imagem após a compactação..."
 du -hs "${nome_arquivo}.gz"
 
 log "Enviando imagem para o servidor via sftp"
-status_image=$(sftp -i "${path_chave}" "${server_connect}" <<EOF
-put "${nome_arquivo}.gz" "${pasta_servidor}"
-exit
-EOF
-)
+retry_attempts=3
+delay_seconds=3
 
-log "$status_image"
-
-while ["$status_image" = "lost connection"]
+while true;
 do
-status_image=$(sftp -i "${path_chave}" "${server_connect}" <<EOF
+sftp -v -i "${path_chave}" "${server_connect}" <<EOF
 put "${nome_arquivo}.gz" "${pasta_servidor}"
 exit
-EOF
-)
+EOF || {
+  retry_attempts=$((retry_attempts - 1))
+  if [ "$retry_attempts" -gt 0 ]; then
+      log "Reenvio em $delay_seconds segundos..."
+      sleep "$delay_seconds"
+      continue
+  else
+      log "Erro ao tentar enviar após $retry_attempts tentativas."
+      exit 1
+  fi
+}
 log "$status_image"
 done
 
