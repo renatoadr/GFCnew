@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template
+from flask import Blueprint, request, render_template, redirect
 
 from controller.graficoController import graficoController
 from controller.geralController import geralController
@@ -20,6 +20,8 @@ def gerar_relatorio():
     apelido = request.args.get("apelido")
     mes = request.args.get("mes")
     ano = request.args.get("ano")
+
+    idEmpreend = request.args.get("idEmpreend")
 
     # monta o diretório onde estão os gráficos e fotos
     diretorio = grafC.montaDir(idEmpreend, mes, ano)

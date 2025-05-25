@@ -27,10 +27,11 @@ class graficoController:
 
         construtora = 'Construtora: ' + empS.getNmConstrutor()
         empreendimento = 'Empreendimento: ' + empS.getNmEmpreend() + ' - ' + 'End da Obra: ' + \
-            empS.getLogradouro() + ' - ' + empS.getBairro() + ' - ' + empS.getCidade() + ' - ' + empS.getEstado()
+            empS.getLogradouro() + ' - ' + empS.getBairro() + ' - ' + \
+            empS.getCidade() + ' - ' + empS.getEstado()
         agenteFinanc = 'Agente financeiro: ' + empS.getNmBanco()
         vistoria = '4ª' + ' Vistoria - Período de Medição: ' + '20/03/2025 à 20/04/2025'
-        ##### ATENÇÃO AJUSTAR DADOS DA VISTORIA 
+        # ATENÇÃO AJUSTAR DADOS DA VISTORIA
 
         logo = self.getPathImgs("franca.jpg")
         c.drawImage(logo, 450, 800, width=90, height=30,
@@ -212,7 +213,7 @@ class graficoController:
         if os.path.isfile(f"{imgTemp}.png"):
             c.drawImage(f"{imgTemp}.png", 30, 550,
                         width=250, height=200, mask='auto')
-        else:
+        elif os.path.isfile(f"{imgTemp}.jpeg"):
             c.drawImage(f"{imgTemp}.jpeg", 30, 550,
                         width=250, height=200, mask='auto')
 
@@ -220,7 +221,7 @@ class graficoController:
         if os.path.isfile(f"{imgTemp}.png"):
             c.drawImage(f"{imgTemp}.png", 310, 550,
                         width=250, height=200, mask='auto')
-        else:
+        elif os.path.isfile(f"{imgTemp}.jpeg"):
             c.drawImage(f"{imgTemp}.jpeg", 310, 550,
                         width=250, height=200, mask='auto')
 
@@ -228,7 +229,7 @@ class graficoController:
         if os.path.isfile(f"{imgTemp}.png"):
             c.drawImage(f"{imgTemp}.png", 30, 295,
                         width=250, height=200, mask='auto')
-        else:
+        elif os.path.isfile(f"{imgTemp}.jpeg"):
             c.drawImage(f"{imgTemp}.jpeg", 30, 295,
                         width=250, height=200, mask='auto')
 
@@ -236,7 +237,7 @@ class graficoController:
         if os.path.isfile(f"{imgTemp}.png"):
             c.drawImage(f"{imgTemp}.png", 310, 295,
                         width=250, height=200, mask='auto')
-        else:
+        elif os.path.isfile(f"{imgTemp}.jpeg"):
             c.drawImage(f"{imgTemp}.jpeg", 310, 295,
                         width=250, height=200, mask='auto')
 
@@ -244,7 +245,7 @@ class graficoController:
         if os.path.isfile(f"{imgTemp}.png"):
             c.drawImage(f"{imgTemp}.png", 30,  45,
                         width=250, height=200, mask='auto')
-        else:
+        elif os.path.isfile(f"{imgTemp}.jpeg"):
             c.drawImage(f"{imgTemp}.jpeg", 30,  45,
                         width=250, height=200, mask='auto')
 
@@ -252,7 +253,7 @@ class graficoController:
         if os.path.isfile(f"{imgTemp}.png"):
             c.drawImage(f"{imgTemp}.png", 310,  45,
                         width=250, height=200, mask='auto')
-        else:
+        elif os.path.isfile(f"{imgTemp}.jpeg"):
             c.drawImage(f"{imgTemp}.jpeg", 310,  45,
                         width=250, height=200, mask='auto')
 

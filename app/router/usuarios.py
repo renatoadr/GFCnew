@@ -34,7 +34,7 @@ def abrir_cad_usuario():
     tipos = []
     if sUser.profile in [TipoAcessos.ADM.name, TipoAcessos.RT.name]:
         tipos = TipoAcessos.to_list()
-    return render_template("usuario.html", tipos=tipos, bancos=bancos)
+    return render_template("usuario.html", tipos=tipos, bancos=bancos, tpl='adm')
 
 
 @usuarios_bp.route('/cadastrar_usuario', methods=['POST'])
@@ -54,7 +54,7 @@ def cadastrar_usuarios():
         flash_message.error(
             'Não foi informado a senha para este usuário')
     if flash_message.has_error():
-        return render_template("usuario.html", user=user, tipos=TipoAcessos.to_list())
+        return render_template("usuario.html", user=user, tipos=TipoAcessos.to_list(), tpl='adm')
 
     ctrlUser = usuarioController()
     ctrlUser.cadastrar_usuario(user)
@@ -74,16 +74,17 @@ def editar_usuarios():
     if usuario is None:
         return redirect('/tratar_usuarios')
 
-    return render_template("usuario.html", user=usuario, tipos=TipoAcessos.to_list(), bancos=bancos)
+    return render_template("usuario.html", user=usuario, tipos=TipoAcessos.to_list(), bancos=bancos, tpl='adm')
 
 
 @usuarios_bp.route('/salvar_alteracao_usuario', methods=['POST'])
 def salvar_alteracao_usuarios():
     user = getForm()
     sUs = get_user_logged()
+    tpl = request.form.get('tpl')
     perfil = request.form.get('pfl')
 
-    if not user.getTpAcesso() and sUs.profile != TipoAcessos.RT.name:
+    if tpl != 'conta' and not user.getTpAcesso() and sUs.profile != TipoAcessos.RT.name:
         flash_message.error(
             'Não foi informado o tipo de acesso para este usuário')
     if not user.getEmail():
@@ -93,10 +94,12 @@ def salvar_alteracao_usuarios():
         flash_message.error(
             'Não foi informado o nome para este usuário')
     if flash_message.has_error():
-        return render_template("usuario.html", user=user, tipos=TipoAcessos.to_list())
+        return render_template("usuario.html", user=user, tipos=TipoAcessos.to_list(), tpl=tpl)
 
     if perfil and perfil == TipoAcessos.RT.name:
         user.setTpAcesso(TipoAcessos.RT.name)
+    if tpl == 'conta':
+        user.setTpAcesso(perfil)
 
     ctrlUser = usuarioController()
     ctrlUser.atulizar_usuario(user)
@@ -139,7 +142,7 @@ def minha_conta():
         ctrlBanco = bancoController()
         bancos = ctrlBanco.lista_bancos()
 
-    return render_template("usuario.html", user=usuario, bancos=bancos)
+    return render_template("usuario.html", user=usuario, bancos=bancos, tpl='conta')
 
 
 def getForm() -> usuario:

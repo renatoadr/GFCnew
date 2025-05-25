@@ -16,7 +16,7 @@ class unidade:
     __vlUnidade = ""
     __status = ""
     __cpfComprador = ""
-    __vlPago = 0
+    __vlReceber = 0
     __dtOcorrencia = ""
     __financiado = ""
     __vlChaves = 0
@@ -64,8 +64,8 @@ class unidade:
     def getCpfComprador(self):
         return self.__cpfComprador
 
-    def getVlPago(self):
-        return self.__vlPago
+    def getVlReceber(self):
+        return self.__vlReceber
 
     def getDtOcorrencia(self):
         return self.__dtOcorrencia
@@ -141,8 +141,8 @@ class unidade:
     def setCpfComprador(self, param):
         self.__cpfComprador = param
 
-    def setVlPago(self, param):
-        self.__vlPago = param
+    def setVlReceber(self, param):
+        self.__vlReceber = param
 
     def setDtOcorrencia(self, param):
         self.__dtOcorrencia = param

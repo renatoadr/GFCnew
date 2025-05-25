@@ -17,7 +17,10 @@
           <img src="../static/imgs/logo-gfc.png" class="w-50 m-auto d-block mb-3" alt="Logo GFC">
           <p class="text-center">Informe os dados para acessar o sistema</p>
           {% if mensagem %}
-          <p class="alert alert-danger text-center small p-2">{{mensagem}}</p>
+          <p class="alert alert-danger text-center small p-2 alert-dismissible fade show">
+            {{mensagem}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </p>
           {% endif %}
           <form action="/login_m" method="POST" id="loginForm">
             <div class="row mt-3">

@@ -41,7 +41,10 @@
         {% endfor %}
       </div>
       {% else %}
-      <p class="alert alert-dark text-center">Não há registros de tabelas ou gráficos para apresentar</p>
+      <p class="alert alert-dark text-center alert-dismissible fade show">
+        Não há registros de tabelas ou gráficos para apresentar
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </p>
       {% endif %}
 
     </div>

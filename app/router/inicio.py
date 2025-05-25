@@ -4,6 +4,7 @@ from controller.usuarioController import usuarioController
 from controller.geralController import geralController
 from controller.empreendimentoController import empreendimentoController
 from utils.security import login_user, logout_user, has_user_logged, has_user_mobile_logged, logout_user_mobile, get_user_logged_mobile, login_user_mobile
+from utils.CtrlSessao import IdEmpreend, NmEmpreend
 import re
 import os
 
@@ -105,6 +106,21 @@ def sem_permissao():
 def lista_relatorios():
     idEmpreend = request.args.get('idEmpreend')
     apelido = request.args.get('apelido')
+    idEmpreend = request.args.get("idEmpreend")
+
+    if (idEmpreend is None and not IdEmpreend().has()) or (apelido is None and not NmEmpreend().has()):
+        return redirect('/home')
+
+    if idEmpreend is None:
+        idEmpreend = IdEmpreend().get()
+    else:
+        IdEmpreend().set(idEmpreend)
+
+    if apelido is None:
+        apelido = NmEmpreend().get()
+    else:
+        NmEmpreend().set(apelido)
+
 #    apelido = 'Quinta vez'
     mobile = request.form.get('mobile', 'false').lower() == 'true'
 

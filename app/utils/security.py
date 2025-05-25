@@ -2,6 +2,7 @@ from functools import wraps
 from flask import session, request, redirect, url_for, jsonify
 from models.User import User
 from enums.tipo_acessos import TipoAcessos
+from datetime import datetime, timedelta
 
 
 def login_required_api(fn):
@@ -19,6 +20,9 @@ def login_required(fn):
         if not has_user_logged():
             return redirect(url_for('inicio.login', next=request.url))
         user = get_user_logged()
+        if (user.logged_in + timedelta(hours=1, minutes=30)) < datetime.now():
+            logout_user()
+            return redirect('/')
         if user.profile == TipoAcessos.VST.name:
             return redirect('/sem_permissao')
         return fn(*args, **kwargs)

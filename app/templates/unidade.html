@@ -28,24 +28,36 @@
 
         <div class="row">
           <div class="col-6">
-            <div class="form-floating">
-              <select name="idTorre" id="idTorre" class="form-control" placeholder=""
-                value="{{ unidade.getIdTorre() if unidade }}" readonly>
-                <option value="">Selecione</option>
-                {% for t in listaTorres %}
-                <option value="{{ t.getIdTorre() }}" {% if unidade and unidade.getIdTorre()==t.getIdTorre() %} selected
-                  {% endif %}>{{ t.getNmTorre() }}</option>
-                {% endfor %}
-              </select>
-              <label for="idTorre">Torre</label>
-            </div>
-
-            <div class="row mt-4">
+            <div class="row">
+              <div class="col-6">
+                <div class="form-floating">
+                  <select name="idTorre" id="idTorre" class="form-control" placeholder=""
+                    value="{{ unidade.getIdTorre() if unidade }}" readonly>
+                    <option value="">Selecione</option>
+                    {% for t in listaTorres %}
+                    <option value="{{ t.getIdTorre() }}" {% if unidade and unidade.getIdTorre()==t.getIdTorre() %}
+                      selected {% endif %}>
+                      {{ t.getNmTorre() }}</option>
+                    {% endfor %}
+                  </select>
+                  <label for="idTorre">Torre</label>
+                </div>
+              </div>
               <div class="col-6">
                 <div class="form-floating">
                   <input type="text" name="unidade" id="unidade" class="form-control alphanum" placeholder=""
                     value="{{ unidade.getUnidade() if unidade }}" maxlength="15" readonly>
                   <label for="unidade">Unidade</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-6">
+                <div class="form-floating">
+                  <input type="month" name="vigencia" id="vigencia" class="form-control" placeholder=""
+                    value="{{ vigencia if vigencia }}" {% if modo=='consulta' %} readonly {% endif %}>
+                  <label for="mesVigencia">Vigência</label>
                 </div>
               </div>
               <div class="col-6">
@@ -59,25 +71,6 @@
                     {% endfor %}
                   </select>
                   <label for="status">Status</label>
-                </div>
-              </div>
-            </div>
-
-            <div class="row">
-              <div class="col-6">
-                <div class="form-floating mt-4">
-                  <input type="text" name="mesVigencia" id="mesVigencia" class="form-control 2num" placeholder=""
-                    value="{{ unidade.getMesVigencia() if unidade }}" maxlength="2" {% if modo=='consulta' %} readonly
-                    {% endif %}>
-                  <label for="mesVigencia">Mês</label>
-                </div>
-              </div>
-              <div class="col-6">
-                <div class="form-floating mt-4">
-                  <input type="text" name="anoVigencia" id="anoVigencia" class="form-control 4num" placeholder=""
-                    value="{{ unidade.getAnoVigencia() if unidade }}" maxlength="4" {% if modo=='consulta' %} readonly
-                    {% endif %}>
-                  <label for="anoVigencia">Ano</label>
                 </div>
               </div>
             </div>
@@ -135,10 +128,9 @@
             <div class="row mt-4">
               <div class="col-6">
                 <div class="form-floating">
-                  <input type="text" name="vlPago" id="vlPago" class="form-control money" placeholder=""
-                    value="{{ unidade.getVlPago() if unidade }}" maxlength="18" {% if modo=='consulta' %} readonly {%
-                    endif %}>
-                  <label for="vlPago">Valor pago</label>
+                  <input type="text" name="vlReceber" id="vlReceber" class="form-control money" placeholder=""
+                    value="{{ unidade.getVlReceber() if unidade }}" readonly disabled>
+                  <label for="vlReceber">Valor a receber</label>
                 </div>
               </div>
               <div class="col-6">
@@ -218,30 +210,9 @@
       requiredByStatus('vlPreChaves')
       requiredByStatus('vlChaves')
 
-      requiredByStatus('vlPago')
+      requiredByStatus('vlReceber')
       requiredByStatus('financiado')
       requiredByStatus('vlUnidade')
-
-      requireds.rules.mesVigencia = {
-        required: true,
-        min: 1,
-        max: 12
-      }
-      requireds.rules.anoVigencia = {
-        required: true,
-        min: 1990,
-        max: 3000
-      }
-      requireds.messages.mesVigencia = {
-        required: GFC_MESSAGES.REQUIRED,
-        min: GFC_MESSAGES.MIN(1),
-        max: GFC_MESSAGES.MAX(12),
-      }
-      requireds.messages.anoVigencia = {
-        required: GFC_MESSAGES.REQUIRED,
-        min: GFC_MESSAGES.MIN(1990),
-        max: GFC_MESSAGES.MAX(3000),
-      }
 
       const config = GFC.getConfigValidateForm(requireds);
       config.submitHandler = function (form) {
@@ -263,6 +234,23 @@
       };
 
       $("#formIncluirUnidade").validate(config);
+
+      function somaVlReceber() {
+        let total = 0
+        let elReceiver = $('#vlReceber');
+
+        for (let ipt of ['#vlChaves', '#vlPosChaves', '#vlPreChaves']) {
+          let el = $(ipt)
+          let val = GFC.convertMoneyInNumber(el.val())
+          total += val
+        }
+
+        elReceiver.unmask();
+        elReceiver.val(total.toFixed(2));
+        elReceiver.mask('#.##0,00', { reverse: true });
+      }
+
+      $('#vlChaves, #vlPosChaves, #vlPreChaves').on('input', somaVlReceber)
     });
   </script>
 </body>

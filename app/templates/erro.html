@@ -32,7 +32,10 @@
 
       <div class="row mt-5">
         <div class="col-12">
-          <p class="alert alert-danger text-center">Houve um erro no processamento: {{mensagem}}</p>
+          <p class="alert alert-danger text-center alert-dismissible fade show">
+            Houve um erro no processamento: {{mensagem}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </p>
         </div>
       </div>
     </div>

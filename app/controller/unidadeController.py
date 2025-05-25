@@ -13,7 +13,7 @@ class unidadeController:
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
-        query = f"""INSERT INTO {MySql.DB_NAME}.tb_unidades (id_empreendimento, id_torre, unidade, mes_vigencia, ano_vigencia, vl_unidade, status, cpf_cnpj_comprador, vl_pago, financiado, vl_chaves, vl_pre_chaves, vl_pos_chaves) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        query = f"""INSERT INTO {MySql.DB_NAME}.tb_unidades (id_empreendimento, id_torre, unidade, mes_vigencia, ano_vigencia, vl_unidade, status, cpf_cnpj_comprador, vl_receber, financiado, vl_chaves, vl_pre_chaves, vl_pos_chaves) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
         print('++++++++++++++++++++++')
         print(query)
@@ -28,7 +28,7 @@ class unidadeController:
             unidade.getVlUnidade(),
             unidade.getStatus(),
             unidade.getCpfComprador(),
-            unidade.getVlPago(),
+            unidade.getVlReceber(),
             unidade.getFinanciado(),
             unidade.getVlChaves(),
             unidade.getVlPreChaves(),
@@ -48,10 +48,12 @@ class unidadeController:
         print('---consultarUnidades--')
         print(idEmpreend)
 
-        query = f"""SELECT uni.id_unidade, uni.id_empreendimento, uni.id_torre, uni.unidade, uni.status, tor.nm_torre, uni.vl_unidade, uni.cpf_cnpj_comprador
+        query = f"""SELECT uni.id_unidade, uni.id_empreendimento, uni.id_torre, uni.unidade, uni.status, tor.nm_torre, uni.vl_unidade, cli.nm_cliente
         FROM {MySql.DB_NAME}.tb_unidades uni
         INNER JOIN {MySql.DB_NAME}.tb_torres tor
         ON uni.id_torre = tor.id_torre
+        LEFT JOIN {MySql.DB_NAME}.tb_clientes cli
+        ON uni.cpf_cnpj_comprador = cli.cpf_cnpj
         WHERE uni.id_empreendimento = %s
         AND uni.ac_historico IS NULL
         ORDER by tor.nm_torre, uni.unidade;"""
@@ -80,11 +82,11 @@ class unidadeController:
                 ValorUnidadeFormatado = f"{ValorUnidade:,.2f}".replace(
                     ",", "X").replace(".", ",").replace("X", ".")
                 u.setVlUnidade(ValorUnidadeFormatado)
-            cpfCnpj = x['cpf_cnpj_comprador']
-            if cpfCnpj == None or cpfCnpj == 'None':
+            nmCliente = x['nm_cliente']
+            if nmCliente == None or nmCliente == 'None':
                 u.setNmComprador('')
             else:
-                u.setNmComprador(clienteController.getCliente(cpfCnpj))
+                u.setNmComprador(nmCliente)
             listaunids.append(u)
 
         cursor.close()
@@ -122,7 +124,7 @@ class unidadeController:
         linhaU.setVlUnidade(linha['vl_unidade'])
         linhaU.setStatus(linha['status'])
         linhaU.setCpfComprador(linha['cpf_cnpj_comprador'])
-        linhaU.setVlPago(linha['vl_pago'])
+        linhaU.setVlReceber(linha['vl_receber'])
         linhaU.setDtOcorrencia(linha['dt_ocorrencia'])
         linhaU.setFinanciado(linha['financiado'])
         linhaU.setVlChaves(linha['vl_chaves'])
@@ -199,16 +201,16 @@ class unidadeController:
 
         print('+++++++++ consultarUnidadeRecebibeis ++++++++++++++++++')
 
-#        query = "select vl_pago from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' " + " and ac_historico is null"
+#        query = "select vl_receber from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' " + " and ac_historico is null"
 #
 #        if anoIni == anoFim:
-#                query =  "select mes_vigencia, ano_vigencia, sum(vl_pago) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' and ac_historico is null and ((mes_vigencia >= '" + mesIni + "' and ano_vigencia = '" + anoIni + "') and (mes_vigencia <= '" + mesFim + "' and ano_vigencia = '" + anoFim + "')) group by ano_vigencia, mes_vigencia"
+#                query =  "select mes_vigencia, ano_vigencia, sum(vl_receber) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' and ac_historico is null and ((mes_vigencia >= '" + mesIni + "' and ano_vigencia = '" + anoIni + "') and (mes_vigencia <= '" + mesFim + "' and ano_vigencia = '" + anoFim + "')) group by ano_vigencia, mes_vigencia"
 #                print('===========> com and')
 #        else:
-#                query =  "select mes_vigencia, ano_vigencia, sum(vl_pago) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' and ac_historico is null and ((mes_vigencia >= '" + mesIni + "' and ano_vigencia = '" + anoIni + "') or  (mes_vigencia <= '" + mesFim + "' and ano_vigencia = '" + anoFim + "')) group by ano_vigencia, mes_vigencia"
+#                query =  "select mes_vigencia, ano_vigencia, sum(vl_receber) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' and ac_historico is null and ((mes_vigencia >= '" + mesIni + "' and ano_vigencia = '" + anoIni + "') or  (mes_vigencia <= '" + mesFim + "' and ano_vigencia = '" + anoFim + "')) group by ano_vigencia, mes_vigencia"
 #                print('===========> com or')
 
-        query = "select mes_vigencia, ano_vigencia, SUM(CASE WHEN status = 'Estoque' THEN vl_unidade ELSE 0 END) AS total_unidade, SUM(CASE WHEN status = 'Vendido' THEN vl_pago ELSE 0 END) AS total_pago from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(
+        query = "select mes_vigencia, ano_vigencia, SUM(CASE WHEN status = 'Estoque' THEN vl_unidade ELSE 0 END) AS total_unidade, SUM(CASE WHEN status = 'Vendido' THEN vl_receber ELSE 0 END) AS total_pago from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(
             idEmpreend) + " and ac_historico is null and (ano_vigencia > '" + anoIni + "' OR (ano_vigencia = '" + anoIni + "' AND mes_vigencia >= '" + mesIni + "')) AND (ano_vigencia < '" + anoFim + "' OR (ano_vigencia = '" + anoFim + "' AND mes_vigencia <= '" + mesFim + "')) group by ano_vigencia, mes_vigencia order by ano_vigencia, mes_vigencia"
 
         print(query)
@@ -238,7 +240,7 @@ class unidadeController:
 
         print('+++++++++ consultarUnidadeRecebibeis ++++++++++++++++++')
 
-        query = "select mes_vigencia, ano_vigencia, SUM(CASE WHEN status = 'Estoque' THEN vl_unidade ELSE 0 END) AS total_unidade, SUM(CASE WHEN status = 'Vendido' THEN vl_pago ELSE 0 END) AS total_pago from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(
+        query = "select mes_vigencia, ano_vigencia, SUM(CASE WHEN status = 'Estoque' THEN vl_unidade ELSE 0 END) AS total_unidade, SUM(CASE WHEN status = 'Vendido' THEN vl_receber ELSE 0 END) AS total_pago from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(
             idEmpreend) + " and ac_historico is null and (ano_vigencia > '" + anoIni + "' OR (ano_vigencia = '" + anoIni + "' AND mes_vigencia >= '" + mesIni + "')) AND (ano_vigencia < '" + anoFim + "' OR (ano_vigencia = '" + anoFim + "' AND mes_vigencia <= '" + mesFim + "')) group by ano_vigencia, mes_vigencia order by ano_vigencia, mes_vigencia"
 
         print(query)
@@ -268,7 +270,7 @@ class unidadeController:
 
         print('+++++++++ consultarUnidadeRecebibeis ++++++++++++++++++')
 
-#        query = "select vl_pago from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' " + " and ac_historico is null"
+#        query = "select vl_receber from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' " + " and ac_historico is null"
 
         if anoIni == anoFim:
             query = "select mes_vigencia, ano_vigencia, sum(vl_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Estoque' and ac_historico is null and ((mes_vigencia >= '" + \
@@ -316,7 +318,7 @@ class unidadeController:
       vl_unidade = %s,
       status = %s,
       cpf_cnpj_comprador = %s,
-      vl_pago = %s,
+      vl_receber = %s,
       dt_ocorrencia = %s,
       financiado = %s,
       vl_chaves = %s,
@@ -334,7 +336,7 @@ class unidadeController:
             unidade.getVlUnidade(),
             unidade.getStatus(),
             unidade.getCpfComprador(),
-            unidade.getVlPago(),
+            unidade.getVlReceber(),
             unidade.getDtOcorrencia(),
             unidade.getFinanciado(),
             unidade.getVlChaves(),
@@ -432,7 +434,7 @@ class unidadeController:
             print("Vigencia atual: ", key, end="\n\n")
 
             print("Unidade atual para calculos: ", {"Torre": uni.getIdTorre(
-            ), "Unidade": uni.getUnidade(), "Status": uni.getStatus(), "ValorUnidade": uni.getVlUnidade(), "ValorPago": uni.getVlPago()}, end="\n\n")
+            ), "Unidade": uni.getUnidade(), "Status": uni.getStatus(), "ValorUnidade": uni.getVlUnidade(), "ValorPago": uni.getVlReceber()}, end="\n\n")
 
             if not totais.get(key, None):
                 if uni.getStatus() == 'Estoque':
@@ -442,7 +444,7 @@ class unidadeController:
                         "Total criado para Status Estoque: ", totais[key], end="\n\n")
                 else:
                     totais[key] = {"valorUnidade": 0,
-                                   "valorPago": uni.getVlPago()}
+                                   "valorPago": uni.getVlReceber()}
                     print(
                         "Total criado para Status Vendido: ", totais[key], end="\n\n")
 
@@ -450,7 +452,7 @@ class unidadeController:
                 tt = totais[key]
                 ttNew = {
                     "valorUnidade": tt["valorUnidade"] + (uni.getVlUnidade() if uni.getStatus() == 'Estoque' else 0),
-                    "valorPago": tt["valorPago"] + (uni.getVlPago() if uni.getStatus() == 'Vendido' else 0)
+                    "valorPago": tt["valorPago"] + (uni.getVlReceber() if uni.getStatus() == 'Vendido' else 0)
                 }
                 print(
                     f"Total calculdo para vigencia {key}: ", ttNew, end="\n\n")
@@ -482,7 +484,7 @@ class unidadeController:
         linhaU.setVlUnidade(linha['vl_unidade'] if linha['vl_unidade'] else 0)
         linhaU.setStatus(linha['status'])
         linhaU.setCpfComprador(linha['cpf_cnpj_comprador'])
-        linhaU.setVlPago(linha['vl_pago'] if linha['vl_pago'] else 0)
+        linhaU.setVlReceber(linha['vl_receber'] if linha['vl_receber'] else 0)
         linhaU.setDtOcorrencia(linha['dt_ocorrencia'])
         linhaU.setFinanciado(linha['financiado'])
         linhaU.setVlChaves(linha['vl_chaves'])

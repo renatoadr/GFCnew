@@ -83,7 +83,6 @@ $(function() {
     }
   });
 
-
   $('input[type="range"]').each(function () {
     const that = $(this);
     setTimeout(function () {
