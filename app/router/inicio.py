@@ -1,10 +1,9 @@
-from flask import Blueprint, request, render_template, redirect, session, url_for, send_from_directory, current_app
-from models.User import User
-from controller.usuarioController import usuarioController
-from controller.geralController import geralController
-from controller.empreendimentoController import empreendimentoController
+from flask import Blueprint, request, render_template, redirect, url_for
+
 from utils.security import login_user, logout_user, has_user_logged, has_user_mobile_logged, logout_user_mobile, get_user_logged_mobile, login_user_mobile
-from utils.CtrlSessao import IdEmpreend, NmEmpreend
+from controller.empreendimentoController import empreendimentoController
+from controller.usuarioController import usuarioController
+from models.User import User
 import re
 import os
 
@@ -102,53 +101,7 @@ def sem_permissao():
     return render_template("sem_permissao.html")
 
 
-@init_bp.route('/lista_relatorios', methods=['GET'])
-def lista_relatorios():
-    idEmpreend = request.args.get('idEmpreend')
-    apelido = request.args.get('apelido')
-    idEmpreend = request.args.get("idEmpreend")
-
-    if (idEmpreend is None and not IdEmpreend().has()) or (apelido is None and not NmEmpreend().has()):
-        return redirect('/home')
-
-    if idEmpreend is None:
-        idEmpreend = IdEmpreend().get()
-    else:
-        IdEmpreend().set(idEmpreend)
-
-    if apelido is None:
-        apelido = NmEmpreend().get()
-    else:
-        NmEmpreend().set(apelido)
-
-#    apelido = 'Quinta vez'
-    mobile = request.form.get('mobile', 'false').lower() == 'true'
-
-#    print('==========lista_relatorios==========', apelido)
-    gerC = geralController()
-    diretorio = os.path.join(current_app.config['DIRSYS'], 'Relatorios')
-    arqS = gerC.listar_arquivos_com_prefixo(
-        os.path.normpath(diretorio), apelido)
-#    print ('=========== lista de arquivos   ', arqS)
-    print('=========== lista de arquivos   ', arqS)
-    if mobile:
-        return render_template("mobile/download.html", arquivos=arqS)
-    else:
-        meses = ['  ', '01', '02', '03', '04', '05',
-                 '06', '07', '08', '09', '10', '11', '12']
-        anos = ['    ', '2025', '2026', '2027', '2028', '2029', '2030']
-        return render_template("relatorio.html", arquivos=arqS, listaMes=meses, listaAno=anos, apelido=apelido, idEmpreend=idEmpreend)
-
-
 @init_bp.route('/logout')
 def logout():
     logout_user()
     return redirect("/")
-
-
-@init_bp.route('/download_arquivo', methods=['GET'])
-def download_arquivo():
-    arquivo = request.args.get('arquivo')
-    diretorio = os.path.join(current_app.config['DIRSYS'], 'Relatorios')
-    print('+++++++++++++', arquivo)
-    return send_from_directory(os.path.normpath(diretorio), arquivo, as_attachment=True)

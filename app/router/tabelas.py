@@ -37,6 +37,9 @@ def tab_notas():
 
 def gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS):
     geral = geralController()
+
+    plt.switch_backend('agg')
+
     fig, ax = plt.subplots(1, 1)
 
     data = []
@@ -131,6 +134,8 @@ def tab_conta_corrente():
 def gerar_tab_conta_corrente(idEmpreend, mesVigencia, anoVigencia, conS):
     geral = geralController()
 
+    plt.switch_backend('agg')
+
     fig, ax = plt.subplots(1, 1)
     data = []
 
@@ -194,19 +199,15 @@ def gerar_tab_conta_corrente(idEmpreend, mesVigencia, anoVigencia, conS):
     return grafNome
 
 
-@tabela_bp.route('/tab_garantias_geral', methods=['GET'])
+@tabela_bp.route('/tab_garantias_geral')
 @login_required
 def tab_garantias_geral():
 
     idEmpreend = IdEmpreend().get()
-    tipo = request.args.get("tipo")
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
 
-    geral = geralController()
-
-    grafNome = gerar_tab_garantias_geral(
-        idEmpreend, mesVigencia, anoVigencia, tipo)
+    grafNome = gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia)
 
     return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
@@ -217,6 +218,8 @@ def gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia):
 
     if not ponS:
         return ''
+
+    plt.switch_backend('agg')
 
     fig, ax = plt.subplots(1, 1)
 
@@ -293,8 +296,6 @@ def tab_garantias_obra():
     idEmpreend = IdEmpreend().get()
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
-
-    geral = geralController()
 
     grafNome = gerar_tab_garantias_obra(idEmpreend, mesVigencia, anoVigencia)
 
@@ -396,6 +397,8 @@ def gerar_tab_certidoes(idEmpreend, mes, ano):
     if not certS:
         return ''
 
+    plt.switch_backend('agg')
+
     fig, ax = plt.subplots(1, 1)
     print(certS)
     print(certS.getEstadualStatus())
@@ -492,6 +495,9 @@ def tab_acomp_financeiro():
 
 def gerar_tab_acomp_financeiro(idEmpreend, mesVigencia, anoVigencia, medS, notS):
     geral = geralController()
+
+    plt.switch_backend('agg')
+
     fig, ax = plt.subplots(1, 1)
 
     data = []
@@ -623,6 +629,8 @@ def gerar_tab_medicoes(idEmpreend, mesVigencia, anoVigencia, mesInicio, anoInici
     if not preS:
         return ''
 
+    plt.switch_backend('agg')
+
     fig, ax = plt.subplots(1, 1)
 
     data = []
@@ -702,6 +710,9 @@ def tab_orcamento_liberacao():
 
 def gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS):
     geral = geralController()
+
+    plt.switch_backend('agg')
+
     fig, ax = plt.subplots(1, 1)
 
     data = []

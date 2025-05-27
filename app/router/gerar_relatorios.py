@@ -9,7 +9,7 @@ from utils.security import login_required
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from utils.flash_message import flash_message
 from utils.logger import logger
-import datetime
+from datetime import datetime
 import os
 
 gerar_relatorio_bp = Blueprint('gerar_relatorios', __name__)
@@ -57,26 +57,24 @@ def gerar_relatorio():
     else:
         NmEmpreend().set(nmEmpreend)
 
-    mes = request.args.get('mes')
-    ano = request.args.get('ano')
+    vigencia = request.args.get('vigencia')
 
-    if mes is None:
-        mes = str(datetime.date.today().month).zfill(2)
-    if ano is None:
-        ano = datetime.date.today().year
+    if not vigencia:
+        vigencia = datetime.now().strftime('%Y-%m')
+
+    vig = vigencia.split('-')
 
     for opt in opcoes:
-        opt[2] = 'Sim' if existe_insumo(opt[0], mes, ano) else 'Não'
+        opt[2] = 'Sim' if existe_insumo(opt[0], vig[1], vig[0]) else 'Não'
 
     for opt in opcoesComRange:
-        opt[2] = 'Sim' if existe_insumo(opt[0], mes, ano) else 'Não'
+        opt[2] = 'Sim' if existe_insumo(opt[0], vig[1], vig[0]) else 'Não'
 
     return render_template(
         'gerar_relatorio.html',
         opcoesComRange=opcoesComRange,
         opcoes=opcoes,
-        mes=mes,
-        ano=ano
+        vigencia=vigencia
     )
 
 
@@ -84,11 +82,17 @@ def gerar_relatorio():
 def gerar_insumos():
     insumos = request.form.getlist('opcoes_relatorio')
     insumosIntervalo = request.form.getlist('opcoes_relatorio_range')
-    mes = request.form.get('mes_vigencia')
-    ano = request.form.get('ano_vigencia')
 
-    if (not mes or not ano) or (not insumos and not insumosIntervalo):
+    vigencia = request.form.get('vigencia')
+
+    if not vigencia:
+        vigencia = datetime.now().strftime('%Y-%m')
+
+    vig = vigencia.split('-')
+
+    if not insumos and not insumosIntervalo:
         return redirect('/gerar_insumos_relatorios')
+
     inicioIntervalo = request.form.get('intervaloInicio')
     finalIntervalo = request.form.get('finalIntervalo')
     initAno, initMes = inicioIntervalo.split(
@@ -100,7 +104,7 @@ def gerar_insumos():
         for ins in insumos:
             if ins in insumos:
                 fn = globals()[ins]
-                fn(mes, ano)
+                fn(vig[1], vig[0])
 
     if initAno and initMes and endAno and endMes and insumosIntervalo:
         if int(f"{initMes}{initAno}") > int(f"{endMes}{endAno}"):
@@ -110,7 +114,7 @@ def gerar_insumos():
         for ins in insumosIntervalo:
             if ins in insumosIntervalo:
                 fn = globals()[ins]
-                fn(mes, ano, initMes, initAno, endMes, endAno)
+                fn(vig[1], vig[0], initMes, initAno, endMes, endAno)
 
     todasOpcoes = opcoes.copy()
     todasOpcoes.extend(opcoesComRange)
@@ -122,10 +126,14 @@ def gerar_insumos():
     opcoesView = []
     for ins in todosInsumos:
         item = next(it for it in todasOpcoes if it[0] == ins)
-        if existe_insumo(ins, mes, ano):
+        if existe_insumo(ins, vig[1], vig[0]):
             opcoesView.append(item)
 
-    return render_template('gerar_relatorio_resultado.html', opcoes=opcoesView, mes=mes, ano=ano)
+    return render_template(
+        'gerar_relatorio_resultado.html',
+        opcoes=opcoesView,
+        vigencia=vigencia
+    )
 
 
 @gerar_relatorio_bp.route('/ver_insumo/<mes>/<ano>/<arquivo>')

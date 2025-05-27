@@ -53,6 +53,8 @@ def gerar_graf_orcamento_liberacao(idEmpreend, mes, ano, tipo, medS):
     orcado = []
     index = []
 
+    plt.switch_backend('agg')
+
     for m in medS:
         index.append(m.getItem())
 
@@ -134,6 +136,8 @@ def gerar_graf_progresso_obra(idEmpreend, mesVigencia, anoVigencia, mesInicio, a
 
     if not preS:
         return ''
+
+    plt.switch_backend('agg')
 
     fig, ax = plt.subplots(1, 1)
 
@@ -223,6 +227,8 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     if not recS:
         return ''
 
+    plt.switch_backend('agg')
+
     x1 = []
     y1 = []
     y2 = []
@@ -237,14 +243,15 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
         vlrAtual = round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2)
         variacao = vlrAtual - vlrAnterior
         vlrAnterior = vlrAtual
-        print(vlrAnterior, vlrAtual, variacao)    
+        print(vlrAnterior, vlrAtual, variacao)
 
     linhas = [1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.8, 1.9, 2.0]
 
     tamLinha = len(x1) - 1
     plt.hlines(linhas, 0, tamLinha, '#9feafc')
     plt.plot(x1, y1, label='IC Estipulado em contrato')
-    plt.plot(x1, y2, label='IC Recebiveis + estoque - Variação no período: ' + str(variacao))
+    plt.plot(
+        x1, y2, label='IC Recebiveis + estoque - Variação no período: ' + str(variacao))
 
     annotationsy1 = y1
     annotationsy2 = y2
@@ -313,6 +320,8 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
 
     if not recS:
         return ''
+
+    plt.switch_backend('agg')
 
     x2 = []
     y3 = []
@@ -390,6 +399,8 @@ def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia, tipo):
 
     if not unid:
         return ''
+
+    plt.switch_backend('agg')
 
     fig, ax = plt.subplots(figsize=(6, 3), subplot_kw=dict(aspect="equal"))
 
@@ -484,6 +495,8 @@ def gerar_graf_chaves(idEmpreend, mesVigencia, anoVigencia, tipo):
 
     if not perChave and not perPreChave and not perPosChave:
         return ''
+
+    plt.switch_backend('agg')
 
     sizes = [perChave, perPreChave, perPosChave]
 

@@ -6,6 +6,7 @@ from werkzeug.utils import secure_filename
 from utils.helper import allowed_file
 import utils.converter as converter
 from dto.medicao import medicao
+from datetime import datetime
 import os
 
 medicoes_bp = Blueprint('medicoes', __name__)
@@ -14,9 +15,6 @@ medicoes_bp = Blueprint('medicoes', __name__)
 @medicoes_bp.route('/tratar_medicoes')
 @login_required
 def tratar_medicoes():
-
- #   idMedicao = request.args.get("idMedicao")
- #   IdMedicao().set(idMedicao)
 
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get('nmEmpreend')
@@ -41,7 +39,13 @@ def tratar_medicoes():
     medS = medC.consultarMedicoes(idEmpreend)
 
     if len(medS) == 0:
-        return render_template("lista_medicoes.html", mensagem="Medição não Cadastrada, importar o arquivo Excel!!!", medicoes=medS)
+        return render_template(
+            "lista_medicoes.html",
+            mensagem="Medição não Cadastrada, importar o arquivo Excel!!!",
+            medicoes=medS,
+            minDate='2000-01',
+            maxDate=datetime.now().strftime('%Y-%m')
+        )
     else:
         medCurrent = None
         medPrevius = None
@@ -51,7 +55,14 @@ def tratar_medicoes():
                 if idx > 0:
                     medPrevius = medS[idx-1]
                 break
-        return render_template("lista_medicoes.html", medicoes=medS, medCurrent=medCurrent, medPrevius=medPrevius)
+        return render_template(
+            "lista_medicoes.html",
+            medicoes=medS,
+            medCurrent=medCurrent,
+            medPrevius=medPrevius,
+            minDate='2000-01',
+            maxDate=datetime.now().strftime('%Y-%m')
+        )
 
 
 @medicoes_bp.route('/consultar_medicao_pelo_id')
@@ -165,15 +176,24 @@ def salvar_item_medicao():
 def gerar_relatorio_medicoes():
     idEmpreend = IdEmpreend().get()
     tipo = request.form.get('tipo')
-    mesVigencia = request.form.get('mesVigencia')
-    anoVigencia = request.form.get('anoVigencia')
-    mesInicio = request.form.get('mesInicio')
-    anoInicio = request.form.get('anoInicio')
-    mesFinal = request.form.get('mesFinal')
-    anoFinal = request.form.get('anoFinal')
+
+    vig = request.form.get('vigencia')
+    if not vig:
+        vig = datetime.now().strftime('%Y-%m')
+    vig = vig.split('-')
+
+    vigInit = request.form.get('vigenciaInicial')
+    if not vigInit:
+        vigInit = datetime.now().strftime('%Y-%m')
+    vigInit = vigInit.split('-')
+
+    vigEnd = request.form.get('vigenciaFinal')
+    if not vigEnd:
+        vigEnd = datetime.now().strftime('%Y-%m')
+    vigEnd = vigEnd.split('-')
 
     if tipo == 'tabela':
-        return redirect('/tab_medicoes?tipo=' + tipo + '&idEmpreend=' + idEmpreend + '&mesVigencia=' + mesVigencia + '&anoVigencia=' + anoVigencia + '&mesInicio=' + mesInicio + '&anoInicio=' + anoInicio + '&mesFinal=' + mesFinal + '&anoFinal=' + anoFinal)
+        return redirect(f'/tab_medicoes?idEmpreend={idEmpreend}&mesVigencia={vig[1]}&anoVigencia={vig[0]}&mesInicio={vigInit[1]}&anoInicio={vigInit[0]}&mesFinal={vigEnd[1]}&anoFinal={vigEnd[0]}')
     else:
-        return redirect('/graf_progresso_obra?tipo=' + tipo + '&idEmpreend=' + idEmpreend + '&mesVigencia=' + mesVigencia + '&anoVigencia=' + anoVigencia + '&mesInicio=' + mesInicio + '&anoInicio=' + anoInicio + '&mesFinal=' + mesFinal + '&anoFinal=' + anoFinal)
+        return redirect(f'/graf_progresso_obra?idEmpreend={idEmpreend}&mesVigencia={vig[1]}&anoVigencia={vig[0]}&mesInicio={vigInit[1]}&anoInicio={vigInit[0]}&mesFinal={vigEnd[1]}&anoFinal={vigEnd[0]}')
 #  return redirect('/tratar_medicoes')

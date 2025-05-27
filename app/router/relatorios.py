@@ -1,25 +1,33 @@
-from flask import Blueprint, request, render_template, redirect
+from flask import Blueprint, request, render_template, redirect, current_app, send_from_directory, url_for
 
 from controller.graficoController import graficoController
 from controller.geralController import geralController
+from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from utils.flash_message import flash_message
 from utils.security import login_required
 from reportlab.pdfgen import canvas
+from datetime import datetime
 import os
 
 relatorio_bp = Blueprint('relatorios', __name__)
 
 
-@relatorio_bp.route('/gerar_relatorio', methods=['GET'])
+@relatorio_bp.route('/gerar_relatorio')
 @login_required
 def gerar_relatorio():
 
     grafC = graficoController()
+    vigencia = request.args.get('vigencia')
+
+    if not vigencia:
+        return redirect('/lista_relatorios')
+
+    vig = vigencia.split('-')
 
     idEmpreend = request.args.get("idEmpreend")
     apelido = request.args.get("apelido")
-    mes = request.args.get("mes")
-    ano = request.args.get("ano")
+    mes = vig[1]
+    ano = vig[0]
 
     idEmpreend = request.args.get("idEmpreend")
 
@@ -96,8 +104,65 @@ def gerar_relatorio():
     gerC = geralController()
     arqS = gerC.listar_arquivos_com_prefixo(dirRelatorio, apelido)
 
-    meses = ['  ', '01', '02', '03', '04', '05',
-             '06', '07', '08', '09', '10', '11', '12']
-    anos = ['    ', '2025', '2026', '2027', '2028', '2029', '2030']
+    return redirect(
+        url_for(
+            'relatorios.lista_relatorios',
+            arquivos=arqS,
+            minDate='2000-01',
+            maxDate=datetime.now().strftime('%Y-%m'),
+            apelido=apelido,
+            vigencia=vigencia,
+            idEmpreend=idEmpreend
+        )
+    )
 
-    return render_template("relatorio.html", arquivos=arqS, listaMes=meses, listaAno=anos, apelido=apelido, idEmpreend=idEmpreend)
+
+@relatorio_bp.route('/lista_relatorios')
+def lista_relatorios():
+    idEmpreend = request.args.get('idEmpreend')
+    apelido = request.args.get('apelido')
+    vigencia = request.args.get('vigencia')
+
+    if not vigencia:
+        vigencia = datetime.now().strftime('%Y-%m')
+
+    if (idEmpreend is None and not IdEmpreend().has()) or (apelido is None and not NmEmpreend().has()):
+        return redirect('/home')
+
+    if idEmpreend is None:
+        idEmpreend = IdEmpreend().get()
+    else:
+        IdEmpreend().set(idEmpreend)
+
+    if apelido is None:
+        apelido = NmEmpreend().get()
+    else:
+        NmEmpreend().set(apelido)
+
+    mobile = request.form.get('mobile', 'false').lower() == 'true'
+
+    gerC = geralController()
+    diretorio = os.path.join(current_app.config['DIRSYS'], 'Relatorios')
+    arqS = gerC.listar_arquivos_com_prefixo(
+        os.path.normpath(diretorio), apelido)
+
+    if mobile:
+        return render_template("mobile/download.html", arquivos=arqS)
+    else:
+        return render_template(
+            "relatorio.html",
+            arquivos=arqS,
+            minDate='2000-01',
+            maxDate=datetime.now().strftime('%Y-%m'),
+            vigencia=vigencia,
+            apelido=apelido,
+            idEmpreend=idEmpreend
+        )
+
+
+@relatorio_bp.route('/download_arquivo')
+def download_arquivo():
+    arquivo = request.args.get('arquivo')
+    diretorio = os.path.join(current_app.config['DIRSYS'], 'Relatorios')
+    print('+++++++++++++', arquivo)
+    return send_from_directory(os.path.normpath(diretorio), arquivo, as_attachment=True)
