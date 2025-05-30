@@ -8,6 +8,7 @@ from controller.medicaoController import medicaoController
 from controller.geralController import geralController
 from utils.CtrlSessao import IdEmpreend
 import matplotlib.pyplot as plt
+from datetime import datetime
 import pandas as pd
 import numpy as np
 import random
@@ -92,6 +93,9 @@ def gerar_graf_orcamento_liberacao(idEmpreend, mes, ano, tipo, medS):
     else:
         grafNome = os.path.join(
             diretorio, 'graf_orcamento_liberacao_percentual.png')
+
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
 
     plt.savefig(grafNome, bbox_inches='tight')
 
@@ -189,6 +193,9 @@ def gerar_graf_progresso_obra(idEmpreend, mesVigencia, anoVigencia, mesInicio, a
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'graf_progresso_obra.png')
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)  # , bbox_inches='tight')
     plt.close('all')
     return grafNome
@@ -222,7 +229,10 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
 
     uniC = unidadeController()
     recS = uniC.gerarInsumoRelatorio(
-        idEmpreend, anoInicio, mesInicio, mesFinal)
+        idEmpreend,
+        datetime(int(anoInicio), int(mesInicio), 1),
+        datetime(int(anoFinal), int(mesFinal), 20)
+    )
 
     if not recS:
         return ''
@@ -238,7 +248,7 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
 
     for u in recS:
         x1.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
-        y1.append(IndiceGarantia)
+        y1.append(IndiceGarantia if IndiceGarantia else 0.0)
         y2.append(round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2))
         vlrAtual = round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2)
         variacao = vlrAtual - vlrAnterior
@@ -282,6 +292,9 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'graf_indices_garantia_I.png')
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)  # , bbox_inches='tight')
 
     plt.close('all')
@@ -316,7 +329,10 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
 
     uniC = unidadeController()
     recS = uniC.gerarInsumoRelatorio(
-        idEmpreend, anoInicio, mesInicio, mesFinal)
+        idEmpreend,
+        datetime(int(anoInicio), int(mesInicio), 1),
+        datetime(int(anoFinal), int(mesFinal), 28)
+    )
 
     if not recS:
         return ''
@@ -371,6 +387,9 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'graf_indices_garantia_II.png')
+
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
 
     plt.savefig(grafNome)  # , bbox_inches='tight')
     plt.close('all')
@@ -455,6 +474,9 @@ def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia, tipo):
         grafNome = os.path.join(diretorio, 'graf_vendas_perc.png')
 #    grafNome = diretorio + 'graf_vendas.png'
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)  # , bbox_inches='tight')
     plt.close('all')
 
@@ -535,6 +557,9 @@ def gerar_graf_chaves(idEmpreend, mesVigencia, anoVigencia, tipo):
     else:
         grafNome = os.path.join(diretorio, 'graf_chaves_perc.png')
 #    grafNome = diretorio + 'graf_chaves.png'
+
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
 
     plt.savefig(grafNome, bbox_inches='tight')
     plt.close('all')

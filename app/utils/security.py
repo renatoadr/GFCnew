@@ -20,9 +20,12 @@ def login_required(fn):
         if not has_user_logged():
             return redirect(url_for('inicio.login', next=request.url))
         user = get_user_logged()
-        if (user.logged_in + timedelta(hours=1, minutes=30)) < datetime.now():
+        if (user.logged_in + timedelta(minutes=15)) < datetime.now():
             logout_user()
             return redirect('/')
+        else:
+            user.logged_in = datetime.now()
+            login_user(user)
         if user.profile == TipoAcessos.VST.name:
             return redirect('/sem_permissao')
         return fn(*args, **kwargs)

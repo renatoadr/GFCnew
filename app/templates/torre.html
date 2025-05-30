@@ -64,7 +64,7 @@
           <div class="col-4">
             <div class="form-floating">
               <input type="text" name="vlrUnidade" id="vlrUnidade" class="form-control money" placeholder=""
-                value="{{ torre.getVlrUnidade() if torre }}" maxlength="15" />
+                value="{{ torre.getVlrUnidade() if torre }}" maxlength="15">
               <label for="vlrUnidade">Preço do Apartamento</label>
             </div>
           </div>
@@ -90,7 +90,7 @@
           <div class="col-4">
             <div class="form-floating">
               <input type="text" name="vlrCobertura" id="vlrCobertura" class="form-control money" placeholder=""
-                value="{{ torre.getVlrCobertura() if torre }}" maxlength="15" />
+                value="{{ torre.getVlrCobertura() if torre }}" maxlength="15">
               <label for="vlrCobertura">Preço da cobertura</label>
             </div>
           </div>
@@ -115,6 +115,7 @@
       const requireds = GFC.getRequiredFields("formAlterarTorre")
       delete requireds.rules.prefixCobertura
       delete requireds.rules.qtdCoberturas
+      delete requireds.rules.vlrCobertura
       $("#formAlterarTorre").validate(GFC.getConfigValidateForm(requireds));
     });
   </script>

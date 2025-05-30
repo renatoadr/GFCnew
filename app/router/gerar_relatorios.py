@@ -136,12 +136,12 @@ def gerar_insumos():
     )
 
 
-@gerar_relatorio_bp.route('/ver_insumo/<mes>/<ano>/<arquivo>')
-def ver_insumo(mes, ano, arquivo):
+@gerar_relatorio_bp.route('/ver_insumo/<vigencia>/<arquivo>')
+def ver_insumo(vigencia, arquivo):
     pathFile = os.path.join(
         current_app.config['DIRSYS'],
         IdEmpreend().get(),
-        f"{ano}_{mes}",
+        vigencia.replace('-', '_'),
         arquivo
     )
     if os.path.exists(f"{pathFile}.png"):

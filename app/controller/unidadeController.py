@@ -1,9 +1,12 @@
 # controller or business logic
 # Trata base de UNIDADES
 
-from controller.clienteController import clienteController
 from dto.unidade import unidade
 from utils.dbContext import MySql
+from datetime import datetime, timedelta
+from copy import copy, deepcopy
+from dateutil import relativedelta
+from utils.helper import diff_mes
 
 
 class unidadeController:
@@ -363,11 +366,25 @@ class unidadeController:
         query = f"UPDATE {MySql.DB_NAME}.tb_unidades SET ac_historico = 'EDITADO' where id_unidade = %s"
         MySql.exec(query, (idUnidade,))
 
-    def gerarInsumoRelatorio(self, idEmpreend, anoVig, mesInicioVig, mesTerminoVig) -> list[unidade]:
+    def recursiveCalculoData(self, dataInicio: datetime, dataFinal: datetime, item: tuple, lista: list[unidade], changeInitDate: bool):
+        vigNext = dataInicio
+        if changeInitDate:
+            vigNext += relativedelta.relativedelta(months=1)
+        vig = vigNext.strftime('%Y-%m').split('-')
+        copy = deepcopy(item)
+        copy['mes_vigencia'] = vig[1].zfill(2)
+        copy['ano_vigencia'] = vig[0]
+        lista.append(self.mapeamentoUnidade(copy))
+        if not changeInitDate:
+            vigNext = dataInicio + relativedelta.relativedelta(months=1)
+        if vigNext < dataFinal:
+            self.recursiveCalculoData(
+                vigNext, dataFinal, item, lista, changeInitDate)
+
+    def gerarInsumoRelatorio(self, idEmpreend: int, dataInicio: datetime, dataFim: datetime) -> list[unidade]:
         query = f""" SELECT * FROM {MySql.DB_NAME}.tb_unidades uni
           WHERE uni.id_empreendimento = %s
-          AND uni.ano_vigencia = %s
-          AND uni.mes_vigencia BETWEEN %s AND %s
+          AND DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) BETWEEN %s AND %s
           AND uni.status IN ('Estoque', 'Vendido')
           AND uni.dt_ocorrencia = (
               SELECT MAX(dt_ocorrencia) FROM {MySql.DB_NAME}.tb_unidades
@@ -376,52 +393,99 @@ class unidadeController:
               AND mes_vigencia = uni.mes_vigencia
               AND id_empreendimento = uni.id_empreendimento
               AND id_torre = uni.id_torre
-              AND uni.status IN ('Estoque', 'Vendido')
+              AND status = uni.status
           )
-          ORDER BY uni.id_torre, uni.unidade, uni.ano_vigencia, uni.mes_vigencia;
+          ORDER BY uni.id_torre, uni.unidade, DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01'));
         """
+        queryDates = f""" SELECT
+          MIN(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) data_inicio,
+          MAX(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) data_final
+        FROM {MySql.DB_NAME}.tb_unidades uni
+        WHERE uni.id_empreendimento = %s
+        AND DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) BETWEEN %s AND %s
+        AND uni.status IN ('Estoque', 'Vendido')"""
+
         result = []
         totais = {}
         totaisList = []
 
         print("Buscando unidades para calcular com parametros: ", {
-            "IdEmpreendimento": idEmpreend, "AnoVigencia": anoVig, "MesInicial": mesInicioVig, "MesTermino": mesTerminoVig}, end="\n\n")
+            "IdEmpreendimento": idEmpreend,
+            "Data Início": dataInicio,
+            "Data Final": dataFim
+        }, end="\n\n")
 
-        data = MySql.getAll(
+        datas = MySql.getAll(
+            queryDates, (
+                idEmpreend,
+                dataInicio,
+                dataFim
+            )
+        )
+        unidades = MySql.getAll(
             query, (
                 idEmpreend,
-                anoVig,
-                mesInicioVig,
-                mesTerminoVig
+                dataInicio,
+                dataFim
             )
         )
 
-        print("Encontrado os dados: ", data, end="\n\n")
-        print("Qauntidade de unidades encontradas: ", len(data), end="\n\n")
+        if not datas or not unidades:
+            return []
 
+        print("Range real das unidades", datas[0])
+        print("Quantidade de unidades encontradas: ", len(unidades), end="\n\n")
         print("Realizando o processamento de normalização dos dados...", end="\n\n")
 
-        mesTermino = int(mesTerminoVig)
-        for idx, item in enumerate(data):
-            current = item
-            next = data[idx + 1] if idx + 1 < len(data) else None
-            currentVig = int(current['mes_vigencia'])
-            nextVig = int(next['mes_vigencia']) if next else 0
+        dtI = datas[0]['data_inicio'].split('-')
+        dtF = datas[0]['data_final'].split('-')
+        dataInicio = datetime(int(dtI[0]), int(dtI[1]), int(dtI[2]))
+        dataFim = datetime(int(dtF[0]), int(dtF[1]), int(dtF[2]))
 
-            print("Registro corrente: ", item, end="\n\n")
+        for idx, current in enumerate(unidades):
+            previus = unidades[idx - 1] if idx > 0 else None
+            next = unidades[idx + 1] if idx + 1 < len(unidades) else None
+            vigCurrent = datetime(
+                int(current['ano_vigencia']),
+                int(current['mes_vigencia']),
+                1
+            )
+            nextVig = datetime(
+                int(next['ano_vigencia']),
+                int(next['mes_vigencia']),
+                1
+            ) if next else 0
 
-            result.append(self.mapeamentoUnidade(item))
+            print("Registro corrente: ", current, end="\n\n")
 
-            if next and current['unidade'] == next['unidade'] and nextVig - currentVig > 1:
-                for n in range(currentVig + 1, nextVig):
-                    item['mes_vigencia'] = str(n).zfill(2)
-                    print("Registro clonado mesma unidade: ", item)
-                    result.append(self.mapeamentoUnidade(item))
-            elif next and current['unidade'] != next['unidade'] and currentVig < mesTermino or not next and currentVig < mesTermino:
-                for n in range(currentVig + 1, mesTermino + 1):
-                    item['mes_vigencia'] = str(n).zfill(2)
-                    print("Registro clonado unidade diferente: ", item)
-                    result.append(self.mapeamentoUnidade(item))
+            if vigCurrent > dataInicio and (not previus or previus['unidade'] != current['unidade']):
+                self.recursiveCalculoData(
+                    dataInicio,
+                    vigCurrent,
+                    current,
+                    result,
+                    False
+                )
+
+            result.append(self.mapeamentoUnidade(current))
+
+            if next and current['unidade'] == next['unidade'] and diff_mes(nextVig, vigCurrent) > 1:
+                self.recursiveCalculoData(
+                    vigCurrent,
+                    nextVig - relativedelta.relativedelta(months=1),
+                    current,
+                    result,
+                    True
+                )
+
+            elif (not next and vigCurrent < dataFim) or (next and current['unidade'] != next['unidade'] and vigCurrent < dataFim):
+                self.recursiveCalculoData(
+                    vigCurrent,
+                    dataFim,
+                    current,
+                    result,
+                    True
+                )
 
         print("Quantidade de unidades geradas", len(result), end="\n\n")
         print("Calculando os totais por mês....", end="\n\n")

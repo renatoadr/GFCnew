@@ -110,6 +110,9 @@ def gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS):
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_notas.png')
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)
 
     return grafNome
@@ -193,6 +196,9 @@ def gerar_tab_conta_corrente(idEmpreend, mesVigencia, anoVigencia, conS):
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_conta_corrente.png')
+
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
 
     plt.savefig(grafNome)
     plt.close('all')
@@ -285,6 +291,9 @@ def gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia):
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_garantias_geral.png')
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)
     plt.close('all')
     return grafNome
@@ -371,6 +380,9 @@ def gerar_tab_garantias_obra(idEmpreend, mesVigencia, anoVigencia):
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_garantias_obra.png')
+
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
 
     plt.savefig(grafNome)
     plt.close('all')
@@ -467,6 +479,9 @@ def gerar_tab_certidoes(idEmpreend, mes, ano):
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_certidoes.png')
+
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
 
     plt.savefig(grafNome)
     plt.close('all')
@@ -586,6 +601,9 @@ def gerar_tab_acomp_financeiro(idEmpreend, mesVigencia, anoVigencia, medS, notS)
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_acomp_financeiro.png')
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)
 
     plt.close('all')
@@ -688,6 +706,9 @@ def gerar_tab_medicoes(idEmpreend, mesVigencia, anoVigencia, mesInicio, anoInici
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_medicoes.png')
+
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
 
     plt.savefig(grafNome)
 
@@ -797,6 +818,9 @@ def gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS):
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_orcamento_liberacao.png')
+
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
 
     plt.savefig(grafNome)
     plt.close('all')
