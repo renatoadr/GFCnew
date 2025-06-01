@@ -16,18 +16,32 @@
   <main>
     <div class="container">
       <div class="row">
-        <div class="col-6">
+        <div class="col-5">
           <h2 class="title title-page">
             <span><i class="fa-solid fa-building-un"></i> Unidades</span><strong>{{session.nmEmpreend}}</strong>
           </h2>
         </div>
-        <div class="col-6">
-          <div class="row h-100">
-            <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
-
+        <div class="col-7">
+          <div class="row h-100 d-flex justify-content-end align-items-center">
+            <div class="col-5">
+              <a href="/exportar_planilha_unidades" class="btn btn-info w-100" data-bs-toggle="tooltip"
+                data-bs-title="Exporte os dados de valores das unidades">
+                <i class="fa-solid fa-download"></i>
+                Exportar unidades
+              </a>
             </div>
-            <div class="col-3 d-flex justify-content-end align-items-center">
-              <a href="/home" class="btn btn-outline-dark">
+            <div class="col-5">
+              <span data-bs-toggle="tooltip"
+                data-bs-title="Importe a planilha com os valores alterados para atualizar em lote">
+                <button type="submit" class="btn btn-primary w-100" data-bs-toggle="modal"
+                  data-bs-target="#modalUploadExcel" data-desc="" data-action-process="/importar_planilha_unidades">
+                  <i class="fa-solid fa-file-arrow-up"></i>
+                  Importar unidades
+                </button>
+              </span>
+            </div>
+            <div class="col-2">
+              <a href="/home" class="btn btn-outline-dark w-100">
                 <i class="fa-solid fa-home"></i>
                 Início
               </a>

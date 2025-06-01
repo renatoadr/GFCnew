@@ -22,7 +22,8 @@
         </div>
       </div>
 
-      <form action="{{'/salvar_alteracao_torre' if torre and torre.getIdTorre() is not none else '/cadastrar_torre'}}"
+      <form
+        action="{{'/salvar_alteracao_torre' if not novo and torre and torre.getIdTorre() is not none else '/cadastrar_torre'}}"
         id="formAlterarTorre" method="POST">
         <input type="hidden" name="idTorre" value="{{ torre.getIdTorre() if torre }}">
         <div class="row">
@@ -101,7 +102,8 @@
             <a href="/tratar_torres" class="btn btn-secondary w-100">Cancelar</a>
           </div>
           <div class="col-3">
-            <button type="submit" class="btn btn-success w-100">{{ 'Salvar' if torre and torre.getIdTorre() is not none
+            <button type="submit" class="btn btn-success w-100">{{ 'Salvar' if not novo and torre and torre.getIdTorre()
+              is not none
               else 'Criar' }}</button>
           </div>
         </div>

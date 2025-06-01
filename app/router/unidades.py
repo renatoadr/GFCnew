@@ -1,10 +1,20 @@
-from flask import Blueprint, request, render_template, redirect, url_for
+from flask import Blueprint, request, render_template, redirect, url_for, send_file
 from controller.unidadeController import unidadeController
 from controller.torreController import torreController
-from utils.security import login_required
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
+from utils.converter import converterStrToFloat
+from utils.flash_message import flash_message
+from werkzeug.utils import secure_filename
+from utils.security import login_required
+from utils.helper import allowed_file
 import utils.converter as converter
 from dto.unidade import unidade
+from datetime import datetime
+from io import BytesIO
+import xlsxwriter
+import os
+import pandas as pd
+
 
 unidade_bp = Blueprint('unidades', __name__)
 
@@ -47,6 +57,128 @@ def tratarunidades():
 #     ctrlTorre = torreController()
 #     listaTorres = ctrlTorre.consultarTorres(IdEmpreend().get())
 #     return render_template("unidade.html", listaTorres=listaTorres, current_date=date.today())
+
+
+@unidade_bp.route('/exportar_planilha_unidades')
+@login_required
+def export_planilha():
+    unidC = unidadeController()
+    unidS = unidC.consultarUnidades(IdEmpreend().get())
+    nome_arquivo = f"gfc_valores_unidades_{NmEmpreend().get().replace(' ', '_')}.xlsx"
+    fileBytes = BytesIO()
+    workbook = xlsxwriter.Workbook(fileBytes, {'in_memory': True})
+    worksheet = workbook.add_worksheet("unidades")
+
+    worksheet.protect('PgFc432')
+
+    worksheet.set_column('A:B', width=13, options={'auto_size': True})
+    worksheet.set_column('C:G', width=25, options={'auto_size': True})
+    worksheet.set_row(0, height=20)
+    header_format = workbook.add_format({'bold': True, 'align': 'center'})
+    header_format.set_align('vcenter')
+    headers = [
+        {'header': 'Torre', 'header_format': header_format},
+        {'header': 'Unidade', 'header_format': header_format},
+        {'header': 'Vigência', 'header_format': header_format},
+        {'header': 'Valor da Unidade', 'header_format': header_format},
+        {'header': 'Valor da Pré Chaves', 'header_format': header_format},
+        {'header': 'Valor das Chaves', 'header_format': header_format},
+        {'header': 'Valor do Pós Chaves', 'header_format': header_format}
+    ]
+
+    formato_moeda = workbook.add_format(
+        {'num_format': '#,##0.00', "locked": False})
+    formato_data = workbook.add_format(
+        {'num_format': 'dd/mm/yyyy', "locked": False})
+    for idx in range(0, len(unidS)):
+        uni = unidS[idx]
+        cel = idx + 2
+        worksheet.write_string(f'A{cel}', uni.getNmTorre())
+        worksheet.write_string(f'B{cel}', uni.getUnidade())
+        worksheet.write_datetime(
+            f'C{cel}', datetime(int(uni.getAnoVigencia()), int(uni.getMesVigencia()), 1), formato_data)
+        worksheet.write_number(
+            f'D{cel}', converterStrToFloat(uni.getVlUnidade()), formato_moeda)
+        worksheet.write_number(
+            f'E{cel}', converterStrToFloat(uni.getVlPreChaves()), formato_moeda)
+        worksheet.write_number(
+            f'F{cel}', converterStrToFloat(uni.getVlChaves()), formato_moeda)
+        worksheet.write_number(
+            f'G{cel}', converterStrToFloat(uni.getVlPosChaves()), formato_moeda)
+
+    worksheet.add_table('A1:G10000', {'columns': headers})
+    workbook.close()
+    fileBytes.seek(0)
+    return send_file(
+        fileBytes,
+        mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        as_attachment=True,
+        download_name=nome_arquivo
+    )
+
+
+@unidade_bp.route('/importar_planilha_unidades', methods=['POST'])
+@login_required
+def importar_planilha():
+    if 'file' not in request.files:
+        flash_message.error("Erro no upload do arquivo. No file part.")
+        return redirect("/tratar_unidades")
+
+    file = request.files['file']
+    if file and not allowed_file(file.filename):
+        flash_message.error("Este arquivo não é uma planilha")
+        return redirect("/tratar_unidades")
+
+    sheetData = pd.read_excel(file.stream)
+    dictList = sheetData.to_dict()
+    total = len(dictList['Torre'])
+    for idx in range(0, total):
+        keyRecord = f'Torre: {dictList['Torre'][idx]} e unidade: {dictList['Torre'][idx]}'
+        id_torre = unidadeController.idTorrePeloNomeeUnidade(
+            dictList['Unidade'][idx],
+            dictList['Torre'][idx],
+            IdEmpreend().get()
+        )
+        if not id_torre:
+            flash_message.error(
+                f'Não foi encontrado o id da torre. {keyRecord}')
+            continue
+        if isinstance(dictList['Vigência'][0], datetime):
+            mes = format(dictList['Vigência'][0], '%m')
+            ano = format(dictList['Vigência'][0], '%Y')
+        else:
+            flash_message.error(f'Vigência não é válida para {keyRecord}')
+            continue
+
+        vlUnidade = converterStrToFloat(dictList['Valor da Unidade'][idx])
+        vlPreChaves = converterStrToFloat(dictList['Valor da Pré Chaves'][idx])
+        vlChaves = converterStrToFloat(dictList['Valor das Chaves'][idx])
+        vlPosChaves = converterStrToFloat(dictList['Valor do Pós Chaves'][idx])
+        vlReceber = vlPreChaves + vlChaves + vlPosChaves
+        status = 'Estoque'
+
+        if vlReceber > 0:
+            status = 'Vendido'
+
+        if vlReceber >= vlUnidade:
+            status = 'Quitado'
+
+        if not flash_message.has_error():
+            unidadeController.atualizarValoresUnidade((
+                IdEmpreend().get(),
+                id_torre,
+                dictList['Unidade'][idx],
+                status,
+                mes,
+                ano,
+                vlUnidade,
+                vlPreChaves,
+                vlChaves,
+                vlPosChaves,
+                vlReceber,
+            ))
+
+    return redirect("/tratar_unidades")
 
 
 @unidade_bp.route('/cadastrar_unidade', methods=['POST'])

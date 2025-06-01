@@ -51,7 +51,7 @@ class unidadeController:
         print('---consultarUnidades--')
         print(idEmpreend)
 
-        query = f"""SELECT uni.id_unidade, uni.id_empreendimento, uni.id_torre, uni.unidade, uni.status, tor.nm_torre, uni.vl_unidade, cli.nm_cliente
+        query = f"""SELECT uni.id_unidade, uni.id_empreendimento, uni.id_torre, uni.unidade, uni.status, tor.nm_torre, uni.vl_unidade, cli.nm_cliente, mes_vigencia, ano_vigencia
         FROM {MySql.DB_NAME}.tb_unidades uni
         INNER JOIN {MySql.DB_NAME}.tb_torres tor
         ON uni.id_torre = tor.id_torre
@@ -78,6 +78,8 @@ class unidadeController:
             u.setNmTorre(x['nm_torre'])
             u.setUnidade(x['unidade'])
             u.setStatus(x['status'])
+            u.setMesVigencia(x['mes_vigencia'])
+            u.setAnoVigencia(x['ano_vigencia'])
             if x['vl_unidade'] == None:
                 u.setVlUnidade(0.00)
             else:
@@ -556,3 +558,42 @@ class unidadeController:
         linhaU.setVlPosChaves(linha['vl_pos_chaves'])
 
         return linhaU
+
+    @staticmethod
+    def idTorrePeloNomeeUnidade(unidade: int, nmTorre: str, idEmpreend: int) -> int:
+        query = f"""SELECT uni.id_torre FROM {MySql.DB_NAME}.tb_unidades uni
+                  INNER JOIN {MySql.DB_NAME}.tb_torres tor
+                  ON uni.id_torre = tor.id_torre
+                  AND uni.id_empreendimento = tor.id_empreendimento
+                  AND tor.nm_torre = %s
+                  WHERE uni.unidade = %s
+                  AND uni.id_empreendimento = %s
+                  AND uni.ac_historico IS NULL;"""
+        result = MySql.getOne(query, (nmTorre, unidade, idEmpreend))
+        return result['id_torre'] if result else None
+
+    @staticmethod
+    def atualizarValoresUnidade(listData: tuple):
+        queryUpdate = f"""UPDATE {MySql.DB_NAME}.tb_unidades
+                          SET ac_historico = 'EDITADO'
+                          WHERE id_torre = %s
+                          AND unidade = %s
+                          AND id_empreendimento = %s
+                          AND ac_historico IS NULL;"""
+        query = f"""INSERT INTO {MySql.DB_NAME}.tb_unidades (
+                    id_empreendimento,
+                    id_torre,
+                    unidade,
+                    status,
+                    mes_vigencia,
+                    ano_vigencia,
+                    vl_unidade,
+                    vl_pre_chaves,
+                    vl_chaves,
+                    vl_pos_chaves,
+                    vl_receber
+                  ) VALUES (
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                  );"""
+        MySql.exec(queryUpdate, (listData[1], listData[2], listData[0]))
+        MySql.exec(query, listData)

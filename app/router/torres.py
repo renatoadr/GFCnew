@@ -1,10 +1,11 @@
-from utils.security import login_required
+from utils.security import login_required, url_for
 from flask import Blueprint, request, render_template, redirect, flash
-from controller.torreController import torreController
 from controller.unidadeController import unidadeController
+from controller.torreController import torreController
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
-from dto.torre import torre
+from utils.flash_message import flash_message
 import utils.converter as converter
+from dto.torre import torre
 
 torre_bp = Blueprint('torres', __name__)
 
@@ -66,12 +67,17 @@ def cadastrar_torre():
     t.setPrefixCobertura(request.form.get('prefixCobertura')
                          if request.form.get('prefixCobertura') else 'Cobertura')
     t.setNumAptUmAndarUm(request.form.get('numApUmAdrUm'))
-    t.setVlrUnidade(converter.converterStrToFloat(request.form.get('vlrUnidade')))
-    t.setVlrCobertura(converter.converterStrToFloat(request.form.get('vlrCobertura')))
+    t.setVlrUnidade(converter.converterStrToFloat(
+        request.form.get('vlrUnidade')))
+    t.setVlrCobertura(converter.converterStrToFloat(
+        request.form.get('vlrCobertura')))
 
     torreC = torreController()
-    torreC.inserirTorre(t)
+    if torreC.existeNomeTorre(t.getNmTorre()):
+        flash_message.error('Este nome de torre já existe')
+        return render_template("torre.html", idEmpreend=IdEmpreend().get(), nmEmpreend=NmEmpreend().get(), torre=t, novo=True)
 
+    torreC.inserirTorre(t)
     return redirect("/tratar_torres")
 
 
