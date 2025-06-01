@@ -87,8 +87,8 @@
             <div class="col-6">
               <div class="form-floating">
                 <div class="form-floating">
-                  <input type="month" min="2000-01" max="3000-12" name="intervaloInicio" id="dataInicio"
-                    class="form-control" placeholder="">
+                  <input type="month" name="intervaloInicio" id="dataInicio" class="form-control" placeholder=""
+                    min="{{ minDate }}" max="{{ maxDate }}">
                   <label for="dataInicio">Início do Intervalo</label>
                 </div>
               </div>
@@ -97,7 +97,7 @@
             <div class="col-6">
               <div class="form-floating">
                 <div class="form-floating">
-                  <input type="month" min="2000-01" max="3000-12" name="finalIntervalo" id="finalIntervalo"
+                  <input type="month" min="{{ minDate }}" max="{{ maxDate }}" name="finalIntervalo" id="finalIntervalo"
                     class="form-control" placeholder="">
                   <label for="finalIntervalo">Final do Intervalo</label>
                 </div>

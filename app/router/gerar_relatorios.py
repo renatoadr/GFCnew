@@ -74,7 +74,9 @@ def gerar_relatorio():
         'gerar_relatorio.html',
         opcoesComRange=opcoesComRange,
         opcoes=opcoes,
-        vigencia=vigencia
+        vigencia=vigencia,
+        minDate='2000-01',
+        maxDate=datetime.now().strftime('%Y-%m'),
     )
 
 
