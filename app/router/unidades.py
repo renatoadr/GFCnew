@@ -160,7 +160,7 @@ def importar_planilha():
         if vlReceber > 0:
             status = 'Vendido'
 
-        if vlReceber >= vlUnidade:
+        if vlReceber > 0 and vlReceber >= vlUnidade:
             status = 'Quitado'
 
         if not flash_message.has_error():
