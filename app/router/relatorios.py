@@ -33,7 +33,7 @@ def gerar_relatorio():
 
     # monta o diretório onde estão os gráficos e fotos
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
-    erros = grafC.verificaArqRelatorio(diretorio)
+    erros = grafC.verificaArqRelatorio(diretorio, idEmpreend, vigencia)
 
     # monta o diretório onde ficam todos os relatórios
     dirRelatorio = grafC.montaDir(idEmpreend, mes, ano, relatorio=True)

@@ -8,9 +8,6 @@ from utils.dbContext import MySql
 class clienteController:
     __connection = None
 
-    def __init__(self):
-        pass
-
     @staticmethod
     def getCliente(cpfCnpj: str) -> str:
         cliC = clienteController()
@@ -155,12 +152,6 @@ class clienteController:
         return result[0] > 0
 
     def consultaClientePorCpf(self, nrCpf):
-        self.__connection = MySql.connect()
-        cursor = self.__connection.cursor()
-        query = "SELECT nm_cliente FROM " + MySql.DB_NAME + \
-            """.tb_clientes WHERE cpf_cnpj = %s"""
-        cursor.execute(query, (nrCpf,))
-        result = cursor.fetchone()
-        cursor.close()
-        MySql.close(self.__connection)
-        return result[0]
+        query = f"SELECT nm_cliente FROM {MySql.DB_NAME}.tb_clientes WHERE cpf_cnpj = %s"
+        result = MySql.getOne(query, (nrCpf,))
+        return result['nm_cliente'] if result else None

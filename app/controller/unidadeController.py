@@ -51,7 +51,7 @@ class unidadeController:
         print('---consultarUnidades--')
         print(idEmpreend)
 
-        query = f"""SELECT uni.id_unidade, uni.id_empreendimento, uni.id_torre, uni.unidade, uni.status, tor.nm_torre, uni.vl_unidade, cli.nm_cliente, mes_vigencia, ano_vigencia
+        query = f"""SELECT uni.id_unidade, uni.id_empreendimento, uni.id_torre, uni.unidade, uni.status, tor.nm_torre, uni.vl_unidade, cli.nm_cliente, mes_vigencia, ano_vigencia, uni.cpf_cnpj_comprador
         FROM {MySql.DB_NAME}.tb_unidades uni
         INNER JOIN {MySql.DB_NAME}.tb_torres tor
         ON uni.id_torre = tor.id_torre
@@ -78,6 +78,7 @@ class unidadeController:
             u.setNmTorre(x['nm_torre'])
             u.setUnidade(x['unidade'])
             u.setStatus(x['status'])
+            u.setCpfComprador(x['cpf_cnpj_comprador'])
             u.setMesVigencia(x['mes_vigencia'])
             u.setAnoVigencia(x['ano_vigencia'])
             if x['vl_unidade'] == None:
@@ -556,6 +557,7 @@ class unidadeController:
         linhaU.setVlChaves(linha['vl_chaves'])
         linhaU.setVlPreChaves(linha['vl_pre_chaves'])
         linhaU.setVlPosChaves(linha['vl_pos_chaves'])
+        linhaU.setNmTorre(linha['nm_torre'] if 'nm_torre' in linha else '')
 
         return linhaU
 
@@ -587,13 +589,34 @@ class unidadeController:
                     status,
                     mes_vigencia,
                     ano_vigencia,
+                    cpf_cnpj_comprador,
                     vl_unidade,
                     vl_pre_chaves,
                     vl_chaves,
                     vl_pos_chaves,
                     vl_receber
                   ) VALUES (
-                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
                   );"""
         MySql.exec(queryUpdate, (listData[1], listData[2], listData[0]))
         MySql.exec(query, listData)
+
+    def unidadesVendidasSemCliente(self, idEmpreend: int, mesVig: str, anoVig: str):
+        query = f"""SELECT *, tor.nm_torre FROM {MySql.DB_NAME}.tb_unidades uni
+          INNER JOIN {MySql.DB_NAME}.tb_torres tor
+          ON tor.id_torre = uni.id_torre
+          WHERE uni.id_empreendimento = %s
+          AND uni.mes_vigencia = %s
+          AND uni.ano_vigencia = %s
+          AND uni.status IN ('Vendido', 'Quitado')
+          AND uni.ac_historico IS NULL
+          AND (
+              uni.cpf_cnpj_comprador IS NULL
+              OR uni.cpf_cnpj_comprador IN ('None', '')
+          ); """
+
+        unidades = MySql.getAll(query, (idEmpreend, mesVig, anoVig))
+        result = []
+        for uni in unidades:
+            result.append(self.mapeamentoUnidade(uni))
+        return result

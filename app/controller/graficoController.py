@@ -4,6 +4,7 @@
 from flask import current_app
 from controller.empreendimentoController import empreendimentoController
 from controller.consideracaoController import consideracaoController
+from controller.unidadeController import unidadeController
 import os
 
 
@@ -12,7 +13,6 @@ class graficoController:
 
     def __init__(self):
         self.app = current_app
-        pass
 
     def getPathImgs(self, img):
         path = os.path.split(__file__)
@@ -540,8 +540,19 @@ class graficoController:
             print(f"Diretorio '{diretorio}' já existe.")
             return True
 
-    def verificaArqRelatorio(self, diretorio):
-        listaErro = []
+    def verificaUnidadesVendidas(self, idEmpreend, vigencia) -> list[str]:
+        listError = []
+        vig = vigencia.split('-')
+        ctrlUnidade = unidadeController()
+        unidades = ctrlUnidade.unidadesVendidasSemCliente(
+            idEmpreend, vig[1], vig[0])
+        for uni in unidades:
+            listError.append(
+                f"A unidade: {uni.getUnidade()} da torre: {uni.getNmTorre()} está com status: {uni.getStatus()}, porém, não tem cliente associado.")
+        return listError
+
+    def verificaArqRelatorio(self, diretorio, idEmpreend, vigencia):
+        listaErro = self.verificaUnidadesVendidas(idEmpreend, vigencia)
         #   Primeira Página
 
         foto = self.getPathImgs("franca.jpg")

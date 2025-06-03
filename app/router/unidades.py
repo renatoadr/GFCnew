@@ -1,20 +1,19 @@
 from flask import Blueprint, request, render_template, redirect, url_for, send_file
 from controller.unidadeController import unidadeController
+from controller.clienteController import clienteController
 from controller.torreController import torreController
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from utils.converter import converterStrToFloat
 from utils.flash_message import flash_message
-from werkzeug.utils import secure_filename
 from utils.security import login_required
 from utils.helper import allowed_file
 import utils.converter as converter
 from dto.unidade import unidade
 from datetime import datetime
 from io import BytesIO
-import xlsxwriter
-import os
 import pandas as pd
-
+import xlsxwriter
+import re
 
 unidade_bp = Blueprint('unidades', __name__)
 
@@ -48,17 +47,6 @@ def tratarunidades():
         return render_template("lista_unidades.html", unidades=unidS)
 
 
-# @unidade_bp.route('/abrir_cad_unidade')
-# def abrir_cad_unidade():
-
-#     #    idEmpreend = request.args.get("idEmpreend")
-#     #    IdEmpreend().set(idEmpreend)
-
-#     ctrlTorre = torreController()
-#     listaTorres = ctrlTorre.consultarTorres(IdEmpreend().get())
-#     return render_template("unidade.html", listaTorres=listaTorres, current_date=date.today())
-
-
 @unidade_bp.route('/exportar_planilha_unidades')
 @login_required
 def export_planilha():
@@ -72,13 +60,14 @@ def export_planilha():
     worksheet.protect('PgFc432')
 
     worksheet.set_column('A:B', width=13, options={'auto_size': True})
-    worksheet.set_column('C:G', width=25, options={'auto_size': True})
+    worksheet.set_column('C:H', width=25, options={'auto_size': True})
     worksheet.set_row(0, height=20)
     header_format = workbook.add_format({'bold': True, 'align': 'center'})
     header_format.set_align('vcenter')
     headers = [
         {'header': 'Torre', 'header_format': header_format},
         {'header': 'Unidade', 'header_format': header_format},
+        {'header': 'CPF/CNPJ Cliente', 'header_format': header_format},
         {'header': 'Vigência', 'header_format': header_format},
         {'header': 'Valor da Unidade', 'header_format': header_format},
         {'header': 'Valor da Pré Chaves', 'header_format': header_format},
@@ -95,18 +84,22 @@ def export_planilha():
         cel = idx + 2
         worksheet.write_string(f'A{cel}', uni.getNmTorre())
         worksheet.write_string(f'B{cel}', uni.getUnidade())
+        worksheet.write_string(
+            f'C{cel}', uni.getCpfComprador() if uni.getCpfComprador(
+            ) and uni.getCpfComprador() != 'None' else '',
+            workbook.add_format({"locked": False}))
         worksheet.write_datetime(
-            f'C{cel}', datetime(int(uni.getAnoVigencia()), int(uni.getMesVigencia()), 1), formato_data)
+            f'D{cel}', datetime(int(uni.getAnoVigencia()), int(uni.getMesVigencia()), 1), formato_data)
         worksheet.write_number(
-            f'D{cel}', converterStrToFloat(uni.getVlUnidade()), formato_moeda)
+            f'E{cel}', converterStrToFloat(uni.getVlUnidade()), formato_moeda)
         worksheet.write_number(
-            f'E{cel}', converterStrToFloat(uni.getVlPreChaves()), formato_moeda)
+            f'F{cel}', converterStrToFloat(uni.getVlPreChaves()), formato_moeda)
         worksheet.write_number(
-            f'F{cel}', converterStrToFloat(uni.getVlChaves()), formato_moeda)
+            f'G{cel}', converterStrToFloat(uni.getVlChaves()), formato_moeda)
         worksheet.write_number(
-            f'G{cel}', converterStrToFloat(uni.getVlPosChaves()), formato_moeda)
+            f'H{cel}', converterStrToFloat(uni.getVlPosChaves()), formato_moeda)
 
-    worksheet.add_table('A1:G10000', {'columns': headers})
+    worksheet.add_table('A1:H10000', {'columns': headers})
     workbook.close()
     fileBytes.seek(0)
     return send_file(
@@ -155,6 +148,7 @@ def importar_planilha():
         vlChaves = converterStrToFloat(dictList['Valor das Chaves'][idx])
         vlPosChaves = converterStrToFloat(dictList['Valor do Pós Chaves'][idx])
         vlReceber = vlPreChaves + vlChaves + vlPosChaves
+        comprador = dictList['CPF/CNPJ Cliente'][idx]
         status = 'Estoque'
 
         if vlReceber > 0:
@@ -162,6 +156,12 @@ def importar_planilha():
 
         if vlReceber > 0 and vlReceber >= vlUnidade:
             status = 'Quitado'
+
+        if comprador:
+            comprador = re.sub(r'\D', '', comprador)
+            existe = clienteController.getCliente(comprador)
+            if not existe:
+                comprador = None
 
         if not flash_message.has_error():
             unidadeController.atualizarValoresUnidade((
@@ -171,6 +171,7 @@ def importar_planilha():
                 status,
                 mes,
                 ano,
+                comprador,
                 vlUnidade,
                 vlPreChaves,
                 vlChaves,
@@ -241,18 +242,7 @@ def editar_unidade():
     uni = unidc.consultarUnidadePeloId(idUni)
     uni.setVlReceber(somaVlReceber(uni))
 
-    sts = uni.getStatus()
-
-    listaStatus = []
-    if sts == 'Estoque':
-        listaStatus = ['Estoque', 'Quitado', 'Vendido']
-    elif sts == 'Vendido':
-        listaStatus = ['Vendido', 'Quitado', 'Distrato']
-    elif sts == 'Quitado':
-        listaStatus = ['Quitado']
-    elif sts == 'Distrato':
-        listaStatus = ['Distrato']
-
+    listaStatus = prepListaStatus(uni.getStatus())
     vigencia = f"{uni.getAnoVigencia()}-{uni.getMesVigencia()}"
 
     return render_template(
@@ -275,13 +265,15 @@ def consultar_unidade():
     unidc = unidadeController()
     uni = unidc.consultarUnidadePeloId(idUni)
 
+    listaStatus = prepListaStatus(uni.getStatus())
     vigencia = f"{uni.getAnoVigencia()}-{uni.getMesVigencia()}"
 
     return render_template(
         "unidade.html",
+        modo=modo,
         unidade=uni,
         listaTorres=listaTorres,
-        modo=modo,
+        listaStatus=listaStatus,
         vigencia=vigencia
     )
 
@@ -300,3 +292,16 @@ def somaVlReceber(uni: unidade) -> float:
     vlPreChaves = converter.converterStrToFloat(uni.getVlPreChaves())
     vlPosChaves = converter.converterStrToFloat(uni.getVlPosChaves())
     return vlChaves + vlPosChaves + vlPreChaves
+
+
+def prepListaStatus(sts: str) -> list[str]:
+    listaStatus = []
+    if sts == 'Estoque':
+        listaStatus = ['Estoque', 'Quitado', 'Vendido']
+    elif sts == 'Vendido':
+        listaStatus = ['Vendido', 'Quitado', 'Distrato']
+    elif sts == 'Quitado':
+        listaStatus = ['Quitado']
+    elif sts == 'Distrato':
+        listaStatus = ['Distrato']
+    return listaStatus
