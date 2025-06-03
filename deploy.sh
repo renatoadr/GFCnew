@@ -133,6 +133,7 @@ scp -i "${path_chave}" "${nome_arquivo}.gz" "${server_connect}":${pasta_servidor
       exit 1
   fi
 }
+break
 done
 
 log "Carregando para o docker do servidor a nova imagem. Aguarde alguns minutos..."
