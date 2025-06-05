@@ -1,4 +1,4 @@
-CREATE DATABASE  IF NOT EXISTS `db_gfc`;
+CREATE DATABASE IF NOT EXISTS `db_gfc`;
 USE `db_gfc`;
 
 CREATE TABLE IF NOT EXISTS `tb_agendas` (
@@ -123,7 +123,7 @@ CREATE TABLE IF NOT EXISTS `tb_inadimplencias` (
   PRIMARY KEY (`id_empreendimento`,`mes_vigencia`,`ano_vigencia`,`ordem`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE  IF NOT EXISTS `tb_laudos` (
+CREATE TABLE IF NOT EXISTS  IF NOT EXISTS `tb_laudos` (
   `id_empreendimento` int NOT NULL,
   `mes_vigencia` varchar(2) NOT NULL,
   `ano_vigencia` varchar(4) NOT NULL,
@@ -179,7 +179,7 @@ CREATE TABLE IF NOT EXISTS `tb_orcamentos` (
   PRIMARY KEY (`id_orcamento`)
 ) ENGINE=InnoDB AUTO_INCREMENT=396 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE `tb_torres` (
+CREATE TABLE IF NOT EXISTS `tb_torres` (
   `id_torre` int NOT NULL AUTO_INCREMENT,
   `id_empreendimento` int NOT NULL,
   `nm_torre` varchar(20) NOT NULL,
@@ -188,11 +188,13 @@ CREATE TABLE `tb_torres` (
   `qt_coberturas` int DEFAULT NULL,
   `prefix_cobertura` varchar(20) DEFAULT NULL,
   `num_apt_um_andar_um` int NOT NULL,
+  `vl_unidade` DECIMAL(15,2) NULL,
+  `vl_cobertura` DECIMAL(15,2) NULL,
   PRIMARY KEY (`id_torre`),
   KEY `idx_torres` (`id_empreendimento`,`id_torre`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-  CREATE TABLE `tb_unidades` (
+  CREATE TABLE IF NOT EXISTS `tb_unidades` (
   `id_unidade` int NOT NULL AUTO_INCREMENT,
   `id_empreendimento` int NOT NULL,
   `id_torre` int NOT NULL,
@@ -202,7 +204,7 @@ CREATE TABLE `tb_torres` (
   `vl_unidade` decimal(10,2) DEFAULT NULL,
   `status` varchar(8) NOT NULL,
   `cpf_cnpj_comprador` varchar(15) DEFAULT NULL,
-  `vl_pago` decimal(10,2) DEFAULT NULL,
+  `vl_receber` decimal(10,2) DEFAULT NULL,
   `dt_ocorrencia` datetime DEFAULT CURRENT_TIMESTAMP,
   `financiado` varchar(3) DEFAULT NULL,
   `vl_chaves` decimal(15,2) DEFAULT NULL,
@@ -213,19 +215,13 @@ CREATE TABLE `tb_torres` (
   KEY `idx_unidades` (`id_empreendimento`,`id_torre`,`unidade`,`mes_vigencia`,`ano_vigencia`)
 ) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
-CREATE TABLE IF NOT EXISTS `tb_usuario_banco` (
-  `id_usuario` int NOT NULL,
-  `id_banco` int NOT NULL,
-  PRIMARY KEY (`id_usuario`,`id_banco`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-
 CREATE TABLE IF NOT EXISTS `tb_usuarios` (
   `id_usuario` int NOT NULL AUTO_INCREMENT,
   `email` varchar(50) UNIQUE DEFAULT NULL,
   `senha` varchar(100) DEFAULT NULL,
   `tp_acesso` varchar(15) DEFAULT NULL,
   `nm_usuario` varchar(100) DEFAULT NULL,
-  `cod_banco` int,
+  `cod_banco` int null,
   PRIMARY KEY (`id_usuario`),
   KEY `idx_email` (`email`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -250,6 +246,47 @@ CREATE TABLE IF NOT EXISTS  `tb_bancos` (
   `descricao_completa` varchar(150) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   PRIMARY KEY (`codigo`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
+CREATE TABLE IF NOT EXISTS `tb_aspectos` (
+  `id` INT AUTO_INCREMENT NOT NULL,
+  `status` VARCHAR(100) NOT NULL,
+  `descricao` VARCHAR(500) NULL,
+  `id_empreendimento` INT NOT NULL,
+  `id_pergunta_aspecto` INT NOT NULL,
+  `mes_vigencia` VARCHAR(2) NOT NULL,
+  `ano_vigencia` INT NOT NULL,
+   PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
+
+CREATE TABLE IF NOT EXISTS `tb_perguntas_aspectos` (
+  `id` INT AUTO_INCREMENT NOT NULL,
+  `pergunta` VARCHAR(350) NOT NULL,
+  `grupo` VARCHAR(100) NOT NULL,
+  `opcoes` VARCHAR(500) NOT NULL,
+   PRIMARY KEY (`id`)
+) ENGINE = InnoDB;
+
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (1, 'A execução obedece o projeto?', 'Projeto', 'Sim;Não');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (2, 'Houve modificação em alguma unidade?', 'Projeto', 'Sim;Não');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (3, 'Utilização de Equipamentos Individuais', 'Segurança', 'Sim;Não');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (4, 'Utilização de Equipamentos Coletivos', 'Segurança', 'Sim;Não');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (5, 'Estrutura (Prumo, presença de nichos)', 'Qualidade', 'Baixo;Normal;Bom');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (6, 'Paredes (Prumo, Alinhamento, Modulação e etc.)', 'Qualidade', 'Baixo;Normal;Bom');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (7, 'Instalações de Portas e Janelas', 'Qualidade', 'Baixo;Normal;Bom');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (8, 'Contrapiso', 'Qualidade', 'Baixo;Normal;Bom');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (9, 'Revestimento Interno', 'Qualidade', 'Baixo;Normal;Bom');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (10, 'Revestimento Externo', 'Qualidade', 'Baixo;Normal;Bom');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (11, 'Escadas', 'Qualidade', 'Baixo;Normal;Bom');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (12, 'Instalações Elétricas e Hidráulicas', 'Qualidade', 'Baixo;Normal;Bom');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (13, 'Forros', 'Qualidade', 'Baixo;Normal;Bom');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (14, 'Pintura', 'Qualidade', 'Baixo;Normal;Bom');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (15, 'Uso de Ferramentas adequadas ao serviço', 'Qualidade', 'Baixo;Normal;Bom');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (16, 'Planejamento', 'Qualidade', 'Baixo;Normal;Bom');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (17, 'Limpeza', 'Qualidade', 'Baixo;Normal;Bom');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (18, 'Logística de Canteiro', 'Qualidade', 'Baixo;Normal;Bom');
+INSERT INTO Query (id, pergunta, grupo, opcoes) VALUES (19, 'Outro', 'Qualidade', 'Baixo;Normal;Bom');
+
 
 INSERT INTO `db_gfc`.`tb_consideracoes`(`email`, `senha`, `tp_acesso`, `nm_usuario`)
 VALUES (`adm@gfcpro.com.br`, `$2b$06$S0KOp/YN3wdyzc6JlF68Eugmhjh5wIzLmO9PVDGtildPudAtsQqTq`, `RT`, `Renato Adriano`)
