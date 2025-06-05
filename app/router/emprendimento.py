@@ -6,10 +6,10 @@ import utils.converter as converter
 from controller.bancoController import bancoController
 from utils.security import get_user_logged
 
-empreend_bp = Blueprint('empreendimentos', __name__)
+emprendimento_bp = Blueprint('empreendimentos', __name__)
 
 
-@empreend_bp.route('/home')
+@emprendimento_bp.route('/home')
 @login_required
 def abrir_home():
     sUser = get_user_logged()
@@ -18,7 +18,7 @@ def abrir_home():
     return render_template("home.html", empreends=emps)
 
 
-@empreend_bp.route('/abrir_cad_empreend')
+@emprendimento_bp.route('/abrir_cad_empreend')
 @login_required
 def abrir_cad_empreend():
     ctrlBanco = bancoController()
@@ -26,7 +26,7 @@ def abrir_cad_empreend():
     return render_template("cad_empreend.html", bancos=bancos)
 
 
-@empreend_bp.route('/efetuar_cad_empreend', methods=['POST'])
+@emprendimento_bp.route('/efetuar_cad_empreend', methods=['POST'])
 def efetuar_cad_empreend():
     empreend = empreendimento()
     empreend.setApelido(request.form.get('apelido'))
@@ -51,7 +51,7 @@ def efetuar_cad_empreend():
     return redirect("/home")
 
 
-@empreend_bp.route('/excluir_empreend')
+@emprendimento_bp.route('/excluir_empreend')
 @login_required
 def excluir_empreend():
     idEmpreend = request.args.get('idEmpreend')
@@ -61,7 +61,7 @@ def excluir_empreend():
     return redirect("/home")
 
 
-@empreend_bp.route('/abrir_edicao_empreend')
+@emprendimento_bp.route('/abrir_edicao_empreend')
 @login_required
 def abrir_edicao_empreend():
     idEmpreend = request.args.get('idEmpreend')
@@ -72,7 +72,7 @@ def abrir_edicao_empreend():
     return render_template("cad_empreend.html", empreend=empreend, bancos=bancos)
 
 
-@empreend_bp.route('/salvar_empreend', methods=['POST'])
+@emprendimento_bp.route('/salvar_empreend', methods=['POST'])
 def salvar_empreend():
     empreend = empreendimento()
     empreend.setApelido(request.form.get('apelido'))

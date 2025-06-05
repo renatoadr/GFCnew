@@ -16,10 +16,10 @@ import matplotlib.pyplot as plt
 import random
 import os
 
-tabela_bp = Blueprint('tabelas', __name__)
+tabelas_bp = Blueprint('tabelas', __name__)
 
 
-@tabela_bp.route('/tab_notas')
+@tabelas_bp.route('/tab_notas')
 @login_required
 def tab_notas():
     idEmpreend = IdEmpreend().get()
@@ -118,7 +118,7 @@ def gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS):
     return grafNome
 
 
-@tabela_bp.route('/tab_conta')
+@tabelas_bp.route('/tab_conta')
 @login_required
 def tab_conta_corrente():
     idEmpreend = IdEmpreend().get()
@@ -205,7 +205,7 @@ def gerar_tab_conta_corrente(idEmpreend, mesVigencia, anoVigencia, conS):
     return grafNome
 
 
-@tabela_bp.route('/tab_garantias_geral')
+@tabelas_bp.route('/tab_garantias_geral')
 @login_required
 def tab_garantias_geral():
 
@@ -299,7 +299,7 @@ def gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia):
     return grafNome
 
 
-@tabela_bp.route('/tab_garantias_obra')
+@tabelas_bp.route('/tab_garantias_obra')
 @login_required
 def tab_garantias_obra():
     idEmpreend = IdEmpreend().get()
@@ -389,7 +389,7 @@ def gerar_tab_garantias_obra(idEmpreend, mesVigencia, anoVigencia):
     return grafNome
 
 
-@tabela_bp.route('/tab_certidoes')
+@tabelas_bp.route('/tab_certidoes')
 @login_required
 def tab_certidoes():
 
@@ -488,7 +488,7 @@ def gerar_tab_certidoes(idEmpreend, mes, ano):
     return grafNome
 
 
-@tabela_bp.route('/tab_acomp_financeiro')
+@tabelas_bp.route('/tab_acomp_financeiro')
 @login_required
 def tab_acomp_financeiro():
     idEmpreend = IdEmpreend().get()
@@ -610,7 +610,7 @@ def gerar_tab_acomp_financeiro(idEmpreend, mesVigencia, anoVigencia, medS, notS)
     return grafNome
 
 
-@tabela_bp.route('/tab_medicoes')
+@tabelas_bp.route('/tab_medicoes')
 @login_required
 def tab_medicoes():
 
@@ -715,7 +715,7 @@ def gerar_tab_medicoes(idEmpreend, mesVigencia, anoVigencia, mesInicio, anoInici
     return grafNome
 
 
-@tabela_bp.route('/tab_orcamento_liberacao')
+@tabelas_bp.route('/tab_orcamento_liberacao')
 @login_required
 def tab_orcamento_liberacao():
     idEmpreend = IdEmpreend().get()

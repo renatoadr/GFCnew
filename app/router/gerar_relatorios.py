@@ -12,7 +12,7 @@ from utils.logger import logger
 from datetime import datetime
 import os
 
-gerar_relatorio_bp = Blueprint('gerar_relatorios', __name__)
+gerar_relatorios_bp = Blueprint('gerar_relatorios', __name__)
 
 opcoes = [
     ['graf_orcamento_liberacao_valor',
@@ -38,7 +38,7 @@ opcoesComRange = [
 ]
 
 
-@gerar_relatorio_bp.route('/gerar_insumos_relatorios')
+@gerar_relatorios_bp.route('/gerar_insumos_relatorios')
 @login_required
 def gerar_relatorio():
     idEmpreend = request.args.get("idEmpreend")
@@ -80,7 +80,7 @@ def gerar_relatorio():
     )
 
 
-@gerar_relatorio_bp.route('/gerar_insumos', methods=['POST', 'GET'])
+@gerar_relatorios_bp.route('/gerar_insumos', methods=['POST', 'GET'])
 def gerar_insumos():
     insumos = request.form.getlist('opcoes_relatorio')
     insumosIntervalo = request.form.getlist('opcoes_relatorio_range')
@@ -138,7 +138,7 @@ def gerar_insumos():
     )
 
 
-@gerar_relatorio_bp.route('/ver_insumo/<vigencia>/<arquivo>')
+@gerar_relatorios_bp.route('/ver_insumo/<vigencia>/<arquivo>')
 def ver_insumo(vigencia, arquivo):
     pathFile = os.path.join(
         current_app.config['DIRSYS'],

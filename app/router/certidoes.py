@@ -5,10 +5,10 @@ from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from dto.certidao import certidao
 from datetime import datetime
 
-cert_bp = Blueprint('certidoes', __name__)
+certidoes_bp = Blueprint('certidoes', __name__)
 
 
-@cert_bp.route('/tratar_certidoes')
+@certidoes_bp.route('/tratar_certidoes')
 @login_required
 def tratar_certidoes():
 
@@ -48,7 +48,7 @@ def tratar_certidoes():
         )
 
 
-@cert_bp.route('/efetuar_cad_certidoes', methods=['POST'])
+@certidoes_bp.route('/efetuar_cad_certidoes', methods=['POST'])
 def efetuar_cad_certidoes():
     cert = get_form_data()
     certC = certidaoController()
@@ -56,7 +56,7 @@ def efetuar_cad_certidoes():
     return redirect("/home")
 
 
-@cert_bp.route('/salvar_certidoes', methods=['POST'])
+@certidoes_bp.route('/salvar_certidoes', methods=['POST'])
 def salvar_certidoes():
     item = get_form_data()
     certC = certidaoController()
@@ -64,7 +64,7 @@ def salvar_certidoes():
     return redirect("/home")
 
 
-@cert_bp.route('/gerar_relatorio_certidoes', methods=['POST'])
+@certidoes_bp.route('/gerar_relatorio_certidoes', methods=['POST'])
 def gerar_relatorio_certidoes():
     idEmpreend = IdEmpreend().get()
     vigencia = request.form.get('vigencia')

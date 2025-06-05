@@ -14,10 +14,10 @@ import numpy as np
 import random
 import os
 
-grafico_bp = Blueprint('graficos', __name__)
+graficos_bp = Blueprint('graficos', __name__)
 
 
-@grafico_bp.route('/obter_grafico', methods=['GET'])
+@graficos_bp.route('/obter_grafico', methods=['GET'])
 @login_required
 def obter_grafico():
 
@@ -28,7 +28,7 @@ def obter_grafico():
     return send_file(grafNome, mimetype='image/png')
 
 
-@grafico_bp.route('/graf_orcamento_liberacao', methods=['GET'])
+@graficos_bp.route('/graf_orcamento_liberacao', methods=['GET'])
 @login_required
 def graf_orcamento_liberacao():
 
@@ -104,7 +104,7 @@ def gerar_graf_orcamento_liberacao(idEmpreend, mes, ano, tipo, medS):
     return grafNome
 
 
-@grafico_bp.route('/graf_progresso_obra', methods=['GET'])
+@graficos_bp.route('/graf_progresso_obra', methods=['GET'])
 @login_required
 def graf_progresso_obra():
 
@@ -201,7 +201,7 @@ def gerar_graf_progresso_obra(idEmpreend, mesVigencia, anoVigencia, mesInicio, a
     return grafNome
 
 
-@grafico_bp.route('/graf_indices_garantia_I', methods=['GET'])
+@graficos_bp.route('/graf_indices_garantia_I', methods=['GET'])
 @login_required
 def graf_indices_garantia_I():
     # ÍNDICES DE GARANTIA
@@ -302,7 +302,7 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     return grafNome
 
 
-@grafico_bp.route('/graf_indices_garantia_II', methods=['GET'])
+@graficos_bp.route('/graf_indices_garantia_II', methods=['GET'])
 @login_required
 def graf_indices_garantia_II():
     # ÍNDICES DE GARANTIA
@@ -397,7 +397,7 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
     return grafNome
 
 
-@grafico_bp.route('/graf_vendas', methods=['GET'])
+@graficos_bp.route('/graf_vendas', methods=['GET'])
 @login_required
 def graf_vendas():
     # Gráfico de rosca
@@ -483,7 +483,7 @@ def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia, tipo):
     return grafNome
 
 
-@grafico_bp.route('/graf_chaves', methods=['GET'])
+@graficos_bp.route('/graf_chaves', methods=['GET'])
 @login_required
 def graf_chaves():
     # ÍNDICES DE CHAVES

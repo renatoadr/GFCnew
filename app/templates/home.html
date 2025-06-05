@@ -130,6 +130,13 @@
                 </td>
 
                 <td>
+                  <a href="/aspectos_obra?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getApelido()}}"
+                    data-bs-toggle="tooltip" data-bs-title="Aspectos da Obra">
+                    <i class="fa-regular fa-star-half-stroke"></i>
+                  </a>
+                </td>
+
+                <td>
                   <a href="/gerar_insumos_relatorios?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getApelido()}}"
                     data-bs-toggle="tooltip" data-bs-title="Gerar insumos para o relatório">
                     <i class="fa-solid fa-chart-pie"></i>
@@ -154,7 +161,7 @@
               {% endfor %}
               {% else %}
               <tr>
-                <td colspan="18" class="text-center">
+                <td colspan="19" class="text-center">
                   Não existem empreendimentos cadastrados.
                 </td>
               </tr>

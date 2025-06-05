@@ -7,10 +7,10 @@ from utils.flash_message import flash_message
 import utils.converter as converter
 from dto.torre import torre
 
-torre_bp = Blueprint('torres', __name__)
+torres_bp = Blueprint('torres', __name__)
 
 
-@torre_bp.route('/tratar_torres')
+@torres_bp.route('/tratar_torres')
 @login_required
 def tratartorres():
 
@@ -42,7 +42,7 @@ def tratartorres():
         return render_template("lista_torres.html", torreS=torreS)
 
 
-@torre_bp.route('/abrir_cad_torre')
+@torres_bp.route('/abrir_cad_torre')
 @login_required
 def abrir_cad_torre():
 
@@ -55,7 +55,7 @@ def abrir_cad_torre():
     return render_template("torre.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend)
 
 
-@torre_bp.route('/cadastrar_torre', methods=['POST'])
+@torres_bp.route('/cadastrar_torre', methods=['POST'])
 def cadastrar_torre():
     t = torre()
     t.setIdEmpreend(IdEmpreend().get())
@@ -81,7 +81,7 @@ def cadastrar_torre():
     return redirect("/tratar_torres")
 
 
-# @torre_bp.route('/editar_torre')
+# @torres_bp.route('/editar_torre')
 # def editar_torre():
 
 #     idT = request.args.get("idTorre")
@@ -98,7 +98,7 @@ def cadastrar_torre():
 #     return render_template("torre.html", torre=torre, idEmpreend=idEmpreend, nmEmpreend=nmEmpreend)
 
 
-# @torre_bp.route('/salvar_alteracao_torre', methods=['POST'])
+# @torres_bp.route('/salvar_alteracao_torre', methods=['POST'])
 # def salvar_alteracao_torre():
 #     print('------- salvar_alteracao_torre INICIO --------')
 
@@ -120,7 +120,7 @@ def cadastrar_torre():
 #     return redirect("/tratar_torres")
 
 
-@torre_bp.route('/excluir_torre')
+@torres_bp.route('/excluir_torre')
 @login_required
 def excluir_torre():
     torreC = torreController()
@@ -138,7 +138,7 @@ def excluir_torre():
     return redirect("/tratar_torres")
 
 
-@torre_bp.route('/copiar_torre')
+@torres_bp.route('/copiar_torre')
 @login_required
 def editar_torre():
     idT = request.args.get("idTorre")

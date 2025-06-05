@@ -7,16 +7,16 @@ from utils.helper import allowed_file
 from dto.orcamento import orcamento
 import utils.converter as converter
 
-orca_bp = Blueprint('orcamentos', __name__)
+orcamentos_bp = Blueprint('orcamentos', __name__)
 
 
-@orca_bp.route('/abrir_cad_orcamento')
+@orcamentos_bp.route('/abrir_cad_orcamento')
 @login_required
 def abrir_cad_orcamento():
     return render_template("orcamento_item.html", idEmpreend=IdEmpreend().get())
 
 
-@orca_bp.route('/tratar_orcamentos')
+@orcamentos_bp.route('/tratar_orcamentos')
 @login_required
 def tratar_orcamentos():
 
@@ -48,7 +48,7 @@ def tratar_orcamentos():
         return render_template("lista_orcamentos.html", orcamentos=medS)
 
 
-@orca_bp.route('/consultar_orcamento_data')
+@orcamentos_bp.route('/consultar_orcamento_data')
 @login_required
 def consultar_orcamento_data():
     dtCarga = request.args.get("dtCarga")
@@ -70,7 +70,7 @@ def consultar_orcamento_data():
     return render_template("orcamentos_itens.html", orcamentos=medS)
 
 
-@orca_bp.route('/upload_arquivo_orcamentos', methods=['POST'])
+@orcamentos_bp.route('/upload_arquivo_orcamentos', methods=['POST'])
 def upload_arquivo_orcamentos():
     if 'file' not in request.files:
         mensagem = "Erro no upload do arquivo. No file part."
@@ -91,7 +91,7 @@ def upload_arquivo_orcamentos():
         return render_template("erro.html", mensagem=mensagem)
 
 
-@orca_bp.route('/editar_item_orcamento', methods=['GET'])
+@orcamentos_bp.route('/editar_item_orcamento', methods=['GET'])
 @login_required
 def editar_item_orcamento():
     idOrc = request.args.get("idOrcamento")
@@ -100,7 +100,7 @@ def editar_item_orcamento():
     return render_template("orcamento_item.html", item=item)
 
 
-@orca_bp.route('/excluir_item_orcamento')
+@orcamentos_bp.route('/excluir_item_orcamento')
 @login_required
 def excluir_item_orcamento():
     idOrc = request.args.get("idOrcamento")
@@ -109,7 +109,7 @@ def excluir_item_orcamento():
     return redirect('/consultar_orcamento_data')
 
 
-@orca_bp.route('/excluir_orcamento')
+@orcamentos_bp.route('/excluir_orcamento')
 @login_required
 def excluir_orcamento():
     idEmpreend = IdEmpreend().get()
@@ -121,7 +121,7 @@ def excluir_orcamento():
     return redirect('/tratar_orcamentos')
 
 
-@orca_bp.route('/salvar_item_orcamento', methods=['POST'])
+@orcamentos_bp.route('/salvar_item_orcamento', methods=['POST'])
 def salvar_item_orcamento():
     item = get_orcamento_form()
     orcC = orcamentoController()
@@ -130,7 +130,7 @@ def salvar_item_orcamento():
     return redirect("/consultar_orcamento_data")
 
 
-@orca_bp.route('/incluir_item_orcamento', methods=['POST'])
+@orcamentos_bp.route('/incluir_item_orcamento', methods=['POST'])
 def incluir_item_orcamento():
     item = get_orcamento_form()
     orcC = orcamentoController()

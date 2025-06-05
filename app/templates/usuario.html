@@ -31,7 +31,7 @@
           <div class="col-md-6 col-sm-12">
             <div class="form-floating">
               <select name="tp_access" id="tipo"
-                class="form-control {{'required' if (user and user.getTpAcesso() != 'RT') or not user}}" placeholder=""
+                class="form-select {{'required' if (user and user.getTpAcesso() != 'RT') or not user}}" placeholder=""
                 value="{{ user.getTpAcesso() if user}}">
                 <option value="">Selecione</option>
                 {% for tp in tipos %}
@@ -73,7 +73,7 @@
         <div class="row">
           <div class="col-md-6 col-sm-12">
             <div class="form-floating mt-4">
-              <select name="cod_banco" id="codBanco" class="form-control" placeholder=""
+              <select name="cod_banco" id="codBanco" class="form-select" placeholder=""
                 value="{{ user.getCodBanco() if user}}">
                 <option value="">Selecione o banco</option>
                 {% for bk in bancos %}

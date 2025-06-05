@@ -15,10 +15,10 @@ import pandas as pd
 import xlsxwriter
 import re
 
-unidade_bp = Blueprint('unidades', __name__)
+unidades_bp = Blueprint('unidades', __name__)
 
 
-@unidade_bp.route('/tratar_unidades')
+@unidades_bp.route('/tratar_unidades')
 @login_required
 def tratarunidades():
 
@@ -47,7 +47,7 @@ def tratarunidades():
         return render_template("lista_unidades.html", unidades=unidS)
 
 
-@unidade_bp.route('/exportar_planilha_unidades')
+@unidades_bp.route('/exportar_planilha_unidades')
 @login_required
 def export_planilha():
     unidC = unidadeController()
@@ -110,7 +110,7 @@ def export_planilha():
     )
 
 
-@unidade_bp.route('/importar_planilha_unidades', methods=['POST'])
+@unidades_bp.route('/importar_planilha_unidades', methods=['POST'])
 @login_required
 def importar_planilha():
     if 'file' not in request.files:
@@ -182,7 +182,7 @@ def importar_planilha():
     return redirect("/tratar_unidades")
 
 
-@unidade_bp.route('/cadastrar_unidade', methods=['POST'])
+@unidades_bp.route('/cadastrar_unidade', methods=['POST'])
 def cadastrar_unidade():
     vigencia = request.form.get('vigencia')
 
@@ -230,7 +230,7 @@ def cadastrar_unidade():
     return redirect("/tratar_unidades")
 
 
-@unidade_bp.route('/editar_unidade')
+@unidades_bp.route('/editar_unidade')
 @login_required
 def editar_unidade():
     idUni = request.args.get("idUnidade")
@@ -254,7 +254,7 @@ def editar_unidade():
     )
 
 
-@unidade_bp.route('/consultar_unidade')
+@unidades_bp.route('/consultar_unidade')
 @login_required
 def consultar_unidade():
     ctrlTorre = torreController()
@@ -278,7 +278,7 @@ def consultar_unidade():
     )
 
 
-@unidade_bp.route('/excluir_unidade')
+@unidades_bp.route('/excluir_unidade')
 @login_required
 def excluir_unidade():
     idUnidade = request.args.get('idUnidade')

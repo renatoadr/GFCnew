@@ -1,0 +1,110 @@
+<!-- Template: Aspectos -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Aspectos</title>
+  {% include 'fractials/head.html' %}
+</head>
+
+<body>
+  {% include 'fractials/menu.html' %}
+
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <h2 class="title title-page">
+            <span><i class="fa-solid fa-clipboard-check"></i> Editar
+              Aspectos da Obra</span><strong>{{session.nmEmpreend}}</strong>
+          </h2>
+        </div>
+        <div class="col-6">
+          <div class="row h-100 justify-content-end align-items-center">
+            <div class="col-3">
+              <a href="/home" type="submit" class="btn btn-outline-dark">
+                <i class="fa-solid fa-caret-left"></i>
+                Voltar
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p class="border-start border-5 p-3 pt-0 pb-0 h5 mb-2 mt-4 border-primary">Selecione a vigência</p>
+      <div class="bg-body-tertiary border border-1 p-3 rounded-4 mb-5">
+        <form action="" method="GET" id="formVigencia">
+          <div class="row">
+            <div class="col-5">
+              <div class="form-floating">
+                <input type="month" name="vigencia" id="vigencia" class="form-control" min="{{ minDate }}"
+                  max="{{ maxDate }}" value="{{ vigencia if vigencia }}">
+                <label for="vigencia">Vigência</label>
+              </div>
+            </div>
+            <div class="col-3 align-content-center">
+              <button type="submit" class="btn btn-primary w-100">
+                Visualizar
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+
+      <form action="/atualizar_aspectos?vigencia={{vigencia}}" method="post">
+
+        {% for item in aspectos.items() %}
+        <div class="row mt-5">
+          <div class="col-12">
+            <h6 class="secao-perguntas">{{ item[0] }}</h6>
+            {% for per in item[1] %}
+            <div class="row mb-3 bg-body-tertiary border p-2 pt-1 rounded-3">
+              <div class="col-3">
+                <p class="h6 pt-4">{{ per.getPergunta() }}</p>
+              </div>
+              <div class="col-3">
+                <div class="">
+                  <label for="status_{{per.getId()}}" class="f-13">Status</label>
+                  <select name="status_{{per.getId()}}" id="status_{{ per.getId() }}" class="form-select"
+                    value="{{ per.getResposta() }}">
+                    <option value="">Selecione</option>
+                    {% for opt in per.getOpcoes() %}
+                    <option value="{{ opt }}" {% if opt==per.getResposta() %} selected {% endif %}>{{ opt }}</option>
+                    {% endfor %}
+                  </select>
+                </div>
+              </div>
+              <div class="col-6">
+                <div class="">
+                  <label for="descricao_{{per.getId()}}" class="f-13">Descrição</label>
+                  <textarea name="descricao_{{per.getId()}}" id="descricao_{{per.getId()}}"
+                    class="form-control">{{ per.getDescricao() if per.getDescricao()  }}</textarea>
+                </div>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+        </div>
+        {% endfor %}
+
+
+        <div class="row mt-5 justify-content-center">
+          <div class="col-3">
+            <a href="/home" class="btn btn-secondary w-100">Cancelar</a>
+          </div>
+          <div class="col-3">
+            <button type="submit" class="btn btn-success w-100">Salvar</button>
+          </div>
+        </div>
+
+      </form>
+
+    </div>
+  </main>
+
+  {% include 'fractials/footer.html' %}
+</body>
+
+</html>

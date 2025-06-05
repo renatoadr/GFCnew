@@ -9,10 +9,10 @@ from reportlab.pdfgen import canvas
 from datetime import datetime
 import os
 
-relatorio_bp = Blueprint('relatorios', __name__)
+relatorios_bp = Blueprint('relatorios', __name__)
 
 
-@relatorio_bp.route('/gerar_relatorio')
+@relatorios_bp.route('/gerar_relatorio')
 @login_required
 def gerar_relatorio():
 
@@ -117,7 +117,7 @@ def gerar_relatorio():
     )
 
 
-@relatorio_bp.route('/lista_relatorios')
+@relatorios_bp.route('/lista_relatorios')
 def lista_relatorios():
     idEmpreend = request.args.get('idEmpreend')
     apelido = request.args.get('apelido')
@@ -160,7 +160,7 @@ def lista_relatorios():
         )
 
 
-@relatorio_bp.route('/download_arquivo')
+@relatorios_bp.route('/download_arquivo')
 def download_arquivo():
     arquivo = request.args.get('arquivo')
     diretorio = os.path.join(current_app.config['DIRSYS'], 'Relatorios')

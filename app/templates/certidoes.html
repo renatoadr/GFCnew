@@ -56,7 +56,7 @@
         <div class="col-6">
 
           <div class="form-floating mt-6">
-            <select name="estadualStatus" id="estadualStatus" class="form-control"
+            <select name="estadualStatus" id="estadualStatus" class="form-select"
               value="{{ certidoes.getEstadualStatus() if certidoes}}">
               <option value="">Selecione</option>
               <option value="Positiva" {% if certidoes and certidoes.getEstadualStatus()=='Positiva' %} selected {%
@@ -70,7 +70,7 @@
           </div>
 
           <div class="form-floating mt-4">
-            <select name="fgtsStatus" id="fgtsStatus" class="form-control"
+            <select name="fgtsStatus" id="fgtsStatus" class="form-select"
               value="{{ certidoes.getFgtsStatus() if certidoes}}">
               <option value="">Selecione</option>
               </option>
@@ -89,7 +89,7 @@
             <label for="fgtsStatus">FGTS</label>
           </div>
           <div class="form-floating mt-4">
-            <select name="municipalStatus" id="municipalStatus" class="form-control"
+            <select name="municipalStatus" id="municipalStatus" class="form-select"
               value="{{ certidoes.getMunicipalStatus() if certidoes}}">
               <option value="">Selecione</option>
               </option>
@@ -107,7 +107,7 @@
           </div>
 
           <div class="form-floating mt-4">
-            <select name="srfInssStatus" id="srfInssStatus" class="form-control"
+            <select name="srfInssStatus" id="srfInssStatus" class="form-select"
               value="{{ certidoes.getSrfInssStatus() if certidoes}}">
               <option value="">Selecione</option>
               <option value="Positiva" {% if certidoes and certidoes.getSrfInssStatus()=='Positiva' %} selected {% endif
@@ -124,7 +124,7 @@
           </div>
 
           <div class="form-floating mt-4">
-            <select name="trabalhistaStatus" id="trabalhistaStatus" class="form-control"
+            <select name="trabalhistaStatus" id="trabalhistaStatus" class="form-select"
               value="{{ certidoes.getTrabalhistaStatus() if certidoes}}">
               <option value="">Selecione</option>
               <option value="Positiva" {% if certidoes and certidoes.getTrabalhistaStatus()=='Positiva' %} selected {%

@@ -41,7 +41,7 @@
         </div>
         <div class="col-2">
           <div class="form-floating">
-            <select name="obraStatus_{{loop.index}}" id="status_obra_{{loop.index}}" class="form-control required"
+            <select name="obraStatus_{{loop.index}}" id="status_obra_{{loop.index}}" class="form-select required"
               placeholder="" value="{{ gar.status if gar }}">
               <option value="">Selecione</option>
               <option value="Normal" {% if gar and gar.status=='Normal' %} selected {% endif %}>Normal</option>
@@ -80,7 +80,7 @@
         </div>
         <div class="col-2">
           <div class="form-floating">
-            <select name="geralStatus_{{loop.index}}" id="status_geral_{{loop.index}}" class="form-control required"
+            <select name="geralStatus_{{loop.index}}" id="status_geral_{{loop.index}}" class="form-select required"
               placeholder="" value="{{ gar.status if gar }}">
               <option value="">Selecione</option>
               <option value="Normal" {% if gar and gar.status=='Normal' %} selected {% endif %}>Normal</option>
