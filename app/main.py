@@ -19,6 +19,7 @@ for route in os.listdir(os.path.join(path, 'router')):
         app.register_blueprint(bp)
     except:
         pass
+
 app.register_blueprint(filtros_bp)
 app.permanent_session_lifetime.seconds
 

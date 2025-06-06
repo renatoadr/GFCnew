@@ -3,7 +3,7 @@ from controller.unidadeController import unidadeController
 from controller.clienteController import clienteController
 from controller.torreController import torreController
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
-from utils.converter import converterStrToFloat
+from utils.converter import converterStrToFloat, maskCpfOrCnpj
 from utils.flash_message import flash_message
 from utils.security import login_required
 from utils.helper import allowed_file
@@ -13,6 +13,7 @@ from datetime import datetime
 from io import BytesIO
 import pandas as pd
 import xlsxwriter
+import math
 import re
 
 unidades_bp = Blueprint('unidades', __name__)
@@ -85,7 +86,7 @@ def export_planilha():
         worksheet.write_string(f'A{cel}', uni.getNmTorre())
         worksheet.write_string(f'B{cel}', uni.getUnidade())
         worksheet.write_string(
-            f'C{cel}', uni.getCpfComprador() if uni.getCpfComprador(
+            f'C{cel}', maskCpfOrCnpj(uni.getCpfComprador()) if uni.getCpfComprador(
             ) and uni.getCpfComprador() != 'None' else '',
             workbook.add_format({"locked": False}))
         worksheet.write_datetime(
@@ -157,11 +158,13 @@ def importar_planilha():
         if vlReceber > 0 and vlReceber >= vlUnidade:
             status = 'Quitado'
 
-        if comprador:
+        if comprador and isinstance(comprador, str):
             comprador = re.sub(r'\D', '', comprador)
             existe = clienteController.getCliente(comprador)
             if not existe:
                 comprador = None
+        else:
+            comprador = None
 
         if not flash_message.has_error():
             unidadeController.atualizarValoresUnidade((

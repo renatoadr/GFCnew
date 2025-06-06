@@ -3,8 +3,8 @@
 
 from dto.unidade import unidade
 from utils.dbContext import MySql
-from datetime import datetime, timedelta
-from copy import copy, deepcopy
+from datetime import datetime
+from copy import deepcopy
 from dateutil import relativedelta
 from utils.helper import diff_mes
 

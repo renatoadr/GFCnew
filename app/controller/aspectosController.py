@@ -42,9 +42,10 @@ class aspectosController:
     def salvar_aspectos(self, campos, idEmpreend, mesVigencia, anoVigencia):
         insertes = []
         updates = []
-        total = int(len(campos) / 2) + 1
+        total = int(len(campos) / 3) + 1
 
         for idx in range(1, total):
+            idPergunta = campos[f'id_pergunta_{idx}']
             status = campos[f'status_{idx}']
             descricao = campos[f'descricao_{idx}']
 
@@ -52,8 +53,8 @@ class aspectosController:
                 continue
 
             data = (status, descricao, idEmpreend,
-                    idx, mesVigencia, anoVigencia)
-            if self.existeResposta(idEmpreend, idx, mesVigencia, anoVigencia):
+                    idPergunta, mesVigencia, anoVigencia)
+            if self.existeResposta(idEmpreend, idPergunta, mesVigencia, anoVigencia):
                 updates.append(data)
             else:
                 insertes.append(data)
