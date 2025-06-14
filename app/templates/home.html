@@ -27,6 +27,34 @@
         </div>
       </div>
 
+      {% if usa_filtro %}
+      <p class="border-start border-5 p-3 pt-0 pb-0 h5 mb-2 mt-3 border-primary">Filtrar</p>
+      <div class="bg-body-tertiary border border-1 p-3 rounded-4 mb-4">
+        <form action="/home" method="get">
+          <div class="row">
+            <div class="col-4 align-content-center">
+              <div class="form-floating">
+                <select name="filtro_banco" id="filtro_banco" class="form-select">
+                  <option value="">Todos</option>
+                  {% for banco in lista_bancos %}
+                  <option value="{{banco.getCodigo()}}" {% if fitlro_banco_selecionado==banco.getCodigo() %} selected {%
+                    endif %}>
+                    {{banco.getDescricao()}}</option>
+                  {% endfor %}
+                </select>
+                <label for="filtro_banco">Por Banco</label>
+              </div>
+            </div>
+            <div class="col-2 align-content-center">
+              <button type="submit" class="btn btn-primary w-100">
+                Filtrar
+              </button>
+            </div>
+          </div>
+        </form>
+      </div>
+      {% endif %}
+
       <div class="row">
         <div class="col-12">
           <table class="table table-striped">
