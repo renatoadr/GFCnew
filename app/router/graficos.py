@@ -162,7 +162,7 @@ def gerar_graf_progresso_obra(idEmpreend, mesVigencia, anoVigencia, mesInicio, a
     # Determina caracteristicas dos pontos x/y no gráfico
     plt.scatter(x1, y1, s=20)
     plt.scatter(x2, y2, s=20)
-    plt.ylim(-5, 120)            # Força os valores do eixo Y
+    plt.ylim(-5, 100)            # Força os valores do eixo Y
     plt.tick_params(labelsize=14)  # tamanho da letra nos eixos X e Y
 
     plt.title("PROGRESSO FÍSICO DA OBRA (Previsto x Realizado)", fontdict={
@@ -239,20 +239,21 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
         vlrAnterior = vlrAtual
         print(vlrAnterior, vlrAtual, variacao)    
 
-    linhas = [1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.8, 1.9, 2.0]
+    linhas = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.00,
+              1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80]
 
     tamLinha = len(x1) - 1
     plt.hlines(linhas, 0, tamLinha, '#9feafc')
-    plt.plot(x1, y1, label='IC Estipulado em contrato')
-    plt.plot(x1, y2, label='IC Recebiveis + estoque - Variação no período: ' + str(variacao))
+    plt.plot(x1, y1, label='Estipulado em contrato')
+    plt.plot(x1, y2, label='Recebiveis + estoque - Variação no período: ' + str(variacao))
 
     annotationsy1 = y1
     annotationsy2 = y2
 
-    plt.scatter(x1, y1, s=20)
-    plt.scatter(x1, y2, s=20)
+    plt.scatter(x1, y1, s=20) 
+    plt.scatter(x1, y2, s=20) 
 
-    plt.ylim(1.0, 2.0)
+    plt.ylim(1.0, 1.8)
 
     plt.title("Índices de garantia previsto x existente", fontdict={
         'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
@@ -327,12 +328,12 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
         y4.append(round(u.getTtUnidade() / VlPlanoEmp, 2))
 
     linhas = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.00,
-              1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80, 1.90, 2.00]
+              1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80]
 
     tamLinha = len(x2) - 1
     plt.hlines(linhas, 0, tamLinha, '#9feafc')
-    plt.plot(x2, y3, label='IC Recebiveis')
-    plt.plot(x2, y4, label='IC Estoque')
+    plt.plot(x2, y3, label='Recebiveis')
+    plt.plot(x2, y4, label='Estoque')
 
     annotationsy3 = y3
     annotationsy4 = y4
@@ -340,7 +341,7 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
     plt.scatter(x2, y3, s=20)
     plt.scatter(x2, y4, s=20)
 
-    plt.ylim(0.0, 2.2)
+    plt.ylim(0.0, 1.8)
 
     plt.title("Índices de garantia previsto x existente", fontdict={
               'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')

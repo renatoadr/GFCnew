@@ -6,6 +6,7 @@ import os
 from utils.logger import logger
 
 from router.gerar_relatorios import gerar_relatorio_bp
+from router.relatorios_inter import relatorio_inter_bp
 from router.contas_corrente import contas_corrente_bp
 from router.consideracoes import consideracoes_bp
 from router.emprendimento import empreend_bp
@@ -32,6 +33,7 @@ from filters import filtros_bp
 app = Flask(__name__)
 app.secret_key = "gfc001"
 
+app.register_blueprint(relatorio_inter_bp)
 app.register_blueprint(gerar_relatorio_bp)
 app.register_blueprint(contas_corrente_bp)
 app.register_blueprint(consideracoes_bp)

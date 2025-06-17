@@ -26,6 +26,7 @@ def tab_notas():
     dtCarga = request.args.get("dtCarga")
     mesVigencia = str(request.args.get('mesV')).zfill(2)
     anoVigencia = str(request.args.get('anoV'))
+    codBanco = request.args.get('codBanco')
 
     notC = notaController()
     notS = notC.consultarNotaPelaData(idEmpreend, dtCarga)
@@ -35,7 +36,7 @@ def tab_notas():
     return render_template("nota_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-def gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS):
+def gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS, codBanco):
     geral = geralController()
     fig, ax = plt.subplots(1, 1)
 
@@ -85,10 +86,19 @@ def gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS):
     for x in range(0, num_cols):
         tabela.auto_set_column_width(x)
 
+    if codBanco == 77:  # Banco Inter
+        corCabecalho = (0.945, 0.662, 0.513)  # Cor laranja
+    else:
+        corCabecalho = "lightblue"        
+
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
         if row == 0 or row == num_rows-1:
-            cell.set_facecolor("lightblue")  # campos em azul encima e embaixo
+            if codBanco == 77:  # Banco Inter 
+               cell.set_facecolor(corCabecalho) 
+            else:
+                cell.set_facecolor("lightblue") 
+
             if row == 0:
                 # Alinhar 1ª linha no centro
                 cell.set_text_props(ha='center', va='center')
@@ -119,6 +129,7 @@ def tab_conta_corrente():
     dtCarga = request.args.get("dtCarga")
     mesVigencia = str(request.args.get('mesV')).zfill(2)
     anoVigencia = str(request.args.get('anoV'))
+    codBanco = request.args.get('codBanco')
 
     conC = contaController()
     conS = conC.consultarContaPelaCarga(idEmpreend, dtCarga)
@@ -128,7 +139,7 @@ def tab_conta_corrente():
     return render_template("conta_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-def gerar_tab_conta_corrente(idEmpreend, mesVigencia, anoVigencia, conS):
+def gerar_tab_conta_corrente(idEmpreend, mesVigencia, anoVigencia, conS, codBanco):
     geral = geralController()
 
     fig, ax = plt.subplots(1, 1)
@@ -175,10 +186,15 @@ def gerar_tab_conta_corrente(idEmpreend, mesVigencia, anoVigencia, conS):
     for x in range(0, num_cols):
         tabela.auto_set_column_width(x)
 
+    if codBanco == 77:  # Banco Inter
+        corCabecalho = (0.945, 0.662, 0.513)  # Cor laranja
+    else:
+        corCabecalho = "lightblue"        
+
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
         if row == 0:
-            cell.set_facecolor("lightblue")
+            cell.set_facecolor(corCabecalho) # Cor laranja
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
             cell.set_text_props(ha='right', va='center')  # Alinhar à esquerda
@@ -202,6 +218,7 @@ def tab_garantias_geral():
     tipo = request.args.get("tipo")
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
+    codBanco = request.args.get("codBanco")
 
     geral = geralController()
 
@@ -211,7 +228,7 @@ def tab_garantias_geral():
     return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-def gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia):
+def gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia; codBanco):
     ponC = garantiaController()
     ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
 
@@ -253,12 +270,18 @@ def gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia):
 #   Ajustando o tamanho das colunas
     for x in range(0, num_cols):
         tabela.auto_set_column_width(x)
+
+    if codBanco == 77:  # Banco Inter
+        corCabecalho = (0.945, 0.662, 0.513)  # Cor laranja
+    else:
+        corCabecalho = "lightblue"
+
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
         # Define a cor da borda como "none" (sem borda)
         cell.set_edgecolor("none")
         if row == 0:
-            cell.set_facecolor("lightblue")
+            cell.set_facecolor(corCabecalho)  
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
             if col == 1:
@@ -293,6 +316,7 @@ def tab_garantias_obra():
     idEmpreend = IdEmpreend().get()
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
+    codBanco = request.args.get("codBanco")
 
     geral = geralController()
 
@@ -301,7 +325,7 @@ def tab_garantias_obra():
     return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-def gerar_tab_garantias_obra(idEmpreend, mesVigencia, anoVigencia):
+def gerar_tab_garantias_obra(idEmpreend, mesVigencia, anoVigencia, codBanco):
     ponC = garantiaController()
     ponS = ponC.consultargarantiaatual(idEmpreend, 'Obra')
 
@@ -342,12 +366,18 @@ def gerar_tab_garantias_obra(idEmpreend, mesVigencia, anoVigencia):
 #   Ajustando o tamanho das colunas
     for x in range(0, num_cols):
         tabela.auto_set_column_width(x)
+
+    if codBanco == 77:  # Banco Inter
+        corCabecalho = (0.945, 0.662, 0.513)  # Cor laranja
+    else:
+        corCabecalho = "lightblue"
+
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
         # Define a cor da borda como "none" (sem borda)
         cell.set_edgecolor("none")
         if row == 0:
-            cell.set_facecolor("lightblue")
+            cell.set_facecolor(corCabecalho) 
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
             if col == 1:
@@ -383,13 +413,14 @@ def tab_certidoes():
     idEmpreend = IdEmpreend().get()
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
+    codBanco = request.args.get("codBanco")
 
     grafNome = gerar_tab_certidoes(idEmpreend, mesVigencia, anoVigencia)
 
     return render_template("certidoes_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-def gerar_tab_certidoes(idEmpreend, mes, ano):
+def gerar_tab_certidoes(idEmpreend, mes, ano, codBanco):
     certC = certidaoController()
     certS = certC.consultarCertidoesGraf(idEmpreend)
 
@@ -436,12 +467,18 @@ def gerar_tab_certidoes(idEmpreend, mes, ano):
 #   Ajustando o tamanho das colunas
     for x in range(0, num_cols):
         tabela.auto_set_column_width(x)
+
+    if codBanco == 77:  # Banco Inter
+        corCabecalho = (0.945, 0.662, 0.513)  # Cor laranja
+    else:
+        corCabecalho = "lightblue"
+
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
         # Define a cor da borda como "none" (sem borda)
         cell.set_edgecolor("none")
         if row == 0:
-            cell.set_facecolor("lightblue")
+            cell.set_facecolor(corCabecalho) # Cor laranja
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
             if col == 1:
@@ -597,6 +634,7 @@ def tab_medicoes():
     anoInicio = request.args.get("anoInicio")
     mesFinal = request.args.get("mesFinal")
     anoFinal = request.args.get("anoFinal")
+    codBanco = request.args.get("codBanco")
 
     grafNome = gerar_tab_medicoes(
         idEmpreend,
@@ -611,7 +649,7 @@ def tab_medicoes():
     return render_template("medicoes_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-def gerar_tab_medicoes(idEmpreend, mesVigencia, anoVigencia, mesInicio, anoInicio, mesFinal, anoFinal):
+def gerar_tab_medicoes(idEmpreend, mesVigencia, anoVigencia, mesInicio, anoInicio, mesFinal, anoFinal, codBanco):
     geral = geralController()
     preC = medicaoController()
 
@@ -670,11 +708,17 @@ def gerar_tab_medicoes(idEmpreend, mesVigencia, anoVigencia, mesInicio, anoInici
 #   Ajustando o tamanho das colunas
     for x in range(0, num_cols):
         tabela.auto_set_column_width(x)
+
+    if codBanco == 77:  # Banco Inter
+        corCabecalho = (0.945, 0.662, 0.513)  # Cor laranja
+    else:
+        corCabecalho = "lightblue"
+
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
         if row == 0:
-            cell.set_facecolor("lightblue")
-
+            cell.set_facecolor(corCabecalho) 
+  
     grafC = graficoController()
 
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
@@ -693,6 +737,7 @@ def tab_orcamento_liberacao():
     dtCarga = request.args.get("dtCarga")
     mes = request.args.get("mesV")
     ano = request.args.get("anoV")
+    codBanco = request.args.get("codBanco")
 
     medC = orcamentoController()
     medS = medC.consultarOrcamentoPelaData(idEmpreend, dtCarga)
@@ -700,7 +745,7 @@ def tab_orcamento_liberacao():
     return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-def gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS):
+def gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS, codBanco):
     geral = geralController()
     fig, ax = plt.subplots(1, 1)
 
@@ -773,11 +818,16 @@ def gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS):
     for x in range(0, num_cols):
         tabela.auto_set_column_width(x)
 
+    if codBanco == 77:  # Banco Inter
+        corCabecalho = (0.945, 0.662, 0.513)  # Cor laranja
+    else:
+        corCabecalho = "lightblue"
+
     for (row, col), cell in tabela.get_celld().items():
         if row == 0 or row == num_rows-1:     # pinta a 1ª 1 ultima linhas
-            cell.set_facecolor("lightblue")
+            cell.set_facecolor(corCabecalho) 
         if col == 2 or col == 6:                     # pinta as colunas de divisão
-            cell.set_facecolor("lightblue")
+            cell.set_facecolor(corCabecalho) 
         if row > 0 and col == 0:
             cell.set_text_props(ha='left', va='center')  # Alinhar à esquerda
 
@@ -786,6 +836,607 @@ def gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS):
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_orcamento_liberacao.png')
+
+    plt.savefig(grafNome)
+    plt.close('all')
+    return grafNome
+
+
+@tabela_bp.route('/tab_empreend_capa')
+
+###@login_required
+def tab_empreend_capa():
+###    idEmpreend = IdEmpreend().get()
+###    mesVigencia = request.args.get("mesVigencia")
+###    anoVigencia = request.args.get("anoVigencia")
+
+    geral = geralController()
+    fig, ax = plt.subplots(1, 1)
+
+    idEmpreend = '59'
+    mesVigencia = '05'
+    anoVigencia = '2025'
+    codBanco = 77  # Banco Inter
+
+    data = []
+    dd = ['Incorporação         ', 'SPE JARDINS DO BURITIS LTDA']
+    data.append(dd)
+    dd = ['Construção           ', 'SPE JARDINS DO BURITIS LTDA']
+    data.append(dd)
+    dd = ['Empreendimento       ', 'SPE JARDINS DO BURITIS LTDA']
+    data.append(dd)
+    dd = ['Endereço da obra     ', 'AVENIDA JOSÉ DE OLIVEIRA VAZ, nº 55 - BURITIS BELO HORIZONTE - MG']
+    data.append(dd)
+    dd = ['Data da medição      ', '27/04/2025']
+    data.append(dd)
+    dd = ['Período da medição   ', 'De 19/03/2024 até 27/04/2025']
+    data.append(dd)
+    dd = ['Etapa do cornograma  ', '4ª Etapa - Construção']
+    data.append(dd)
+
+    column_labels = ['                     ', '                           ']
+
+    # Definir tamanho das células
+    cell_width = 6.0   # Largura de cada célula
+    cell_height = 0.4  # Altura de cada célula
+    # Calcular o tamanho total da figura com base no número de células
+    num_rows = len(data) + 1  # +1 para incluir os cabeçalhos
+    num_cols = len(column_labels)
+    fig_width = num_cols * cell_width
+    fig_height = num_rows * cell_height
+    # Criar a figura com o tamanho calculado
+    fig, ax = plt.subplots(figsize=(fig_width, fig_height))
+
+    # Remove os eixos do gráfico, deixando apenas a tabela visível.
+    ax.axis("off")
+    tabela = ax.table(cellText=data, colLabels=column_labels, loc="center")
+    # Desativa o ajuste automático do tamanho da fonte. Isso permite que você defina manualmente o tamanho da fonte.
+    tabela.auto_set_font_size(False)
+    tabela.set_fontsize(14)
+    # Aumenta o espaçamento entre linhas (exemplo: 2.0 dobra o espaçamento)
+    tabela.scale(1, 2.0)
+#    tabela.scale(2,1)
+
+#   Ajustando o tamanho das colunas
+    for x in range(0, num_cols):
+        tabela.auto_set_column_width(x)
+#   colocando cor de fundo no cabeçalho
+    for (row, col), cell in tabela.get_celld().items():
+        # Define a cor da borda como "none" (sem borda)
+        cell.set_edgecolor("none")
+        cell.set_text_props(ha='left', va='center')  # Alinhar à esquerda
+
+    grafC = graficoController()
+
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
+    grafC.criaDir(diretorio)
+    grafNome = os.path.join(diretorio, 'tab_empreend_capa.png')
+
+    plt.savefig(grafNome)
+
+    plt.close('all')
+    return grafNome
+
+
+@tabela_bp.route('/gerar_tab_prazo_inter', methods=['GET'])
+#@login_required
+def gerar_tab_prazo_inter():
+
+#    idEmpreend = IdEmpreend().get()
+#    tipo = request.args.get("tipo")
+#    mesVigencia = request.args.get("mesVigencia")
+#    anoVigencia = request.args.get("anoVigencia")
+
+    idEmpreend = '59'
+    mesVigencia = '05'
+    anoVigencia = '2025'
+
+    geral = geralController()
+
+#    grafNome = gerar_tab_garantias_geral(
+#        idEmpreend, mesVigencia, anoVigencia, tipo)
+
+#    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+#def gerar_tab_prazo_inter(idEmpreend, mesVigencia, anoVigencia):
+#    ponC = garantiaController()
+#    ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
+
+#    if not ponS:
+#        return ''
+
+    fig, ax = plt.subplots(1, 1)
+
+    data = []
+
+#    for p in ponS:
+#        dd = []
+#        dd.append(p.documento)
+#        dd.append(p.status)
+#        dd.append(p.observacao)
+#        data.append(dd)
+
+    dd = ['     Evolução do mês                ', 
+          '             3,70%                  ', 
+          '             1,59%                  '] 
+    data.append(dd)
+    dd = ['     Acumulado do mês               ', 
+          '            82,88%                  ', 
+          '            79,56%                  ']
+    data.append(dd)   
+          
+    medicao = "            4ª Medição             "
+              
+    column_labels = [medicao, "             Previsto              ", "            Executado              "]
+
+    # Definir tamanho das células
+    cell_width = 2.0  # Largura de cada célula
+    cell_height = 0.2  # Altura de cada célula
+    # Calcular o tamanho total da figura com base no número de células
+    num_rows = len(data) + 1  # +1 para incluir os cabeçalhos
+    num_cols = len(column_labels)
+    fig_width = num_cols * cell_width
+    fig_height = num_rows * cell_height
+    # Criar a figura com o tamanho calculado
+    fig, ax = plt.subplots(figsize=(fig_width, fig_height))
+
+    # Remove os eixos do gráfico, deixando apenas a tabela visível.
+    ax.axis("off")
+    tabela = ax.table(cellText=data, colLabels=column_labels, loc="center")
+    # Desativa o ajuste automático do tamanho da fonte. Isso permite que você defina manualmente o tamanho da fonte.
+    tabela.auto_set_font_size(False)
+    tabela.set_fontsize(8)
+#    tabela.scale(2,1)
+
+#   Ajustando o tamanho das colunas
+    for x in range(0, num_cols):
+        tabela.auto_set_column_width(x)
+    
+    if codBanco == 77:  # Banco Inter
+        corCabecalho = (0.945, 0.662, 0.513)  # Cor laranja
+    else:
+        corCabecalho = "lightblue"
+        
+#   colocando cor de fundo no cabeçalho
+    for (row, col), cell in tabela.get_celld().items():
+        # Define a cor da borda como "none" (sem borda)
+        cell.set_edgecolor("none")
+        if row == 0:
+            cell.set_facecolor(corCabecalho) 
+            cell.set_text_props(ha='center', va='center')  # Alinhar no centro
+        else:  # Demais itens da tabela
+            if col == 2:
+                cell_text = cell.get_text().get_text()  # Obtém o texto da célula
+                # Alinhar à esquerda
+                cell.set_text_props(ha='left', va='center', color='red')
+            else:
+                # Alinhar no centro
+                cell.set_text_props(ha='left', va='center')
+
+    grafC = graficoController()
+
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
+    grafC.criaDir(diretorio)
+    grafNome = os.path.join(diretorio, 'tab_prazo_inter.png')
+
+    plt.savefig(grafNome)
+    plt.close('all')
+    return grafNome
+
+
+@tabela_bp.route('/tab_projeto_inter')
+def tab_projeto_inter():
+
+#    idEmpreend = IdEmpreend().get()
+#    tipo = request.args.get("tipo")
+#    mesVigencia = request.args.get("mesVigencia")
+#    anoVigencia = request.args.get("anoVigencia")
+
+    idEmpreend = '59'
+    mesVigencia = '05'
+    anoVigencia = '2025'
+
+    geral = geralController()
+
+#    grafNome = gerar_tab_garantias_geral(
+#        idEmpreend, mesVigencia, anoVigencia, tipo)
+
+#    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+#def gerar_tab_projeto_inter(idEmpreend, mesVigencia, anoVigencia):
+#    ponC = garantiaController()
+#    ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
+
+#    if not ponS:
+#        return ''
+
+    fig, ax = plt.subplots(1, 1)
+
+    data = []
+
+#    for p in ponS:
+#        dd = []
+#        dd.append(p.documento)
+#        dd.append(p.status)
+#        dd.append(p.observacao)
+#        data.append(dd)
+    dd = ['Número de pavimentos                           ', '              10'] 
+    data.append(dd)
+    dd = ['Número de blocos                               ', '               2']
+    data.append(dd)   
+    dd = ['Número de unidades                             ', '              84']
+    data.append(dd)   
+    dd = ['A execução obedece o projeto?                  ', '             Sim']
+    data.append(dd) 
+    dd = ['Houve modificação em alguma unidade?           ', '             Sim']      
+    data.append(dd)
+
+    column_labels = ['            ', '           ']
+
+    # Definir tamanho das células
+    cell_width = 2.0  # Largura de cada célula
+    cell_height = 0.2  # Altura de cada célula
+    # Calcular o tamanho total da figura com base no número de células
+    num_rows = len(data) + 1  # +1 para incluir os cabeçalhos
+    num_cols = len(column_labels)
+    fig_width = num_cols * cell_width
+    fig_height = num_rows * cell_height
+    # Criar a figura com o tamanho calculado
+    fig, ax = plt.subplots(figsize=(fig_width, fig_height))
+
+    # Remove os eixos do gráfico, deixando apenas a tabela visível.
+    ax.axis("off")
+    tabela = ax.table(cellText=data, colLabels=column_labels, loc="center")
+    # Desativa o ajuste automático do tamanho da fonte. Isso permite que você defina manualmente o tamanho da fonte.
+    tabela.auto_set_font_size(False)
+    tabela.set_fontsize(8)
+#    tabela.scale(2,1)
+
+#   Ajustando o tamanho das colunas
+    for x in range(0, num_cols):
+        tabela.auto_set_column_width(x)
+#   colocando cor de fundo no cabeçalho
+    for (row, col), cell in tabela.get_celld().items():
+        # Define a cor da borda como "none" (sem borda)
+        cell.set_edgecolor("none")
+        if row == 0:
+#            cell.set_facecolor("lightblue")
+#            cell.set_facecolor((0.945, 0.662, 0.513)) # Cor laranja
+            cell.set_text_props(ha='center', va='center')  # Alinhar no centro
+        else:  # Demais itens da tabela
+            if col == 1:
+                cell_text = cell.get_text().get_text()  # Obtém o texto da célula
+                # Alinhar à esquerda
+                cell.set_text_props(ha='left', va='center', color='green')     
+            else:
+                # Alinhar no centro
+                cell.set_text_props(ha='left', va='center')
+
+    grafC = graficoController()
+
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
+    grafC.criaDir(diretorio)
+    grafNome = os.path.join(diretorio, 'tab_projeto_inter.png')
+
+    plt.savefig(grafNome)
+    plt.close('all')
+    return grafNome
+
+
+@tabela_bp.route('/tab_qualidade_inter')
+def tab_qualidade_inter():
+
+#    idEmpreend = IdEmpreend().get()
+#    tipo = request.args.get("tipo")
+#    mesVigencia = request.args.get("mesVigencia")
+#    anoVigencia = request.args.get("anoVigencia")
+
+    idEmpreend = '59'
+    mesVigencia = '05'
+    anoVigencia = '2025'
+
+    geral = geralController()
+
+#    grafNome = gerar_tab_garantias_geral(
+#        idEmpreend, mesVigencia, anoVigencia, tipo)
+
+#    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+#def gerar_tab_qualidade_inter(idEmpreend, mesVigencia, anoVigencia):
+#    ponC = garantiaController()
+#    ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
+
+#    if not ponS:
+#        return ''
+
+    fig, ax = plt.subplots(1, 1)
+
+    data = []
+
+#    for p in ponS:
+#        dd = []
+#        dd.append(p.documento)
+#        dd.append(p.status)
+#        dd.append(p.observacao)
+#        data.append(dd)
+
+    dd = ['Estrutura (Prumo, presença de nichos):         ', '          Bom'] 
+    data.append(dd)
+    dd = ['Paredes (Prumo, Alinhamento, Modulação e etc.):', '          Normal']
+    data.append(dd)   
+    dd = ['Instalações de Portas e Janelas:               ', '          Baixo']
+    data.append(dd)   
+    dd = ['Contrapiso:                                    ', '          Normal']
+    data.append(dd) 
+    dd = ['Revestimento Interno:                          ', '          Bom']      
+    data.append(dd)
+    dd = ['Revestimento Externo:                          ', '          Bom']      
+    data.append(dd)
+    dd = ['Escadas:                                       ', '          Bom']      
+    data.append(dd)
+    dd = ['Instalações Elétricas e Hidráulicas:           ', '          Normal']      
+    data.append(dd)
+    dd = ['Forros:                                        ', '          Normal']      
+    data.append(dd)
+    dd = ['Pintura:                                       ', '          Baixo']      
+    data.append(dd)    
+    dd = ['Uso de Ferramentas adequadas ao serviço:       ', '          Bom']      
+    data.append(dd)
+    dd = ['Planejamento:                                  ', '          Baixo']      
+    data.append(dd)
+    dd = ['Limpeza:                                       ', '          Bom']      
+    data.append(dd)
+    dd = ['Logística de Canteiro:                         ', '          Baixo']      
+    data.append(dd)
+
+    column_labels = ['            ', '           ']
+
+    # Definir tamanho das células
+    cell_width = 2.0  # Largura de cada célula
+    cell_height = 0.2  # Altura de cada célula
+    # Calcular o tamanho total da figura com base no número de células
+    num_rows = len(data) + 1  # +1 para incluir os cabeçalhos
+    num_cols = len(column_labels)
+    fig_width = num_cols * cell_width
+    fig_height = num_rows * cell_height
+    # Criar a figura com o tamanho calculado
+    fig, ax = plt.subplots(figsize=(fig_width, fig_height))
+
+    # Remove os eixos do gráfico, deixando apenas a tabela visível.
+    ax.axis("off")
+    tabela = ax.table(cellText=data, colLabels=column_labels, loc="center")
+    # Desativa o ajuste automático do tamanho da fonte. Isso permite que você defina manualmente o tamanho da fonte.
+    tabela.auto_set_font_size(False)
+    tabela.set_fontsize(8)
+#    tabela.scale(2,1)
+
+#   Ajustando o tamanho das colunas
+    for x in range(0, num_cols):
+        tabela.auto_set_column_width(x)
+#   colocando cor de fundo no cabeçalho
+    for (row, col), cell in tabela.get_celld().items():
+        # Define a cor da borda como "none" (sem borda)
+        cell.set_edgecolor("none")
+        if row == 0:
+#            cell.set_facecolor("lightblue")
+#            cell.set_facecolor((0.945, 0.662, 0.513)) # Cor laranja
+            cell.set_text_props(ha='center', va='center')  # Alinhar no centro
+        else:  # Demais itens da tabela
+            if col == 1:
+                cell_text = cell.get_text().get_text()  # Obtém o texto da célula
+                # Alinhar à esquerda
+                if "Bom" in cell_text:
+                    cell.set_text_props(ha='left', va='center', color='green')
+                elif "Normal" in cell_text:
+                    cell.set_text_props(ha='left', va='center', color='orange')
+                else:
+                    cell.set_text_props(ha='left', va='center', color='red')          
+            else:
+                # Alinhar no centro
+                cell.set_text_props(ha='left', va='center')
+
+    grafC = graficoController()
+
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
+    grafC.criaDir(diretorio)
+    grafNome = os.path.join(diretorio, 'tab_qualidade_inter.png')
+
+    plt.savefig(grafNome)
+    plt.close('all')
+    return grafNome
+
+@tabela_bp.route('/tab_seguranca_inter')
+def tab_seguranca_inter():
+
+#    idEmpreend = IdEmpreend().get()
+#    tipo = request.args.get("tipo")
+#    mesVigencia = request.args.get("mesVigencia")
+#    anoVigencia = request.args.get("anoVigencia")
+
+    idEmpreend = '59'
+    mesVigencia = '05'
+    anoVigencia = '2025'
+
+    geral = geralController()
+
+#    grafNome = gerar_tab_garantias_geral(
+#        idEmpreend, mesVigencia, anoVigencia, tipo)
+
+#    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+#def gerar_tab_seguranca_inter(idEmpreend, mesVigencia, anoVigencia):
+#    ponC = garantiaController()
+#    ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
+
+#    if not ponS:
+#        return ''
+
+    fig, ax = plt.subplots(1, 1)
+
+    data = []
+
+#    for p in ponS:
+#        dd = []
+#        dd.append(p.documento)
+#        dd.append(p.status)
+#        dd.append(p.observacao)
+#        data.append(dd)
+
+    dd = ['Utilização de Equipamentos Coletivos:          ', '                 Sim'] 
+    data.append(dd)
+    dd = ['Utilização de Equipamentos Individuais:        ', '                 Não']
+    data.append(dd)   
+
+    column_labels = ['            ', '           ']
+
+    # Definir tamanho das células
+    cell_width = 2.0  # Largura de cada célula
+    cell_height = 0.2  # Altura de cada célula
+    # Calcular o tamanho total da figura com base no número de células
+    num_rows = len(data) + 1  # +1 para incluir os cabeçalhos
+    num_cols = len(column_labels)
+    fig_width = num_cols * cell_width
+    fig_height = num_rows * cell_height
+    # Criar a figura com o tamanho calculado
+    fig, ax = plt.subplots(figsize=(fig_width, fig_height))
+
+    # Remove os eixos do gráfico, deixando apenas a tabela visível.
+    ax.axis("off")
+    tabela = ax.table(cellText=data, colLabels=column_labels, loc="center")
+    # Desativa o ajuste automático do tamanho da fonte. Isso permite que você defina manualmente o tamanho da fonte.
+    tabela.auto_set_font_size(False)
+    tabela.set_fontsize(8)
+#    tabela.scale(2,1)
+
+#   Ajustando o tamanho das colunas
+    for x in range(0, num_cols):
+        tabela.auto_set_column_width(x)
+#   colocando cor de fundo no cabeçalho
+    for (row, col), cell in tabela.get_celld().items():
+        # Define a cor da borda como "none" (sem borda)
+        cell.set_edgecolor("none")
+        if row == 0:
+#            cell.set_facecolor("lightblue")
+#            cell.set_facecolor((0.945, 0.662, 0.513)) # Cor laranja
+            cell.set_text_props(ha='center', va='center')  # Alinhar no centro
+        else:  # Demais itens da tabela
+            if col == 1:
+                cell_text = cell.get_text().get_text()  # Obtém o texto da célula
+                # Alinhar à esquerda
+                if "Sim" in cell_text:
+                    cell.set_text_props(ha='left', va='center', color='green')
+                else:
+                    cell.set_text_props(ha='left', va='center', color='red')          
+            else:
+                # Alinhar no centro
+                cell.set_text_props(ha='left', va='center')
+
+    grafC = graficoController()
+
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
+    grafC.criaDir(diretorio)
+    grafNome = os.path.join(diretorio, 'tab_seguranca_inter.png')
+
+    plt.savefig(grafNome)
+    plt.close('all')
+    return grafNome
+
+@tabela_bp.route('/tab_situacao_inter')
+def tab_situacao_inter():
+
+#    idEmpreend = IdEmpreend().get()
+#    tipo = request.args.get("tipo")
+#    mesVigencia = request.args.get("mesVigencia")
+#    anoVigencia = request.args.get("anoVigencia")
+
+    idEmpreend = '59'
+    mesVigencia = '05'
+    anoVigencia = '2025'
+
+    geral = geralController()
+
+#    grafNome = gerar_tab_garantias_geral(
+#        idEmpreend, mesVigencia, anoVigencia, tipo)
+
+#    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+
+
+#def gerar_tab_situacao_inter(idEmpreend, mesVigencia, anoVigencia):
+#    ponC = garantiaController()
+#    ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
+
+#    if not ponS:
+#        return ''
+
+    fig, ax = plt.subplots(1, 1)
+
+    data = []
+
+#    for p in ponS:
+#        dd = []
+#        dd.append(p.documento)
+#        dd.append(p.status)
+#        dd.append(p.observacao)
+#        data.append(dd)
+
+    dd = ['Quanto ao prazo a obra está:          ', '                    Adiantada'] 
+    data.append(dd)
+    
+    column_labels = ['            ', '           ']
+
+    # Definir tamanho das células
+    cell_width = 2.0  # Largura de cada célula
+    cell_height = 0.2  # Altura de cada célula
+    # Calcular o tamanho total da figura com base no número de células
+    num_rows = len(data) + 1  # +1 para incluir os cabeçalhos
+    num_cols = len(column_labels)
+    fig_width = num_cols * cell_width
+    fig_height = num_rows * cell_height
+    # Criar a figura com o tamanho calculado
+    fig, ax = plt.subplots(figsize=(fig_width, fig_height))
+
+    # Remove os eixos do gráfico, deixando apenas a tabela visível.
+    ax.axis("off")
+    tabela = ax.table(cellText=data, colLabels=column_labels, loc="center")
+    # Desativa o ajuste automático do tamanho da fonte. Isso permite que você defina manualmente o tamanho da fonte.
+    tabela.auto_set_font_size(False)
+    tabela.set_fontsize(8)
+#    tabela.scale(2,1)
+
+#   Ajustando o tamanho das colunas
+    for x in range(0, num_cols):
+        tabela.auto_set_column_width(x)
+#   colocando cor de fundo no cabeçalho
+    for (row, col), cell in tabela.get_celld().items():
+        # Define a cor da borda como "none" (sem borda)
+        cell.set_edgecolor("none")
+        if row == 0:
+#            cell.set_facecolor("lightblue")
+#            cell.set_facecolor((0.945, 0.662, 0.513)) # Cor laranja
+            cell.set_text_props(ha='center', va='center')  # Alinhar no centro
+        else:  # Demais itens da tabela
+            if col == 1:
+                cell_text = cell.get_text().get_text()  # Obtém o texto da célula
+                # Alinhar à esquerda
+                if "Adiantada" in cell_text:
+                    cell.set_text_props(ha='left', va='center', color='green')
+                elif "No prazo" in cell_text:   
+                    cell.set_text_props(ha='left', va='center', color='orange')
+                else:
+                    cell.set_text_props(ha='left', va='center', color='red')          
+            else:
+                # Alinhar no centro
+                cell.set_text_props(ha='left', va='center')
+
+    grafC = graficoController()
+
+    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
+    grafC.criaDir(diretorio)
+    grafNome = os.path.join(diretorio, 'tab_situacao_inter.png')
 
     plt.savefig(grafNome)
     plt.close('all')

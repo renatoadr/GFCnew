@@ -422,7 +422,7 @@ class unidadeController:
                     print("Registro clonado unidade diferente: ", item)
                     result.append(self.mapeamentoUnidade(item))
 
-        print("Quantidade de unidades geradas", len(result) end="\n\n")
+        print("Quantidade de unidades geradas", len(result), end="\n\n")
         print("Calculando os totais por mês....", end="\n\n")
 
         for uni in result:

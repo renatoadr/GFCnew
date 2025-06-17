@@ -4,6 +4,7 @@
 from flask import current_app
 from controller.empreendimentoController import empreendimentoController
 from controller.consideracaoController import consideracaoController
+from controller.bancoController import bancoController
 import os
 
 
@@ -28,7 +29,7 @@ class graficoController:
         construtora = 'Construtora: ' + empS.getNmConstrutor()
         empreendimento = 'Empreendimento: ' + empS.getNmEmpreend() + ' - ' + 'End da Obra: ' + \
             empS.getLogradouro() + ' - ' + empS.getBairro() + ' - ' + empS.getCidade() + ' - ' + empS.getEstado()
-        agenteFinanc = 'Agente financeiro: ' + empS.getNmBanco()
+        agenteFinanc = 'Agente financeiro: Banco do Brasil S.A.'# + bancoController.getNmBanco(empS.getCodBanco())
         vistoria = '4ª' + ' Vistoria - Período de Medição: ' + '20/03/2025 à 20/04/2025'
         ##### ATENÇÃO AJUSTAR DADOS DA VISTORIA 
 
@@ -244,7 +245,7 @@ class graficoController:
         if os.path.isfile(f"{imgTemp}.png"):
             c.drawImage(f"{imgTemp}.png", 30,  45,
                         width=250, height=200, mask='auto')
-        else:
+        elif os.path.isfile(f"{imgTemp}.jpeg"):
             c.drawImage(f"{imgTemp}.jpeg", 30,  45,
                         width=250, height=200, mask='auto')
 
@@ -252,7 +253,7 @@ class graficoController:
         if os.path.isfile(f"{imgTemp}.png"):
             c.drawImage(f"{imgTemp}.png", 310,  45,
                         width=250, height=200, mask='auto')
-        else:
+        elif os.path.isfile(f"{imgTemp}.jpeg"):
             c.drawImage(f"{imgTemp}.jpeg", 310,  45,
                         width=250, height=200, mask='auto')
 
