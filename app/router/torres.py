@@ -1,15 +1,16 @@
-from utils.security import login_required
+from utils.security import login_required, url_for
 from flask import Blueprint, request, render_template, redirect, flash
-from controller.torreController import torreController
 from controller.unidadeController import unidadeController
+from controller.torreController import torreController
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
-from dto.torre import torre
+from utils.flash_message import flash_message
 import utils.converter as converter
+from dto.torre import torre
 
-torre_bp = Blueprint('torres', __name__)
+torres_bp = Blueprint('torres', __name__)
 
 
-@torre_bp.route('/tratar_torres')
+@torres_bp.route('/tratar_torres')
 @login_required
 def tratartorres():
 
@@ -41,7 +42,7 @@ def tratartorres():
         return render_template("lista_torres.html", torreS=torreS)
 
 
-@torre_bp.route('/abrir_cad_torre')
+@torres_bp.route('/abrir_cad_torre')
 @login_required
 def abrir_cad_torre():
 
@@ -54,7 +55,7 @@ def abrir_cad_torre():
     return render_template("torre.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend)
 
 
-@torre_bp.route('/cadastrar_torre', methods=['POST'])
+@torres_bp.route('/cadastrar_torre', methods=['POST'])
 def cadastrar_torre():
     t = torre()
     t.setIdEmpreend(IdEmpreend().get())
@@ -66,16 +67,21 @@ def cadastrar_torre():
     t.setPrefixCobertura(request.form.get('prefixCobertura')
                          if request.form.get('prefixCobertura') else 'Cobertura')
     t.setNumAptUmAndarUm(request.form.get('numApUmAdrUm'))
-    t.setVlrUnidade(converter.converterStrToFloat(request.form.get('vlrUnidade')))
-    t.setVlrCobertura(converter.converterStrToFloat(request.form.get('vlrCobertura')))
+    t.setVlrUnidade(converter.converterStrToFloat(
+        request.form.get('vlrUnidade')))
+    t.setVlrCobertura(converter.converterStrToFloat(
+        request.form.get('vlrCobertura')))
 
     torreC = torreController()
-    torreC.inserirTorre(t)
+    if torreC.existeNomeTorre(t.getNmTorre()):
+        flash_message.error('Este nome de torre já existe')
+        return render_template("torre.html", idEmpreend=IdEmpreend().get(), nmEmpreend=NmEmpreend().get(), torre=t, novo=True)
 
+    torreC.inserirTorre(t)
     return redirect("/tratar_torres")
 
 
-# @torre_bp.route('/editar_torre')
+# @torres_bp.route('/editar_torre')
 # def editar_torre():
 
 #     idT = request.args.get("idTorre")
@@ -92,7 +98,7 @@ def cadastrar_torre():
 #     return render_template("torre.html", torre=torre, idEmpreend=idEmpreend, nmEmpreend=nmEmpreend)
 
 
-# @torre_bp.route('/salvar_alteracao_torre', methods=['POST'])
+# @torres_bp.route('/salvar_alteracao_torre', methods=['POST'])
 # def salvar_alteracao_torre():
 #     print('------- salvar_alteracao_torre INICIO --------')
 
@@ -114,7 +120,7 @@ def cadastrar_torre():
 #     return redirect("/tratar_torres")
 
 
-@torre_bp.route('/excluir_torre')
+@torres_bp.route('/excluir_torre')
 @login_required
 def excluir_torre():
     torreC = torreController()
@@ -132,7 +138,7 @@ def excluir_torre():
     return redirect("/tratar_torres")
 
 
-@torre_bp.route('/copiar_torre')
+@torres_bp.route('/copiar_torre')
 @login_required
 def editar_torre():
     idT = request.args.get("idTorre")

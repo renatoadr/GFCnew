@@ -15,12 +15,16 @@ class MySql:
             self.__cursor = self.__conn.cursor(dictionary=True)
             return self.__cursor
 
-    def commitAndClose(self):
-        self.__conn.commit()
-        self.__cursor.close()
-        self.__conn.close()
-        self.__cursor = None
-        self.__conn = None
+    def commitAndClose(self, useCommit=False):
+        try:
+            if useCommit:
+                self.__conn.commit()
+            self.__cursor.close()
+            self.__conn.close()
+            self.__cursor = None
+            self.__conn = None
+        except:
+            pass
 
     @staticmethod
     def getSenha():
@@ -72,11 +76,11 @@ class MySql:
         conn = MySql()
         cursor = conn.getCursor()
         cursor.execute(query, args)
-        conn.commitAndClose()
+        conn.commitAndClose(useCommit=True)
 
     @staticmethod
     def execMany(query: str, args: tuple = None):
         conn = MySql()
         cursor = conn.getCursor()
         cursor.executemany(query, args)
-        conn.commitAndClose()
+        conn.commitAndClose(useCommit=True)

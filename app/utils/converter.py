@@ -3,9 +3,9 @@ import re
 
 
 def converterStrToFloat(value, default=0):
-    if isNumber(value):
+    if not isinstance(value, str) and isNumber(value):
         return value
-    if value is None or re.search(r"^[\d.,]+$", value) is None:
+    if not value or value is None or re.search(r"^[\d.,]+$", value) is None:
         return default
     return float(value.replace('.', '').replace(',', '.'))
 

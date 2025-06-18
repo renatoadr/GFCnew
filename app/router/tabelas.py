@@ -16,10 +16,10 @@ import matplotlib.pyplot as plt
 import random
 import os
 
-tabela_bp = Blueprint('tabelas', __name__)
+tabelas_bp = Blueprint('tabelas', __name__)
 
 
-@tabela_bp.route('/tab_notas')
+@tabelas_bp.route('/tab_notas')
 @login_required
 def tab_notas():
     idEmpreend = IdEmpreend().get()
@@ -38,6 +38,9 @@ def tab_notas():
 
 def gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS, codBanco):
     geral = geralController()
+
+    plt.switch_backend('agg')
+
     fig, ax = plt.subplots(1, 1)
 
     data = []
@@ -117,12 +120,15 @@ def gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS, codBanco):
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_notas.png')
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)
 
     return grafNome
 
 
-@tabela_bp.route('/tab_conta')
+@tabelas_bp.route('/tab_conta')
 @login_required
 def tab_conta_corrente():
     idEmpreend = IdEmpreend().get()
@@ -141,6 +147,8 @@ def tab_conta_corrente():
 
 def gerar_tab_conta_corrente(idEmpreend, mesVigencia, anoVigencia, conS, codBanco):
     geral = geralController()
+
+    plt.switch_backend('agg')
 
     fig, ax = plt.subplots(1, 1)
     data = []
@@ -205,25 +213,24 @@ def gerar_tab_conta_corrente(idEmpreend, mesVigencia, anoVigencia, conS, codBanc
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_conta_corrente.png')
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)
     plt.close('all')
     return grafNome
 
 
-@tabela_bp.route('/tab_garantias_geral', methods=['GET'])
+@tabelas_bp.route('/tab_garantias_geral')
 @login_required
 def tab_garantias_geral():
 
     idEmpreend = IdEmpreend().get()
-    tipo = request.args.get("tipo")
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
     codBanco = request.args.get("codBanco")
 
-    geral = geralController()
-
-    grafNome = gerar_tab_garantias_geral(
-        idEmpreend, mesVigencia, anoVigencia, tipo)
+    grafNome = gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia)
 
     return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
@@ -234,6 +241,8 @@ def gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia; codBanco):
 
     if not ponS:
         return ''
+
+    plt.switch_backend('agg')
 
     fig, ax = plt.subplots(1, 1)
 
@@ -305,20 +314,21 @@ def gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia; codBanco):
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_garantias_geral.png')
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)
     plt.close('all')
     return grafNome
 
 
-@tabela_bp.route('/tab_garantias_obra')
+@tabelas_bp.route('/tab_garantias_obra')
 @login_required
 def tab_garantias_obra():
     idEmpreend = IdEmpreend().get()
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
     codBanco = request.args.get("codBanco")
-
-    geral = geralController()
 
     grafNome = gerar_tab_garantias_obra(idEmpreend, mesVigencia, anoVigencia)
 
@@ -401,12 +411,15 @@ def gerar_tab_garantias_obra(idEmpreend, mesVigencia, anoVigencia, codBanco):
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_garantias_obra.png')
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)
     plt.close('all')
     return grafNome
 
 
-@tabela_bp.route('/tab_certidoes')
+@tabelas_bp.route('/tab_certidoes')
 @login_required
 def tab_certidoes():
 
@@ -426,6 +439,8 @@ def gerar_tab_certidoes(idEmpreend, mes, ano, codBanco):
 
     if not certS:
         return ''
+
+    plt.switch_backend('agg')
 
     fig, ax = plt.subplots(1, 1)
     print(certS)
@@ -502,12 +517,15 @@ def gerar_tab_certidoes(idEmpreend, mes, ano, codBanco):
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_certidoes.png')
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)
     plt.close('all')
     return grafNome
 
 
-@tabela_bp.route('/tab_acomp_financeiro')
+@tabelas_bp.route('/tab_acomp_financeiro')
 @login_required
 def tab_acomp_financeiro():
     idEmpreend = IdEmpreend().get()
@@ -529,6 +547,9 @@ def tab_acomp_financeiro():
 
 def gerar_tab_acomp_financeiro(idEmpreend, mesVigencia, anoVigencia, medS, notS):
     geral = geralController()
+
+    plt.switch_backend('agg')
+
     fig, ax = plt.subplots(1, 1)
 
     data = []
@@ -617,13 +638,16 @@ def gerar_tab_acomp_financeiro(idEmpreend, mesVigencia, anoVigencia, medS, notS)
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_acomp_financeiro.png')
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)
 
     plt.close('all')
     return grafNome
 
 
-@tabela_bp.route('/tab_medicoes')
+@tabelas_bp.route('/tab_medicoes')
 @login_required
 def tab_medicoes():
 
@@ -660,6 +684,8 @@ def gerar_tab_medicoes(idEmpreend, mesVigencia, anoVigencia, mesInicio, anoInici
 
     if not preS:
         return ''
+
+    plt.switch_backend('agg')
 
     fig, ax = plt.subplots(1, 1)
 
@@ -725,12 +751,15 @@ def gerar_tab_medicoes(idEmpreend, mesVigencia, anoVigencia, mesInicio, anoInici
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_medicoes.png')
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)
 
     return grafNome
 
 
-@tabela_bp.route('/tab_orcamento_liberacao')
+@tabelas_bp.route('/tab_orcamento_liberacao')
 @login_required
 def tab_orcamento_liberacao():
     idEmpreend = IdEmpreend().get()
@@ -747,6 +776,9 @@ def tab_orcamento_liberacao():
 
 def gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS, codBanco):
     geral = geralController()
+
+    plt.switch_backend('agg')
+
     fig, ax = plt.subplots(1, 1)
 
     data = []
@@ -836,6 +868,9 @@ def gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS, codBanco):
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_orcamento_liberacao.png')
+
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
 
     plt.savefig(grafNome)
     plt.close('all')

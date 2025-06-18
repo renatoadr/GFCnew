@@ -1,16 +1,17 @@
 from flask import Blueprint, request, render_template, redirect
 
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
-from controller.consideracaoController import consideracaoController
+from controller.aspectosController import aspectosController
 from utils.security import login_required
 from datetime import datetime
 
-consideracoes_bp = Blueprint('consideracoes', __name__)
+aspectos_bp = Blueprint('aspectos', __name__)
+ctrl = aspectosController()
 
 
-@consideracoes_bp.route('/consideracoes')
+@aspectos_bp.route('/aspectos_obra')
 @login_required
-def tratartorres():
+def tratar_aspectos_obra():
 
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
@@ -33,24 +34,26 @@ def tratartorres():
         vigencia = datetime.now().strftime('%Y-%m')
     vig = vigencia.split('-')
 
-    ctrl = consideracaoController()
-    consid = ctrl.listar_campos(IdEmpreend().get(), vig[1], vig[0])
+    aspectos = ctrl.todasPerguntasComRespostas(
+        IdEmpreend().get(),
+        vig[1],
+        vig[0]
+    )
     return render_template(
-        "consideracoes.html",
-        consid=consid,
+        "aspectos.html",
+        aspectos=aspectos,
         minDate='2000-01',
         maxDate=datetime.now().strftime('%Y-%m'),
         vigencia=vigencia
     )
 
 
-@consideracoes_bp.route('/atualizar_consideracoes', methods=['POST'])
-def atualizar_consideracoes():
+@aspectos_bp.route('/atualizar_aspectos', methods=['POST'])
+def atualizar_aspectos():
     campos = request.form.to_dict()
     vigencia = request.args.get('vigencia')
     if not vigencia:
         vigencia = datetime.now().strftime('%Y-%m')
     vig = vigencia.split('-')
-    ctrl = consideracaoController()
-    ctrl.insert_registros(campos, IdEmpreend().get(), vig[1], vig[0])
+    ctrl.salvar_aspectos(campos, IdEmpreend().get(), vig[1], vig[0])
     return redirect('/home')

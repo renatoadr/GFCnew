@@ -287,3 +287,14 @@ main {
   padding: 12px 14px;
   border-bottom: #f1f1f1 solid 1px;
 }
+
+.secao-perguntas {
+  border-left: #7D6838 2px solid;
+  font-size: 16px;
+  font-weight: 400;
+  padding: 3px 0 3px 8px;
+}
+
+.f-13 {
+  font-size: 13px;
+}

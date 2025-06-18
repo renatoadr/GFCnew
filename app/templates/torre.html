@@ -22,7 +22,8 @@
         </div>
       </div>
 
-      <form action="{{'/salvar_alteracao_torre' if torre and torre.getIdTorre() is not none else '/cadastrar_torre'}}"
+      <form
+        action="{{'/salvar_alteracao_torre' if not novo and torre and torre.getIdTorre() is not none else '/cadastrar_torre'}}"
         id="formAlterarTorre" method="POST">
         <input type="hidden" name="idTorre" value="{{ torre.getIdTorre() if torre }}">
         <div class="row">
@@ -64,7 +65,7 @@
           <div class="col-4">
             <div class="form-floating">
               <input type="text" name="vlrUnidade" id="vlrUnidade" class="form-control money" placeholder=""
-                value="{{ torre.getVlrUnidade() if torre }}" maxlength="15" />
+                value="{{ torre.getVlrUnidade() if torre }}" maxlength="15">
               <label for="vlrUnidade">Preço do Apartamento</label>
             </div>
           </div>
@@ -90,7 +91,7 @@
           <div class="col-4">
             <div class="form-floating">
               <input type="text" name="vlrCobertura" id="vlrCobertura" class="form-control money" placeholder=""
-                value="{{ torre.getVlrCobertura() if torre }}" maxlength="15" />
+                value="{{ torre.getVlrCobertura() if torre }}" maxlength="15">
               <label for="vlrCobertura">Preço da cobertura</label>
             </div>
           </div>
@@ -101,7 +102,8 @@
             <a href="/tratar_torres" class="btn btn-secondary w-100">Cancelar</a>
           </div>
           <div class="col-3">
-            <button type="submit" class="btn btn-success w-100">{{ 'Salvar' if torre and torre.getIdTorre() is not none
+            <button type="submit" class="btn btn-success w-100">{{ 'Salvar' if not novo and torre and torre.getIdTorre()
+              is not none
               else 'Criar' }}</button>
           </div>
         </div>
@@ -115,6 +117,7 @@
       const requireds = GFC.getRequiredFields("formAlterarTorre")
       delete requireds.rules.prefixCobertura
       delete requireds.rules.qtdCoberturas
+      delete requireds.rules.vlrCobertura
       $("#formAlterarTorre").validate(GFC.getConfigValidateForm(requireds));
     });
   </script>

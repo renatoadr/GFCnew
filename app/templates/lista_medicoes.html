@@ -40,51 +40,38 @@
         </div>
       </div>
 
-      <p class="border-start border-5 p-3 pt-0 pb-0 h5 mb-2 mt-4 border-primary">Gerar Relatório por Tipo</p>
+      <p class="border-start border-5 p-3 pt-0 pb-0 h5 mb-2 mt-4 border-primary">Gerar Insumo para Relatório por Tipo
+      </p>
       <div class="bg-body-tertiary border border-1 p-3 rounded-4 mb-5">
         <form action="/gerar_relatorio_medicoes" method="post" id="formRelatorio">
           <div class="row">
-            <div class="col-2">
+            <div class="col-3">
               <div class="form-floating">
-                <input type="text" name="mesVigencia" id="mesVigencia" class="form-control" placeholder="">
-                <label for="mesVigencia">Mês Vigência</label>
-              </div>
-            </div>
-            <div class="col-2">
-              <div class="form-floating">
-                <input type="text" name="anoVigencia" id="anoVigencia" class="form-control" placeholder="">
-                <label for="anoVigencia">Ano Vigência</label>
+                <input type="month" name="vigencia" id="vigencia" class="form-control" min="{{ minDate }}"
+                  max="{{ maxDate }}">
+                <label for="vigencia">Vigência</label>
               </div>
             </div>
 
-            <div class="col-2">
+            <div class="col-3">
               <div class="form-floating">
-                <input type="text" name="mesInicio" id="mesInicio" class="form-control" placeholder="">
-                <label for="mesInicio">Mês Início</label>
+                <input type="month" name="vigenciaInicial" id="vigenciaInicial" class="form-control" min="{{ minDate }}"
+                  max="{{ maxDate }}">
+                <label for="vigenciaInicial">Vigência Inicial</label>
               </div>
             </div>
-            <div class="col-2">
+
+            <div class="col-3">
               <div class="form-floating">
-                <input type="text" name="anoInicio" id="anoInicio" class="form-control" placeholder="">
-                <label for="anoInicio">Ano Início</label>
-              </div>
-            </div>
-            <div class="col-2">
-              <div class="form-floating">
-                <input type="text" name="mesFinal" id="mesFinal" class="form-control" placeholder="">
-                <label for="mesFinal">Mês Final</label>
-              </div>
-            </div>
-            <div class="col-2">
-              <div class="form-floating">
-                <input type="text" name="anoFinal" id="anoFinal" class="form-control" placeholder="">
-                <label for="anoFinal">Ano Final</label>
+                <input type="month" name="vigenciaFinal" id="vigenciaFinal" class="form-control" min="{{ minDate }}"
+                  max="{{ maxDate }}">
+                <label for="vigenciaFinal">Vigência Final</label>
               </div>
             </div>
 
             <div class="col-2 align-content-center">
               <div class="form-floating">
-                <select name="tipo" id="tipo" class="form-control">
+                <select name="tipo" id="tipo" class="form-select">
                   <option value="">Selecione</option>
                   <option value="tabela">Tabela de Medições</option>
                   <option value="grafico">Gráfico de Medições</option>
@@ -92,7 +79,7 @@
                 <label for="tipo">Tipo relatório</label>
               </div>
             </div>
-            <div class="col-2 align-content-center">
+            <div class="col-1 align-content-center d-flex">
               <button type="submit" class="btn btn-primary w-100">
                 Gerar
               </button>
@@ -105,7 +92,10 @@
       <div class="row mt-3 d-inline">
         <div class="col-12">
           {% if error %}
-          <p class="alert alert-danger">{{error}}</p>
+          <p class="alert alert-danger alert-dismissible fade show">
+            {{error}}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </p>
           {% endif %}
           <table class="table table-striped">
             <thead class="table-light">
@@ -172,8 +162,8 @@
   </main>
   {% include 'fractials/footer.html' %}
   <script>
-    const requireds = GFC.getRequiredFields("formRelatorio")
     $(function () {
+      const requireds = GFC.getRequiredFields("formRelatorio")
       $("#formRelatorio").validate({
         rules: requireds.rules,
         messages: requireds.messages,

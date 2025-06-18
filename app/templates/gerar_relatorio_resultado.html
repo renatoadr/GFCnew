@@ -34,14 +34,17 @@
         <div class="box-grafico">
           <h4 class="border border-5 border-bottom-0 border-primary border-top-0 p-2"
             style="border-right: none !important;">{{item[1]}}</h4>
-          <a href="/ver_insumo/{{mes}}/{{ano}}/{{item[0]}}" data-title="{{item[1]}}" data-lightbox="{{item[0]}}">
-            <img src="/ver_insumo/{{mes}}/{{ano}}/{{item[0]}}" class="w-100">
+          <a href="/ver_insumo/{{vigencia}}/{{item[0]}}" data-title="{{item[1]}}" data-lightbox="{{item[0]}}">
+            <img src="/ver_insumo/{{vigencia}}/{{item[0]}}" class="w-100">
           </a>
         </div>
         {% endfor %}
       </div>
       {% else %}
-      <p class="alert alert-dark text-center">Não há registros de tabelas ou gráficos para apresentar</p>
+      <p class="alert alert-dark text-center alert-dismissible fade show">
+        Não há registros de tabelas ou gráficos para apresentar
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </p>
       {% endif %}
 
     </div>

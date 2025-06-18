@@ -8,15 +8,16 @@ from controller.medicaoController import medicaoController
 from controller.geralController import geralController
 from utils.CtrlSessao import IdEmpreend
 import matplotlib.pyplot as plt
+from datetime import datetime
 import pandas as pd
 import numpy as np
 import random
 import os
 
-grafico_bp = Blueprint('graficos', __name__)
+graficos_bp = Blueprint('graficos', __name__)
 
 
-@grafico_bp.route('/obter_grafico', methods=['GET'])
+@graficos_bp.route('/obter_grafico', methods=['GET'])
 @login_required
 def obter_grafico():
 
@@ -27,7 +28,7 @@ def obter_grafico():
     return send_file(grafNome, mimetype='image/png')
 
 
-@grafico_bp.route('/graf_orcamento_liberacao', methods=['GET'])
+@graficos_bp.route('/graf_orcamento_liberacao', methods=['GET'])
 @login_required
 def graf_orcamento_liberacao():
 
@@ -52,6 +53,8 @@ def gerar_graf_orcamento_liberacao(idEmpreend, mes, ano, tipo, medS):
     financeiro = []
     orcado = []
     index = []
+
+    plt.switch_backend('agg')
 
     for m in medS:
         index.append(m.getItem())
@@ -91,6 +94,9 @@ def gerar_graf_orcamento_liberacao(idEmpreend, mes, ano, tipo, medS):
         grafNome = os.path.join(
             diretorio, 'graf_orcamento_liberacao_percentual.png')
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome, bbox_inches='tight')
 
     plt.close('all')
@@ -98,7 +104,7 @@ def gerar_graf_orcamento_liberacao(idEmpreend, mes, ano, tipo, medS):
     return grafNome
 
 
-@grafico_bp.route('/graf_progresso_obra', methods=['GET'])
+@graficos_bp.route('/graf_progresso_obra', methods=['GET'])
 @login_required
 def graf_progresso_obra():
 
@@ -134,6 +140,8 @@ def gerar_graf_progresso_obra(idEmpreend, mesVigencia, anoVigencia, mesInicio, a
 
     if not preS:
         return ''
+
+    plt.switch_backend('agg')
 
     fig, ax = plt.subplots(1, 1)
 
@@ -185,12 +193,15 @@ def gerar_graf_progresso_obra(idEmpreend, mesVigencia, anoVigencia, mesInicio, a
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'graf_progresso_obra.png')
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)  # , bbox_inches='tight')
     plt.close('all')
     return grafNome
 
 
-@grafico_bp.route('/graf_indices_garantia_I', methods=['GET'])
+@graficos_bp.route('/graf_indices_garantia_I', methods=['GET'])
 @login_required
 def graf_indices_garantia_I():
     # ÍNDICES DE GARANTIA
@@ -218,10 +229,15 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
 
     uniC = unidadeController()
     recS = uniC.gerarInsumoRelatorio(
-        idEmpreend, anoInicio, mesInicio, mesFinal)
+        idEmpreend,
+        datetime(int(anoInicio), int(mesInicio), 1),
+        datetime(int(anoFinal), int(mesFinal), 20)
+    )
 
     if not recS:
         return ''
+
+    plt.switch_backend('agg')
 
     x1 = []
     y1 = []
@@ -232,12 +248,12 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
 
     for u in recS:
         x1.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
-        y1.append(IndiceGarantia)
+        y1.append(IndiceGarantia if IndiceGarantia else 0.0)
         y2.append(round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2))
         vlrAtual = round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2)
         variacao = vlrAtual - vlrAnterior
         vlrAnterior = vlrAtual
-        print(vlrAnterior, vlrAtual, variacao)    
+        print(vlrAnterior, vlrAtual, variacao)
 
     linhas = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.00,
               1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80]
@@ -245,13 +261,14 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     tamLinha = len(x1) - 1
     plt.hlines(linhas, 0, tamLinha, '#9feafc')
     plt.plot(x1, y1, label='Estipulado em contrato')
-    plt.plot(x1, y2, label='Recebiveis + estoque - Variação no período: ' + str(variacao))
+    plt.plot(
+        x1, y2, label='Recebiveis + estoque - Variação no período: ' + str(variacao))
 
     annotationsy1 = y1
     annotationsy2 = y2
 
-    plt.scatter(x1, y1, s=20) 
-    plt.scatter(x1, y2, s=20) 
+    plt.scatter(x1, y1, s=20)
+    plt.scatter(x1, y2, s=20)
 
     plt.ylim(1.0, 1.8)
 
@@ -276,6 +293,9 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'graf_indices_garantia_I.png')
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)  # , bbox_inches='tight')
 
     plt.close('all')
@@ -283,7 +303,7 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     return grafNome
 
 
-@grafico_bp.route('/graf_indices_garantia_II', methods=['GET'])
+@graficos_bp.route('/graf_indices_garantia_II', methods=['GET'])
 @login_required
 def graf_indices_garantia_II():
     # ÍNDICES DE GARANTIA
@@ -310,10 +330,15 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
 
     uniC = unidadeController()
     recS = uniC.gerarInsumoRelatorio(
-        idEmpreend, anoInicio, mesInicio, mesFinal)
+        idEmpreend,
+        datetime(int(anoInicio), int(mesInicio), 1),
+        datetime(int(anoFinal), int(mesFinal), 28)
+    )
 
     if not recS:
         return ''
+
+    plt.switch_backend('agg')
 
     x2 = []
     y3 = []
@@ -364,13 +389,16 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'graf_indices_garantia_II.png')
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)  # , bbox_inches='tight')
     plt.close('all')
 
     return grafNome
 
 
-@grafico_bp.route('/graf_vendas', methods=['GET'])
+@graficos_bp.route('/graf_vendas', methods=['GET'])
 @login_required
 def graf_vendas():
     # Gráfico de rosca
@@ -391,6 +419,8 @@ def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia, tipo):
 
     if not unid:
         return ''
+
+    plt.switch_backend('agg')
 
     fig, ax = plt.subplots(figsize=(6, 3), subplot_kw=dict(aspect="equal"))
 
@@ -445,13 +475,16 @@ def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia, tipo):
         grafNome = os.path.join(diretorio, 'graf_vendas_perc.png')
 #    grafNome = diretorio + 'graf_vendas.png'
 
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
+
     plt.savefig(grafNome)  # , bbox_inches='tight')
     plt.close('all')
 
     return grafNome
 
 
-@grafico_bp.route('/graf_chaves', methods=['GET'])
+@graficos_bp.route('/graf_chaves', methods=['GET'])
 @login_required
 def graf_chaves():
     # ÍNDICES DE CHAVES
@@ -485,6 +518,8 @@ def gerar_graf_chaves(idEmpreend, mesVigencia, anoVigencia, tipo):
 
     if not perChave and not perPreChave and not perPosChave:
         return ''
+
+    plt.switch_backend('agg')
 
     sizes = [perChave, perPreChave, perPosChave]
 
@@ -523,6 +558,9 @@ def gerar_graf_chaves(idEmpreend, mesVigencia, anoVigencia, tipo):
     else:
         grafNome = os.path.join(diretorio, 'graf_chaves_perc.png')
 #    grafNome = diretorio + 'graf_chaves.png'
+
+    if os.path.exists(grafNome):
+        os.remove(grafNome)
 
     plt.savefig(grafNome, bbox_inches='tight')
     plt.close('all')

@@ -31,37 +31,23 @@
       {% if not session.has_user_mobile_logged %}
       <form action="/gerar_relatorio" id="formRelatorio" method="GET"
         class="mt-3 mb-5 p-3 pt-2 bg-light border border-dark-subtle rounded-4">
-        <p class="text-black-50 mb-3 h6">Filtro</p>
+        <p class="text-black-50 mb-3 h6">Gerar relatório</p>
         <input type="hidden" name="idEmpreend" value="{{ idEmpreend }}">
         <input type="hidden" name="apelido" value="{{ apelido }}">
         <input type="hidden" name="mobile" value="False">
 
         <div class="row">
 
-          <div class="col-lg-4 col-md-12">
+          <div class="col-lg-5 col-md-12">
             <div class="form-floating">
-              <select name="mes" id="mes" class="form-control">
-                {% for mes in listaMes %}
-                <option value="{{ mes  }}">{{ mes }}</option>
-                {% endfor %}
-              </select>
-              <label for="mes">Mês</label>
-            </div>
-          </div>
-
-          <div class="col-lg-5 col-md-12 mt-3 mt-lg-0">
-            <div class="form-floating">
-              <select name="ano" id="ano" class="form-control">
-                {% for ano in listaAno %}
-                <option value="{{ ano  }}">{{ ano }}</option>
-                {% endfor %}
-              </select>
-              <label for="ano">Ano</label>
+              <input type="month" name="vigencia" id="vigencia" class="form-control" value="{{ vigencia if vigencia }}"
+                min="{{ minDate }}" max="{{ maxDate }}">
+              <label for="vigencia">Vigência</label>
             </div>
           </div>
 
           <div class="col-lg-3 col-md-12 mt-3  mt-lg-0 d-flex justify-content-center">
-            <button type="submit" class="btn btn-primary d-block w-100">Visualizar relatórios</button>
+            <button type="submit" class="btn btn-primary d-block w-100">Gerar</button>
           </div>
         </div>
       </form>

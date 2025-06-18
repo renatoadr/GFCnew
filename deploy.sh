@@ -13,8 +13,21 @@ ecSrCom() {
   ssh -i "${path_chave}" "${server_connect}" "$1"
 }
 
+clear_stage() {
+  log "Removendo arquivos compactados da imagem..."
+  rm -f *.tar *.gz
 
-log "Iniciando deploy...."
+  log "Desfazendo versão do compose..."
+  git checkout docker-compose.yml
+
+  log "Removendo imagem local"
+  images=$(docker images -q "$nome_image")
+  if [ -z "$images" ]; then
+    log "Não há imagens para remover"
+  else
+    docker rmi -f "$images"
+  fi
+}
 
 handle_error() {
   local exit_code=$?
@@ -22,26 +35,24 @@ handle_error() {
   log "Removendo arquivos compactados da imagem..."
   rm -f *.tar *.gz
 
-  log "Removendo imagem nova do docker..."
-  docker rmi "${nome_image}:${nova_versao}"
-
-  log "Desfazendo versão do compose..."
-  git checkout docker-compose.yml
+  clear_stage
 
   log "Deploy desfeito!"
   exit $exit_code
 }
 
-if [ "$1" == "--re" ]; then
-  log "Realizando redeploy e limpando o stage...."
-  log "Removendo arquivos compactados da imagem..."
-  rm -f *.tar *.gz
-  log "Desfazendo versão do compose..."
-  git checkout docker-compose.yml
+if [ "$1" == "-r" ]; then
+  log "Realizando a limpeza do stage...."
+
+  clear_stage
+
   log "Reiniciado o fluxo de deploy!"
+  exit 0
 fi
 
 trap 'handle_error' ERR
+
+log "Iniciando deploy...."
 
 log "Verificando se tem arquivo pendente..."
 arquivos_mod=$(git status -s)
@@ -72,9 +83,15 @@ imagem_atual=$(cat docker-compose.yml | grep "image: ${nome_image}" | awk '{prin
 IFS=':' read -r -a imgVersao <<< "$imagem_atual"
 versao_atual=${imgVersao[1]}
 IFS='.' read -r -a semver <<< "$versao_atual"
-versao_build=$(( semver[3] + 1))
-semver[3]=$versao_build
-nova_versao=$(IFS=. ; echo "${semver[*]}")
+
+if [ "$1" == "-v" ] && [ -n "$2" ]; then
+  nova_versao="$2.0"
+else
+  versao_build=$(( semver[3] + 1))
+  semver[3]=$versao_build
+  nova_versao=$(IFS=. ; echo "${semver[*]}")
+fi
+
 nome_arquivo="${nome_image}_${nova_versao}.tar"
 
 log "Alterando versão do deploy no docker-compose"
@@ -97,20 +114,36 @@ gzip -v "${nome_arquivo}"
 log "Tamanho da imagem após a compactação..."
 du -hs "${nome_arquivo}.gz"
 
-log "Enviando imagem para o servidor via sftp"
-sftp -i "${path_chave}" "${server_connect}" <<EOF
-put "${nome_arquivo}.gz" "${pasta_servidor}"
-exit
-EOF
+log "Enviando imagem para o servidor via scp"
+retry_attempts=5
+delay_seconds=2
+
+while true;
+do
+scp -i "${path_chave}" "${nome_arquivo}.gz" "${server_connect}":${pasta_servidor} || {
+  retry_attempts=$((retry_attempts - 1))
+  if [ "$retry_attempts" -gt 0 ]; then
+      log "Reenvio em $delay_seconds segundos..."
+      sleep "$delay_seconds"
+      continue
+  else
+      log "Erro ao tentar enviar após 5 tentativas."
+      clear_stage
+      log "Deploy desfeito!"
+      exit 1
+  fi
+}
+break
+done
 
 log "Carregando para o docker do servidor a nova imagem. Aguarde alguns minutos..."
 ecSrCom "cd ${pasta_servidor} && docker load < ${nome_arquivo}.gz"
 
 log "Removendo arquivos de configuração do servidor"
-ecSrCom "cd ${pasta_servidor} && rm -f docker-compose.yml gunicorn_config.py nginx.conf"
+ecSrCom "cd ${pasta_servidor} && rm -f docker-compose.yml nginx.conf"
 
 log "Enviando novos arquivos de configuração para o servidor"
-scp -i "${path_chave}" docker-compose.yml gunicorn_config.py nginx.conf "${server_connect}":${pasta_servidor}
+scp -i "${path_chave}" docker-compose.yml nginx.conf "${server_connect}":${pasta_servidor}
 
 log "Parando os containers no servidor"
 ecSrCom "cd ${pasta_servidor} && docker-compose down"

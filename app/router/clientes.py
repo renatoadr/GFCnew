@@ -4,10 +4,10 @@ from controller.clienteController import clienteController
 import utils.converter as converter
 from dto.cliente import cliente
 
-cliente_bp = Blueprint('clientes', __name__)
+clientes_bp = Blueprint('clientes', __name__)
 
 
-@cliente_bp.route('/tratar_clientes')
+@clientes_bp.route('/tratar_clientes')
 @login_required
 def tratarclientes():
 
@@ -20,13 +20,13 @@ def tratarclientes():
         return render_template("lista_clientes.html", clienteS=cliS)
 
 
-@cliente_bp.route('/abrir_cad_cliente')
+@clientes_bp.route('/abrir_cad_cliente')
 @login_required
 def abrir_cad_cliente():
     return render_template("cliente.html")
 
 
-@cliente_bp.route('/cadastrar_cliente', methods=['POST'])
+@clientes_bp.route('/cadastrar_cliente', methods=['POST'])
 def cadastrar_cliente():
     cli = cliente()
     cli.setCpfCnpj(converter.removeAlpha(request.form.get('cpfCnpj')))
@@ -51,7 +51,7 @@ def cadastrar_cliente():
     return redirect("/tratar_clientes")
 
 
-@cliente_bp.route('/editar_cliente')
+@clientes_bp.route('/editar_cliente')
 @login_required
 def editar_cliente():
     idCli = request.args.get("cpfCnpj")
@@ -64,7 +64,7 @@ def editar_cliente():
     return render_template("cliente.html", cliente=cliente, criacao=False)
 
 
-@cliente_bp.route('/salvar_alteracao_cliente', methods=['POST'])
+@clientes_bp.route('/salvar_alteracao_cliente', methods=['POST'])
 def salvar_alteracao_cliente():
     cli = cliente()
     cli.setCpfCnpj(converter.removeAlpha(request.form.get('cpfCnpj')))
@@ -80,7 +80,7 @@ def salvar_alteracao_cliente():
     return redirect("/tratar_clientes")
 
 
-@cliente_bp.route('/excluir_cliente')
+@clientes_bp.route('/excluir_cliente')
 @login_required
 def excluir_cliente():
 

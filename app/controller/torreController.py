@@ -55,7 +55,7 @@ class torreController:
                 currentApt,
                 str(date.month).zfill(2),
                 date.year,
-                'Estoque', 
+                'Estoque',
                 vlrUnidade
             ))
             currentApt += 1
@@ -74,7 +74,7 @@ class torreController:
                     f"{prefix} {num}",
                     str(date.month).zfill(2),
                     date.year,
-                    'Estoque', 
+                    'Estoque',
                     vlrCobertura
                 ))
 
@@ -170,6 +170,12 @@ class torreController:
         MySql.close(self.__connection)
 
     def excluirTorre(self, idTorre):
-        query = "delete from " + MySql.DB_NAME + \
-            ".tb_torres" + " where id_torre = %s "
+        query = f"delete from {MySql.DB_NAME}.tb_torres" + \
+            " where id_torre = %s "
         MySql.exec(query, (idTorre,))
+
+    def existeNomeTorre(self, nome):
+        query = f"select count(id_torre) existe FROM {MySql.DB_NAME}.tb_torres" + \
+            " WHERE nm_torre = %s "
+        result = MySql.getOne(query, (nome,))
+        return result['existe'] > 0

@@ -9,7 +9,7 @@ import ast
 import os
 import re
 
-foto_bp = Blueprint('fotos', __name__)
+fotos_bp = Blueprint('fotos', __name__)
 
 months = {
     "01": "Jan",
@@ -34,7 +34,7 @@ camposCapa = (
 )
 
 
-@foto_bp.route('/upload_config_fotos')
+@fotos_bp.route('/upload_config_fotos')
 @login_required
 def upload_config_fotos():
     idEmpreend = request.args.get("idEmpreend")
@@ -72,7 +72,7 @@ def upload_config_fotos():
     return render_template("upload_fotos_config.html", camposCapa=camposCapa, listVigencias=listVigencias)
 
 
-@foto_bp.route('/upload_fotos', methods=['POST'])
+@fotos_bp.route('/upload_fotos', methods=['POST'])
 def upload_fotos():
     vigCurrent = request.form.get('vigCorrrente')
     qtdFotosObra = converterStrToInt(request.form.get("qtdObra"))
@@ -115,7 +115,7 @@ def upload_fotos():
     )
 
 
-@foto_bp.route('/upload_arquivo_fotos', methods=['POST'])
+@fotos_bp.route('/upload_arquivo_fotos', methods=['POST'])
 def upload_arquivo_fotos():
     mesV = request.form.get('mesVigencia')
     anoV = request.form.get('anoVigencia')
@@ -150,13 +150,13 @@ def upload_arquivo_fotos():
     return redirect("/home")
 
 
-@foto_bp.route('/api/imagens/vigencia_corrente', methods=['GET'])
+@fotos_bp.route('/api/imagens/vigencia_corrente', methods=['GET'])
 def api_files():
     vigCurrent = request.args.get('vig')
     return jsonify(carregarImagens(vigCurrent))
 
 
-@foto_bp.route('/obter_imagem/<idEmpreend>/<vigencia>/<nameFile>')
+@fotos_bp.route('/obter_imagem/<idEmpreend>/<vigencia>/<nameFile>')
 @login_required
 def obter_imagem(idEmpreend, vigencia, nameFile):
     dirPath = os.path.abspath(__name__).replace(__name__, '')

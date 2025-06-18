@@ -7,10 +7,10 @@ from utils.converter import converterStrToFloat
 from utils.helper import allowed_file
 from dto.nota import nota
 
-nota_bp = Blueprint('notas', __name__)
+notas_bp = Blueprint('notas', __name__)
 
 
-@nota_bp.route('/upload_arquivo_notas', methods=['POST'])
+@notas_bp.route('/upload_arquivo_notas', methods=['POST'])
 def upload_arquivo_notas():
     # check if the post request has the file part
     if 'file' not in request.files:
@@ -33,7 +33,7 @@ def upload_arquivo_notas():
     return render_template("erro.html", mensagem=mensagem)
 
 
-@nota_bp.route('/tratar_notas')
+@notas_bp.route('/tratar_notas')
 @login_required
 def tratar_notas():
 
@@ -62,7 +62,7 @@ def tratar_notas():
     return render_template("lista_notas_agrupadas.html", notas=notS, idEmpreend=idEmpreend)
 
 
-@nota_bp.route('/excluir_nota_carga')
+@notas_bp.route('/excluir_nota_carga')
 @login_required
 def excluir_nota_carga():
     mes = request.args.get('mesV')
@@ -73,7 +73,7 @@ def excluir_nota_carga():
     return redirect('/tratar_notas')
 
 
-@nota_bp.route('/consultar_nota_data')
+@notas_bp.route('/consultar_nota_data')
 @login_required
 def consultar_nota_data():
     data = request.args.get('dtCarga')
@@ -96,7 +96,7 @@ def consultar_nota_data():
     return render_template("lista_notas.html", notas=notaS)
 
 
-@nota_bp.route('/excluir_nota')
+@notas_bp.route('/excluir_nota')
 @login_required
 def excluir_nota():
     id = request.args.get('idNota')
@@ -105,7 +105,7 @@ def excluir_nota():
     return redirect('/consultar_nota_data')
 
 
-@nota_bp.route('/editar_nota')
+@notas_bp.route('/editar_nota')
 @login_required
 def editar_nota():
     id = request.args.get('idConta')
@@ -114,13 +114,13 @@ def editar_nota():
     return render_template("cad_nota.html", nota=nota)
 
 
-@nota_bp.route('/abrir_cad_nota')
+@notas_bp.route('/abrir_cad_nota')
 @login_required
 def cadastrar_nota():
     return render_template("cad_nota.html")
 
 
-@nota_bp.route('/salvar_nota', methods=['POST'])
+@notas_bp.route('/salvar_nota', methods=['POST'])
 def salvar_nota():
     ct = get_nota_cadastro()
     contC = notaController()
@@ -128,7 +128,7 @@ def salvar_nota():
     return redirect("/consultar_nota_data")
 
 
-@nota_bp.route('/criar_nota', methods=['POST'])
+@notas_bp.route('/criar_nota', methods=['POST'])
 def criar_nota():
     ct = get_nota_cadastro()
     ct.setAnoVigencia(AnoVigencia().get())

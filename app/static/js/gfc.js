@@ -124,8 +124,17 @@ window.GFC = (function() {
     return config
   }
 
+  const convertMoneyInNumber = function(value) {
+    if (value === undefined || value === '' || value === null || typeof value !== 'string') {
+      return 0
+    }
+    let val = value.replaceAll('.', '').replace(',', '.');
+    return Number(val)
+  }
+
   return {
     getRequiredFields,
+    convertMoneyInNumber,
     getConfigValidateForm
   }
 

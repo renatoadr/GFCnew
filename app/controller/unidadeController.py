@@ -1,10 +1,12 @@
 # controller or business logic
 # Trata base de UNIDADES
 
-from controller.clienteController import clienteController
 from dto.unidade import unidade
 from utils.dbContext import MySql
-from utils.logger import logger
+from datetime import datetime
+from copy import deepcopy
+from dateutil import relativedelta
+from utils.helper import diff_mes
 
 
 class unidadeController:
@@ -14,7 +16,7 @@ class unidadeController:
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
-        query = f"""INSERT INTO {MySql.DB_NAME}.tb_unidades (id_empreendimento, id_torre, unidade, mes_vigencia, ano_vigencia, vl_unidade, status, cpf_cnpj_comprador, vl_pago, financiado, vl_chaves, vl_pre_chaves, vl_pos_chaves) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
+        query = f"""INSERT INTO {MySql.DB_NAME}.tb_unidades (id_empreendimento, id_torre, unidade, mes_vigencia, ano_vigencia, vl_unidade, status, cpf_cnpj_comprador, vl_receber, financiado, vl_chaves, vl_pre_chaves, vl_pos_chaves) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"""
 
         print('++++++++++++++++++++++')
         print(query)
@@ -29,7 +31,7 @@ class unidadeController:
             unidade.getVlUnidade(),
             unidade.getStatus(),
             unidade.getCpfComprador(),
-            unidade.getVlPago(),
+            unidade.getVlReceber(),
             unidade.getFinanciado(),
             unidade.getVlChaves(),
             unidade.getVlPreChaves(),
@@ -49,10 +51,12 @@ class unidadeController:
         print('---consultarUnidades--')
         print(idEmpreend)
 
-        query = f"""SELECT uni.id_unidade, uni.id_empreendimento, uni.id_torre, uni.unidade, uni.status, tor.nm_torre, uni.vl_unidade, uni.cpf_cnpj_comprador
+        query = f"""SELECT uni.id_unidade, uni.id_empreendimento, uni.id_torre, uni.unidade, uni.status, tor.nm_torre, uni.vl_unidade, cli.nm_cliente, mes_vigencia, ano_vigencia, uni.cpf_cnpj_comprador
         FROM {MySql.DB_NAME}.tb_unidades uni
         INNER JOIN {MySql.DB_NAME}.tb_torres tor
         ON uni.id_torre = tor.id_torre
+        LEFT JOIN {MySql.DB_NAME}.tb_clientes cli
+        ON uni.cpf_cnpj_comprador = cli.cpf_cnpj
         WHERE uni.id_empreendimento = %s
         AND uni.ac_historico IS NULL
         ORDER by tor.nm_torre, uni.unidade;"""
@@ -74,6 +78,9 @@ class unidadeController:
             u.setNmTorre(x['nm_torre'])
             u.setUnidade(x['unidade'])
             u.setStatus(x['status'])
+            u.setCpfComprador(x['cpf_cnpj_comprador'])
+            u.setMesVigencia(x['mes_vigencia'])
+            u.setAnoVigencia(x['ano_vigencia'])
             if x['vl_unidade'] == None:
                 u.setVlUnidade(0.00)
             else:
@@ -81,11 +88,11 @@ class unidadeController:
                 ValorUnidadeFormatado = f"{ValorUnidade:,.2f}".replace(
                     ",", "X").replace(".", ",").replace("X", ".")
                 u.setVlUnidade(ValorUnidadeFormatado)
-            cpfCnpj = x['cpf_cnpj_comprador']
-            if cpfCnpj == None or cpfCnpj == 'None':
+            nmCliente = x['nm_cliente']
+            if nmCliente == None or nmCliente == 'None':
                 u.setNmComprador('')
             else:
-                u.setNmComprador(clienteController.getCliente(cpfCnpj))
+                u.setNmComprador(nmCliente)
             listaunids.append(u)
 
         cursor.close()
@@ -123,7 +130,7 @@ class unidadeController:
         linhaU.setVlUnidade(linha['vl_unidade'])
         linhaU.setStatus(linha['status'])
         linhaU.setCpfComprador(linha['cpf_cnpj_comprador'])
-        linhaU.setVlPago(linha['vl_pago'])
+        linhaU.setVlReceber(linha['vl_receber'])
         linhaU.setDtOcorrencia(linha['dt_ocorrencia'])
         linhaU.setFinanciado(linha['financiado'])
         linhaU.setVlChaves(linha['vl_chaves'])
@@ -200,16 +207,16 @@ class unidadeController:
 
         print('+++++++++ consultarUnidadeRecebibeis ++++++++++++++++++')
 
-#        query = "select vl_pago from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' " + " and ac_historico is null"
+#        query = "select vl_receber from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' " + " and ac_historico is null"
 #
 #        if anoIni == anoFim:
-#                query =  "select mes_vigencia, ano_vigencia, sum(vl_pago) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' and ac_historico is null and ((mes_vigencia >= '" + mesIni + "' and ano_vigencia = '" + anoIni + "') and (mes_vigencia <= '" + mesFim + "' and ano_vigencia = '" + anoFim + "')) group by ano_vigencia, mes_vigencia"
+#                query =  "select mes_vigencia, ano_vigencia, sum(vl_receber) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' and ac_historico is null and ((mes_vigencia >= '" + mesIni + "' and ano_vigencia = '" + anoIni + "') and (mes_vigencia <= '" + mesFim + "' and ano_vigencia = '" + anoFim + "')) group by ano_vigencia, mes_vigencia"
 #                print('===========> com and')
 #        else:
-#                query =  "select mes_vigencia, ano_vigencia, sum(vl_pago) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' and ac_historico is null and ((mes_vigencia >= '" + mesIni + "' and ano_vigencia = '" + anoIni + "') or  (mes_vigencia <= '" + mesFim + "' and ano_vigencia = '" + anoFim + "')) group by ano_vigencia, mes_vigencia"
+#                query =  "select mes_vigencia, ano_vigencia, sum(vl_receber) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' and ac_historico is null and ((mes_vigencia >= '" + mesIni + "' and ano_vigencia = '" + anoIni + "') or  (mes_vigencia <= '" + mesFim + "' and ano_vigencia = '" + anoFim + "')) group by ano_vigencia, mes_vigencia"
 #                print('===========> com or')
 
-        query = "select mes_vigencia, ano_vigencia, SUM(CASE WHEN status = 'Estoque' THEN vl_unidade ELSE 0 END) AS total_unidade, SUM(CASE WHEN status = 'Vendido' THEN vl_pago ELSE 0 END) AS total_pago from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(
+        query = "select mes_vigencia, ano_vigencia, SUM(CASE WHEN status = 'Estoque' THEN vl_unidade ELSE 0 END) AS total_unidade, SUM(CASE WHEN status = 'Vendido' THEN vl_receber ELSE 0 END) AS total_pago from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(
             idEmpreend) + " and ac_historico is null and (ano_vigencia > '" + anoIni + "' OR (ano_vigencia = '" + anoIni + "' AND mes_vigencia >= '" + mesIni + "')) AND (ano_vigencia < '" + anoFim + "' OR (ano_vigencia = '" + anoFim + "' AND mes_vigencia <= '" + mesFim + "')) group by ano_vigencia, mes_vigencia order by ano_vigencia, mes_vigencia"
 
         print(query)
@@ -239,7 +246,7 @@ class unidadeController:
 
         print('+++++++++ consultarUnidadeRecebibeis ++++++++++++++++++')
 
-        query = "select mes_vigencia, ano_vigencia, SUM(CASE WHEN status = 'Estoque' THEN vl_unidade ELSE 0 END) AS total_unidade, SUM(CASE WHEN status = 'Vendido' THEN vl_pago ELSE 0 END) AS total_pago from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(
+        query = "select mes_vigencia, ano_vigencia, SUM(CASE WHEN status = 'Estoque' THEN vl_unidade ELSE 0 END) AS total_unidade, SUM(CASE WHEN status = 'Vendido' THEN vl_receber ELSE 0 END) AS total_pago from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(
             idEmpreend) + " and ac_historico is null and (ano_vigencia > '" + anoIni + "' OR (ano_vigencia = '" + anoIni + "' AND mes_vigencia >= '" + mesIni + "')) AND (ano_vigencia < '" + anoFim + "' OR (ano_vigencia = '" + anoFim + "' AND mes_vigencia <= '" + mesFim + "')) group by ano_vigencia, mes_vigencia order by ano_vigencia, mes_vigencia"
 
         print(query)
@@ -269,7 +276,7 @@ class unidadeController:
 
         print('+++++++++ consultarUnidadeRecebibeis ++++++++++++++++++')
 
-#        query = "select vl_pago from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' " + " and ac_historico is null"
+#        query = "select vl_receber from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Vendido' " + " and ac_historico is null"
 
         if anoIni == anoFim:
             query = "select mes_vigencia, ano_vigencia, sum(vl_unidade) from " + MySql.DB_NAME + ".tb_unidades where id_empreendimento = " + str(idEmpreend) + " and status = 'Estoque' and ac_historico is null and ((mes_vigencia >= '" + \
@@ -317,7 +324,7 @@ class unidadeController:
       vl_unidade = %s,
       status = %s,
       cpf_cnpj_comprador = %s,
-      vl_pago = %s,
+      vl_receber = %s,
       dt_ocorrencia = %s,
       financiado = %s,
       vl_chaves = %s,
@@ -335,7 +342,7 @@ class unidadeController:
             unidade.getVlUnidade(),
             unidade.getStatus(),
             unidade.getCpfComprador(),
-            unidade.getVlPago(),
+            unidade.getVlReceber(),
             unidade.getDtOcorrencia(),
             unidade.getFinanciado(),
             unidade.getVlChaves(),
@@ -362,11 +369,25 @@ class unidadeController:
         query = f"UPDATE {MySql.DB_NAME}.tb_unidades SET ac_historico = 'EDITADO' where id_unidade = %s"
         MySql.exec(query, (idUnidade,))
 
-    def gerarInsumoRelatorio(self, idEmpreend, anoVig, mesInicioVig, mesTerminoVig) -> list[unidade]:
+    def recursiveCalculoData(self, dataInicio: datetime, dataFinal: datetime, item: tuple, lista: list[unidade], changeInitDate: bool):
+        vigNext = dataInicio
+        if changeInitDate:
+            vigNext += relativedelta.relativedelta(months=1)
+        vig = vigNext.strftime('%Y-%m').split('-')
+        copy = deepcopy(item)
+        copy['mes_vigencia'] = vig[1].zfill(2)
+        copy['ano_vigencia'] = vig[0]
+        lista.append(self.mapeamentoUnidade(copy))
+        if not changeInitDate:
+            vigNext = dataInicio + relativedelta.relativedelta(months=1)
+        if vigNext < dataFinal:
+            self.recursiveCalculoData(
+                vigNext, dataFinal, item, lista, changeInitDate)
+
+    def gerarInsumoRelatorio(self, idEmpreend: int, dataInicio: datetime, dataFim: datetime) -> list[unidade]:
         query = f""" SELECT * FROM {MySql.DB_NAME}.tb_unidades uni
           WHERE uni.id_empreendimento = %s
-          AND uni.ano_vigencia = %s
-          AND uni.mes_vigencia BETWEEN %s AND %s
+          AND DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) BETWEEN %s AND %s
           AND uni.status IN ('Estoque', 'Vendido')
           AND uni.dt_ocorrencia = (
               SELECT MAX(dt_ocorrencia) FROM {MySql.DB_NAME}.tb_unidades
@@ -375,52 +396,99 @@ class unidadeController:
               AND mes_vigencia = uni.mes_vigencia
               AND id_empreendimento = uni.id_empreendimento
               AND id_torre = uni.id_torre
-              AND uni.status IN ('Estoque', 'Vendido')
+              AND status = uni.status
           )
-          ORDER BY uni.id_torre, uni.unidade, uni.ano_vigencia, uni.mes_vigencia;
+          ORDER BY uni.id_torre, uni.unidade, DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01'));
         """
+        queryDates = f""" SELECT
+          MIN(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) data_inicio,
+          MAX(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) data_final
+        FROM {MySql.DB_NAME}.tb_unidades uni
+        WHERE uni.id_empreendimento = %s
+        AND DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) BETWEEN %s AND %s
+        AND uni.status IN ('Estoque', 'Vendido')"""
+
         result = []
         totais = {}
         totaisList = []
 
         print("Buscando unidades para calcular com parametros: ", {
-            "IdEmpreendimento": idEmpreend, "AnoVigencia": anoVig, "MesInicial": mesInicioVig, "MesTermino": mesTerminoVig}, end="\n\n")
+            "IdEmpreendimento": idEmpreend,
+            "Data Início": dataInicio,
+            "Data Final": dataFim
+        }, end="\n\n")
 
-        data = MySql.getAll(
+        datas = MySql.getAll(
+            queryDates, (
+                idEmpreend,
+                dataInicio,
+                dataFim
+            )
+        )
+        unidades = MySql.getAll(
             query, (
                 idEmpreend,
-                anoVig,
-                mesInicioVig,
-                mesTerminoVig
+                dataInicio,
+                dataFim
             )
         )
 
-        print("Encontrado os dados: ", data, end="\n\n")
-        print("Qauntidade de unidades encontradas: ", len(data), end="\n\n")
+        if not datas or not unidades:
+            return []
 
+        print("Range real das unidades", datas[0])
+        print("Quantidade de unidades encontradas: ", len(unidades), end="\n\n")
         print("Realizando o processamento de normalização dos dados...", end="\n\n")
 
-        mesTermino = int(mesTerminoVig)
-        for idx, item in enumerate(data):
-            current = item
-            next = data[idx + 1] if idx + 1 < len(data) else None
-            currentVig = int(current['mes_vigencia'])
-            nextVig = int(next['mes_vigencia']) if next else 0
+        dtI = datas[0]['data_inicio'].split('-')
+        dtF = datas[0]['data_final'].split('-')
+        dataInicio = datetime(int(dtI[0]), int(dtI[1]), int(dtI[2]))
+        dataFim = datetime(int(dtF[0]), int(dtF[1]), int(dtF[2]))
 
-            print("Registro corrente: ", item, end="\n\n")
+        for idx, current in enumerate(unidades):
+            previus = unidades[idx - 1] if idx > 0 else None
+            next = unidades[idx + 1] if idx + 1 < len(unidades) else None
+            vigCurrent = datetime(
+                int(current['ano_vigencia']),
+                int(current['mes_vigencia']),
+                1
+            )
+            nextVig = datetime(
+                int(next['ano_vigencia']),
+                int(next['mes_vigencia']),
+                1
+            ) if next else 0
 
-            result.append(self.mapeamentoUnidade(item))
+            print("Registro corrente: ", current, end="\n\n")
 
-            if next and current['unidade'] == next['unidade'] and nextVig - currentVig > 1:
-                for n in range(currentVig + 1, nextVig):
-                    item['mes_vigencia'] = str(n).zfill(2)
-                    print("Registro clonado mesma unidade: ", item)
-                    result.append(self.mapeamentoUnidade(item))
-            elif next and current['unidade'] != next['unidade'] and currentVig < mesTermino or not next and currentVig < mesTermino:
-                for n in range(currentVig + 1, mesTermino + 1):
-                    item['mes_vigencia'] = str(n).zfill(2)
-                    print("Registro clonado unidade diferente: ", item)
-                    result.append(self.mapeamentoUnidade(item))
+            if vigCurrent > dataInicio and (not previus or previus['unidade'] != current['unidade']):
+                self.recursiveCalculoData(
+                    dataInicio,
+                    vigCurrent,
+                    current,
+                    result,
+                    False
+                )
+
+            result.append(self.mapeamentoUnidade(current))
+
+            if next and current['unidade'] == next['unidade'] and diff_mes(nextVig, vigCurrent) > 1:
+                self.recursiveCalculoData(
+                    vigCurrent,
+                    nextVig - relativedelta.relativedelta(months=1),
+                    current,
+                    result,
+                    True
+                )
+
+            elif (not next and vigCurrent < dataFim) or (next and current['unidade'] != next['unidade'] and vigCurrent < dataFim):
+                self.recursiveCalculoData(
+                    vigCurrent,
+                    dataFim,
+                    current,
+                    result,
+                    True
+                )
 
         print("Quantidade de unidades geradas", len(result), end="\n\n")
         print("Calculando os totais por mês....", end="\n\n")
@@ -433,7 +501,7 @@ class unidadeController:
             print("Vigencia atual: ", key, end="\n\n")
 
             print("Unidade atual para calculos: ", {"Torre": uni.getIdTorre(
-            ), "Unidade": uni.getUnidade(), "Status": uni.getStatus(), "ValorUnidade": uni.getVlUnidade(), "ValorPago": uni.getVlPago()}, end="\n\n")
+            ), "Unidade": uni.getUnidade(), "Status": uni.getStatus(), "ValorUnidade": uni.getVlUnidade(), "ValorPago": uni.getVlReceber()}, end="\n\n")
 
             if not totais.get(key, None):
                 if uni.getStatus() == 'Estoque':
@@ -443,7 +511,7 @@ class unidadeController:
                         "Total criado para Status Estoque: ", totais[key], end="\n\n")
                 else:
                     totais[key] = {"valorUnidade": 0,
-                                   "valorPago": uni.getVlPago()}
+                                   "valorPago": uni.getVlReceber()}
                     print(
                         "Total criado para Status Vendido: ", totais[key], end="\n\n")
 
@@ -451,7 +519,7 @@ class unidadeController:
                 tt = totais[key]
                 ttNew = {
                     "valorUnidade": tt["valorUnidade"] + (uni.getVlUnidade() if uni.getStatus() == 'Estoque' else 0),
-                    "valorPago": tt["valorPago"] + (uni.getVlPago() if uni.getStatus() == 'Vendido' else 0)
+                    "valorPago": tt["valorPago"] + (uni.getVlReceber() if uni.getStatus() == 'Vendido' else 0)
                 }
                 print(
                     f"Total calculdo para vigencia {key}: ", ttNew, end="\n\n")
@@ -483,11 +551,72 @@ class unidadeController:
         linhaU.setVlUnidade(linha['vl_unidade'] if linha['vl_unidade'] else 0)
         linhaU.setStatus(linha['status'])
         linhaU.setCpfComprador(linha['cpf_cnpj_comprador'])
-        linhaU.setVlPago(linha['vl_pago'] if linha['vl_pago'] else 0)
+        linhaU.setVlReceber(linha['vl_receber'] if linha['vl_receber'] else 0)
         linhaU.setDtOcorrencia(linha['dt_ocorrencia'])
         linhaU.setFinanciado(linha['financiado'])
         linhaU.setVlChaves(linha['vl_chaves'])
         linhaU.setVlPreChaves(linha['vl_pre_chaves'])
         linhaU.setVlPosChaves(linha['vl_pos_chaves'])
+        linhaU.setNmTorre(linha['nm_torre'] if 'nm_torre' in linha else '')
 
         return linhaU
+
+    @staticmethod
+    def idTorrePeloNomeeUnidade(unidade: int, nmTorre: str, idEmpreend: int) -> int:
+        query = f"""SELECT uni.id_torre FROM {MySql.DB_NAME}.tb_unidades uni
+                  INNER JOIN {MySql.DB_NAME}.tb_torres tor
+                  ON uni.id_torre = tor.id_torre
+                  AND uni.id_empreendimento = tor.id_empreendimento
+                  AND tor.nm_torre = %s
+                  WHERE uni.unidade = %s
+                  AND uni.id_empreendimento = %s
+                  AND uni.ac_historico IS NULL;"""
+        result = MySql.getOne(query, (nmTorre, unidade, idEmpreend))
+        return result['id_torre'] if result else None
+
+    @staticmethod
+    def atualizarValoresUnidade(listData: tuple):
+        queryUpdate = f"""UPDATE {MySql.DB_NAME}.tb_unidades
+                          SET ac_historico = 'EDITADO'
+                          WHERE id_torre = %s
+                          AND unidade = %s
+                          AND id_empreendimento = %s
+                          AND ac_historico IS NULL;"""
+        query = f"""INSERT INTO {MySql.DB_NAME}.tb_unidades (
+                    id_empreendimento,
+                    id_torre,
+                    unidade,
+                    status,
+                    mes_vigencia,
+                    ano_vigencia,
+                    cpf_cnpj_comprador,
+                    vl_unidade,
+                    vl_pre_chaves,
+                    vl_chaves,
+                    vl_pos_chaves,
+                    vl_receber
+                  ) VALUES (
+                    %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s
+                  );"""
+        MySql.exec(queryUpdate, (listData[1], listData[2], listData[0]))
+        MySql.exec(query, listData)
+
+    def unidadesVendidasSemCliente(self, idEmpreend: int, mesVig: str, anoVig: str):
+        query = f"""SELECT *, tor.nm_torre FROM {MySql.DB_NAME}.tb_unidades uni
+          INNER JOIN {MySql.DB_NAME}.tb_torres tor
+          ON tor.id_torre = uni.id_torre
+          WHERE uni.id_empreendimento = %s
+          AND uni.mes_vigencia = %s
+          AND uni.ano_vigencia = %s
+          AND uni.status IN ('Vendido', 'Quitado')
+          AND uni.ac_historico IS NULL
+          AND (
+              uni.cpf_cnpj_comprador IS NULL
+              OR uni.cpf_cnpj_comprador IN ('None', '')
+          ); """
+
+        unidades = MySql.getAll(query, (idEmpreend, mesVig, anoVig))
+        result = []
+        for uni in unidades:
+            result.append(self.mapeamentoUnidade(uni))
+        return result

@@ -60,6 +60,10 @@ class User:
     def logged_in(self) -> datetime:
         return self.__logged_in
 
+    @logged_in.setter
+    def logged_in(self, value: datetime):
+        self.__logged_in = value
+
     def to_string(self) -> str:
         return f"{self.id},{self.name},{self.email},{self.profile},{self.codBank},{self.logged_in}"
 

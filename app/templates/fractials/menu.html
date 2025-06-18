@@ -8,7 +8,7 @@
           </div>
           <div class="col-7">
             <a href="{{'/mobile/home' if session.has_user_mobile_logged else '/home'}}"
-              class="text-decoration-none d-block">
+              class="text-decoration-none d-block" title="Ir para Empreendimentos">
               <h1 class="text-white m-0">GFC</h1>
             </a>
           </div>
@@ -46,7 +46,9 @@
 <div class="container mt-4">
   <div class="row">
     <div class="col-12">
-      <p class="alert alert-warning text-center"> {{mensagem}} </p>
+      <p class="alert alert-warning text-center alert-dismissible fade show"> {{mensagem}}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </p>
     </div>
   </div>
 </div>
@@ -59,16 +61,24 @@
     <div class="col-12">
       {% for category, message in messages %}
       {% if category == 'error' and message %}
-      <p class="alert alert-danger text-center mt-4"> {{ message }} </p>
+      <p class="alert alert-danger text-center mt-4 alert-dismissible fade show"> {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </p>
       {% endif %}
       {% if category == 'warning' and message %}
-      <p class="alert alert-warning text-center mt-4"> {{ message }} </p>
+      <p class="alert alert-warning text-center mt-4 alert-dismissible fade show"> {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </p>
       {% endif %}
       {% if category == 'info' and message %}
-      <p class="alert alert-info text-center mt-4"> {{ message }} </p>
+      <p class="alert alert-info text-center mt-4 alert-dismissible fade show"> {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </p>
       {% endif %}
       {% if category == 'success' and message %}
-      <p class="alert alert-success text-center mt-4"> {{ message }} </p>
+      <p class="alert alert-success text-center mt-4 alert-dismissible fade show"> {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      </p>
       {% endif %}
       {% endfor %}
     </div>
