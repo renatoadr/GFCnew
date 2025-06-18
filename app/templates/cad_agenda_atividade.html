@@ -1,0 +1,64 @@
+<!-- Template: cad_agenda -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Atividade</title>
+  {% include 'fractials/head.html' %}
+</head>
+
+<body>
+  {% include 'fractials/menu.html' %}
+
+  <div class="container">
+    <div class="row">
+      <div class="col-6">
+        <h2 class="title"><i class="fa-solid fa-calendar"></i> {{ 'Cadastrar' if novo else 'Salvar' }} Atividade
+        </h2>
+      </div>
+    </div>
+
+    <form action="{{ '/cadastrar_atividade' if novo else '/salvar_atividade' }}" method="POST" id="formAtividade">
+      <input type="hidden" name="idAnterior" value="{{ atividade.getId() if atividade}}">
+      <div class="row mb-4">
+        <div class="col-4">
+          <div class="form-floating">
+            <input type="text" name="idAtividade" id="idAtividade" class="form-control" placeholder=""
+              value="{{ atividade.getId() if atividade}}" maxlength="7">
+            <label for="idAtividade">Identificação</label>
+          </div>
+        </div>
+        <div class="col-8">
+          <div class="form-floating">
+            <input type="text" name="nmAtividade" id="nmAtividade" class="form-control" placeholder=""
+              value="{{ atividade.getNmAtividade() if atividade}}" maxlength="100">
+            <label for="nmAtividade">Atividade</label>
+          </div>
+        </div>
+      </div>
+
+
+      <div class="row mt-5 justify-content-center d-flex">
+        <div class="col-3">
+          <a href="/agenda_atividades" class="btn btn-secondary w-100">Cancelar</a>
+        </div>
+        <div class="col-3 offset-1">
+          <button type="submit" class="btn btn-success w-100">{{ 'Cadastrar' if novo else 'Salvar' }}</button>
+        </div>
+      </div>
+    </form>
+
+  </div>
+
+  {% include 'fractials/footer.html' %}
+  <script>
+    $(function () {
+      const requireds = GFC.getRequiredFields("formAtividade")
+      $("#formAtividade").validate(GFC.getConfigValidateForm(requireds));
+    });
+  </script>
+</body>
+
+</html>

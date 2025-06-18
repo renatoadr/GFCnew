@@ -1,0 +1,81 @@
+<!-- Template: lista_cliente -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Listagem de Atividades da agenda</title>
+  {% include 'fractials/head.html' %}
+</head>
+
+<body>
+  {% include 'fractials/menu.html' %}
+  {% include 'fractials/submenu.html' %}
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <h2 class="title title-page">
+            <i class="fa-solid fa-calendar"></i> Atividades
+          </h2>
+        </div>
+        <div class="col-6">
+          <div class="row h-100">
+            <div class="col-4 offset-5 d-flex justify-content-end align-items-center">
+              <a href="/abrir_cad_atividade" class="btn btn-primary">
+                <i class="fa-solid fa-circle-plus"></i>
+                Nova Atividade
+              </a>
+            </div>
+            <div class="col-3 d-flex justify-content-end align-items-center">
+              <a href="/home" class="btn btn-outline-dark">
+                <i class="fa-solid fa-home"></i>
+                Início
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <table class="table table-striped">
+            <thead class="table-light">
+              <tr>
+                <th>Id</th>
+                <th class="text-center">Atividade</th>
+                <th colspan="2" class="text-center">Ações</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for atv in atividades %}
+              <tr>
+                <td>{{ atv.getId() }}</td>
+                <td class="text-center">{{ atv.getNmAtividade() }}</td>
+                <td class="text-center">
+                  <a href="/editar_atividade?id={{atv.getId()}}" data-bs-toggle="tooltip" data-bs-title="Editar">
+                    <i class="fa-solid fa-pencil text-warning"></i>
+                  </a>
+                </td>
+                <td class="text-center">
+                  <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir">
+                    <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
+                      data-modal-exclude-title="Atividade"
+                      data-modal-exclude-action="/excluir_atividade?id={{atv.getId()}}"
+                      data-modal-exclude-text="Deseja realmente excluir a atividade <strong>{{atv.getNmAtividade()}}</strong>?"></i>
+                  </a>
+                </td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  {% include 'fractials/footer.html' %}
+</body>
+
+</html>

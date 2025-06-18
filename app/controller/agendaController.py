@@ -1,163 +1,112 @@
-#controller or business logic
-# Trata base de AGENDAS
-
-from dto.option import option
-from dto.agenda import agenda
 from utils.dbContext import MySql
+from dto.agenda import agenda
+
 
 class agendaController:
-  __connection = None
 
-  def __init__(self):
-      pass
+    def inserirAgendas(self, agds: list[agenda]):
+        query = "INSERT INTO " + MySql.DB_NAME + \
+            """.tb_agendas ( id_empreendimento, mes_vigencia, ano_vigencia, id_atividade, status, dt_atividade, nm_resp_atividade, dt_baixa, nm_resp_baixa ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s )"""
 
-  def inserirAgenda(self, ag:agenda):
-      query =  "INSERT INTO " + MySql.DB_NAME + """.tb_agendas ( id_empreendimento, mes_vigencia, ano_vigencia, id_atividade, status, dt_atividade, nm_resp_atividade, dt_baixa, nm_resp_baixa ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s )"""
-      MySql.exec(query, (
-        ag.getIdEmpreend(),
-        ag.getMesVigencia(),
-        ag.getAnoVigencia(),
-        ag.getIdAtividade(),
-        ag.getStatus(),
-        ag.getDtAtividade(),
-        ag.getNmRespAtividade(),
-        ag.getDtBaixa(),
-        ag.getNmRespBaixa()
-      ))
+        itens = []
 
-  def consultarAgendas(self, idEmpreend):
-      self.__connection = MySql.connect()
-      cursor = self.__connection.cursor(dictionary=True)
+        for ag in agds:
+            itens.append((
+                ag.getIdEmpreend(),
+                ag.getMesVigencia(),
+                ag.getAnoVigencia(),
+                ag.getIdAtividade(),
+                ag.getStatus(),
+                ag.getDtAtividade(),
+                ag.getNmRespAtividade(),
+                ag.getDtBaixa(),
+                ag.getNmRespBaixa()
+            ))
 
-      print('---consultarAgendas--')
-      print(idEmpreend)
+        MySql.exec(query, (itens))
 
-  #    query =  "select * from " + MySql.DB_NAME + ".tb_agendas where id_empreendimento = " +  str (idEmpreend) + " order by dt_atividade"
-      query = "select A.id_empreendimento, A.mes_vigencia, A.ano_vigencia, A.id_atividade, AT.descr_atividade, A.status, A.dt_atividade, A.nm_resp_atividade, A.dt_baixa, A.nm_resp_baixa from " + MySql.DB_NAME + ".tb_agendas A inner join  " + MySql.DB_NAME + ".tb_agendas_atividades AT on A.id_atividade = AT.id_atividade where A.id_empreendimento= " +  str (idEmpreend) + " order by A.dt_atividade"
+    def consultarAgendas(self, idEmpreend, cur_date):
+        query = f"""SELECT A.id, A.id_empreendimento, A.mes_vigencia, A.ano_vigencia, A.id_atividade, AT.descr_atividade, A.status, A.dt_atividade, A.nm_resp_atividade, A.dt_baixa, A.nm_resp_baixa
+        FROM {MySql.DB_NAME}.tb_agendas A
+        INNER JOIN  {MySql.DB_NAME}.tb_agendas_atividades AT
+        ON A.id_atividade = AT.id_atividade
+        WHERE A.id_empreendimento = %s
+        AND DATE(CONCAT(A.ano_vigencia, '-', A.mes_vigencia, '-01')) = DATE(CONCAT(%s, '-01'))
+        ORDER BY A.dt_atividade"""
 
-      print('-----------------')
-      print(query)
-      print('-----------------')
+        lista = MySql.getAll(query, (idEmpreend, cur_date))
 
-      cursor.execute(query)
+        listaAgendas = []
 
-      lista = cursor.fetchall()
+        for x in lista:
+            a = agenda()
+            a.setId(x['id'])
+            a.setIdEmpreend(x['id_empreendimento'])
+            a.setMesVigencia(x['mes_vigencia'])
+            a.setAnoVigencia(x['ano_vigencia'])
+            a.setIdAtividade(x['id_atividade'])
+            a.setDescrAtividade(x['descr_atividade'])
+            a.setStatus(x['status'])
+            a.setDtAtividade(x['dt_atividade'])
+            a.setNmRespAtividade(x['nm_resp_atividade'])
+            a.setDtBaixa(x['dt_baixa'])
+            a.setNmRespBaixa(x['nm_resp_baixa'])
+            listaAgendas.append(a)
 
-      listaAgendas = []
+        return listaAgendas
 
-      for x in lista:
-          a = agenda()
-          a.setIdEmpreend(x['id_empreendimento'])
-          a.setMesVigencia(x['mes_vigencia'])
-          a.setAnoVigencia(x['ano_vigencia'])
-          a.setIdAtividade(x['id_atividade'])
-          a.setDescrAtividade(x['descr_atividade'])
-          a.setStatus(x['status'])
-          a.setDtAtividade(x['dt_atividade'])
-          a.setNmRespAtividade(x['nm_resp_atividade'])
-          a.setDtBaixa(x['dt_baixa'])
-          a.setNmRespBaixa(x['nm_resp_baixa'])
-          listaAgendas.append(a)
+    def consultarAgendaPeloId(self, idAgenda):
+        query = f"""SELECT A.id, A.id_empreendimento, A.mes_vigencia, A.ano_vigencia, A.id_atividade, AT.descr_atividade, A.status, A.dt_atividade, A.nm_resp_atividade, A.dt_baixa, A.nm_resp_baixa
+        FROM {MySql.DB_NAME}.tb_agendas A
+        INNER JOIN  {MySql.DB_NAME}.tb_agendas_atividades AT
+        ON A.id_atividade = AT.id_atividade
+        WHERE A.id = %s"""
 
-      cursor.close()
-      MySql.close(self.__connection)
-      return listaAgendas
+        record = MySql.getOne(query, (idAgenda,))
 
-  def consultarAgendaPeloId(self, idAgenda):
-      self.__connection = MySql.connect()
-      cursor = self.__connection.cursor(dictionary=True)
+        if not record:
+            return None
+        else:
+            agd = agenda()
+            agd.setId(record['id'])
+            agd.setIdEmpreend(record['id_empreendimento'])
+            agd.setMesVigencia(record['mes_vigencia'])
+            agd.setAnoVigencia(record['ano_vigencia'])
+            agd.setIdAtividade(record['id_atividade'])
+            agd.setDescrAtividade(record['descr_atividade'])
+            agd.setStatus(record['status'])
+            agd.setDtAtividade(record['dt_atividade'])
+            agd.setNmRespAtividade(record['nm_resp_atividade'])
+            agd.setDtBaixa(record['dt_baixa'])
+            agd.setNmRespBaixa(record['nm_resp_baixa'])
+            return agd
 
-      query =  "select id_agenda, id_empreendimento, nm_agenda, qt_unidade from " + MySql.DB_NAME + ".tb_agendas where id_agenda = " + str(idAgenda)
+    def salvarAgenda(self, agd: agenda, id):
+        query = f"""UPDATE {MySql.DB_NAME}.tb_agendas SET
+            id_empreendimento = %s,
+            mes_vigencia = %s,
+            ano_vigencia = %s,
+            id_atividade = %s,
+            status = %s,
+            dt_atividade = %s,
+            nm_resp_atividade = %s,
+            dt_baixa = %s,
+            nm_resp_baixa = %s
+            WHERE id = %s
+        """
+        MySql.exec(query, (
+            agd.getIdEmpreend(),
+            agd.getMesVigencia(),
+            agd.getAnoVigencia(),
+            agd.getIdAtividade(),
+            agd.getStatus(),
+            agd.getDtAtividade(),
+            agd.getNmRespAtividade(),
+            agd.getDtBaixa(),
+            agd.getNmRespBaixa(),
+            id
+        ))
 
-      print(query)
-
-      cursor.execute(query)
-
-      linha = cursor.fetchone()
-      print('+++++++++++++++++++++++++++')
-      print (linha)
-      print(linha['id_agenda'])
-      print('+++++++++++++++++++++++++++')
-
-      linhaT = agenda()
-      linhaT.setIdAgenda(linha['id_agenda'])
-      linhaT.setIdEmpreend(linha['id_empreendimento'])
-      linhaT.setNmAgenda(linha['nm_agenda'])
-      linhaT.setQtUnidade(linha['qt_unidade'])
-
-      print('------------------------')
-      print(linhaT.getIdAgenda())
-      print('------------------------')
-      cursor.close()
-      MySql.close(self.__connection)
-
-      return linhaT
-
-  def consultarNomeAgenda(self, idAgenda):
-      self.__connection = MySql.connect()
-      cursor = self.__connection.cursor(dictionary=True)
-
-      query =  "select nm_agenda from " + MySql.DB_NAME + ".tb_agendas where id_agenda = " + str(idAgenda)
-
-      print('-----------consultarNomeAgenda----------')
-      print(query)
-
-      cursor.execute(query)
-
-      linha = cursor.fetchone()
-  #    print('+++++++++++++++++++++++++++')
-  #    print (linha)
-
-      linhaT = agenda()
-      linhaT.setNmAgenda(linha['nm_agenda'])
-      nmAgenda = linha['nm_agenda']
-    #   print('------------------------')
-    #   print(nmAgenda)
-    #   print('-----------fim consultarNomeAgenda----------')
-      cursor.close()
-      MySql.close(self.__connection)
-
-      return nmAgenda
-
-  def salvarAgenda(self,agenda):
-      self.__connection = MySql.connect()
-      cursor = self.__connection.cursor()
-
-      query =  "update " + MySql.DB_NAME + ".tb_agendas set " + \
-      "nm_agenda = '" + agenda.getNmAgenda() + "', " + "qt_unidade = '" + agenda.getQtUnidade() + "' " + " where id_agenda = " + str(agenda.getIdAgenda())
-
-      print (query)
-      cursor.execute(query)
-
-      self.__connection.commit()
-      print(cursor.rowcount,"Agenda atualizada com sucesso")
-      cursor.close()
-      MySql.close(self.__connection)
-
-  def excluirAgenda(self,idAgenda):
-      self.__connection = MySql.connect()
-      cursor = self.__connection.cursor()
-
-#        print (emp)
-
-      query =  "delete from " + MySql.DB_NAME + ".tb_Agendas" + " where id_agenda = " + str(idAgenda)
-      print (query)
-
-      cursor.execute(query)
-      self.__connection.commit()
-      cursor.close()
-      MySql.close(self.__connection)
-
-  def lista_atividades(self):
-    query = "SELECT id_atividade, descr_atividade FROM " + MySql.DB_NAME + ".tb_agendas_atividades"
-    result = MySql.getAll(query)
-    list = []
-
-    for linha in result:
-      opt = option(
-        chave=linha['id_atividade'],
-        valor=linha['descr_atividade']
-      )
-      list.append(opt)
-
-    return list
+    def excluirAgenda(self, idAgenda):
+        query = f"DELETE FROM {MySql.DB_NAME}.tb_Agendas WHERE id = %s "
+        MySql.exec(query, (idAgenda,))

@@ -92,15 +92,15 @@ def gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS, codBanco):
     if codBanco == 77:  # Banco Inter
         corCabecalho = (0.945, 0.662, 0.513)  # Cor laranja
     else:
-        corCabecalho = "lightblue"        
+        corCabecalho = "lightblue"
 
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
         if row == 0 or row == num_rows-1:
-            if codBanco == 77:  # Banco Inter 
-               cell.set_facecolor(corCabecalho) 
+            if codBanco == 77:  # Banco Inter
+                cell.set_facecolor(corCabecalho)
             else:
-                cell.set_facecolor("lightblue") 
+                cell.set_facecolor("lightblue")
 
             if row == 0:
                 # Alinhar 1ª linha no centro
@@ -197,12 +197,12 @@ def gerar_tab_conta_corrente(idEmpreend, mesVigencia, anoVigencia, conS, codBanc
     if codBanco == 77:  # Banco Inter
         corCabecalho = (0.945, 0.662, 0.513)  # Cor laranja
     else:
-        corCabecalho = "lightblue"        
+        corCabecalho = "lightblue"
 
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
         if row == 0:
-            cell.set_facecolor(corCabecalho) # Cor laranja
+            cell.set_facecolor(corCabecalho)  # Cor laranja
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
             cell.set_text_props(ha='right', va='center')  # Alinhar à esquerda
@@ -235,7 +235,7 @@ def tab_garantias_geral():
     return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-def gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia; codBanco):
+def gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia, codBanco):
     ponC = garantiaController()
     ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
 
@@ -290,7 +290,7 @@ def gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia; codBanco):
         # Define a cor da borda como "none" (sem borda)
         cell.set_edgecolor("none")
         if row == 0:
-            cell.set_facecolor(corCabecalho)  
+            cell.set_facecolor(corCabecalho)
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
             if col == 1:
@@ -387,7 +387,7 @@ def gerar_tab_garantias_obra(idEmpreend, mesVigencia, anoVigencia, codBanco):
         # Define a cor da borda como "none" (sem borda)
         cell.set_edgecolor("none")
         if row == 0:
-            cell.set_facecolor(corCabecalho) 
+            cell.set_facecolor(corCabecalho)
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
             if col == 1:
@@ -493,7 +493,7 @@ def gerar_tab_certidoes(idEmpreend, mes, ano, codBanco):
         # Define a cor da borda como "none" (sem borda)
         cell.set_edgecolor("none")
         if row == 0:
-            cell.set_facecolor(corCabecalho) # Cor laranja
+            cell.set_facecolor(corCabecalho)  # Cor laranja
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
             if col == 1:
@@ -743,8 +743,8 @@ def gerar_tab_medicoes(idEmpreend, mesVigencia, anoVigencia, mesInicio, anoInici
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
         if row == 0:
-            cell.set_facecolor(corCabecalho) 
-  
+            cell.set_facecolor(corCabecalho)
+
     grafC = graficoController()
 
     diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
@@ -857,9 +857,9 @@ def gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS, codBanco):
 
     for (row, col), cell in tabela.get_celld().items():
         if row == 0 or row == num_rows-1:     # pinta a 1ª 1 ultima linhas
-            cell.set_facecolor(corCabecalho) 
+            cell.set_facecolor(corCabecalho)
         if col == 2 or col == 6:                     # pinta as colunas de divisão
-            cell.set_facecolor(corCabecalho) 
+            cell.set_facecolor(corCabecalho)
         if row > 0 and col == 0:
             cell.set_text_props(ha='left', va='center')  # Alinhar à esquerda
 
@@ -877,13 +877,12 @@ def gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS, codBanco):
     return grafNome
 
 
-@tabela_bp.route('/tab_empreend_capa')
-
-###@login_required
+@tabelas_bp.route('/tab_empreend_capa')
+# @login_required
 def tab_empreend_capa():
-###    idEmpreend = IdEmpreend().get()
-###    mesVigencia = request.args.get("mesVigencia")
-###    anoVigencia = request.args.get("anoVigencia")
+    # idEmpreend = IdEmpreend().get()
+    # mesVigencia = request.args.get("mesVigencia")
+    # anoVigencia = request.args.get("anoVigencia")
 
     geral = geralController()
     fig, ax = plt.subplots(1, 1)
@@ -900,7 +899,8 @@ def tab_empreend_capa():
     data.append(dd)
     dd = ['Empreendimento       ', 'SPE JARDINS DO BURITIS LTDA']
     data.append(dd)
-    dd = ['Endereço da obra     ', 'AVENIDA JOSÉ DE OLIVEIRA VAZ, nº 55 - BURITIS BELO HORIZONTE - MG']
+    dd = ['Endereço da obra     ',
+          'AVENIDA JOSÉ DE OLIVEIRA VAZ, nº 55 - BURITIS BELO HORIZONTE - MG']
     data.append(dd)
     dd = ['Data da medição      ', '27/04/2025']
     data.append(dd)
@@ -953,18 +953,19 @@ def tab_empreend_capa():
     return grafNome
 
 
-@tabela_bp.route('/gerar_tab_prazo_inter', methods=['GET'])
-#@login_required
+@tabelas_bp.route('/gerar_tab_prazo_inter', methods=['GET'])
+# @login_required
 def gerar_tab_prazo_inter():
 
-#    idEmpreend = IdEmpreend().get()
-#    tipo = request.args.get("tipo")
-#    mesVigencia = request.args.get("mesVigencia")
-#    anoVigencia = request.args.get("anoVigencia")
+    #    idEmpreend = IdEmpreend().get()
+    #    tipo = request.args.get("tipo")
+    #    mesVigencia = request.args.get("mesVigencia")
+    #    anoVigencia = request.args.get("anoVigencia")
 
     idEmpreend = '59'
     mesVigencia = '05'
     anoVigencia = '2025'
+    codBanco = None
 
     geral = geralController()
 
@@ -974,7 +975,7 @@ def gerar_tab_prazo_inter():
 #    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-#def gerar_tab_prazo_inter(idEmpreend, mesVigencia, anoVigencia):
+# def gerar_tab_prazo_inter(idEmpreend, mesVigencia, anoVigencia):
 #    ponC = garantiaController()
 #    ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
 
@@ -992,18 +993,19 @@ def gerar_tab_prazo_inter():
 #        dd.append(p.observacao)
 #        data.append(dd)
 
-    dd = ['     Evolução do mês                ', 
-          '             3,70%                  ', 
-          '             1,59%                  '] 
+    dd = ['     Evolução do mês                ',
+          '             3,70%                  ',
+          '             1,59%                  ']
     data.append(dd)
-    dd = ['     Acumulado do mês               ', 
-          '            82,88%                  ', 
+    dd = ['     Acumulado do mês               ',
+          '            82,88%                  ',
           '            79,56%                  ']
-    data.append(dd)   
-          
+    data.append(dd)
+
     medicao = "            4ª Medição             "
-              
-    column_labels = [medicao, "             Previsto              ", "            Executado              "]
+
+    column_labels = [medicao, "             Previsto              ",
+                     "            Executado              "]
 
     # Definir tamanho das células
     cell_width = 2.0  # Largura de cada célula
@@ -1027,18 +1029,18 @@ def gerar_tab_prazo_inter():
 #   Ajustando o tamanho das colunas
     for x in range(0, num_cols):
         tabela.auto_set_column_width(x)
-    
+
     if codBanco == 77:  # Banco Inter
         corCabecalho = (0.945, 0.662, 0.513)  # Cor laranja
     else:
         corCabecalho = "lightblue"
-        
+
 #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
         # Define a cor da borda como "none" (sem borda)
         cell.set_edgecolor("none")
         if row == 0:
-            cell.set_facecolor(corCabecalho) 
+            cell.set_facecolor(corCabecalho)
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
             if col == 2:
@@ -1060,13 +1062,13 @@ def gerar_tab_prazo_inter():
     return grafNome
 
 
-@tabela_bp.route('/tab_projeto_inter')
+@tabelas_bp.route('/tab_projeto_inter')
 def tab_projeto_inter():
 
-#    idEmpreend = IdEmpreend().get()
-#    tipo = request.args.get("tipo")
-#    mesVigencia = request.args.get("mesVigencia")
-#    anoVigencia = request.args.get("anoVigencia")
+    #    idEmpreend = IdEmpreend().get()
+    #    tipo = request.args.get("tipo")
+    #    mesVigencia = request.args.get("mesVigencia")
+    #    anoVigencia = request.args.get("anoVigencia")
 
     idEmpreend = '59'
     mesVigencia = '05'
@@ -1080,7 +1082,7 @@ def tab_projeto_inter():
 #    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-#def gerar_tab_projeto_inter(idEmpreend, mesVigencia, anoVigencia):
+# def gerar_tab_projeto_inter(idEmpreend, mesVigencia, anoVigencia):
 #    ponC = garantiaController()
 #    ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
 
@@ -1097,15 +1099,15 @@ def tab_projeto_inter():
 #        dd.append(p.status)
 #        dd.append(p.observacao)
 #        data.append(dd)
-    dd = ['Número de pavimentos                           ', '              10'] 
+    dd = ['Número de pavimentos                           ', '              10']
     data.append(dd)
     dd = ['Número de blocos                               ', '               2']
-    data.append(dd)   
+    data.append(dd)
     dd = ['Número de unidades                             ', '              84']
-    data.append(dd)   
+    data.append(dd)
     dd = ['A execução obedece o projeto?                  ', '             Sim']
-    data.append(dd) 
-    dd = ['Houve modificação em alguma unidade?           ', '             Sim']      
+    data.append(dd)
+    dd = ['Houve modificação em alguma unidade?           ', '             Sim']
     data.append(dd)
 
     column_labels = ['            ', '           ']
@@ -1137,14 +1139,14 @@ def tab_projeto_inter():
         # Define a cor da borda como "none" (sem borda)
         cell.set_edgecolor("none")
         if row == 0:
-#            cell.set_facecolor("lightblue")
-#            cell.set_facecolor((0.945, 0.662, 0.513)) # Cor laranja
+            #            cell.set_facecolor("lightblue")
+            #            cell.set_facecolor((0.945, 0.662, 0.513)) # Cor laranja
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
             if col == 1:
                 cell_text = cell.get_text().get_text()  # Obtém o texto da célula
                 # Alinhar à esquerda
-                cell.set_text_props(ha='left', va='center', color='green')     
+                cell.set_text_props(ha='left', va='center', color='green')
             else:
                 # Alinhar no centro
                 cell.set_text_props(ha='left', va='center')
@@ -1160,13 +1162,13 @@ def tab_projeto_inter():
     return grafNome
 
 
-@tabela_bp.route('/tab_qualidade_inter')
+@tabelas_bp.route('/tab_qualidade_inter')
 def tab_qualidade_inter():
 
-#    idEmpreend = IdEmpreend().get()
-#    tipo = request.args.get("tipo")
-#    mesVigencia = request.args.get("mesVigencia")
-#    anoVigencia = request.args.get("anoVigencia")
+    #    idEmpreend = IdEmpreend().get()
+    #    tipo = request.args.get("tipo")
+    #    mesVigencia = request.args.get("mesVigencia")
+    #    anoVigencia = request.args.get("anoVigencia")
 
     idEmpreend = '59'
     mesVigencia = '05'
@@ -1180,7 +1182,7 @@ def tab_qualidade_inter():
 #    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-#def gerar_tab_qualidade_inter(idEmpreend, mesVigencia, anoVigencia):
+# def gerar_tab_qualidade_inter(idEmpreend, mesVigencia, anoVigencia):
 #    ponC = garantiaController()
 #    ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
 
@@ -1198,33 +1200,34 @@ def tab_qualidade_inter():
 #        dd.append(p.observacao)
 #        data.append(dd)
 
-    dd = ['Estrutura (Prumo, presença de nichos):         ', '          Bom'] 
+    dd = ['Estrutura (Prumo, presença de nichos):         ', '          Bom']
     data.append(dd)
-    dd = ['Paredes (Prumo, Alinhamento, Modulação e etc.):', '          Normal']
-    data.append(dd)   
+    dd = ['Paredes (Prumo, Alinhamento, Modulação e etc.):',
+          '          Normal']
+    data.append(dd)
     dd = ['Instalações de Portas e Janelas:               ', '          Baixo']
-    data.append(dd)   
+    data.append(dd)
     dd = ['Contrapiso:                                    ', '          Normal']
-    data.append(dd) 
-    dd = ['Revestimento Interno:                          ', '          Bom']      
     data.append(dd)
-    dd = ['Revestimento Externo:                          ', '          Bom']      
+    dd = ['Revestimento Interno:                          ', '          Bom']
     data.append(dd)
-    dd = ['Escadas:                                       ', '          Bom']      
+    dd = ['Revestimento Externo:                          ', '          Bom']
     data.append(dd)
-    dd = ['Instalações Elétricas e Hidráulicas:           ', '          Normal']      
+    dd = ['Escadas:                                       ', '          Bom']
     data.append(dd)
-    dd = ['Forros:                                        ', '          Normal']      
+    dd = ['Instalações Elétricas e Hidráulicas:           ', '          Normal']
     data.append(dd)
-    dd = ['Pintura:                                       ', '          Baixo']      
-    data.append(dd)    
-    dd = ['Uso de Ferramentas adequadas ao serviço:       ', '          Bom']      
+    dd = ['Forros:                                        ', '          Normal']
     data.append(dd)
-    dd = ['Planejamento:                                  ', '          Baixo']      
+    dd = ['Pintura:                                       ', '          Baixo']
     data.append(dd)
-    dd = ['Limpeza:                                       ', '          Bom']      
+    dd = ['Uso de Ferramentas adequadas ao serviço:       ', '          Bom']
     data.append(dd)
-    dd = ['Logística de Canteiro:                         ', '          Baixo']      
+    dd = ['Planejamento:                                  ', '          Baixo']
+    data.append(dd)
+    dd = ['Limpeza:                                       ', '          Bom']
+    data.append(dd)
+    dd = ['Logística de Canteiro:                         ', '          Baixo']
     data.append(dd)
 
     column_labels = ['            ', '           ']
@@ -1256,8 +1259,8 @@ def tab_qualidade_inter():
         # Define a cor da borda como "none" (sem borda)
         cell.set_edgecolor("none")
         if row == 0:
-#            cell.set_facecolor("lightblue")
-#            cell.set_facecolor((0.945, 0.662, 0.513)) # Cor laranja
+            #            cell.set_facecolor("lightblue")
+            #            cell.set_facecolor((0.945, 0.662, 0.513)) # Cor laranja
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
             if col == 1:
@@ -1268,7 +1271,7 @@ def tab_qualidade_inter():
                 elif "Normal" in cell_text:
                     cell.set_text_props(ha='left', va='center', color='orange')
                 else:
-                    cell.set_text_props(ha='left', va='center', color='red')          
+                    cell.set_text_props(ha='left', va='center', color='red')
             else:
                 # Alinhar no centro
                 cell.set_text_props(ha='left', va='center')
@@ -1283,13 +1286,14 @@ def tab_qualidade_inter():
     plt.close('all')
     return grafNome
 
-@tabela_bp.route('/tab_seguranca_inter')
+
+@tabelas_bp.route('/tab_seguranca_inter')
 def tab_seguranca_inter():
 
-#    idEmpreend = IdEmpreend().get()
-#    tipo = request.args.get("tipo")
-#    mesVigencia = request.args.get("mesVigencia")
-#    anoVigencia = request.args.get("anoVigencia")
+    #    idEmpreend = IdEmpreend().get()
+    #    tipo = request.args.get("tipo")
+    #    mesVigencia = request.args.get("mesVigencia")
+    #    anoVigencia = request.args.get("anoVigencia")
 
     idEmpreend = '59'
     mesVigencia = '05'
@@ -1303,7 +1307,7 @@ def tab_seguranca_inter():
 #    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-#def gerar_tab_seguranca_inter(idEmpreend, mesVigencia, anoVigencia):
+# def gerar_tab_seguranca_inter(idEmpreend, mesVigencia, anoVigencia):
 #    ponC = garantiaController()
 #    ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
 
@@ -1321,10 +1325,10 @@ def tab_seguranca_inter():
 #        dd.append(p.observacao)
 #        data.append(dd)
 
-    dd = ['Utilização de Equipamentos Coletivos:          ', '                 Sim'] 
+    dd = ['Utilização de Equipamentos Coletivos:          ', '                 Sim']
     data.append(dd)
     dd = ['Utilização de Equipamentos Individuais:        ', '                 Não']
-    data.append(dd)   
+    data.append(dd)
 
     column_labels = ['            ', '           ']
 
@@ -1355,8 +1359,8 @@ def tab_seguranca_inter():
         # Define a cor da borda como "none" (sem borda)
         cell.set_edgecolor("none")
         if row == 0:
-#            cell.set_facecolor("lightblue")
-#            cell.set_facecolor((0.945, 0.662, 0.513)) # Cor laranja
+            #            cell.set_facecolor("lightblue")
+            #            cell.set_facecolor((0.945, 0.662, 0.513)) # Cor laranja
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
             if col == 1:
@@ -1365,7 +1369,7 @@ def tab_seguranca_inter():
                 if "Sim" in cell_text:
                     cell.set_text_props(ha='left', va='center', color='green')
                 else:
-                    cell.set_text_props(ha='left', va='center', color='red')          
+                    cell.set_text_props(ha='left', va='center', color='red')
             else:
                 # Alinhar no centro
                 cell.set_text_props(ha='left', va='center')
@@ -1380,13 +1384,14 @@ def tab_seguranca_inter():
     plt.close('all')
     return grafNome
 
-@tabela_bp.route('/tab_situacao_inter')
+
+@tabelas_bp.route('/tab_situacao_inter')
 def tab_situacao_inter():
 
-#    idEmpreend = IdEmpreend().get()
-#    tipo = request.args.get("tipo")
-#    mesVigencia = request.args.get("mesVigencia")
-#    anoVigencia = request.args.get("anoVigencia")
+    #    idEmpreend = IdEmpreend().get()
+    #    tipo = request.args.get("tipo")
+    #    mesVigencia = request.args.get("mesVigencia")
+    #    anoVigencia = request.args.get("anoVigencia")
 
     idEmpreend = '59'
     mesVigencia = '05'
@@ -1400,7 +1405,7 @@ def tab_situacao_inter():
 #    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-#def gerar_tab_situacao_inter(idEmpreend, mesVigencia, anoVigencia):
+# def gerar_tab_situacao_inter(idEmpreend, mesVigencia, anoVigencia):
 #    ponC = garantiaController()
 #    ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
 
@@ -1418,9 +1423,10 @@ def tab_situacao_inter():
 #        dd.append(p.observacao)
 #        data.append(dd)
 
-    dd = ['Quanto ao prazo a obra está:          ', '                    Adiantada'] 
+    dd = ['Quanto ao prazo a obra está:          ',
+          '                    Adiantada']
     data.append(dd)
-    
+
     column_labels = ['            ', '           ']
 
     # Definir tamanho das células
@@ -1450,8 +1456,8 @@ def tab_situacao_inter():
         # Define a cor da borda como "none" (sem borda)
         cell.set_edgecolor("none")
         if row == 0:
-#            cell.set_facecolor("lightblue")
-#            cell.set_facecolor((0.945, 0.662, 0.513)) # Cor laranja
+            #            cell.set_facecolor("lightblue")
+            #            cell.set_facecolor((0.945, 0.662, 0.513)) # Cor laranja
             cell.set_text_props(ha='center', va='center')  # Alinhar no centro
         else:  # Demais itens da tabela
             if col == 1:
@@ -1459,10 +1465,10 @@ def tab_situacao_inter():
                 # Alinhar à esquerda
                 if "Adiantada" in cell_text:
                     cell.set_text_props(ha='left', va='center', color='green')
-                elif "No prazo" in cell_text:   
+                elif "No prazo" in cell_text:
                     cell.set_text_props(ha='left', va='center', color='orange')
                 else:
-                    cell.set_text_props(ha='left', va='center', color='red')          
+                    cell.set_text_props(ha='left', va='center', color='red')
             else:
                 # Alinhar no centro
                 cell.set_text_props(ha='left', va='center')
