@@ -15,27 +15,66 @@
   <div class="container">
     <div class="row">
       <div class="col-6">
-        <h2 class="title"><i class="fa-solid fa-calendar-days"></i> Agenda
+        <h2 class="title title-page">
+          <span><i class="fa-solid fa-calendar-days"></i> {{ 'Editar' if agenda else 'Criar' }} Agenda para</span>
+          <strong>{{session.nmEmpreend}}</strong>
         </h2>
       </div>
     </div>
 
-    <form action="/cadastrar_agenda" method="POST" id="formAgenda">
+    <form action="/salvar_agenda" method="POST" id="formAgenda">
+      <input type="hidden" name="idAgenda" value="{{agenda.getId() if agenda}}">
       <div class="row mb-4">
         <div class="col-4">
           <div class="form-floating">
-            <select name="status" id="status" class="form-select" placeholder="" value="">
+            <select name="status" id="status" class="form-select" placeholder="">
               <option value="">Selecione</option>
-              <option value="Não Iniciado">Não Iniciado</option>
-              <option value="Em Andamento">Em Andamento</option>
-              <option value="Finalizado">Finalizado</option>
-              <option value="Pendente">Pendente</option>
-              <option value="Bloqueado">Bloqueado</option>
-              <option value="Rejeitado">Rejeitado</option>
+              {% for opt in listStatus %}
+              <option value="{{opt.chave}}" {% if agenda and agenda.getStatus()==opt.chave %} selected {% endif %}>
+                {{opt.valor}}</option>
+              {% endfor %}
             </select>
             <label for="status">Status</label>
           </div>
         </div>
+
+        {% if not agenda %}
+        <div class="col-2 d-flex align-items-center">
+          <div class="align-items-baseline d-flex flex-column form-check form-switch p-0 gap-2">
+            <input class="form-check-input" type="checkbox" name="recorrencia" id="switchCheckChecked">
+            <label class="form-check-label" for="switchCheckChecked">Recorrência</label>
+          </div>
+        </div>
+
+        <div class="col-3 box_rec" style="display: none;">
+          <label>Repetir a cada</label>
+          <div class="row">
+            <div class="col-4">
+              <div class="">
+                <input type="number" min="1" name="saltarSeq" id="saltarSeq" class="form-control" placeholder="">
+              </div>
+            </div>
+            <div class="col-8">
+              <div class="">
+                <select name="recTipo" class="form-select" placeholder="">
+                  <option value="">Selecione</option>
+                  <option value="day">Dia</option>
+                  <option value="week">Semana</option>
+                  <option value="month">Mês</option>
+                  <option value="year">Ano</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-3 box_rec" style="display: none;">
+          <div class="">
+            <label for="dtRecAte">Até a data</label>
+            <input type="date" name="dtRecAte" id="dtRecAte" class="form-control" value="{{previsao}}" placeholder="">
+          </div>
+        </div>
+        {% endif %}
       </div>
 
       <div class="row">
@@ -44,52 +83,44 @@
           <div class="form-floating">
             <select name="atividade" id="atividade" class="form-select" placeholder="" value="">
               <option value="">Selecione</option>
-              {% for opt in atividades %}
-              <option value="{{opt.chave}}">{{opt.valor}}</option>
+              {% for atv in atividades %}
+              <option value="{{atv.getId()}}" {% if agenda and agenda.getIdAtividade()==atv.getId() %} selected {% endif
+                %}>{{atv.getNmAtividade()}}</option>
               {% endfor %}
             </select>
             <label for="atividade">Atividade</label>
           </div>
 
           <div class="form-floating mt-4">
-            <input type="text" name="responsavel" id="responsavel" class="form-control" placeholder="" value=""
-              maxlength="100">
+            <input type="text" name="responsavel" id="responsavel" class="form-control" placeholder=""
+              value="{{agenda.getNmRespAtividade() if agenda}}" maxlength="100">
             <label for="responsavel">Nome do responável</label>
           </div>
 
           <div class="form-floating mt-4">
             <input type="text" name="responsavelBaixa" id="responsavelBaixa" class="form-control" placeholder=""
-              value="" maxlength="100">
+              value="{{agenda.getNmRespBaixa() if agenda}}" maxlength="100">
             <label for="responsavelBaixa">Nome do responável da baixa</label>
           </div>
 
         </div>
         <div class="col-6">
 
-          <div class="row">
-            <div class="col-6">
-              <div class="form-floating">
-                <input type="text" name="mesVigencia" id="mesVigencia" class="form-control 2num" placeholder="" value=""
-                  maxlength="2">
-                <label for="mesVigencia">Mês vigência</label>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-floating">
-                <input type="text" name="anoVigencia" id="anoVigencia" class="form-control 4num" placeholder="" value=""
-                  maxlength="4">
-                <label for="anoVigencia">Ano vigência</label>
-              </div>
-            </div>
+          <div class="form-floating">
+            <input type="month" name="vigencia" id="vigencia" class="form-control" placeholder=""
+              value="{{agenda.getAnoVigencia() + '-' + agenda.getMesVigencia() if agenda}}">
+            <label for="vigencia">Vigência</label>
           </div>
 
           <div class="form-floating mt-4">
-            <input type="date" name="dtAtividade" id="dtAtividade" class="form-control" placeholder="" value="">
+            <input type="date" name="dtAtividade" id="dtAtividade" class="form-control" placeholder=""
+              value="{{agenda.getDtAtividade() if agenda}}">
             <label for="dtAtividade">Data da atividade</label>
           </div>
 
           <div class="form-floating mt-4">
-            <input type="date" name="dtBaixa" id="dtBaixa" class="form-control" placeholder="" value="">
+            <input type="date" name="dtBaixa" id="dtBaixa" class="form-control" placeholder=""
+              value="{{agenda.getDtBaixa() if agenda}}">
             <label for="dtBaixa">Data da baixa</label>
           </div>
 
@@ -102,7 +133,7 @@
           <a href="#" id="backHistory" class="btn btn-secondary w-100">Cancelar</a>
         </div>
         <div class="col-3 offset-1">
-          <button type="submit" class="btn btn-success w-100">Atualizar</button>
+          <button type="submit" class="btn btn-success w-100">{{ 'Salvar' if agenda else 'Cadastrar' }}</button>
         </div>
       </div>
     </form>
@@ -113,27 +144,17 @@
   <script>
     $(function () {
       const requireds = GFC.getRequiredFields("formAgenda")
-      requireds.rules.mesVigencia = {
-        required: true,
-        min: 1,
-        max: 12
-      }
-      requireds.rules.anoVigencia = {
-        required: true,
-        min: 1990,
-        max: 3000
-      }
-      requireds.messages.mesVigencia = {
-        required: GFC_MESSAGES.REQUIRED,
-        min: GFC_MESSAGES.MIN(1),
-        max: GFC_MESSAGES.MAX(12),
-      }
-      requireds.messages.anoVigencia = {
-        required: GFC_MESSAGES.REQUIRED,
-        min: GFC_MESSAGES.MIN(1990),
-        max: GFC_MESSAGES.MAX(3000),
-      }
+      delete requireds.rules.dtBaixa
+      delete requireds.rules.responsavelBaixa
+      delete requireds.rules.recorrencia
       $("#formAgenda").validate(GFC.getConfigValidateForm(requireds));
+      $("#switchCheckChecked").on('change', function (evt) {
+        if ($(evt.currentTarget).is(':checked')) {
+          $('.box_rec').show('fast');
+        } else {
+          $('.box_rec').hide('fast');
+        }
+      })
     });
   </script>
 </body>

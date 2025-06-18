@@ -1,12 +1,22 @@
 from flask import Blueprint, request, render_template, redirect
-from controller.empreendimentoController import empreendimentoController
+from controller.agendaAtividadeController import agendaAtividadeController
 from controller.empreendimentoController import empreendimentoController
 from controller.agendaController import agendaController
-from dto.agenda import agenda
 from utils.CtrlSessao import IdEmpreend, NmEmpreend
+from utils.flash_message import flash_message
+from enums.status_agenda import StatusAgenda
 from utils.security import login_required
+from dto.option import option
+from dto.agenda import agenda
+from dateutil import relativedelta
+from datetime import datetime
+
 
 agenda_bp = Blueprint('agendas', __name__)
+
+agdAtivCtrl = agendaAtividadeController()
+empCtrl = empreendimentoController()
+agdCtrl = agendaController()
 
 
 @agenda_bp.route('/tratar_agendas')
@@ -28,120 +38,115 @@ def tratar_agendas():
     else:
         NmEmpreend().set(nmEmpreend)
 
-    agendaC = agendaController()
-    agendaS = agendaC.consultarAgendas(idEmpreend)
-
-    return render_template("lista_agendas.html", agendaS=agendaS)
+    return render_template("lista_agendas.html")
 
 
 @agenda_bp.route('/abrir_cad_agenda')
 @login_required
 def abrir_cad_agenda():
-    agendaC = agendaController()
-    atividades = agendaC.lista_atividades()
-    return render_template("cad_agenda.html", atividades=atividades)
+    listStatus = []
+
+    for sts in StatusAgenda.to_list():
+        listStatus.append(option(sts[0], sts[1]))
+
+    atividades = agdAtivCtrl.lista_atividades()
+    emp = empCtrl.consultarEmpreendimentoPeloId(IdEmpreend().get())
+
+    idT = request.args.get("id")
+    agenda = None
+    if idT:
+        agenda = agdCtrl.consultarAgendaPeloId(idT)
+        if not agenda:
+            flash_message.error(
+                'Não foi possível encontrar a agenda com o id informado')
+            return redirect('/tratar_agendas')
+
+    return render_template(
+        "cad_agenda.html",
+        previsao=emp.getPrevisaoEntrega(),
+        atividades=atividades,
+        listStatus=listStatus,
+        agenda=agenda,
+    )
 
 
-@agenda_bp.route('/cadastrar_agenda', methods=['POST'])
+@agenda_bp.route('/salvar_agenda', methods=['POST'])
 def cadastrar_agenda():
-    ag = agenda()
-    ag.setIdEmpreend(IdEmpreend().get())
-    ag.setAnoVigencia(request.form.get('anoVigencia'))
-    ag.setMesVigencia(request.form.get('mesVigencia'))
-    ag.setIdAtividade(request.form.get('atividade'))
-    ag.setStatus(request.form.get('status'))
-    ag.setDtAtividade(request.form.get('dtAtividade'))
-    ag.setNmRespAtividade(request.form.get('responsavel'))
-    ag.setDtBaixa(request.form.get('dtBaixa'))
-    ag.setNmRespBaixa(request.form.get('responsavelBaixa'))
-
-    agendaC = agendaController()
-    agendaC.inserirAgenda(ag)
+    id = request.form.get('idAgenda')
+    ag = mapeamento(
+        request.form.get('vigencia'),
+        request.form.get('dtAtividade'),
+        request.form.get('status')
+    )
+    if id:
+        agdCtrl.salvarAgenda(ag, id)
+    else:
+        rec = request.form.get('recorrencia')
+        if rec is not None:
+            agendas = prepararRecorrencia(ag)
+            # agdCtrl.inserirAgendas(agendas)
+        else:
+            agdCtrl.inserirAgendas([ag])
 
     return redirect("/tratar_agendas")
 
 
-@agenda_bp.route('/editar_agenda')
-@login_required
-def editar_agenda():
+def prepararRecorrencia(inicio):
+    tipoRec = request.form.get('recTipo')
+    nSalto = request.form.get('saltarSeq')
+    dtAte = request.form.get('dtRecAte')
 
-    idT = request.args.get("idAgenda")
-    idEmpreend = request.args.get("idEmpreend")
-    nmEmpreend = request.args.get("nmEmpreend")
+    agendas = [inicio]
 
-    print('------ editar_agenda --------')
-    print(idT, nmEmpreend)
+    if not nSalto or not dtAte:
+        return agendas
 
-    agendaC = agendaController()
-    agenda = agendaC.consultarAgendaPeloId(idT)
+    rodadas = 1
+    nSalto = int(nSalto)
+    dtCorrente = datetime.strptime(request.form.get('dtAtividade'), '%Y-%m-%d')
+    dtAteLimite = datetime.strptime(dtAte, '%Y-%m-%d')
 
-    print(agenda)
-    return render_template("agenda.html", agenda=agenda, idEmpreend=idEmpreend, nmEmpreend=nmEmpreend)
+    if tipoRec == 'year':
+        dtLimite = dtCorrente + relativedelta.relativedelta(years=nSalto)
+    elif tipoRec == 'month':
+        dtLimite = dtCorrente + relativedelta.relativedelta(months=nSalto)
+    elif tipoRec == 'semana':
+        dtLimite = dtCorrente + relativedelta.relativedelta(weeks=nSalto)
+    elif tipoRec == 'day':
+        dtLimite = dtCorrente + relativedelta.relativedelta(days=nSalto)
 
+    while rodadas <= nSalto and dtCorrente <= dtLimite and dtCorrente < dtAteLimite:
+        if tipoRec == 'year':
+            dtCorrente = dtCorrente + relativedelta.relativedelta(years=1)
+        elif tipoRec == 'month':
+            dtCorrente = dtCorrente + relativedelta.relativedelta(months=1)
+        elif tipoRec == 'semana':
+            dtCorrente = dtCorrente + relativedelta.relativedelta(weeks=1)
+        elif tipoRec == 'day':
+            dtCorrente = dtCorrente + relativedelta.relativedelta(days=1)
 
-@agenda_bp.route('/salvar_alteracao_agenda', methods=['POST'])
-def salvar_alteracao_agenda():
+        agendas.append(mapeamento(
+            format(dtCorrente, '%Y-%m'),
+            format(dtCorrente, '%Y-%m-%d'),
+            StatusAgenda.NAO_INICIADO
+        ))
+        rodadas += 1
 
-    print('------- salvar_alteracao_agenda INICIO --------')
-    nmEmpreend = request.form.get("nmEmpreend")
-
-    t = agenda()
-    t.setIdAgenda(request.form.get('idAgenda'))
-    t.setIdEmpreend(request.form.get('idEmpreend'))
-    t.setNmAgenda(request.form.get('nmAgenda'))
-    t.setQtUnidade(request.form.get('qtUnidade'))
-
-    print('------- salvar_alteracao_agenda --------')
-    idEmpreend = request.form.get('idEmpreend')
-    print(idEmpreend)
-
-    agendaC = agendaController()
-    agendaC.salvarAgenda(t)
-
-    agendaS = agendaC.consultarAgendas(idEmpreend)
-    return render_template("lista_agendas.html", idEmpreend=idEmpreend, nmEmpreend=nmEmpreend, agendaS=agendaS)
-
-
-@agenda_bp.route('/consultar_agenda')
-@login_required
-def consultar_agenda():
-
-    modo = request.args.get("modo")
-    idT = request.args.get("idAgenda")
-    idEmpreend = request.args.get("idEmpreend")
-    nmEmpreend = request.args.get("nmEmpreend")
-
-    print('------ consultar_agenda --------')
-    print(modo, idT, idEmpreend, nmEmpreend)
-
-    agendac = agendaController()
-    agenda = agendac.consultarAgendaPeloId(idT)
-    print(agenda)
-
-    print('------ consultar_agenda --------')
-    print(modo)
-
-    return render_template("agenda.html", agenda=agenda, modo=modo, idEmpreend=idEmpreend, nmEmpreend=nmEmpreend)
+    return agendas
 
 
-@agenda_bp.route('/excluir_agenda')
-@login_required
-def excluir_agenda():
+def mapeamento(vigencia: str, dtAtividade: str, status: str):
+    vig = vigencia.split('-')
 
-    idAgenda = request.args.get('idAgenda')
-    idEmpreend = request.args.get('idEmpreend')
-    nmEmpreend = request.args.get('nmEmpreend')
+    ag = agenda()
+    ag.setStatus(status)
+    ag.setAnoVigencia(vig[0])
+    ag.setMesVigencia(vig[1])
+    ag.setDtAtividade(dtAtividade)
+    ag.setIdEmpreend(IdEmpreend().get())
+    ag.setDtBaixa(request.form.get('dtBaixa'))
+    ag.setIdAtividade(request.form.get('atividade'))
+    ag.setNmRespAtividade(request.form.get('responsavel'))
+    ag.setNmRespBaixa(request.form.get('responsavelBaixa'))
 
-    print('--------------excluir_agenda -------------')
-    print(idAgenda, idEmpreend)
-
-    agendaC = agendaController()
-    agendaC.excluirAgenda(idAgenda)
-    agendaS = agendaC.consultarAgendas(idEmpreend)
-
-    if len(agendaS) == 0:
-        empc = empreendimentoController()
-        emps = empc.consultarEmpreendimentos()
-        return render_template("home.html", empreends=emps)
-    else:
-        return render_template("lista_agendas.html", agendaS=agendaS, idEmpreend=idEmpreend, nmEmpreend=nmEmpreend)
+    return ag

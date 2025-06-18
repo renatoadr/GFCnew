@@ -7,12 +7,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>GFC - Agenda</title>
   {% include 'fractials/head.html' %}
+  <link rel="stylesheet" href="//uicdn.toast.com/calendar/latest/toastui-calendar.min.css" />
 </head>
 
 <body>
   {% include 'fractials/menu.html' %}
   <main>
-    <div class="container">
+    <div class="container-fluid">
       <div class="row">
         <div class="col-6">
           <h2 class="title title-page">
@@ -36,14 +37,133 @@
           </div>
         </div>
       </div>
-    </div>
-    <div class="row">
-      <div class="col-12">
-        <div id="agenda"></div>
+
+      <div class="row mb-3 align-content-center d-flex justify-content-end">
+        <div class="align-content-center align-items-center col-3 d-flex justify-content-end">
+          <p id="currentDate" class="h4 m-0"></p>
+        </div>
+        <div class="col-1">
+          <button type="button" class="btn btn-outline-primary rounded-5" id="previous_month">
+            <i class="fa-solid fa-angle-left"></i>
+          </button>
+          <button type="button" class="btn btn-outline-primary rounded-5" id="next_month">
+            <i class="fa-solid fa-angle-right"></i>
+          </button>
+        </div>
+        <div class="col-1">
+          <button type="button" class="btn btn-outline-primary rounded-5 w-100" id="today">Hoje</button>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div id="agenda" style="min-height: 600px;"></div>
+        </div>
       </div>
     </div>
+
   </main>
   {% include 'fractials/footer.html' %}
+  <script src="//uicdn.toast.com/calendar/latest/toastui-calendar.min.js"></script>
+  <script>
+    $(function () {
+      const calendar = new tui.Calendar("#agenda", {
+        usageStatistics: false,
+        defaultView: 'month',
+        month: {
+          dayNames: ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'],
+          startDayOfWeek: 0,
+          narrowWeekend: false
+        },
+        useFormPopup: false,
+        useDetailPopup: true,
+        gridSelection: false,
+        isReadOnly: false,
+        template: {
+          popupEdit: function () {
+            return 'Editar';
+          },
+          popupDelete: function () {
+            return 'Deletar';
+          },
+          popupDetailState: function (event) {
+            return event.state
+          },
+          popupDetailDate: function (event) {
+            return new Intl.DateTimeFormat().format(new Date(event.start.d))
+          },
+        }
+      });
+
+      calendar.on('beforeDeleteEvent', (event) => {
+        $.getJSON(`/api/agenda/deletar/${event.id}`, function (data) {
+          if (data.deletado) {
+            calendar.deleteEvent(event.id, event.calendarId)
+            calendar.render();
+          }
+        });
+      });
+
+      calendar.on('beforeUpdateEvent', (evt) => {
+        location.href = '/abrir_cad_agenda?id=' + evt.event.id
+      });
+
+      $('#previous_month').on('click', function () {
+        calendar.move(-1);
+        updateMonthView();
+        getData()
+      });
+
+      $('#next_month').on('click', function () {
+        calendar.move(1);
+        updateMonthView();
+        getData()
+      });
+
+      $("#today").on('click', function () {
+        calendar.today();
+        updateMonthView();
+        getData()
+      });
+
+      function getData() {
+        const dt = calendar.getDate();
+        let month = dt.d.getMonth() + 1
+        month = month < 10 ? `0${month}` : month
+        const vig = `${dt.d.getFullYear()}-${month}`
+        $.getJSON(`/api/agenda/${vig}`, function (data) {
+          calendar.clear()
+          const eventos = [];
+          for (let agenda of data) {
+            eventos.push({
+              id: agenda.id,
+              title: agenda.atividade,
+              state: agenda.status,
+              category: 'allday',
+              isAllday: true,
+              start: `${agenda.dataAtividade}T00:00:00-03:00`,
+              end: `${agenda.dataAtividade}T23:59:59-03:00`,
+              attendees: [agenda.nomeResponsavel]
+            })
+          }
+          calendar.createEvents(eventos);
+        });
+      }
+
+      function updateMonthView() {
+        const dt = calendar.getDate();
+        const dataTexto = new Intl.DateTimeFormat(
+          'pt-BR', { year: 'numeric', month: 'long' }
+        ).format(new Date(dt.d));
+        $("#currentDate").text(`${dataTexto.replace(/(^[a-z])/, function (search) {
+          return search.toUpperCase();
+        })}`);
+      }
+
+      updateMonthView();
+      getData();
+    });
+  </script>
+
 </body>
 
 </html>

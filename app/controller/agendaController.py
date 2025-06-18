@@ -23,7 +23,7 @@ class agendaController:
                 ag.getNmRespBaixa()
             ))
 
-        MySql.exec(query, (itens))
+        MySql.exec(query, tuple(itens))
 
     def consultarAgendas(self, idEmpreend, cur_date):
         query = f"""SELECT A.id, A.id_empreendimento, A.mes_vigencia, A.ano_vigencia, A.id_atividade, AT.descr_atividade, A.status, A.dt_atividade, A.nm_resp_atividade, A.dt_baixa, A.nm_resp_baixa

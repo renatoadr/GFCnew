@@ -2,16 +2,17 @@ CREATE DATABASE IF NOT EXISTS `db_gfc`;
 USE `db_gfc`;
 
 CREATE TABLE IF NOT EXISTS `tb_agendas` (
+  `id` int NOT NULL AUTO_INCREMENT,
   `id_empreendimento` int NOT NULL,
   `mes_vigencia` varchar(2) NOT NULL,
   `ano_vigencia` varchar(4) NOT NULL,
   `id_atividade` varchar(7) NOT NULL,
-  `status` varchar(9) DEFAULT NULL,
+  `status` varchar(15) DEFAULT NULL,
   `dt_atividade` date DEFAULT NULL,
   `nm_resp_atividade` varchar(100) DEFAULT NULL,
   `dt_baixa` date DEFAULT NULL,
   `nm_resp_baixa` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id_empreendimento`,`mes_vigencia`,`ano_vigencia`,`id_atividade`)
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 CREATE TABLE IF NOT EXISTS `tb_agendas_atividades` (

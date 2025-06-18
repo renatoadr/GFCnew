@@ -298,3 +298,27 @@ main {
 .f-13 {
   font-size: 13px;
 }
+
+.toastui-calendar-month .toastui-calendar-month-daygrid {
+  height: 100vh!important;
+}
+
+.toastui-calendar-day-names.toastui-calendar-month {
+  background: #384f7C !important;
+}
+
+
+#agenda>div.toastui-calendar-layout.toastui-calendar-month>div.toastui-calendar-day-names.toastui-calendar-month>div>div>span>div {
+  color: #fff!important;
+  font-weight: 700;
+}
+#agenda>div.toastui-calendar-layout.toastui-calendar-month>div.toastui-calendar-day-names.toastui-calendar-month>div>div:nth-child(1)>span>div {
+  color: #ffb86d!important;
+}
+#agenda>div.toastui-calendar-layout.toastui-calendar-month>div.toastui-calendar-month-daygrid>div:nth-child(1)>div>div.toastui-calendar-weekday-grid:nth-child(2n)>div>div>span>span {
+  color: #ffb86d !important;
+}
+
+.toastui-calendar-event-title {
+  word-break: normal!important;
+}

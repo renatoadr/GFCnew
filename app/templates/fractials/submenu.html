@@ -19,6 +19,12 @@
           Usuários</a>
       </li>
       {% endif %}
+      {% if session.is_root or session.is_adm %}
+      <li class="nav-item">
+        <a href="/agenda_atividades" class="nav-link  p-3"><i class="fa-solid fa-calendar"></i>
+          Atividades</a>
+      </li>
+      {% endif %}
     </ul>
   </div>
 </nav>
