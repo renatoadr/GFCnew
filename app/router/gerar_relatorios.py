@@ -6,7 +6,7 @@ from controller.contaController import contaController
 from controller.notaController import notaController
 from router.tabelas import gerar_tab_conta_corrente, gerar_tab_notas, gerar_tab_orcamento_liberacao, gerar_tab_acomp_financeiro, gerar_tab_certidoes, gerar_tab_garantias_geral, gerar_tab_garantias_obra, gerar_tab_medicoes
 from utils.security import login_required
-from utils.CtrlSessao import IdEmpreend, NmEmpreend
+from utils.CtrlSessao import IdEmpreend, NmEmpreend, CodBanco
 from utils.flash_message import flash_message
 from utils.logger import logger
 from datetime import datetime
@@ -43,6 +43,7 @@ opcoesComRange = [
 def gerar_relatorio():
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
+    codBanco = request.args.get("codBanco")
 
     if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
         return redirect('/home')
@@ -56,6 +57,11 @@ def gerar_relatorio():
         nmEmpreend = NmEmpreend().get()
     else:
         NmEmpreend().set(nmEmpreend)
+
+    if codBanco is None:
+        codBanco = CodBanco().get()
+    else:
+        CodBanco().set(codBanco)
 
     vigencia = request.args.get('vigencia')
 
@@ -273,7 +279,8 @@ def tab_medicoes(mes, ano, mesInit, anoInit, mesFinal, anoFinal):
     try:
         if not gerar_tab_medicoes(
             IdEmpreend().get(), mes, ano,
-            mesInit, anoInit, mesFinal, anoFinal
+            mesInit, anoInit, mesFinal, anoFinal,
+            CodBanco().get()
         ):
             flash_message.warning(
                 'Não foram encontrados dados para gerar a tabela de medições')
@@ -324,7 +331,7 @@ def graf_vendas_valor(mes, ano):
 
 def tab_certidoes(mes, ano):
     try:
-        if not gerar_tab_certidoes(IdEmpreend().get(), mes, ano):
+        if not gerar_tab_certidoes(IdEmpreend().get(), mes, ano, CodBanco().get()):
             flash_message.warning(
                 'Não foram encontrados dados para gerar a tabela de certidões')
     except Exception as error:
@@ -335,7 +342,7 @@ def tab_certidoes(mes, ano):
 
 def tab_garantias_geral(mes, ano):
     try:
-        if not gerar_tab_garantias_geral(IdEmpreend().get(), mes, ano):
+        if not gerar_tab_garantias_geral(IdEmpreend().get(), mes, ano, CodBanco().get()):
             flash_message.warning(
                 'Não foram encontrados dados para gerar a tabela de garantias gerais')
     except Exception as error:
@@ -346,7 +353,7 @@ def tab_garantias_geral(mes, ano):
 
 def tab_garantias_obra(mes, ano):
     try:
-        if not gerar_tab_garantias_obra(IdEmpreend().get(), mes, ano):
+        if not gerar_tab_garantias_obra(IdEmpreend().get(), mes, ano, CodBanco().get()):
             flash_message.warning(
                 'Não foram encontrados dados para gerar a tabela de garantias de obra')
     except Exception as error:

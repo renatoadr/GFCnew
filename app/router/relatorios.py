@@ -1,13 +1,12 @@
 from flask import Blueprint, request, render_template, redirect, current_app, send_from_directory, url_for
 from controller.graficoInterController import graficoInterController
+from utils.CtrlSessao import IdEmpreend, NmEmpreend, CodBanco
 from controller.graficoController import graficoController
 from controller.geralController import geralController
-from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from utils.flash_message import flash_message
 from utils.security import login_required
 from reportlab.pdfgen import canvas
 from datetime import datetime
-from reportlab.lib.colors import red, blue, green, black
 import os
 
 relatorios_bp = Blueprint('relatorios', __name__)
@@ -29,15 +28,71 @@ def gerar_relatorio():
     ano = vig[0]
 
     idEmpreend = request.args.get("idEmpreend")
-    codBanco = request.args.get("codBanco")
+    codBanco = CodBanco().get()
 
     if codBanco == 77:  # Banco Inter
-        return relatorio_inter(idEmpreend, apelido, mes, ano, codBanco)
+        return relatorio_inter(idEmpreend, apelido, mes, ano)
     else:
-        return relatorio_padrao(idEmpreend, apelido, mes, ano, codBanco)
+        return relatorio_padrao(idEmpreend, apelido, mes, ano)
 
 
-def relatorio_padrao(idEmpreend, apelido, mes, ano, codBanco):
+@relatorios_bp.route('/lista_relatorios')
+def lista_relatorios():
+    idEmpreend = request.args.get('idEmpreend')
+    apelido = request.args.get('apelido')
+    vigencia = request.args.get('vigencia')
+
+    if not vigencia:
+        vigencia = datetime.now().strftime('%Y-%m')
+
+    if (idEmpreend is None and not IdEmpreend().has()) or (apelido is None and not NmEmpreend().has()):
+        return redirect('/home')
+
+    if idEmpreend is None:
+        idEmpreend = IdEmpreend().get()
+    else:
+        IdEmpreend().set(idEmpreend)
+
+    if apelido is None:
+        apelido = NmEmpreend().get()
+    else:
+        NmEmpreend().set(apelido)
+
+    if codBanco is None:
+        codBanco = CodBanco().get()
+    else:
+        CodBanco().set(codBanco)
+
+    mobile = request.form.get('mobile', 'false').lower() == 'true'
+
+    gerC = geralController()
+    diretorio = os.path.join(current_app.config['DIRSYS'], 'Relatorios')
+    arqS = gerC.listar_arquivos_com_prefixo(
+        os.path.normpath(diretorio), apelido)
+
+    if mobile:
+        return render_template("mobile/download.html", arquivos=arqS)
+    else:
+        return render_template(
+            "relatorio.html",
+            arquivos=arqS,
+            minDate='2000-01',
+            maxDate=datetime.now().strftime('%Y-%m'),
+            vigencia=vigencia,
+            apelido=apelido,
+            idEmpreend=idEmpreend
+        )
+
+
+@relatorios_bp.route('/download_arquivo')
+def download_arquivo():
+    arquivo = request.args.get('arquivo')
+    diretorio = os.path.join(current_app.config['DIRSYS'], 'Relatorios')
+    print('+++++++++++++', arquivo)
+    return send_from_directory(os.path.normpath(diretorio), arquivo, as_attachment=True)
+
+
+def relatorio_padrao(idEmpreend, apelido, mes, ano):
 
     grafC = graficoController()
 
@@ -127,65 +182,9 @@ def relatorio_padrao(idEmpreend, apelido, mes, ano, codBanco):
     )
 
 
-@relatorios_bp.route('/lista_relatorios')
-def lista_relatorios():
-    idEmpreend = request.args.get('idEmpreend')
-    apelido = request.args.get('apelido')
-    vigencia = request.args.get('vigencia')
-
-    if not vigencia:
-        vigencia = datetime.now().strftime('%Y-%m')
-
-    if (idEmpreend is None and not IdEmpreend().has()) or (apelido is None and not NmEmpreend().has()):
-        return redirect('/home')
-
-    if idEmpreend is None:
-        idEmpreend = IdEmpreend().get()
-    else:
-        IdEmpreend().set(idEmpreend)
-
-    if apelido is None:
-        apelido = NmEmpreend().get()
-    else:
-        NmEmpreend().set(apelido)
-
-    mobile = request.form.get('mobile', 'false').lower() == 'true'
-
-    gerC = geralController()
-    diretorio = os.path.join(current_app.config['DIRSYS'], 'Relatorios')
-    arqS = gerC.listar_arquivos_com_prefixo(
-        os.path.normpath(diretorio), apelido)
-
-    if mobile:
-        return render_template("mobile/download.html", arquivos=arqS)
-    else:
-        return render_template(
-            "relatorio.html",
-            arquivos=arqS,
-            minDate='2000-01',
-            maxDate=datetime.now().strftime('%Y-%m'),
-            vigencia=vigencia,
-            apelido=apelido,
-            idEmpreend=idEmpreend
-        )
-
-
-@relatorios_bp.route('/download_arquivo')
-def download_arquivo():
-    arquivo = request.args.get('arquivo')
-    diretorio = os.path.join(current_app.config['DIRSYS'], 'Relatorios')
-    print('+++++++++++++', arquivo)
-    return send_from_directory(os.path.normpath(diretorio), arquivo, as_attachment=True)
-
-
-def relatorio_inter():
+def relatorio_inter(idEmpreend, apelido, mes, ano):
 
     grafC = graficoInterController()
-
-    idEmpreend = request.args.get("idEmpreend")
-    apelido = request.args.get("apelido")
-    mes = request.args.get("mes")
-    ano = request.args.get("ano")
 
     # monta o diretório onde estão os gráficos e fotos
     diretorio = grafC.montaDir(idEmpreend, mes, ano)

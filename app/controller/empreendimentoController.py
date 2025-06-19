@@ -56,6 +56,7 @@ class empreendimentoController:
             emp.setIdEmpreend(x["id_empreendimento"])
             emp.setNmEmpreend(x["nm_empreendimento"])
             emp.setApelido(x["apelido"])
+            emp.setCodBanco(x["cod_banco"])
             listaEmps.append(emp)
 
         return listaEmps

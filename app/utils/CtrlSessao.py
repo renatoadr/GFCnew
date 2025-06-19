@@ -58,3 +58,8 @@ class MesVigencia(CtrlSessao):
 class AnoVigencia(CtrlSessao):
     def __init__(self):
         super().__init__('anoVigencia')
+
+
+class CodBanco(CtrlSessao):
+    def __init__(self):
+        super().__init__('codBanco')
