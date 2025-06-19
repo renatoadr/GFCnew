@@ -5,13 +5,12 @@ from dto.agenda import agenda
 class agendaController:
 
     def inserirAgendas(self, agds: list[agenda]):
-        query = "INSERT INTO " + MySql.DB_NAME + \
-            """.tb_agendas ( id_empreendimento, mes_vigencia, ano_vigencia, id_atividade, status, dt_atividade, nm_resp_atividade, dt_baixa, nm_resp_baixa ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s )"""
+        query = f"INSERT INTO {MySql.DB_NAME}.tb_agendas ( id_empreendimento, mes_vigencia, ano_vigencia, id_atividade, status, dt_atividade, nm_resp_atividade, dt_baixa, nm_resp_baixa ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s )"
 
         itens = []
 
         for ag in agds:
-            itens.append((
+            data = [
                 ag.getIdEmpreend(),
                 ag.getMesVigencia(),
                 ag.getAnoVigencia(),
@@ -21,9 +20,10 @@ class agendaController:
                 ag.getNmRespAtividade(),
                 ag.getDtBaixa(),
                 ag.getNmRespBaixa()
-            ))
+            ]
+            itens.append(tuple(data))
 
-        MySql.exec(query, tuple(itens))
+        MySql.execMany(query, tuple(itens))
 
     def consultarAgendas(self, idEmpreend, cur_date):
         query = f"""SELECT A.id, A.id_empreendimento, A.mes_vigencia, A.ano_vigencia, A.id_atividade, AT.descr_atividade, A.status, A.dt_atividade, A.nm_resp_atividade, A.dt_baixa, A.nm_resp_baixa

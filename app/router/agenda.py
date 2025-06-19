@@ -84,7 +84,7 @@ def cadastrar_agenda():
         rec = request.form.get('recorrencia')
         if rec is not None:
             agendas = prepararRecorrencia(ag)
-            # agdCtrl.inserirAgendas(agendas)
+            agdCtrl.inserirAgendas(agendas)
         else:
             agdCtrl.inserirAgendas([ag])
 
@@ -110,17 +110,19 @@ def prepararRecorrencia(inicio):
         dtLimite = dtCorrente + relativedelta.relativedelta(years=nSalto)
     elif tipoRec == 'month':
         dtLimite = dtCorrente + relativedelta.relativedelta(months=nSalto)
-    elif tipoRec == 'semana':
+    elif tipoRec == 'week':
         dtLimite = dtCorrente + relativedelta.relativedelta(weeks=nSalto)
     elif tipoRec == 'day':
         dtLimite = dtCorrente + relativedelta.relativedelta(days=nSalto)
 
-    while rodadas <= nSalto and dtCorrente <= dtLimite and dtCorrente < dtAteLimite:
+    dtLimiteCheck = dtAteLimite if dtAteLimite > datetime.now(
+    ) and dtAteLimite < dtLimite else dtLimite
+    while rodadas <= nSalto and dtCorrente <= dtLimiteCheck:
         if tipoRec == 'year':
             dtCorrente = dtCorrente + relativedelta.relativedelta(years=1)
         elif tipoRec == 'month':
             dtCorrente = dtCorrente + relativedelta.relativedelta(months=1)
-        elif tipoRec == 'semana':
+        elif tipoRec == 'week':
             dtCorrente = dtCorrente + relativedelta.relativedelta(weeks=1)
         elif tipoRec == 'day':
             dtCorrente = dtCorrente + relativedelta.relativedelta(days=1)
@@ -128,7 +130,7 @@ def prepararRecorrencia(inicio):
         agendas.append(mapeamento(
             format(dtCorrente, '%Y-%m'),
             format(dtCorrente, '%Y-%m-%d'),
-            StatusAgenda.NAO_INICIADO
+            StatusAgenda.NAO_INICIADO.name
         ))
         rodadas += 1
 
