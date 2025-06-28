@@ -20,7 +20,7 @@ class perguntaAspecto:
         return self.__opcoes__
 
     def getResposta(self):
-        return self.__resposta__
+        return self.__resposta__ if self.__resposta__ is not None else ''
 
     def getDescricao(self):
         return self.__descricao__

@@ -41,6 +41,8 @@ def lista_relatorios():
     idEmpreend = request.args.get('idEmpreend')
     apelido = request.args.get('apelido')
     vigencia = request.args.get('vigencia')
+    codBanco = int(request.args.get('codBanco')
+                   ) if request.args.get('codBanco') else None
 
     if not vigencia:
         vigencia = datetime.now().strftime('%Y-%m')

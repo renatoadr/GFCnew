@@ -1,22 +1,30 @@
 
 from flask import Blueprint, request, render_template
 
+from controller.empreendimentoController import empreendimentoController
 from controller.orcamentoController import orcamentoController
 from controller.certidaoController import certidaoController
 from controller.garantiaController import garantiaController
+from controller.aspectosController import aspectosController
 from controller.graficoController import graficoController
 from controller.medicaoController import medicaoController
 from controller.contaController import contaController
 from controller.geralController import geralController
 from controller.notaController import notaController
+from controller.unidadeController import unidadeController
+from controller.torreController import torreController
 from utils.security import login_required
 from utils.CtrlSessao import IdEmpreend
 from matplotlib import pyplot as plt
 import matplotlib.pyplot as plt
+from datetime import datetime
 import random
 import os
 
 tabelas_bp = Blueprint('tabelas', __name__)
+
+tam_tit = 47
+tam_dado = 16
 
 
 @tabelas_bp.route('/tab_notas')
@@ -26,7 +34,8 @@ def tab_notas():
     dtCarga = request.args.get("dtCarga")
     mesVigencia = str(request.args.get('mesV')).zfill(2)
     anoVigencia = str(request.args.get('anoV'))
-    codBanco = request.args.get('codBanco')
+    codBanco = int(request.args.get('codBanco')
+                   ) if request.args.get('codBanco') else None
 
     notC = notaController()
     notS = notC.consultarNotaPelaData(idEmpreend, dtCarga)
@@ -135,7 +144,8 @@ def tab_conta_corrente():
     dtCarga = request.args.get("dtCarga")
     mesVigencia = str(request.args.get('mesV')).zfill(2)
     anoVigencia = str(request.args.get('anoV'))
-    codBanco = request.args.get('codBanco')
+    codBanco = int(request.args.get('codBanco')
+                   ) if request.args.get('codBanco') else None
 
     conC = contaController()
     conS = conC.consultarContaPelaCarga(idEmpreend, dtCarga)
@@ -228,7 +238,8 @@ def tab_garantias_geral():
     idEmpreend = IdEmpreend().get()
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
-    codBanco = request.args.get("codBanco")
+    codBanco = int(request.args.get("codBanco")
+                   ) if request.args.get("codBanco") else None
 
     grafNome = gerar_tab_garantias_geral(idEmpreend, mesVigencia, anoVigencia)
 
@@ -328,7 +339,8 @@ def tab_garantias_obra():
     idEmpreend = IdEmpreend().get()
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
-    codBanco = request.args.get("codBanco")
+    codBanco = int(request.args.get('codBanco')
+                   ) if request.args.get('codBanco') else None
 
     grafNome = gerar_tab_garantias_obra(idEmpreend, mesVigencia, anoVigencia)
 
@@ -426,7 +438,8 @@ def tab_certidoes():
     idEmpreend = IdEmpreend().get()
     mesVigencia = request.args.get("mesVigencia")
     anoVigencia = request.args.get("anoVigencia")
-    codBanco = request.args.get("codBanco")
+    codBanco = int(request.args.get('codBanco')
+                   ) if request.args.get('codBanco') else None
 
     grafNome = gerar_tab_certidoes(idEmpreend, mesVigencia, anoVigencia)
 
@@ -658,7 +671,8 @@ def tab_medicoes():
     anoInicio = request.args.get("anoInicio")
     mesFinal = request.args.get("mesFinal")
     anoFinal = request.args.get("anoFinal")
-    codBanco = request.args.get("codBanco")
+    codBanco = int(request.args.get('codBanco')
+                   ) if request.args.get('codBanco') else None
 
     grafNome = gerar_tab_medicoes(
         idEmpreend,
@@ -667,7 +681,8 @@ def tab_medicoes():
         mesInicio,
         anoInicio,
         mesFinal,
-        anoFinal
+        anoFinal,
+        codBanco
     )
 
     return render_template("medicoes_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
@@ -766,11 +781,13 @@ def tab_orcamento_liberacao():
     dtCarga = request.args.get("dtCarga")
     mes = request.args.get("mesV")
     ano = request.args.get("anoV")
-    codBanco = request.args.get("codBanco")
+    codBanco = int(request.args.get('codBanco')
+                   ) if request.args.get('codBanco') else None
 
     medC = orcamentoController()
     medS = medC.consultarOrcamentoPelaData(idEmpreend, dtCarga)
-    grafNome = gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS)
+    grafNome = gerar_tab_orcamento_liberacao(
+        idEmpreend, mes, ano, medS, codBanco)
     return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
@@ -878,36 +895,29 @@ def gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS, codBanco):
 
 
 @tabelas_bp.route('/tab_empreend_capa')
-# @login_required
+@login_required
 def tab_empreend_capa():
-    # idEmpreend = IdEmpreend().get()
-    # mesVigencia = request.args.get("mesVigencia")
-    # anoVigencia = request.args.get("anoVigencia")
+    idEmpreend = IdEmpreend().get()
+    mes = request.args.get("mesV")
+    ano = request.args.get("anoV")
+    grafNome = gerar_tab_empreend_capa(idEmpreend, mes, ano)
+    return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
-    geral = geralController()
+
+def gerar_tab_empreend_capa(idEmpreend, mes, ano):
+    empCtrl = empreendimentoController()
+    emp = empCtrl.consultarEmpreendimentoPeloId(idEmpreend)
     fig, ax = plt.subplots(1, 1)
 
-    idEmpreend = '59'
-    mesVigencia = '05'
-    anoVigencia = '2025'
-    codBanco = 77  # Banco Inter
-
-    data = []
-    dd = ['Incorporação         ', 'SPE JARDINS DO BURITIS LTDA']
-    data.append(dd)
-    dd = ['Construção           ', 'SPE JARDINS DO BURITIS LTDA']
-    data.append(dd)
-    dd = ['Empreendimento       ', 'SPE JARDINS DO BURITIS LTDA']
-    data.append(dd)
-    dd = ['Endereço da obra     ',
-          'AVENIDA JOSÉ DE OLIVEIRA VAZ, nº 55 - BURITIS BELO HORIZONTE - MG']
-    data.append(dd)
-    dd = ['Data da medição      ', '27/04/2025']
-    data.append(dd)
-    dd = ['Período da medição   ', 'De 19/03/2024 até 27/04/2025']
-    data.append(dd)
-    dd = ['Etapa do cornograma  ', '4ª Etapa - Construção']
-    data.append(dd)
+    data = [
+        ['Incorporação         ', emp.getNmEmpreend()],
+        ['Construção           ', emp.getNmConstrutor()],
+        ['Empreendimento       ', emp.getNmEmpreend()],
+        ['Endereço da obra     ', emp.getEnderecoCompleto()],
+        ['Data da medição      ', datetime.now().strftime("%d/%m/%Y")],
+        ['Período da medição   ', 'De 19/03/2024 até 27/04/2025'],
+        ['Etapa do cornograma  ', '4ª Etapa - Construção']
+    ]
 
     column_labels = ['                     ', '                           ']
 
@@ -930,12 +940,12 @@ def tab_empreend_capa():
     tabela.set_fontsize(14)
     # Aumenta o espaçamento entre linhas (exemplo: 2.0 dobra o espaçamento)
     tabela.scale(1, 2.0)
-#    tabela.scale(2,1)
+  #    tabela.scale(2,1)
 
-#   Ajustando o tamanho das colunas
+  #   Ajustando o tamanho das colunas
     for x in range(0, num_cols):
         tabela.auto_set_column_width(x)
-#   colocando cor de fundo no cabeçalho
+  #   colocando cor de fundo no cabeçalho
     for (row, col), cell in tabela.get_celld().items():
         # Define a cor da borda como "none" (sem borda)
         cell.set_edgecolor("none")
@@ -943,7 +953,7 @@ def tab_empreend_capa():
 
     grafC = graficoController()
 
-    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
+    diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_empreend_capa.png')
 
@@ -954,44 +964,36 @@ def tab_empreend_capa():
 
 
 @tabelas_bp.route('/gerar_tab_prazo_inter', methods=['GET'])
-# @login_required
-def gerar_tab_prazo_inter():
+@login_required
+def tab_prazo_inter():
 
-    #    idEmpreend = IdEmpreend().get()
-    #    tipo = request.args.get("tipo")
-    #    mesVigencia = request.args.get("mesVigencia")
-    #    anoVigencia = request.args.get("anoVigencia")
+    idEmpreend = IdEmpreend().get()
+    mes = request.args.get("mesV")
+    ano = request.args.get("anoV")
+    grafNome = gerar_tab_prazo_inter(idEmpreend, mes, ano)
+    return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
-    idEmpreend = '59'
-    mesVigencia = '05'
-    anoVigencia = '2025'
-    codBanco = None
+
+def gerar_tab_prazo_inter(idEmpreend, mes, ano, codBanco):
 
     geral = geralController()
 
-#    grafNome = gerar_tab_garantias_geral(
-#        idEmpreend, mesVigencia, anoVigencia, tipo)
+    ponC = aspectosController()
+    ponS = ponC.todasPerguntasComRespostas(idEmpreend, mes, ano)
 
-#    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
-
-
-# def gerar_tab_prazo_inter(idEmpreend, mesVigencia, anoVigencia):
-#    ponC = garantiaController()
-#    ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
-
-#    if not ponS:
-#        return ''
+    if not ponS:
+        return ''
 
     fig, ax = plt.subplots(1, 1)
 
     data = []
 
-#    for p in ponS:
-#        dd = []
-#        dd.append(p.documento)
-#        dd.append(p.status)
-#        dd.append(p.observacao)
-#        data.append(dd)
+    for p in ponS:
+        dd = []
+        dd.append(p.documento)
+        dd.append(p.status)
+        dd.append(p.observacao)
+        data.append(dd)
 
     dd = ['     Evolução do mês                ',
           '             3,70%                  ',
@@ -1053,7 +1055,7 @@ def gerar_tab_prazo_inter():
 
     grafC = graficoController()
 
-    diretorio = grafC.montaDir(idEmpreend, mesVigencia, anoVigencia)
+    diretorio = grafC.montaDir(idEmpreend, mes, ano)
     grafC.criaDir(diretorio)
     grafNome = os.path.join(diretorio, 'tab_prazo_inter.png')
 
@@ -1065,50 +1067,39 @@ def gerar_tab_prazo_inter():
 @tabelas_bp.route('/tab_projeto_inter')
 def tab_projeto_inter():
 
-    #    idEmpreend = IdEmpreend().get()
-    #    tipo = request.args.get("tipo")
-    #    mesVigencia = request.args.get("mesVigencia")
-    #    anoVigencia = request.args.get("anoVigencia")
-
-    idEmpreend = '59'
-    mesVigencia = '05'
-    anoVigencia = '2025'
-
-    geral = geralController()
-
-#    grafNome = gerar_tab_garantias_geral(
-#        idEmpreend, mesVigencia, anoVigencia, tipo)
-
-#    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    idEmpreend = IdEmpreend().get()
+    mes = request.args.get("mesV")
+    ano = request.args.get("anoV")
+    grafNome = gerar_tab_projeto_inter(idEmpreend, mes, ano)
+    return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-# def gerar_tab_projeto_inter(idEmpreend, mesVigencia, anoVigencia):
-#    ponC = garantiaController()
-#    ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
+def gerar_tab_projeto_inter(idEmpreend, mesVigencia, anoVigencia):
+    ponC = torreController()
+    ponS = ponC.consolidado(idEmpreend)
+    aspCtrl = aspectosController()
+    pergs = aspCtrl.todasPerguntasComRespostas(
+        idEmpreend, mesVigencia, anoVigencia)
 
-#    if not ponS:
-#        return ''
+    if not ponS:
+        return ''
 
     fig, ax = plt.subplots(1, 1)
 
-    data = []
+    data = [
+        ['Número de pavimentos'.ljust(tam_tit),
+         str(ponS.getPavimentos()).rjust(tam_dado)],
+        ['Número de blocos'.ljust(tam_tit),
+            str(ponS.getBlocos()).rjust(tam_dado)],
+        ['Número de unidades'.ljust(tam_tit),
+            str(ponS.getUnidades()).rjust(tam_dado)]
+    ]
 
-#    for p in ponS:
-#        dd = []
-#        dd.append(p.documento)
-#        dd.append(p.status)
-#        dd.append(p.observacao)
-#        data.append(dd)
-    dd = ['Número de pavimentos                           ', '              10']
-    data.append(dd)
-    dd = ['Número de blocos                               ', '               2']
-    data.append(dd)
-    dd = ['Número de unidades                             ', '              84']
-    data.append(dd)
-    dd = ['A execução obedece o projeto?                  ', '             Sim']
-    data.append(dd)
-    dd = ['Houve modificação em alguma unidade?           ', '             Sim']
-    data.append(dd)
+    for pg in pergs.get('Projeto'):
+        data.append(
+            [pg.getPergunta().ljust(tam_tit),
+             str(pg.getResposta()).rjust(tam_dado)]
+        )
 
     column_labels = ['            ', '           ']
 
@@ -1165,70 +1156,30 @@ def tab_projeto_inter():
 @tabelas_bp.route('/tab_qualidade_inter')
 def tab_qualidade_inter():
 
-    #    idEmpreend = IdEmpreend().get()
-    #    tipo = request.args.get("tipo")
-    #    mesVigencia = request.args.get("mesVigencia")
-    #    anoVigencia = request.args.get("anoVigencia")
-
-    idEmpreend = '59'
-    mesVigencia = '05'
-    anoVigencia = '2025'
-
-    geral = geralController()
-
-#    grafNome = gerar_tab_garantias_geral(
-#        idEmpreend, mesVigencia, anoVigencia, tipo)
-
-#    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    idEmpreend = IdEmpreend().get()
+    mes = request.args.get("mesV")
+    ano = request.args.get("anoV")
+    grafNome = gerar_tab_qualidade_inter(idEmpreend, mes, ano)
+    return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-# def gerar_tab_qualidade_inter(idEmpreend, mesVigencia, anoVigencia):
-#    ponC = garantiaController()
-#    ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
+def gerar_tab_qualidade_inter(idEmpreend, mesVigencia, anoVigencia):
+    aspecCtrl = aspectosController()
+    pergs = aspecCtrl.todasPerguntasComRespostas(
+        idEmpreend, mesVigencia, anoVigencia)
 
-#    if not ponS:
-#        return ''
+    if not pergs:
+        return ''
 
     fig, ax = plt.subplots(1, 1)
 
     data = []
 
-#    for p in ponS:
-#        dd = []
-#        dd.append(p.documento)
-#        dd.append(p.status)
-#        dd.append(p.observacao)
-#        data.append(dd)
-
-    dd = ['Estrutura (Prumo, presença de nichos):         ', '          Bom']
-    data.append(dd)
-    dd = ['Paredes (Prumo, Alinhamento, Modulação e etc.):',
-          '          Normal']
-    data.append(dd)
-    dd = ['Instalações de Portas e Janelas:               ', '          Baixo']
-    data.append(dd)
-    dd = ['Contrapiso:                                    ', '          Normal']
-    data.append(dd)
-    dd = ['Revestimento Interno:                          ', '          Bom']
-    data.append(dd)
-    dd = ['Revestimento Externo:                          ', '          Bom']
-    data.append(dd)
-    dd = ['Escadas:                                       ', '          Bom']
-    data.append(dd)
-    dd = ['Instalações Elétricas e Hidráulicas:           ', '          Normal']
-    data.append(dd)
-    dd = ['Forros:                                        ', '          Normal']
-    data.append(dd)
-    dd = ['Pintura:                                       ', '          Baixo']
-    data.append(dd)
-    dd = ['Uso de Ferramentas adequadas ao serviço:       ', '          Bom']
-    data.append(dd)
-    dd = ['Planejamento:                                  ', '          Baixo']
-    data.append(dd)
-    dd = ['Limpeza:                                       ', '          Bom']
-    data.append(dd)
-    dd = ['Logística de Canteiro:                         ', '          Baixo']
-    data.append(dd)
+    for pg in pergs.get('Qualidade'):
+        data.append(
+            [pg.getPergunta().ljust(tam_tit),
+             str(pg.getResposta()).rjust(tam_dado)]
+        )
 
     column_labels = ['            ', '           ']
 
@@ -1290,45 +1241,30 @@ def tab_qualidade_inter():
 @tabelas_bp.route('/tab_seguranca_inter')
 def tab_seguranca_inter():
 
-    #    idEmpreend = IdEmpreend().get()
-    #    tipo = request.args.get("tipo")
-    #    mesVigencia = request.args.get("mesVigencia")
-    #    anoVigencia = request.args.get("anoVigencia")
-
-    idEmpreend = '59'
-    mesVigencia = '05'
-    anoVigencia = '2025'
-
-    geral = geralController()
-
-#    grafNome = gerar_tab_garantias_geral(
-#        idEmpreend, mesVigencia, anoVigencia, tipo)
-
-#    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    idEmpreend = IdEmpreend().get()
+    mes = request.args.get("mesV")
+    ano = request.args.get("anoV")
+    grafNome = gerar_tab_seguranca_inter(idEmpreend, mes, ano)
+    return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-# def gerar_tab_seguranca_inter(idEmpreend, mesVigencia, anoVigencia):
-#    ponC = garantiaController()
-#    ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
+def gerar_tab_seguranca_inter(idEmpreend, mesVigencia, anoVigencia):
+    aspecCtrl = aspectosController()
+    pergs = aspecCtrl.todasPerguntasComRespostas(
+        idEmpreend, mesVigencia, anoVigencia)
 
-#    if not ponS:
-#        return ''
+    if not pergs:
+        return ''
 
     fig, ax = plt.subplots(1, 1)
 
     data = []
 
-#    for p in ponS:
-#        dd = []
-#        dd.append(p.documento)
-#        dd.append(p.status)
-#        dd.append(p.observacao)
-#        data.append(dd)
-
-    dd = ['Utilização de Equipamentos Coletivos:          ', '                 Sim']
-    data.append(dd)
-    dd = ['Utilização de Equipamentos Individuais:        ', '                 Não']
-    data.append(dd)
+    for pg in pergs.get('Segurança'):
+        data.append(
+            [pg.getPergunta().ljust(tam_tit),
+             str(pg.getResposta()).rjust(tam_dado)]
+        )
 
     column_labels = ['            ', '           ']
 
@@ -1387,45 +1323,30 @@ def tab_seguranca_inter():
 
 @tabelas_bp.route('/tab_situacao_inter')
 def tab_situacao_inter():
-
-    #    idEmpreend = IdEmpreend().get()
-    #    tipo = request.args.get("tipo")
-    #    mesVigencia = request.args.get("mesVigencia")
-    #    anoVigencia = request.args.get("anoVigencia")
-
-    idEmpreend = '59'
-    mesVigencia = '05'
-    anoVigencia = '2025'
-
-    geral = geralController()
-
-#    grafNome = gerar_tab_garantias_geral(
-#        idEmpreend, mesVigencia, anoVigencia, tipo)
-
-#    return render_template("garantia_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+    idEmpreend = IdEmpreend().get()
+    mes = request.args.get("mesV")
+    ano = request.args.get("anoV")
+    grafNome = gerar_tab_situacao_inter(idEmpreend, mes, ano)
+    return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
-# def gerar_tab_situacao_inter(idEmpreend, mesVigencia, anoVigencia):
-#    ponC = garantiaController()
-#    ponS = ponC.consultargarantiaatual(idEmpreend, 'Geral')
+def gerar_tab_situacao_inter(idEmpreend, mesVigencia, anoVigencia):
+    aspecCtrl = aspectosController()
+    pergs = aspecCtrl.todasPerguntasComRespostas(
+        idEmpreend, mesVigencia, anoVigencia)
 
-#    if not ponS:
-#        return ''
+    if not pergs:
+        return ''
 
     fig, ax = plt.subplots(1, 1)
 
     data = []
 
-#    for p in ponS:
-#        dd = []
-#        dd.append(p.documento)
-#        dd.append(p.status)
-#        dd.append(p.observacao)
-#        data.append(dd)
-
-    dd = ['Quanto ao prazo a obra está:          ',
-          '                    Adiantada']
-    data.append(dd)
+    for pg in pergs.get('Situação'):
+        data.append(
+            [pg.getPergunta().ljust(tam_tit),
+             str(pg.getResposta()).rjust(tam_dado)]
+        )
 
     column_labels = ['            ', '           ']
 

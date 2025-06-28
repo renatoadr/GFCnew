@@ -4,7 +4,7 @@ from controller.orcamentoController import orcamentoController
 from router.graficos import gerar_graf_orcamento_liberacao, gerar_graf_indices_garantia_I, gerar_graf_indices_garantia_II, gerar_graf_chaves, gerar_graf_vendas, gerar_graf_progresso_obra
 from controller.contaController import contaController
 from controller.notaController import notaController
-from router.tabelas import gerar_tab_conta_corrente, gerar_tab_notas, gerar_tab_orcamento_liberacao, gerar_tab_acomp_financeiro, gerar_tab_certidoes, gerar_tab_garantias_geral, gerar_tab_garantias_obra, gerar_tab_medicoes
+from router.tabelas import gerar_tab_conta_corrente, gerar_tab_notas, gerar_tab_orcamento_liberacao, gerar_tab_acomp_financeiro, gerar_tab_certidoes, gerar_tab_garantias_geral, gerar_tab_garantias_obra, gerar_tab_medicoes, gerar_tab_prazo_inter, gerar_tab_projeto_inter, gerar_tab_qualidade_inter, gerar_tab_seguranca_inter, gerar_tab_situacao_inter
 from utils.security import login_required
 from utils.CtrlSessao import IdEmpreend, NmEmpreend, CodBanco
 from utils.flash_message import flash_message
@@ -38,12 +38,13 @@ opcoesComRange = [
 ]
 
 
-@gerar_relatorios_bp.route('/gerar_insumos_relatorios')
+@gerar_relatorios_bp.route('/gerar_insumos_relatorios', methods=['GET'])
 @login_required
 def gerar_relatorio():
     idEmpreend = request.args.get("idEmpreend")
     nmEmpreend = request.args.get("nmEmpreend")
-    codBanco = request.args.get("codBanco")
+    codBanco = int(request.args.get("codBanco")
+                   ) if request.args.get("codBanco") else None
 
     if (idEmpreend is None and not IdEmpreend().has()) or (nmEmpreend is None and not NmEmpreend().has()):
         return redirect('/home')
@@ -62,6 +63,13 @@ def gerar_relatorio():
         codBanco = CodBanco().get()
     else:
         CodBanco().set(codBanco)
+
+    if codBanco == 77:
+        opcoes.append(['tab_prazo_inter', 'Tabela de Prazo', 'Não'])
+        opcoes.append(['tab_projeto_inter', 'Tabela de Projeto', 'Não'])
+        opcoes.append(['tab_qualidade_inter', 'Tabela de Qualidade', 'Não'])
+        opcoes.append(['tab_seguranca_inter', 'Tabela de Segurança', 'Não'])
+        opcoes.append(['tab_situacao_inter', 'Tabela de Situação', 'Não'])
 
     vigencia = request.args.get('vigencia')
 
@@ -156,6 +164,51 @@ def ver_insumo(vigencia, arquivo):
         return send_file(f"{pathFile}.png")
     elif os.path.exists(f"{pathFile}.jpg"):
         return send_file(f"{pathFile}.jpg")
+
+
+def tab_situacao_inter(mes, ano):
+    try:
+        gerar_tab_situacao_inter(IdEmpreend().get(), mes, ano)
+    except Exception as error:
+        logger.error(
+            'Erro ao gerar a tabela de segurança do inter', error)
+        flash_message.error('Erro ao gerar a tabela de segurança do Inter')
+
+
+def tab_seguranca_inter(mes, ano):
+    try:
+        gerar_tab_seguranca_inter(IdEmpreend().get(), mes, ano)
+    except Exception as error:
+        logger.error(
+            'Erro ao gerar a tabela de segurança do inter', error)
+        flash_message.error('Erro ao gerar a tabela de segurança do Inter')
+
+
+def tab_qualidade_inter(mes, ano):
+    try:
+        gerar_tab_qualidade_inter(IdEmpreend().get(), mes, ano)
+    except Exception as error:
+        logger.error(
+            'Erro ao gerar a tabela de qualidade do inter', error)
+        flash_message.error('Erro ao gerar a tabela de qualidade do Inter')
+
+
+def tab_projeto_inter(mes, ano):
+    try:
+        gerar_tab_projeto_inter(IdEmpreend().get(), mes, ano)
+    except Exception as error:
+        logger.error(
+            'Erro ao gerar a tabela de projeto do inter', error)
+        flash_message.error('Erro ao gerar a tabela de projeto do Inter')
+
+
+def tab_prazo_inter(mes, ano):
+    try:
+        gerar_tab_prazo_inter(IdEmpreend().get(), mes, ano, 77)
+    except Exception as error:
+        logger.error(
+            'Erro ao gerar a tabela de prazos do inter', error)
+        flash_message.error('Erro ao gerar a tabela de prazos do Inter')
 
 
 def graf_orcamento_liberacao_valor(mes, ano):

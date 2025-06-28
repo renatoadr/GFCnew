@@ -156,12 +156,13 @@
                     <i class="fa-solid fa-clipboard-check"></i>
                   </a>
                 </td>
-
                 <td>
+                  {% if e.getCodBanco() == 77%}
                   <a href="/aspectos_obra?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getApelido()}}"
                     data-bs-toggle="tooltip" data-bs-title="Aspectos da Obra">
                     <i class="fa-regular fa-star-half-stroke"></i>
                   </a>
+                  {% endif %}
                 </td>
 
                 <td>

@@ -1,9 +1,10 @@
 # controller or business logic
 # Trata base de TORRES
 
-from dto.torre import torre
+from dto.torre_cosolidado import torre_consolidado
 from utils.dbContext import MySql
 from datetime import datetime
+from dto.torre import torre
 
 
 class torreController:
@@ -179,3 +180,17 @@ class torreController:
             " WHERE nm_torre = %s "
         result = MySql.getOne(query, (nome,))
         return result['existe'] > 0
+
+    def consolidado(self, idEmpreend: int) -> torre_consolidado:
+        query = f"""SELECT
+                      SUM(qt_unidade * qt_andar + qt_coberturas) num_unidades,
+                      COUNT(id_torre) num_blocos,
+                      SUM(qt_andar) num_pavimentos
+                  FROM tb_torres
+                  WHERE id_empreendimento = %s ;"""
+        result = MySql.getOne(query, (idEmpreend,))
+        return torre_consolidado(
+            result['num_blocos'],
+            result['num_pavimentos'],
+            result['num_unidades']
+        )

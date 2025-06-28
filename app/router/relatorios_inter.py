@@ -7,23 +7,19 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.colors import red, blue, green, black
 import os
 
-relatorio_inter_bp = Blueprint('relatorios_inter', __name__)
+relatorios_inter_bp = Blueprint('relatorios_inter', __name__)
 
-@relatorio_inter_bp.route('/gerar_relatorio_inter', methods=['GET'])
+
+@relatorios_inter_bp.route('/gerar_relatorio_inter', methods=['GET'])
 @login_required
 def gerar_relatorio_inter():
 
+    idEmpreend = request.args.get("idEmpreend")
+    apelido = request.args.get("apelido")
+    mes = request.args.get("mes")
+    ano = request.args.get("ano")
+
     grafC = graficoInterController()
-
-    ###idEmpreend = request.args.get("idEmpreend")
-    ###apelido = request.args.get("apelido")
-    ###mes = request.args.get("mes")
-    ###ano = request.args.get("ano")
-    idEmpreend = '59'
-    mes = '05'
-    ano = '2025'
-    apelido = 'TESTE'
-
     # monta o diretório onde estão os gráficos e fotos
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
     erros = grafC.verificaArqRelatorio(diretorio)

@@ -12,13 +12,15 @@ app.secret_key = "gfc001"
 
 path = os.path.abspath(__file__).replace(f"{__name__}.py", '')
 for route in os.listdir(os.path.join(path, 'router')):
+    if route == '__pycache__':
+        continue
     try:
         nameModule = route.replace('.py', '')
         module = __import__(f'router.{nameModule}')
         bp = getattr(getattr(module, f"{nameModule}"), f"{nameModule}_bp")
         app.register_blueprint(bp)
-    except:
-        pass
+    except Exception as error:
+        logger.error("Não foi possível carregar o módulo: " + route, error)
 
 app.register_blueprint(filtros_bp)
 app.permanent_session_lifetime.seconds

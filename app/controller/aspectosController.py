@@ -3,7 +3,7 @@ from dto.perguntas_aspectos import perguntaAspecto
 
 
 class aspectosController:
-    def todasPerguntasComRespostas(self, idEmpreend, mesVigencia, anoVigencia) -> dict:
+    def todasPerguntasComRespostas(self, idEmpreend, mesVigencia, anoVigencia) -> dict[str, list[perguntaAspecto]]:
         query = f"""SELECT perg.id, perg.pergunta, perg.grupo, perg.opcoes, asp.status, asp.descricao
           FROM {MySql.DB_NAME}.tb_perguntas_aspectos perg
           LEFT JOIN {MySql.DB_NAME}.tb_aspectos asp
