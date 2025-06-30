@@ -152,7 +152,11 @@ log "Recriando os containers no servidor"
 ecSrCom "cd ${pasta_servidor} && docker-compose up -d"
 
 log "Removendo imagem antiga da aplicação no servidor"
-ecSrCom "docker rmi ${imagem_atual}"
+images=$(ecSrCom "docker images -q ${imagem_atual}")
+if [ -n "$images" ]; then
+  log "Imagem removida do servidor"
+  ecSrCom "docker rmi ${imagem_atual}"
+fi
 
 log "Deletando imagem do diretório do servidor"
 ecSrCom "cd ${pasta_servidor} && rm -f ${nome_arquivo} ${nome_arquivo}.gz"
