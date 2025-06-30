@@ -6,13 +6,13 @@ from controller.orcamentoController import orcamentoController
 from controller.certidaoController import certidaoController
 from controller.garantiaController import garantiaController
 from controller.aspectosController import aspectosController
+from controller.medicaoController import medicaoController
 from controller.graficoController import graficoController
 from controller.medicaoController import medicaoController
 from controller.contaController import contaController
+from controller.torreController import torreController
 from controller.geralController import geralController
 from controller.notaController import notaController
-from controller.unidadeController import unidadeController
-from controller.torreController import torreController
 from utils.security import login_required
 from utils.CtrlSessao import IdEmpreend
 from matplotlib import pyplot as plt
@@ -23,8 +23,10 @@ import os
 
 tabelas_bp = Blueprint('tabelas', __name__)
 
-tam_tit = 47
-tam_dado = 16
+tam_tit = 40
+tam_dado = 12
+
+medCtrl = medicaoController()
 
 
 @tabelas_bp.route('/tab_notas')
@@ -908,15 +910,26 @@ def gerar_tab_empreend_capa(idEmpreend, mes, ano):
     empCtrl = empreendimentoController()
     emp = empCtrl.consultarEmpreendimentoPeloId(idEmpreend)
     fig, ax = plt.subplots(1, 1)
+    medAtual = medCtrl.consultarMedicaoAtual(idEmpreend)
+    medAnterior = medCtrl.consultarMedicaoAnteriorPeloId(
+        medAtual.getIdMedicao()
+    )
+    dataAtual = (medAtual.getDataMedicao()
+                 if medAtual else datetime.now()).strftime("%d/%m/%Y")
+
+    if medAnterior is None:
+        periodo = f'De -- até {dataAtual}'
+    else:
+        periodo = f'De {medAnterior.strftime("%d/%m/%Y")} até {dataAtual}'
 
     data = [
         ['Incorporação         ', emp.getNmEmpreend()],
         ['Construção           ', emp.getNmConstrutor()],
         ['Empreendimento       ', emp.getNmEmpreend()],
         ['Endereço da obra     ', emp.getEnderecoCompleto()],
-        ['Data da medição      ', datetime.now().strftime("%d/%m/%Y")],
-        ['Período da medição   ', 'De 19/03/2024 até 27/04/2025'],
-        ['Etapa do cornograma  ', '4ª Etapa - Construção']
+        ['Data da medição      ', dataAtual],
+        ['Período da medição   ', periodo],
+        ['Etapa do cornograma  ', medAtual.getNrMedicao() if medAtual else '1ª' + ' Etapa']
     ]
 
     column_labels = ['                     ', '                           ']
@@ -974,40 +987,44 @@ def tab_prazo_inter():
     return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
+def centraliza_texto(text: str, tamanho: int = 37) -> str:
+    lent = len(text)
+    dif = tamanho - lent
+    tam = round(dif / 2)
+    return text.rjust(tam + lent).ljust(tamanho)
+
+
+def exibicao_porcent(texto: float) -> str:
+    return f"{str(texto).replace('.', ',')}%"
+
+
 def gerar_tab_prazo_inter(idEmpreend, mes, ano, codBanco):
+    med = medCtrl.consultarMedicaoAtual(idEmpreend)
 
-    geral = geralController()
-
-    ponC = aspectosController()
-    ponS = ponC.todasPerguntasComRespostas(idEmpreend, mes, ano)
-
-    if not ponS:
+    if not med:
         return ''
 
     fig, ax = plt.subplots(1, 1)
 
-    data = []
+    data = [
+        [
+            'Evolução do mês'.rjust(21).ljust(37),
+            centraliza_texto(exibicao_porcent(med.getPercPrevistoPeriodo())),
+            centraliza_texto(exibicao_porcent(med.getPercRealizadoPeriodo()))
+        ],
+        [
+            'Acumulado do mês'.rjust(21).ljust(37),
+            centraliza_texto(exibicao_porcent(med.getPercPrevistoAcumulado())),
+            centraliza_texto(exibicao_porcent(med.getPercRealizadoAcumulado()))
+        ]
+    ]
+    medicao = f"{med.getNrMedicao() if med.getNrMedicao() else '1ª'} Medição"
 
-    for p in ponS:
-        dd = []
-        dd.append(p.documento)
-        dd.append(p.status)
-        dd.append(p.observacao)
-        data.append(dd)
-
-    dd = ['     Evolução do mês                ',
-          '             3,70%                  ',
-          '             1,59%                  ']
-    data.append(dd)
-    dd = ['     Acumulado do mês               ',
-          '            82,88%                  ',
-          '            79,56%                  ']
-    data.append(dd)
-
-    medicao = "            4ª Medição             "
-
-    column_labels = [medicao, "             Previsto              ",
-                     "            Executado              "]
+    column_labels = [
+        centraliza_texto(medicao),
+        centraliza_texto('Previsto'),
+        centraliza_texto('Executado')
+    ]
 
     # Definir tamanho das células
     cell_width = 2.0  # Largura de cada célula

@@ -186,7 +186,7 @@ class torreController:
                       SUM(qt_unidade * qt_andar + qt_coberturas) num_unidades,
                       COUNT(id_torre) num_blocos,
                       SUM(qt_andar) num_pavimentos
-                  FROM tb_torres
+                  FROM {MySql.DB_NAME}.tb_torres
                   WHERE id_empreendimento = %s ;"""
         result = MySql.getOne(query, (idEmpreend,))
         return torre_consolidado(

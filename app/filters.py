@@ -1,12 +1,15 @@
 from flask import Blueprint
 import utils.converter as converter
-from datetime import datetime
+from datetime import datetime, date
 
 filtros_bp = Blueprint('filtros', __name__)
 
+
 @filtros_bp.app_template_filter('to_date')
 def format_datetime(value):
-    if value is not None and value != '--' and isinstance(value, datetime):
+    if value is None or value == 'None':
+        return ''
+    if value is not None and value != '--' and (isinstance(value, datetime) or isinstance(value, date)):
         return value.strftime('%d/%m/%Y')
     elif isinstance(value, str):
         return converter.converterStrDateTimeToDateFormat(value)
@@ -24,7 +27,9 @@ def format_datetime(value):
 
 @filtros_bp.app_template_filter('to_currency')
 def format_datetime(value):
-    if value is not None and value != '--' and converter.isNumber(value):
+    if value is None or value == 'None':
+        return ''
+    elif value is not None and value != '--' and converter.isNumber(value):
         return converter.converterFloatToCurrency(value)
     return value
 

@@ -154,6 +154,7 @@ CREATE TABLE  IF NOT EXISTS `tb_medicoes` (
   `perc_diferenca` DECIMAL(5,2) NULL,
   `perc_previsto_periodo` DECIMAL(5,2) NULL,
   `perc_realizado_periodo` DECIMAL(5,2) NULL,
+  'dt_medicao' DATE NOT NULL,
    PRIMARY KEY (`id_medicao`)
 )
 ENGINE = InnoDB;
@@ -530,6 +531,6 @@ INSERT INTO `tb_perguntas_aspectos` (`id`, `pergunta`, `grupo`, `opcoes`) VALUES
 INSERT INTO `tb_perguntas_aspectos` (`id`, `pergunta`, `grupo`, `opcoes`) VALUES (17, 'Limpeza', 'Qualidade', 'Baixo;Normal;Bom');
 INSERT INTO `tb_perguntas_aspectos` (`id`, `pergunta`, `grupo`, `opcoes`) VALUES (18, 'Logística de Canteiro', 'Qualidade', 'Baixo;Normal;Bom');
 INSERT INTO `tb_perguntas_aspectos` (`id`, `pergunta`, `grupo`, `opcoes`) VALUES (19, 'Outro', 'Qualidade', 'Baixo;Normal;Bom');
+INSERT INTO `tb_perguntas_aspectos` (`id`, `pergunta`, `grupo`, `opcoes`) VALUES (20, 'Quanto ao prazo a obra está', 'Situação', 'Adiantada;Atrasada;No prazo');
 
 INSERT INTO `tb_usuarios` (`id_usuario`, `email`, `senha`, `tp_acesso`, `nm_usuario`, `cod_banco`) VALUES (1, 'adm@gfcpro.com.br', '$2b$06$S0KOp/YN3wdyzc6JlF68Eugmhjh5wIzLmO9PVDGtildPudAtsQqTq', 'RT', 'Renato Adriano', 0);
-

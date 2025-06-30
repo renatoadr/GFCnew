@@ -1,8 +1,8 @@
 from flask import Blueprint, request, render_template, redirect
 from utils.CtrlSessao import IdEmpreend, NmEmpreend, IdMedicao
 from controller.medicaoController import medicaoController
-from utils.security import login_required
 from werkzeug.utils import secure_filename
+from utils.security import login_required
 from utils.helper import allowed_file
 import utils.converter as converter
 from dto.medicao import medicao
@@ -68,12 +68,8 @@ def tratar_medicoes():
 @medicoes_bp.route('/consultar_medicao_pelo_id')
 @login_required
 def consultar__medicao_pelo_id():
-
     idMedicao = request.args.get("idMedicao")
     IdMedicao().set(idMedicao)
-
-    print('------ consultar_medicao_pelo_ID ------')
-    print(idMedicao)
 
     medC = medicaoController()
     medS = medC.consultarMedicaoPeloId(idMedicao)
@@ -85,10 +81,6 @@ def consultar__medicao_pelo_id():
         )
     else:
         medS.setPercRealizadoAcumulado(medOld.getPercRealizadoAcumulado())
-
-    print('------ consultar_medicao_pelo_id fim --------')
-
-    print(medS.getNrMedicao())
 
     return render_template("medicao_item.html", medicao=medS)
 
@@ -165,6 +157,7 @@ def salvar_item_medicao():
         med.getPercRealizadoPeriodo() + med.getPercRealizadoAcumulado())
     med.setPercDiferenca(med.getPercRealizadoAcumulado() -
                          med.getPercPrevistoAcumulado())
+    med.setDataMedicao(request.form.get('dtMedicao'))
 
     medC = medicaoController()
     medC.salvarItemMedicao(med)
@@ -196,4 +189,3 @@ def gerar_relatorio_medicoes():
         return redirect(f'/tab_medicoes?idEmpreend={idEmpreend}&mesVigencia={vig[1]}&anoVigencia={vig[0]}&mesInicio={vigInit[1]}&anoInicio={vigInit[0]}&mesFinal={vigEnd[1]}&anoFinal={vigEnd[0]}')
     else:
         return redirect(f'/graf_progresso_obra?idEmpreend={idEmpreend}&mesVigencia={vig[1]}&anoVigencia={vig[0]}&mesInicio={vigInit[1]}&anoInicio={vigInit[0]}&mesFinal={vigEnd[1]}&anoFinal={vigEnd[0]}')
-#  return redirect('/tratar_medicoes')

@@ -48,7 +48,7 @@ class bancoController:
     def getNmBanco(cod: str):
         ctrl = bancoController()
         banco = ctrl.get_banco_pelo_id(cod)
-        return None if not banco else banco.getDescricao()
+        return '' if not banco else banco.getDescricaoCompleta()
 
     def atulizar_banco(self, bank: banco):
         query = f"UPDATE {MySql.DB_NAME}.tb_bancos SET ispb = %s, descricao = %s, descricao_completa = %s WHERE codigo = %s"

@@ -4,6 +4,7 @@
 from flask import current_app
 from controller.empreendimentoController import empreendimentoController
 from controller.consideracaoController import consideracaoController
+from controller.medicaoController import medicaoController
 from controller.bancoController import bancoController
 from reportlab.lib.colors import white, red, blue, green, black, orange
 import os
@@ -25,17 +26,19 @@ class graficoInterController:
     def pdfPag1(self, c, diretorio, pagina, idEmpreend):
         #   Primeira Página
         empC = empreendimentoController()
+        medCtrl = medicaoController()
         empS = empC.consultarEmpreendimentoPeloId(idEmpreend)
+        med = medCtrl.consultarMedicaoAtual(idEmpreend)
 
         construtora = 'Construtora: ' + empS.getNmConstrutor()
-        empreendimento = 'Empreendimento: ' + empS.getNmEmpreend() + ' - ' + 'End da Obra: ' + \
-            empS.getLogradouro() + ' - ' + empS.getBairro() + ' - ' + empS.getCidade() + ' - ' + empS.getEstado()
-        agenteFinanc = 'Agente financeiro: Banco do Brasil S.A.'# + bancoController.getNmBanco(empS.getCodBanco())
-        vistoria = '4ª' + ' Medição'
-        
-        ##### ATENÇÃO AJUSTAR DADOS DA VISTORIA 
+        empreendimento = 'Empreendimento: ' + empS.getNmEmpreend()
+        empreendimento += ' - ' + 'End da Obra: ' + empS.getEnderecoCompleto()
+        agenteFinanc = bancoController.getNmBanco(empS.getCodBanco())
+        vistoria = med.getNrMedicao() if med else '1ª' + ' Medição'
 
-        self.logo_cabecalho(self, c) # Adiciona o logo no cabeçalho
+        # ATENÇÃO AJUSTAR DADOS DA VISTORIA
+
+        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
 
         c.setFont('Helvetica-Bold', 12)
         c.drawString(190, 740, "RELATÓRIO DE GESTÃO MENSAL")
@@ -43,7 +46,6 @@ class graficoInterController:
         c.setFont('Helvetica', 10)
         c.setFillColor((0.831, 0.243, 0.007))
         c.drawString(260, 700, vistoria)
-
 
         c.drawImage(os.path.join(diretorio, "perspectiva.png"),
                     40, 470, width=220, height=150, mask='auto')
@@ -55,27 +57,28 @@ class graficoInterController:
                     350, 210, width=200, height=200, mask='auto')
         c.drawImage(os.path.join(diretorio, "tab_empreend_capa.png"),
                     30, 30, width=500, height=100, mask='auto')
-        c.drawImage(self.getPathImgs("legenda_2.png"), 
+        c.drawImage(self.getPathImgs("legenda_2.png"),
                     350, 160, width=200, height=30, mask='auto')
 
         c.setFillColor(black)
         c.drawString(40, 630, 'Perspectiva')
         c.drawString(300, 630, 'Evolução em 3D')
-        c.drawString(40, 400, 'Foto Atual')    
+        c.drawString(40, 400, 'Foto Atual')
         c.setFont('Helvetica', 10)
         c.drawString(570, 10, str(pagina))
 
     def pdfPag2(self, c, diretorio, pagina):
         #   Segunda Página
-        self.logo_cabecalho(self, c) # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
 
-        self.barraTitulo(30, 760, c, "1.          Prazo")          
+        self.barraTitulo(30, 760, c, "1.          Prazo")
         c.drawImage(os.path.join(diretorio, "tab_prazo_inter.png"),
-                    30, 690, width=520, height=60, mask='auto')    #30 690   520  60
+                    30, 690, width=520, height=60, mask='auto')  # 30 690   520  60
 
         c.drawImage(os.path.join(diretorio, "tab_medicoes.png"),
                     30, 370, width=520, height=300, mask='auto')
-        self.barraTitulo(30, 660, c, "2.          Comparativo: Previsto x Realizado Físico (%)")  
+        self.barraTitulo(
+            30, 660, c, "2.          Comparativo: Previsto x Realizado Físico (%)")
 
         c.setFillColor(black)
         c.setFont('Helvetica', 10)
@@ -86,23 +89,26 @@ class graficoInterController:
 
     def pdfPag2a(self, c, diretorio, pagina):
         #   Segunda Página
-        self.logo_cabecalho(self, c) # Adiciona o logo no cabeçalho
-        
+        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
+
         c.drawImage(os.path.join(diretorio, "tab_situacao_inter.png"),
-                    20, 730, width=420, height=40, mask='auto')  #15 730 
-        self.barraTitulo(30, 760, c, "3.          Situação da obra")  
+                    20, 730, width=420, height=40, mask='auto')  # 15 730
+        self.barraTitulo(30, 760, c, "3.          Situação da obra")
 
         c.drawImage(os.path.join(diretorio, "tab_projeto_inter.png"),
                     15, 580, width=420, height=120, mask='auto')  # 20 590
-        self.barraTitulo(30, 680, c, "4.          Padrão construtivo de projeto")  #690
+        self.barraTitulo(
+            30, 680, c, "4.          Padrão construtivo de projeto")  # 690
 
         c.drawImage(os.path.join(diretorio, "tab_qualidade_inter.png"),
-                    30, 210, width=420, height=300, mask='auto')   #30 230
-        self.barraTitulo(30, 490, c, "5.          Considerações de qualidade - aspecto visial") #30 510 
+                    30, 210, width=420, height=300, mask='auto')  # 30 230
+        self.barraTitulo(
+            30, 490, c, "5.          Considerações de qualidade - aspecto visial")  # 30 510
 
         c.drawImage(os.path.join(diretorio, "tab_seguranca_inter.png"),
-                    25, 100, width=420, height=60, mask='auto') #20 130  w420 h70
-        self.barraTitulo(30, 150, c, "6.          Considerações de segurança - aspecto visual")  #30 180
+                    25, 100, width=420, height=60, mask='auto')  # 20 130  w420 h70
+        self.barraTitulo(
+            30, 150, c, "6.          Considerações de segurança - aspecto visual")  # 30 180
 
         c.setFillColor(black)
         c.setFont('Helvetica', 10)
@@ -110,20 +116,22 @@ class graficoInterController:
 
     def pdfPag3(self, c, diretorio, pagina):
         #   Terceira Página
-        self.logo_cabecalho(self, c) # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
 
 #       c.setFont('Helvetica-Bold', 14)
 #       c.setFillColor("black")
-        
+
         c.drawImage(os.path.join(diretorio, "tab_acomp_financeiro.png"),
                     30, 680, width=280, height=80, mask='auto')
-        self.barraTitulo(30, 760, c, "7.          Acompanhamento financeiro")  
+        self.barraTitulo(30, 760, c, "7.          Acompanhamento financeiro")
 
-        self.barraTitulo(30, 640, c, "8.          Medição e liberação financeiro por item orçado")
+        self.barraTitulo(
+            30, 640, c, "8.          Medição e liberação financeiro por item orçado")
         c.drawImage(os.path.join(diretorio, "graf_orcamento_liberacao_valor.png"),
                     30, 340, width=530, height=260, mask='auto')
 
-        self.barraTitulo(30, 300, c, "9.          Demonstrativo de uso do orçamento")
+        self.barraTitulo(
+            30, 300, c, "9.          Demonstrativo de uso do orçamento")
         c.drawImage(os.path.join(diretorio, "tab_orcamento_liberacao.png"),
                     30, 30, width=530, height=260, mask='auto')
 
@@ -133,7 +141,7 @@ class graficoInterController:
 
     def pdfPag4(self, c, diretorio, pagina):
         #   Quarta Página
-        self.logo_cabecalho(self, c) # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
 
 #       c.setFont('Helvetica-Bold', 14)
 #       c.setFillColor("black")
@@ -144,7 +152,8 @@ class graficoInterController:
 
         c.drawImage(os.path.join(diretorio, "tab_notas.png"),
                     20, 360, width=530, height=400, mask='auto')
-        self.barraTitulo(30, 760, c, "10.         Controle de pagamento a fornecedores")
+        self.barraTitulo(
+            30, 760, c, "10.         Controle de pagamento a fornecedores")
 
         c.drawImage(os.path.join(diretorio, "graf_indices_garantia_I.png"),
                     30, 30, width=510, height=300, mask='auto')
@@ -155,7 +164,7 @@ class graficoInterController:
 
     def pdfPag5(self, c, diretorio, pagina):
         #   Quinta Página
-        self.logo_cabecalho(self, c) # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
 
         c.drawImage(os.path.join(diretorio, "graf_indices_garantia_II.png"),
                     30, 455, width=510, height=300, mask='auto')
@@ -163,7 +172,8 @@ class graficoInterController:
 #       c.setFont('Helvetica-Bold', 14)
 #       c.setFillColor("black")
 #       c.drawString(30, 450, "Recebíveis por unidades produzidas")
-        self.barraTitulo(30, 450, c, "11.         Recebíveis por unidades produzidas")
+        self.barraTitulo(
+            30, 450, c, "11.         Recebíveis por unidades produzidas")
 
         c.drawImage(os.path.join(diretorio, "graf_chaves_perc.png"),
                     30, 270, width=200, height=150, mask='auto')
@@ -186,12 +196,13 @@ class graficoInterController:
 
     def pdfPag6(self, c, diretorio, pagina):
         #   Sexta Página
-        self.logo_cabecalho(self, c) # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
 
 #        c.setFont('Helvetica-Bold', 14)
 #        c.setFillColor("black")
 #        c.drawString(30, 780, "Evolução de saldo em conta corrente")
-        self.barraTitulo(30, 740, c, "13.         Evolução de saldo em conta corrente")
+        self.barraTitulo(
+            30, 740, c, "13.         Evolução de saldo em conta corrente")
 
         c.drawImage(os.path.join(diretorio, "tab_conta_corrente.png"),
                     40, 650, width=400, height=60, mask='auto')
@@ -206,7 +217,7 @@ class graficoInterController:
         c.drawString(30, 120, "Certidões")
 
         c.drawImage(os.path.join(diretorio, "tab_garantias_geral.png"),
-                    20, 235, width=400, height=100, mask='auto') # w350 h100
+                    20, 235, width=400, height=100, mask='auto')  # w350 h100
         c.drawImage(os.path.join(diretorio, "tab_garantias_obra.png"),
                     20, 135, width=400, height=100, mask='auto')
         c.drawImage(os.path.join(diretorio, "tab_certidoes.png"),
@@ -218,12 +229,13 @@ class graficoInterController:
 
     def pdfPag7(self, c, diretorio, pagina):
         #   Setima Página
-        self.logo_cabecalho(self, c) # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
 
 #        c.setFont('Helvetica-Bold', 14)
 #        c.setFillColor("black")
 #        c.drawString(30, 780, "Imagens 3D projetadas retratando a realidade da obra")
-        self.barraTitulo(30, 760, c, "15.         Imagens 3D projetadas retratando a realidade da obra")
+        self.barraTitulo(
+            30, 760, c, "15.         Imagens 3D projetadas retratando a realidade da obra")
 
         c.drawImage(os.path.join(diretorio, "foto_3D_1.png"),
                     30, 550, width=250, height=200, mask='auto')
@@ -240,7 +252,7 @@ class graficoInterController:
 
     def pdfPag8(self, c, diretorio, pagina):
         #   Oitava Página
-        self.logo_cabecalho(self, c) # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
 
 #        c.setFont('Helvetica-Bold', 14)
 #        c.setFillColor("black")
@@ -301,7 +313,7 @@ class graficoInterController:
 
     def pdfPag9(self, c, diretorio, pagina):
         #   Nona Página
-        self.logo_cabecalho(self, c) # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
 
 #        c.setFont('Helvetica-Bold', 14)
 #        c.setFillColor("black")
@@ -338,7 +350,7 @@ class graficoInterController:
 
     def pdfPag10(self, c, diretorio, pagina):
         #   Décima Página
-        self.logo_cabecalho(self, c) # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
 
 #        c.setFont('Helvetica-Bold', 14)
 #        c.setFillColor("black")
@@ -375,7 +387,7 @@ class graficoInterController:
 
     def pdfPag11(self, c, diretorio, pagina):
         #   Décima Primeira Página
-        self.logo_cabecalho(self, c) # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
 
 #        c.setFont('Helvetica-Bold', 14)
 #        c.setFillColor("black")
@@ -412,7 +424,7 @@ class graficoInterController:
 
     def pdfPag12(self, c, diretorio, pagina, idEmpreend, mes, ano):
         #   Décima Segunda Página
-        self.logo_cabecalho(self, c) # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
 
         consC = consideracaoController()
         consS = consC.listar_campos(idEmpreend, mes, ano)
@@ -790,12 +802,13 @@ class graficoInterController:
 
         return listaErro
 
-
     def logo_cabecalho(self, c):
         logoBanco = self.getPathImgs("Inter.png")
-        c.drawImage(logoBanco, 450, 795, width=110, height=30, mask='auto')  # preserveAspectRatio=True,
+        c.drawImage(logoBanco, 450, 795, width=110, height=30,
+                    mask='auto')  # preserveAspectRatio=True,
         logoWs = self.getPathImgs("Logo WS.png")
-        c.drawImage(logoWs, 20, 790, width=90, height=40, mask='auto')  # preserveAspectRatio=True,
+        c.drawImage(logoWs, 20, 790, width=90, height=40,
+                    mask='auto')  # preserveAspectRatio=True,
 
         return
 
@@ -804,14 +817,15 @@ class graficoInterController:
         fonte = 'Helvetica-Bold'
         tamanho = 12
 
-        c.setFont(fonte, tamanho) # Define a fonte para calcular a largura do texto
+        # Define a fonte para calcular a largura do texto
+        c.setFont(fonte, tamanho)
         largura_texto = 600  # Definindo uma largura fixa para o exemplo
-        altura_texto = 14 # Pequena margem extra
+        altura_texto = 14  # Pequena margem extra
 
         c.setFillColorRGB(0.831, 0.243, 0.007)  # define a cor de fundo laranja
         c.rect(x, y, largura_texto, altura_texto, fill=1, stroke=0)
-    
-        c.setFillColor(white) # Define a cor do texto como branco
+
+        c.setFillColor(white)  # Define a cor do texto como branco
         c.drawString(x, y+2.0, texto)
 
         return

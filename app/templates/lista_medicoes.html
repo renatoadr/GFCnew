@@ -102,6 +102,7 @@
               <tr class="text-center">
                 <th>Medição</th>
                 <th>Vigência</th>
+                <th>Data da Medição</th>
                 <th>Previsto Acumulado %</th>
                 <th>Realizado Acumulado %</th>
                 <th>Diferença %</th>
@@ -116,6 +117,7 @@
               <tr class="text-center">
                 <td>{{ m.getNrMedicao() }}</td>
                 <td>{{ m.getMesVigencia() }}/{{ m.getAnoVigencia() }}</td>
+                <td>{{ m.getDataMedicao()|to_date }}</td>
                 <td>{{ m.getPercPrevistoAcumulado()|to_currency }}</td>
                 <td>{{ m.getPercRealizadoAcumulado()|to_currency }}</td>
                 <td>{{ m.getPercDiferenca()|to_currency }}</td>

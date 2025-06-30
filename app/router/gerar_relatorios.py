@@ -38,6 +38,13 @@ opcoesComRange = [
 ]
 
 
+def existeEmOpcoes(nome):
+    for opt in opcoes:
+        if opt[0] == nome:
+            return True
+    return False
+
+
 @gerar_relatorios_bp.route('/gerar_insumos_relatorios', methods=['GET'])
 @login_required
 def gerar_relatorio():
@@ -65,11 +72,22 @@ def gerar_relatorio():
         CodBanco().set(codBanco)
 
     if codBanco == 77:
-        opcoes.append(['tab_prazo_inter', 'Tabela de Prazo', 'Não'])
-        opcoes.append(['tab_projeto_inter', 'Tabela de Projeto', 'Não'])
-        opcoes.append(['tab_qualidade_inter', 'Tabela de Qualidade', 'Não'])
-        opcoes.append(['tab_seguranca_inter', 'Tabela de Segurança', 'Não'])
-        opcoes.append(['tab_situacao_inter', 'Tabela de Situação', 'Não'])
+        prazo = ['tab_prazo_inter', 'Tabela de Prazo', 'Não']
+        projeto = ['tab_projeto_inter', 'Tabela de Projeto', 'Não']
+        qualidade = ['tab_qualidade_inter', 'Tabela de Qualidade', 'Não']
+        seguranca = ['tab_seguranca_inter', 'Tabela de Segurança', 'Não']
+        situacao = ['tab_situacao_inter', 'Tabela de Situação', 'Não']
+
+        if not existeEmOpcoes('tab_prazo_inter'):
+            opcoes.append(prazo)
+        if not existeEmOpcoes('tab_projeto_inter'):
+            opcoes.append(projeto)
+        if not existeEmOpcoes('tab_qualidade_inter'):
+            opcoes.append(qualidade)
+        if not existeEmOpcoes('tab_seguranca_inter'):
+            opcoes.append(seguranca)
+        if not existeEmOpcoes('tab_situacao_inter'):
+            opcoes.append(situacao)
 
     vigencia = request.args.get('vigencia')
 
