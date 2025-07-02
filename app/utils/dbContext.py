@@ -23,8 +23,8 @@ class MySql:
             self.__conn.close()
             self.__cursor = None
             self.__conn = None
-        except:
-            pass
+        except Exception as error:
+            logger.error("Error in close connection ", error)
 
     @staticmethod
     def getSenha():

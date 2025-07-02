@@ -152,5 +152,8 @@ def getForm() -> usuario:
     user.setNmUsuario(request.form.get('nm_user').title())
     user.setSenha(request.form.get('pass_user'))
     user.setTpAcesso(request.form.get('tp_access'))
-    user.setCodBanco(request.form.get('cod_banco'))
+    if request.form.get('cod_banco') == '':
+        user.setCodBanco(0)
+    else:
+        user.setCodBanco(int(request.form.get('cod_banco')))
     return user
