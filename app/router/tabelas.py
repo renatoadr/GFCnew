@@ -42,7 +42,13 @@ def tab_notas():
     notC = notaController()
     notS = notC.consultarNotaPelaData(idEmpreend, dtCarga)
 
-    grafNome = gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS)
+    grafNome = gerar_tab_notas(
+        idEmpreend,
+        mesVigencia,
+        anoVigencia,
+        notS,
+        codBanco
+    )
 
     return render_template("nota_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
@@ -153,7 +159,12 @@ def tab_conta_corrente():
     conS = conC.consultarContaPelaCarga(idEmpreend, dtCarga)
 
     grafNome = gerar_tab_conta_corrente(
-        idEmpreend, mesVigencia, anoVigencia, conS)
+        idEmpreend,
+        mesVigencia,
+        anoVigencia,
+        conS,
+        codBanco
+    )
     return render_template("conta_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
@@ -929,7 +940,7 @@ def gerar_tab_empreend_capa(idEmpreend, mes, ano):
         ['Endereço da obra     ', emp.getEnderecoCompleto()],
         ['Data da medição      ', dataAtual],
         ['Período da medição   ', periodo],
-        ['Etapa do cornograma  ', medAtual.getNrMedicao() if medAtual else '1ª' + ' Etapa']
+        ['Etapa do cronograma  ', medAtual.getNrMedicao() if medAtual else '1ª' + ' Etapa']
     ]
 
     column_labels = ['                     ', '                           ']

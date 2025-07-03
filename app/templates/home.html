@@ -62,7 +62,7 @@
               <tr>
                 <th>Nome</th>
                 <th>Apelido</th>
-                <th colspan="16" class="text-center">Ações</th>
+                <th class="text-center">Ações</th>
               </tr>
             </thead>
             <tbody>
@@ -71,127 +71,131 @@
               <tr>
                 <td>{{ e.getNmEmpreend() }}</td>
                 <td>{{ e.getApelido() }}</td>
-                <td>
-                  <a href="/abrir_edicao_empreend?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
-                    data-bs-title="Editar Empreendimento">
-                    <i class="fa-solid fa-pencil text-warning"></i>
-                  </a>
-                </td>
 
                 <td>
-                  <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Empreendimento">
-                    <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
-                      data-modal-exclude-title="Empreendimento"
-                      data-modal-exclude-action="/excluir_empreend?idEmpreend={{e.getIdEmpreend()}}"
-                      data-modal-exclude-text="Deseja realmente excluir o empreendimento <strong>{{ e.getNmEmpreend() }}</strong>?"></i>
-                  </a>
-                </td>
+                  <ul class="list_icons">
+                    <li>
+                      <a href="/abrir_edicao_empreend?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
+                        data-bs-title="Editar Empreendimento">
+                        <i class="fa-solid fa-pencil text-warning"></i>
+                      </a>
+                    </li>
 
-                <td>
-                  <a href="/tratar_garantias?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
-                    data-bs-toggle="tooltip" data-bs-title="Garantias">
-                    <i class="fa-solid fa-shield-halved"></i>
-                  </a>
-                </td>
+                    <li>
+                      <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Empreendimento">
+                        <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
+                          data-modal-exclude-title="Empreendimento"
+                          data-modal-exclude-action="/excluir_empreend?idEmpreend={{e.getIdEmpreend()}}"
+                          data-modal-exclude-text="Deseja realmente excluir o empreendimento <strong>{{ e.getNmEmpreend() }}</strong>?"></i>
+                      </a>
+                    </li>
 
-                <td>
-                  <a href="/tratar_contas?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
-                    data-bs-toggle="tooltip" data-bs-title="Conta Corrente">
-                    <i class="fa-solid fa-building-columns"></i>
-                  </a>
-                </td>
+                    <li>
+                      <a href="/tratar_garantias?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                        data-bs-toggle="tooltip" data-bs-title="Garantias">
+                        <i class="fa-solid fa-shield-halved"></i>
+                      </a>
+                    </li>
 
-                <td>
-                  <a href="/tratar_torres?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
-                    data-bs-toggle="tooltip" data-bs-title="Torres">
-                    <i class="fa-solid fa-hotel"></i>
-                  </a>
-                </td>
+                    <li>
+                      <a href="/tratar_contas?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                        data-bs-toggle="tooltip" data-bs-title="Conta Corrente">
+                        <i class="fa-solid fa-building-columns"></i>
+                      </a>
+                    </li>
 
-                <td>
-                  <a href="/tratar_unidades?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
-                    data-bs-toggle="tooltip" data-bs-title="Unidades">
-                    <i class="fa-solid fa-building-un"></i>
-                  </a>
-                </td>
+                    <li>
+                      <a href="/tratar_torres?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                        data-bs-toggle="tooltip" data-bs-title="Torres">
+                        <i class="fa-solid fa-hotel"></i>
+                      </a>
+                    </li>
 
-                <td>
-                  <a href="/tratar_orcamentos?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
-                    data-bs-toggle="tooltip" data-bs-title="Orçamentos">
-                    <i class="fa-solid fa-scale-balanced"></i>
-                  </a>
-                </td>
+                    <li>
+                      <a href="/tratar_unidades?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                        data-bs-toggle="tooltip" data-bs-title="Unidades">
+                        <i class="fa-solid fa-building-un"></i>
+                      </a>
+                    </li>
 
-                <td>
-                  <a href="/tratar_medicoes?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
-                    data-bs-toggle="tooltip" data-bs-title="Medições">
-                    <i class="fa-solid fa-ruler-combined"></i>
-                  </a>
-                </td>
+                    <li>
+                      <a href="/tratar_orcamentos?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                        data-bs-toggle="tooltip" data-bs-title="Orçamentos">
+                        <i class="fa-solid fa-scale-balanced"></i>
+                      </a>
+                    </li>
 
-                <td>
-                  <a href="/tratar_notas?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
-                    data-bs-toggle="tooltip" data-bs-title="Notas">
-                    <i class="fa-solid fa-clipboard-list"></i>
-                  </a>
-                </td>
+                    <li>
+                      <a href="/tratar_medicoes?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                        data-bs-toggle="tooltip" data-bs-title="Medições">
+                        <i class="fa-solid fa-ruler-combined"></i>
+                      </a>
+                    </li>
 
-                <td>
-                  <a href="/tratar_certidoes?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
-                    data-bs-title="Certidões">
-                    <i class="fa-solid fa-book"></i>
-                  </a>
-                </td>
+                    <li>
+                      <a href="/tratar_notas?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                        data-bs-toggle="tooltip" data-bs-title="Notas">
+                        <i class="fa-solid fa-clipboard-list"></i>
+                      </a>
+                    </li>
 
-                <td>
-                  <a href="/upload_config_fotos?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
-                    data-bs-toggle="tooltip" data-bs-title="Anexar Fotos">
-                    <i class="fa-regular fa-images"></i>
-                  </a>
-                </td>
+                    <li>
+                      <a href="/tratar_certidoes?idEmpreend={{e.getIdEmpreend()}}" data-bs-toggle="tooltip"
+                        data-bs-title="Certidões">
+                        <i class="fa-solid fa-book"></i>
+                      </a>
+                    </li>
 
-                <td>
-                  <a href="/consideracoes?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getApelido()}}"
-                    data-bs-toggle="tooltip" data-bs-title="Considerações Finais">
-                    <i class="fa-solid fa-clipboard-check"></i>
-                  </a>
-                </td>
+                    <li>
+                      <a href="/upload_config_fotos?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                        data-bs-toggle="tooltip" data-bs-title="Anexar Fotos">
+                        <i class="fa-regular fa-images"></i>
+                      </a>
+                    </li>
 
-                <td>
-                  {% if e.getCodBanco() == 77%}
-                  <a href="/aspectos_obra?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getApelido()}}"
-                    data-bs-toggle="tooltip" data-bs-title="Aspectos da Obra">
-                    <i class="fa-regular fa-star-half-stroke"></i>
-                  </a>
-                  {% endif %}
-                </td>
+                    <li>
+                      <a href="/consideracoes?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getApelido()}}"
+                        data-bs-toggle="tooltip" data-bs-title="Considerações Finais">
+                        <i class="fa-solid fa-clipboard-check"></i>
+                      </a>
+                    </li>
 
-                <td>
-                  <a href="/gerar_insumos_relatorios?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getApelido()}}&codBanco={{e.getCodBanco()}}"
-                    data-bs-toggle="tooltip" data-bs-title="Gerar insumos para o relatório">
-                    <i class="fa-solid fa-chart-pie"></i>
-                  </a>
-                </td>
+                    {% if e.getCodBanco() == 77%}
+                    <li>
+                      <a href="/aspectos_obra?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getApelido()}}"
+                        data-bs-toggle="tooltip" data-bs-title="Aspectos da Obra">
+                        <i class="fa-regular fa-star-half-stroke"></i>
+                      </a>
+                    </li>
+                    {% endif %}
 
-                <td>
-                  <a href="/lista_relatorios?idEmpreend={{e.getIdEmpreend()}}&apelido={{e.getApelido()}}&codBanco={{e.getCodBanco()}}"
-                    data-bs-toggle="tooltip" data-bs-title="Relatórios">
-                    <i class="fa-solid fa-file-contract"></i>
-                  </a>
-                </td>
+                    <li>
+                      <a href="/gerar_insumos_relatorios?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getApelido()}}&codBanco={{e.getCodBanco()}}"
+                        data-bs-toggle="tooltip" data-bs-title="Gerar insumos para o relatório">
+                        <i class="fa-solid fa-chart-pie"></i>
+                      </a>
+                    </li>
 
-                <td>
-                  <a href="/tratar_agendas?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
-                    data-bs-toggle="tooltip" data-bs-title="Agenda">
-                    <i class="fa-solid fa-calendar-days"></i>
-                  </a>
-                </td>
+                    <li>
+                      <a href="/lista_relatorios?idEmpreend={{e.getIdEmpreend()}}&apelido={{e.getApelido()}}&codBanco={{e.getCodBanco()}}"
+                        data-bs-toggle="tooltip" data-bs-title="Relatórios">
+                        <i class="fa-solid fa-file-contract"></i>
+                      </a>
+                    </li>
 
+                    <li>
+                      <a href="/tratar_agendas?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                        data-bs-toggle="tooltip" data-bs-title="Agenda">
+                        <i class="fa-solid fa-calendar-days"></i>
+                      </a>
+                    </li>
+                  </ul>
+                </td>
               </tr>
               {% endfor %}
               {% else %}
               <tr>
-                <td colspan="19" class="text-center">
+                <td colspan="5" class="text-center">
                   Não existem empreendimentos cadastrados.
                 </td>
               </tr>

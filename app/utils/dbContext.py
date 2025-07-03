@@ -6,23 +6,41 @@ import os
 class MySql:
     message = ""
     DB_NAME = os.getenv('DB_NAME')
-    __conn = None
-    __cursor = None
+    __conn__ = None
+    __cursor__ = None
+
+    def dbConnect(self):
+        try:
+            connection = m.connect(
+                host=os.getenv('DB_HOST'),
+                user=os.getenv('DB_USER'),
+                password=MySql.getSenha()
+            )
+
+            if connection.is_connected():
+                return connection
+        except Exception as e:
+            logger.error('Erro ao conectar com o banco: ', e)
+            return None
+
+    def getConn(self):
+        if self.__conn__ is None:
+            self.__conn__ = self.dbConnect()
+        return self.__conn__
 
     def getCursor(self):
-        if self.__cursor is None:
-            self.__conn = MySql.connect()
-            self.__cursor = self.__conn.cursor(dictionary=True)
-            return self.__cursor
+        if self.__cursor__ is None:
+            conn = self.getConn()
+            self.__cursor__ = conn.cursor(dictionary=True)
+            return self.__cursor__
 
-    def commitAndClose(self, useCommit=False):
+    def dbClose(self):
         try:
-            if useCommit:
-                self.__conn.commit()
-            self.__cursor.close()
-            self.__conn.close()
-            self.__cursor = None
-            self.__conn = None
+            if self.__conn__.is_connected():
+                self.__cursor__.close()
+                self.__conn__.close()
+                self.__cursor__ = None
+                self.__conn__ = None
         except Exception as error:
             logger.error("Error in close connection ", error)
 
@@ -36,51 +54,63 @@ class MySql:
 
     @staticmethod
     def connect():
-        try:
-            connection = m.connect(
-                host=os.getenv('DB_HOST'),
-                user=os.getenv('DB_USER'),
-                password=MySql.getSenha()
-            )
-
-            if connection.is_connected():
-                return connection
-
-        except Exception as e:
-            logger.error('Erro ao conectar com o banco: ', e)
+        db = MySql()
+        return db.dbConnect()
 
     @staticmethod
     def close(connection):
         connection.close()
 
     @staticmethod
-    def getOne(query: str, args: tuple = None):
-        conn = MySql()
-        cursor = conn.getCursor()
-        cursor.execute(query, args)
-        ret = cursor.fetchone()
-        conn.commitAndClose()
+    def getOne(query: str, args: tuple = None) -> dict:
+        db = MySql()
+        ret = None
+        try:
+            cursor = db.getCursor()
+            cursor.execute(query, args)
+            ret = cursor.fetchone()
+        except Exception as error:
+            logger.error("Erro ao realizar o fetchone", error)
+        finally:
+            db.dbClose()
         return ret
 
     @staticmethod
-    def getAll(query: str, args: tuple = None):
+    def getAll(query: str, args: tuple = None) -> list[dict]:
         conn = MySql()
-        cursor = conn.getCursor()
-        cursor.execute(query, args)
-        ret = cursor.fetchall()
-        conn.commitAndClose()
+        ret = []
+        try:
+            cursor = conn.getCursor()
+            cursor.execute(query, args)
+            ret = cursor.fetchall()
+        except Exception as error:
+            logger.error("Erro ao realizar o fetchall", error)
+        finally:
+            conn.dbClose()
         return ret
 
     @staticmethod
-    def exec(query: str, args: tuple = None):
+    def exec(query: str, args: tuple = None) -> bool:
         conn = MySql()
-        cursor = conn.getCursor()
-        cursor.execute(query, args)
-        conn.commitAndClose(useCommit=True)
+        try:
+            conn.getCursor().execute(query, args)
+            conn.getConn().commit()
+            return True
+        except Exception as error:
+            logger.error("Erro ao realizar o execute", error)
+        finally:
+            conn.dbClose()
+        return False
 
     @staticmethod
-    def execMany(query: str, args: tuple = None):
+    def execMany(query: str, args: tuple = None) -> bool:
         conn = MySql()
-        cursor = conn.getCursor()
-        cursor.executemany(query, args)
-        conn.commitAndClose(useCommit=True)
+        try:
+            conn.getCursor().executemany(query, args)
+            conn.getConn().commit()
+            return True
+        except Exception as error:
+            logger.error("Erro ao realizar o executemany", error)
+        finally:
+            conn.dbClose()
+        return False

@@ -97,6 +97,7 @@ class medicaoController:
         return self.mapper(linha)
 
     def carregar_medicoes(self, caminhoArq, idEmpreend):
+        query = f"INSERT INTO {MySql.DB_NAME}.tb_medicoes (id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, nr_medicao, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo, perc_realizado_periodo, dt_medicao) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
 
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
@@ -112,18 +113,33 @@ class medicaoController:
         print('------------ carregar_medicoes -----------------')
         print(idEmpreend)
         print(linha, l)
+        dados = []
 
         while linha < l:
             print(linha)
             nrMedicao = str(tabela.at[linha, 'Medição'])
             mesVigencia = str(tabela.at[linha, 'Mês']).zfill(2)
             anoVigencia = str(tabela.at[linha, 'Ano'])
+            dataMedicao = tabela.at[linha, 'Data da Medição']
             percPrevistoPeriodo = float(tabela.at[linha, 'Previsto Período'])
             percRealizadoPeriodo = float(tabela.at[linha, 'Realizado Período'])
 
             # Substituir valores NaN por 0
             if pd.isna(percRealizadoPeriodo):
                 percRealizadoPeriodo = 0.0
+
+            if not pd.isna(dataMedicao) and not pd.isnull(dataMedicao):
+                if isinstance(dataMedicao, datetime):
+                    dataMedicao = format(dataMedicao, '%Y-%m-%d')
+                else:
+                    try:
+                        dataMedicao = datetime.strptime(
+                            dataMedicao, '%d/%m/%Y')
+                        dataMedicao = format(dataMedicao, '%Y-%m-%d')
+                    except:
+                        dataMedicao = None
+            else:
+                dataMedicao = None
 
             percRealizadoPeriodo = float(percRealizadoPeriodo)
 
@@ -140,14 +156,23 @@ class medicaoController:
                     percRealizadoAcumulado = 0
                     percDiferenca = 0
 
-            query = "INSERT INTO " + MySql.DB_NAME + \
-                ".tb_medicoes (id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, nr_medicao, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo, perc_realizado_periodo) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            dados.append((
+                idEmpreend,
+                mesVigencia,
+                anoVigencia,
+                dateTime,
+                nrMedicao + 'ª',
+                percPrevistoAcumulado,
+                percRealizadoAcumulado,
+                percDiferenca,
+                percPrevistoPeriodo,
+                percRealizadoPeriodo,
+                dataMedicao
+            ))
 
-            print(query)
-            cursor.execute(query, (idEmpreend, mesVigencia, anoVigencia, dateTime, nrMedicao + 'ª',
-                           percPrevistoAcumulado, percRealizadoAcumulado, percDiferenca, percPrevistoPeriodo, percRealizadoPeriodo))
             linha += 1
 
+        cursor.executemany(query, dados)
         self.__connection.commit()
         print(cursor.rowcount, "medição cadastrada com sucesso")
         cursor.close()

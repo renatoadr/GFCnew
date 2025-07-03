@@ -322,3 +322,16 @@ main {
 .toastui-calendar-event-title {
   word-break: normal!important;
 }
+
+.list_icons {
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 10px;
+  padding-right: 25px;
+  justify-content: space-between;
+
+  li {
+    list-style: none;
+  }
+}
