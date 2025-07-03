@@ -65,7 +65,9 @@ def upload_config_fotos():
         if not os.path.isdir(os.path.join(diretorio, folder)):
             continue
         ano, mes = folder.split('_')
-        listVigencias.append((f"{months[mes.zfill(2)]}/{ano}", folder))
+        mes = mes.zfill(2)
+        if mes in months:
+            listVigencias.append((f"{months[mes]}/{ano}", folder))
 
     listVigencias.reverse()
 

@@ -252,7 +252,8 @@ def tab_conta_corrente(mes, ano):
         conC = contaController()
         conS = conC.consultarContaPelaVigencia(IdEmpreend().get(), mes, ano)
         if conS:
-            gerar_tab_conta_corrente(IdEmpreend().get(), mes, ano, conS)
+            gerar_tab_conta_corrente(
+                IdEmpreend().get(), mes, ano, conS, CodBanco().get())
         else:
             flash_message.warning(
                 'Não há dados para gerar a tabela de contas corrente')
@@ -267,7 +268,8 @@ def tab_notas(mes, ano):
         notC = notaController()
         notS = notC.consultarNotaPelaVigencia(IdEmpreend().get(), mes, ano)
         if notS:
-            gerar_tab_notas(IdEmpreend().get(), mes, ano, notS)
+            gerar_tab_notas(IdEmpreend().get(), mes,
+                            ano, notS, CodBanco().get())
         else:
             flash_message.warning('Não há dados para gerar a tabela de notas')
     except Exception as error:
@@ -282,7 +284,8 @@ def tab_orcamento_liberacao(mes, ano):
         medS = medC.consultarOrcamentoPelaVigencia(
             IdEmpreend().get(), mes, ano)
         if medS:
-            gerar_tab_orcamento_liberacao(IdEmpreend().get(), mes, ano, medS)
+            gerar_tab_orcamento_liberacao(
+                IdEmpreend().get(), mes, ano, medS, CodBanco().get())
         else:
             flash_message.warning(
                 'Não há dados para gerar a tabela de orçamento liberação')
