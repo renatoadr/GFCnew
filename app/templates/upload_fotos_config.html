@@ -46,22 +46,10 @@
 
         <div id="novaVigenciaBox" {% if listVigencias %} style="display:none" {% endif %}>
           <div class="row mb-5">
-            <div class="col-6">
+            <div class="col-4">
               <div class="form-floating">
-                <select name="mesVigencia" id="mesVigencia" class="form-select required" placeholder="" value="">
-                  <option value="">Selecione o mês</option>
-                  {% for m in range(1, 13) %}
-                  <option value="{{(m|string).zfill(2)}}">{{(m|string).zfill(2)}}</option>
-                  {% endfor %}
-                </select>
-                <label for="mesVigencia">Mês Vigência</label>
-              </div>
-            </div>
-            <div class="col-6">
-              <div class="form-floating">
-                <input type="text" name="anoVigencia" id="anoVigencia" class="form-control 4num required" min="2000"
-                  max="3000" placeholder="" value="" maxlength="4">
-                <label for="anoVigencia">Ano Vigência</label>
+                <input type="month" name="vigencia" id="Vigencia" class="form-control required" placeholder="">
+                <label for="vigencia">Vigência</label>
               </div>
             </div>
           </div>

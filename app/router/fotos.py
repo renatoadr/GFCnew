@@ -80,8 +80,13 @@ def upload_fotos():
     qtdFotosObra = converterStrToInt(request.form.get("qtdObra"))
     qtd3D = converterStrToInt(request.form.get("qtd3D"))
     capa = request.form.getlist("capa")
-    mesV = converterStrToInt(request.form.get('mesVigencia'))
-    anoV = converterStrToInt(request.form.get('anoVigencia'))
+    vig = request.form.get('vigencia')
+    mesV = None
+    anoV = None
+    if vig:
+        vig = vig.split('-')
+        mesV = converterStrToInt(vig[1])
+        anoV = converterStrToInt(vig[0])
 
     if vigCurrent is None and (mesV is None or mesV == 0 or anoV is None or anoV == 0):
         return redirect('/upload_config_fotos')
@@ -216,11 +221,10 @@ def saveImage(label, fieldName, nameFile, path):
 def saveFile(file: ImageFile, path, nameFile):
     try:
         if file and file.filename.lower().endswith(('png', 'jpg', 'jpeg')):
-            name, ext = os.path.splitext(file.filename)
-            filePath = os.path.normpath(f"{path}/{nameFile}{ext}")
+            filePath = os.path.normpath(f"{path}/{nameFile}.png")
             if os.path.exists(filePath):
                 os.remove(filePath)
-            file.save(filePath)
+            file.save(filePath, 'PNG')
             return True
         else:
             return False
