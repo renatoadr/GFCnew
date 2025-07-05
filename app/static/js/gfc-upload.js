@@ -102,11 +102,6 @@ $(function() {
 
 $(function() {
   const requireds = GFC.getRequiredFields("formUploadConfig")
-  requireds.messages.anoVigencia = {
-    required: GFC_MESSAGES.REQUIRED,
-    min: GFC_MESSAGES.MIN(2000),
-    max: GFC_MESSAGES.MAX(3000),
-  }
   delete requireds.rules;
   const config = GFC.getConfigValidateForm(requireds);
   config.submitHandler = function (form) {

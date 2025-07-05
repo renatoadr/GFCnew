@@ -39,7 +39,7 @@ class graficoInterController:
 
         # ATENÇÃO AJUSTAR DADOS DA VISTORIA
 
-        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(c)  # Adiciona o logo no cabeçalho
 
         c.setFont('Helvetica-Bold', 12)
         c.drawString(190, 740, "RELATÓRIO DE GESTÃO MENSAL")
@@ -692,10 +692,10 @@ class graficoInterController:
         return listaErro
 
     def logo_cabecalho(self, c):
-        logoBanco = self.getPathImgs("Inter.png")
+        logoBanco = self.getPathImgs("inter.png")
         c.drawImage(logoBanco, 450, 795, width=110, height=30,
                     mask='auto')  # preserveAspectRatio=True,
-        logoWs = self.getPathImgs("Logo WS.png")
+        logoWs = self.getPathImgs("logo_ws.png")
         c.drawImage(logoWs, 20, 790, width=90, height=40,
                     mask='auto')  # preserveAspectRatio=True,
 
