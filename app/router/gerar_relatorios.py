@@ -4,7 +4,7 @@ from controller.orcamentoController import orcamentoController
 from router.graficos import gerar_graf_orcamento_liberacao, gerar_graf_indices_garantia_I, gerar_graf_indices_garantia_II, gerar_graf_chaves, gerar_graf_vendas, gerar_graf_progresso_obra
 from controller.contaController import contaController
 from controller.notaController import notaController
-from router.tabelas import gerar_tab_conta_corrente, gerar_tab_notas, gerar_tab_orcamento_liberacao, gerar_tab_acomp_financeiro, gerar_tab_certidoes, gerar_tab_garantias_geral, gerar_tab_garantias_obra, gerar_tab_medicoes, gerar_tab_prazo_inter, gerar_tab_projeto_inter, gerar_tab_qualidade_inter, gerar_tab_seguranca_inter, gerar_tab_situacao_inter
+from router.tabelas import gerar_tab_conta_corrente, gerar_tab_notas, gerar_tab_orcamento_liberacao, gerar_tab_acomp_financeiro, gerar_tab_certidoes, gerar_tab_garantias_geral, gerar_tab_garantias_obra, gerar_tab_medicoes, gerar_tab_prazo_inter, gerar_tab_projeto_inter, gerar_tab_qualidade_inter, gerar_tab_seguranca_inter, gerar_tab_situacao_inter, gerar_tab_empreend_capa
 from utils.security import login_required
 from utils.CtrlSessao import IdEmpreend, NmEmpreend, CodBanco
 from utils.flash_message import flash_message
@@ -133,6 +133,9 @@ def gerar_insumos():
         '-') if inicioIntervalo else [None, None]
     endAno, endMes = finalIntervalo.split(
         '-') if finalIntervalo else [None, None]
+
+    if CodBanco().get() == 77:
+        gerar_tab_empreend_capa(IdEmpreend().get(), vig[1], vig[0])
 
     if insumos:
         for ins in insumos:

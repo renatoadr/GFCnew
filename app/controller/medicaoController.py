@@ -84,13 +84,17 @@ class medicaoController:
                       SELECT MAX(id_medicao) FROM {MySql.DB_NAME}.tb_medicoes
                       WHERE id_empreendimento = %s
                       AND perc_realizado_periodo IS NOT NULL
-                      AND perc_realizado_periodo <> '0,00'
+                      AND perc_realizado_periodo > 0
                   ); """
         linha = MySql.getOne(query, (idEmpreend,))
         return self.mapper(linha) if linha else None
 
     def consultarMedicaoAnteriorPeloId(self, idEmpreend, idMedicao) -> medicao:
-        query = f"SELECT id_medicao, id_empreendimento, nr_medicao, mes_vigencia, ano_vigencia, dt_carga, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo, perc_realizado_periodo, dt_medicao FROM {MySql.DB_NAME}.tb_medicoes WHERE id_empreendimento = %s AND id_medicao < %s ORDER BY 1 DESC LIMIT 1"
+        query = f"""SELECT id_medicao, id_empreendimento, nr_medicao, mes_vigencia, ano_vigencia, dt_carga, perc_previsto_acumulado, perc_realizado_acumulado, perc_diferenca, perc_previsto_periodo, perc_realizado_periodo, dt_medicao FROM {MySql.DB_NAME}.tb_medicoes WHERE id_medicao = (
+            SELECT MAX(id_medicao) FROM {MySql.DB_NAME}.tb_medicoes
+            WHERE id_empreendimento = %s
+            AND id_medicao < %s
+        ); """
         linha = MySql.getOne(query, (idEmpreend, idMedicao))
         if not linha:
             return None

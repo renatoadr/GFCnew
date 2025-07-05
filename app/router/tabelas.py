@@ -922,13 +922,17 @@ def gerar_tab_empreend_capa(idEmpreend, mes, ano):
     emp = empCtrl.consultarEmpreendimentoPeloId(idEmpreend)
     fig, ax = plt.subplots(1, 1)
     medAtual = medCtrl.consultarMedicaoAtual(idEmpreend)
-    medAnterior = medCtrl.consultarMedicaoAnteriorPeloId(
-        medAtual.getIdMedicao()
-    )
+    medAnterior = None
     dataAtual = (medAtual.getDataMedicao()
-                 if medAtual else datetime.now()).strftime("%d/%m/%Y")
+                 if medAtual and medAtual.getDataMedicao() is not None else datetime.now()).strftime("%d/%m/%Y")
 
-    if medAnterior is None:
+    if medAtual:
+        medAnterior = medCtrl.consultarMedicaoAnteriorPeloId(
+            medAtual.getIdEmpreend(),
+            medAtual.getIdMedicao()
+        )
+
+    if medAnterior is None or medAnterior.getDataMedicao() is None:
         periodo = f'De -- até {dataAtual}'
     else:
         periodo = f'De {medAnterior.strftime("%d/%m/%Y")} até {dataAtual}'

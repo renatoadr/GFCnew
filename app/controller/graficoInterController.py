@@ -16,7 +16,6 @@ class graficoInterController:
 
     def __init__(self):
         self.app = current_app
-        pass
 
     def getPathImgs(self, img):
         path = os.path.split(__file__)
