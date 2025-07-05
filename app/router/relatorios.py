@@ -139,28 +139,28 @@ def relatorio_padrao(idEmpreend, apelido, mes, ano):
             c.showPage()
 
             foto1 = os.path.normpath(f"{diretorio}/foto_1")
-            if os.path.isfile(f"{foto1}.jpeg") or os.path.isfile(f"{foto1}.png"):
+            if os.path.isfile(f"{foto1}.png"):
                 pagina += 1
                 grafC.pdfPag8(c, diretorio, pagina)
                 c.showPage()
 
-                foto7 = os.path.normpath(f"{diretorio}/foto_7")
-                if os.path.isfile(f"{foto7}.jpeg") or os.path.isfile(f"{foto7}.png"):
-                    pagina += 1
-                    grafC.pdfPag9(c, diretorio, pagina)
-                    c.showPage()
+            foto7 = os.path.normpath(f"{diretorio}/foto_7")
+            if os.path.isfile(f"{foto7}.png"):
+                pagina += 1
+                grafC.pdfPag9(c, diretorio, pagina)
+                c.showPage()
 
-                    foto13 = os.path.normpath(f"{diretorio}/foto_13")
-                    if os.path.isfile(f"{foto13}.jpeg") or os.path.isfile(f"{foto13}.png"):
-                        pagina += 1
-                        grafC.pdfPag10(c, diretorio, pagina)
-                        c.showPage()
+            foto13 = os.path.normpath(f"{diretorio}/foto_13")
+            if os.path.isfile(f"{foto13}.png"):
+                pagina += 1
+                grafC.pdfPag10(c, diretorio, pagina)
+                c.showPage()
 
-                        foto19 = os.path.normpath(f"{diretorio}/foto_19")
-                        if os.path.isfile(f"{foto19}.jpeg") or os.path.isfile(f"{foto19}.png"):
-                            pagina += 1
-                            grafC.pdfPag11(c, diretorio, pagina)
-                            c.showPage()
+            foto19 = os.path.normpath(f"{diretorio}/foto_19")
+            if os.path.isfile(f"{foto19}.png"):
+                pagina += 1
+                grafC.pdfPag11(c, diretorio, pagina)
+                c.showPage()
 
             pagina += 1
             grafC.pdfPag12(c, diretorio, pagina, idEmpreend, mes, ano)
@@ -190,7 +190,11 @@ def relatorio_inter(idEmpreend, apelido, mes, ano):
 
     # monta o diretório onde estão os gráficos e fotos
     diretorio = grafC.montaDir(idEmpreend, mes, ano)
-    erros = grafC.verificaArqRelatorio(diretorio)
+    erros = grafC.verificaArqRelatorio(
+        idEmpreend,
+        f"{ano}-{mes}",
+        diretorio
+    )
 
     # monta o diretório onde ficam todos os relatórios
     dirRelatorio = grafC.montaDir(idEmpreend, mes, ano, relatorio=True)

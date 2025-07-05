@@ -63,23 +63,23 @@
     <div class="col-12">
       {% for category, message in messages %}
       {% if category == 'error' and message %}
-      <p class="alert alert-danger text-center mt-4 alert-dismissible fade show"> {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <p class="alert alert-danger alert alert-dismissible fade p-2 show small mb-0 mt-3"> {{ message }}
+        <button type="button" class="btn-close pb-3 pt-2 small" data-bs-dismiss="alert" aria-label="Close"></button>
       </p>
       {% endif %}
       {% if category == 'warning' and message %}
-      <p class="alert alert-warning text-center mt-4 alert-dismissible fade show"> {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <p class="alert alert-warning alert alert-dismissible fade p-2 show small mb-0 mt-3"> {{ message }}
+        <button type="button" class="btn-close pb-3 pt-2 small" data-bs-dismiss="alert" aria-label="Close"></button>
       </p>
       {% endif %}
       {% if category == 'info' and message %}
-      <p class="alert alert-info text-center mt-4 alert-dismissible fade show"> {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <p class="alert alert-info alert alert-dismissible fade p-2 show small mb-0 mt-3"> {{ message }}
+        <button type="button" class="btn-close pb-3 pt-2 small" data-bs-dismiss="alert" aria-label="Close"></button>
       </p>
       {% endif %}
       {% if category == 'success' and message %}
-      <p class="alert alert-success text-center mt-4 alert-dismissible fade show"> {{ message }}
-        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+      <p class="alert alert-success alert alert-dismissible fade p-2 show small mb-0 mt-3"> {{ message }}
+        <button type="button" class="btn-close pb-3 pt-2 small" data-bs-dismiss="alert" aria-label="Close"></button>
       </p>
       {% endif %}
       {% endfor %}

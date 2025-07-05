@@ -4,6 +4,7 @@
 from flask import current_app
 from controller.empreendimentoController import empreendimentoController
 from controller.consideracaoController import consideracaoController
+from controller.unidadeController import unidadeController
 from controller.medicaoController import medicaoController
 from controller.bancoController import bancoController
 from reportlab.lib.colors import white, red, blue, green, black, orange
@@ -51,7 +52,7 @@ class graficoInterController:
                     40, 470, width=220, height=150, mask='auto')
         c.drawImage(os.path.join(diretorio, "evolucao_3D_1.png"),
                     300, 440, width=300, height=200, mask='auto')
-        c.drawImage(os.path.join(diretorio, "foto_atual.jpeg"),
+        c.drawImage(os.path.join(diretorio, "foto_atual.png"),
                     40, 230, width=220, height=150, mask='auto')
         c.drawImage(os.path.join(diretorio, "evolucao_3D_2.png"),
                     350, 210, width=200, height=200, mask='auto')
@@ -263,48 +264,30 @@ class graficoInterController:
         if os.path.isfile(f"{imgTemp}.png"):
             c.drawImage(f"{imgTemp}.png", 30, 550,
                         width=250, height=200, mask='auto')
-        else:
-            c.drawImage(f"{imgTemp}.jpeg", 30, 550,
-                        width=250, height=200, mask='auto')
 
         imgTemp = os.path.join(diretorio, "foto_2")
         if os.path.isfile(f"{imgTemp}.png"):
             c.drawImage(f"{imgTemp}.png", 310, 550,
-                        width=250, height=200, mask='auto')
-        else:
-            c.drawImage(f"{imgTemp}.jpeg", 310, 550,
                         width=250, height=200, mask='auto')
 
         imgTemp = os.path.join(diretorio, "foto_3")
         if os.path.isfile(f"{imgTemp}.png"):
             c.drawImage(f"{imgTemp}.png", 30, 295,
                         width=250, height=200, mask='auto')
-        else:
-            c.drawImage(f"{imgTemp}.jpeg", 30, 295,
-                        width=250, height=200, mask='auto')
 
         imgTemp = os.path.join(diretorio, "foto_4")
         if os.path.isfile(f"{imgTemp}.png"):
             c.drawImage(f"{imgTemp}.png", 310, 295,
-                        width=250, height=200, mask='auto')
-        else:
-            c.drawImage(f"{imgTemp}.jpeg", 310, 295,
                         width=250, height=200, mask='auto')
 
         imgTemp = os.path.join(diretorio, "foto_5")
         if os.path.isfile(f"{imgTemp}.png"):
             c.drawImage(f"{imgTemp}.png", 30,  45,
                         width=250, height=200, mask='auto')
-        elif os.path.isfile(f"{imgTemp}.jpeg"):
-            c.drawImage(f"{imgTemp}.jpeg", 30,  45,
-                        width=250, height=200, mask='auto')
 
         imgTemp = os.path.join(diretorio, "foto_6")
         if os.path.isfile(f"{imgTemp}.png"):
             c.drawImage(f"{imgTemp}.png", 310,  45,
-                        width=250, height=200, mask='auto')
-        elif os.path.isfile(f"{imgTemp}.jpeg"):
-            c.drawImage(f"{imgTemp}.jpeg", 310,  45,
                         width=250, height=200, mask='auto')
 
         c.setFillColor(black)
@@ -633,172 +616,78 @@ class graficoInterController:
             print(f"Diretorio '{diretorio}' já existe.")
             return True
 
-    def verificaArqRelatorio(self, diretorio):
-        listaErro = []
-        #   Primeira Página
+    def verificaUnidadesVendidas(self, idEmpreend, vigencia) -> list[str]:
+        listError = []
+        vig = vigencia.split('-')
+        ctrlUnidade = unidadeController()
+        unidades = ctrlUnidade.unidadesVendidasSemCliente(
+            idEmpreend, vig[1], vig[0])
+        for uni in unidades:
+            listError.append(
+                f"A unidade: {uni.getUnidade()} da torre: {uni.getNmTorre()} está com status: {uni.getStatus()}, porém, não tem cliente associado.")
+        return listError
+
+    def verificaArqRelatorio(self, idEmpreend, vigencia, diretorio):
+        listaErro = self.verificaUnidadesVendidas(idEmpreend, vigencia)
+
+        imgs = [
+            ('perspectiva', 'PERSPECTIVA', 1),
+            ('foto_atual', 'FOTO ATUAL', 1),
+            ('evolucao_3D_1', 'EVOLUÇÃO 3D 1', 1),
+            ('evolucao_3D_2', 'EVOLUÇÃO 3D 2', 1),
+
+            ('tab_prazo_inter', 'TABELA DE PRAZOS', 2),
+            ('tab_medicoes', 'TABELA DE MEDIÇÕES', 2),
+            ('graf_progresso_obra', 'GRÁFICO DO PROGRESSO DA OBRA', 2),
+
+            ('tab_situacao_inter', 'TABELA DE SITUAÇÕES', '2a'),
+            ('tab_projeto_inter', 'TABELA DE PROJETO', '2a'),
+            ('tab_qualidade_inter', 'TABELA DE QUALIDADE', '2a'),
+            ('tab_seguranca_inter', 'TABELA DE SEGURANÇA', '2a'),
+
+            ('tab_acomp_financeiro', 'TABELA DE ACOMPANHAMENTO FINANCEIRO', 3),
+            ('graf_orcamento_liberacao_valor',
+             'GRÁFICO DO ORÇAMENTO DE LIBERAÇÃO', 3),
+            ('tab_orcamento_liberacao', 'TABELA DE ORÇAMENTO LIBERAÇÃO', 3),
+
+            ('tab_notas', 'TABELA DE NOTAS', 4),
+            ('graf_indices_garantia_I', 'GRÁFICO DE ÍNDICES DE GARANTIAS I', 4),
+
+            ('graf_indices_garantia_II', 'GRÁFICO DE ÍNDICES DE GARANTIAS II', 5),
+            ('graf_chaves_perc', 'GRÁFICO DE CHAVES PERCENTUAIS', 5),
+            ('graf_chaves_valor', 'GRÁFICO DE CHAVES VALOR', 5),
+            ('graf_vendas_perc', 'GRÁFICO DE VENDAS PERCENTUAIS', 5),
+            ('graf_vendas_valor', 'GRÁFICO DE VENDAS VALOR', 5),
+
+            ('tab_conta_corrente', 'TABELA DE CONTAS CORRENTES', 6),
+            ('tab_garantias_geral', 'TABELA DE GARANTIAS GERAIS', 6),
+            ('tab_garantias_obra', 'TABELA DE GARANTIAS DA OBRA', 6),
+            ('tab_certidoes', 'TABELA DE CERTIDÕES', 6),
+
+            ('foto_3D_1', 'FOTO 3D 1', 7),
+            ('foto_3D_2', 'FOTO 3D 2', 7),
+            ('foto_3D_3', 'FOTO 3D 3', 7),
+
+            ('foto_1', 'FOTO DA OBRA 1', 8),
+            ('foto_2', 'FOTO DA OBRA 2', 8),
+
+        ]
 
         foto = self.getPathImgs("franca.jpg")
         if not os.path.isfile(foto):
             listaErro.append(
                 'A imagem franca.jpg na 1ª página não foi encontrada')
 
-        foto = os.path.join(diretorio, "perspectiva.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem perspectiva.png na 1ª página não foi encontrada')
-
-        foto = os.path.join(diretorio, "foto_3D_1.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem foto_3D_1.png na 1ª página não foi encontrada')
-
-        foto = os.path.join(diretorio, "foto_atual.jpeg")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem foto_atual.jpeg na 1ª página não foi encontrada')
-
-        foto = os.path.join(diretorio, "foto_3D_2.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem foto_3D_2.png na 1ª página não foi encontrada')
-
         foto = self.getPathImgs("legenda_2.png")
         if not os.path.isfile(foto):
             listaErro.append(
-                'A imagem legenda_2.png na 1ª página não foi encontrada')
+                'A imagem LEGENDA_2 na 1ª página não foi encontrada')
 
-        #   Segunda Página
-        foto = os.path.join(diretorio, "tab_medicoes.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem tab_medicoes.png na 2ª página não foi encontrada')
-
-        foto = os.path.join(diretorio, "graf_progresso_obra.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem graf_progresso_obra.png na 2ª página não foi encontrada')
-
-#   Terceira Página
-        foto = os.path.join(diretorio, "tab_acomp_financeiro.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem tab_acomp_financeiro.png na 3ª página não foi encontrada')
-
-        foto = os.path.join(diretorio, "graf_orcamento_liberacao_valor.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem graf_orcamento_liberacao_valor.png na 3ª página não foi encontrada')
-
-        foto = os.path.join(diretorio, "tab_orcamento_liberacao.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem tab_orcamento_liberacao.png na 3ª página não foi encontrada')
-
-#   Quarta Página
-        foto = os.path.join(diretorio, "tab_notas.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem tab_notas.png na 4ª página não foi encontrada')
-
-        foto = os.path.join(diretorio, "graf_indices_garantia_I.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem graf_indices_garantia_I.png na 4ª página não foi encontrada')
-
-#   Quinta Página
-        foto = os.path.join(diretorio, "graf_indices_garantia_II.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem graf_indices_garantia_II.png na 5ª página não foi encontrada')
-
-        foto = os.path.join(diretorio, "graf_chaves_perc.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem graf_chaves_perc.png na 5ª página não foi encontrada')
-
-        foto = os.path.join(diretorio, "graf_chaves_valor.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem graf_chaves_valor.png na 5ª página não foi encontrada')
-
-        foto = os.path.join(diretorio, "graf_vendas_perc.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem graf_vendas_perc.png na 5ª página não foi encontrada')
-
-        foto = os.path.join(diretorio, "graf_vendas_valor.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem graf_vendas_valor.png na 5ª página não foi encontrada')
-
-#   Sexta Página
-        foto = os.path.join(diretorio, "tab_conta_corrente.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem tab_conta_corrente.png na 6ª página não foi encontrada')
-
-        foto = os.path.join(diretorio, "tab_garantias_geral.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem tab_garantias_geral.png na 6ª página não foi encontrada')
-
-        foto = os.path.join(diretorio, "tab_garantias_obra.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem tab_garantias_obra.png na 6ª página não foi encontrada')
-
-        foto = os.path.join(diretorio, "tab_certidoes.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem tab_certidoes.png na 6ª página não foi encontrada')
-
-#   Setima Página
-        foto = os.path.join(diretorio, "foto_3D_1.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem foto_3D_1.png na 7ª página não foi encontrada')
-
-        foto = os.path.join(diretorio, "foto_3D_2.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem foto_3D_2.png na 7ª página não foi encontrada')
-
-        foto = os.path.join(diretorio, "foto_3D_3.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem foto_3D_3.png na 7ª página não foi encontrada')
-
-        foto = self.getPathImgs("legenda_2.png")
-        if not os.path.isfile(foto):
-            listaErro.append(
-                'A imagem legenda_2.png na 7ª página não foi encontrada')
-
-#   Oitava Página
-        fotoJpeg = os.path.join(diretorio, "foto_1.jpeg")
-        fotoPng = os.path.join(diretorio, "foto_1.png")
-        if not (os.path.isfile(fotoJpeg) or os.path.isfile(fotoPng)):
-            listaErro.append(
-                'A imagem foto_1.png ou foto_1.jpeg na 8ª página não foi encontrada')
-
-#   Nona Página
-#        foto = os.path.join(diretorio, "foto_7.jpeg")
-#        if not os.path.isfile(foto):
-#            listaErro.append('9ª pag - ' + foto + ' não encontrado')
-#
-#   Décima Página
-#        foto = os.path.join(diretorio, "foto_13.jpeg")
-#        if not os.path.isfile(foto):
-#            listaErro.append('10ª pag - ' + foto + ' não encontrado')
-#
-#   Décima Primeira Página
-#        foto = os.path.join(diretorio, "foto_19.jpeg")
-#        if not os.path.isfile(foto):
-#            listaErro.append('11ª pag - ' + foto + ' não encontrado')
-
-#   Décima Segunda Página
-#        foto = os.path.join(diretorio, "consideracoes_finais.png"
-#        if not os.path.isfile(foto):
-#            listaErro.append('12ª pag - ' + foto + ' não encontrado')
+        for img in imgs:
+            foto = os.path.join(diretorio, f"{img[0]}.png")
+            if not os.path.isfile(foto):
+                listaErro.append(
+                    f'A imagem {img[1]} da {img[2]}ª página não foi encontrada')
 
         return listaErro
 
