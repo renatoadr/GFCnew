@@ -69,7 +69,7 @@ class graficoInterController:
 
     def pdfPag2(self, c, diretorio, pagina):
         #   Segunda Página
-        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(c)  # Adiciona o logo no cabeçalho
 
         self.barraTitulo(30, 760, c, "1.          Prazo")
         c.drawImage(os.path.join(diretorio, "tab_prazo_inter.png"),
@@ -89,7 +89,7 @@ class graficoInterController:
 
     def pdfPag2a(self, c, diretorio, pagina):
         #   Segunda Página
-        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(c)  # Adiciona o logo no cabeçalho
 
         c.drawImage(os.path.join(diretorio, "tab_situacao_inter.png"),
                     20, 730, width=420, height=40, mask='auto')  # 15 730
@@ -116,7 +116,7 @@ class graficoInterController:
 
     def pdfPag3(self, c, diretorio, pagina):
         #   Terceira Página
-        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(c)  # Adiciona o logo no cabeçalho
 
 #       c.setFont('Helvetica-Bold', 14)
 #       c.setFillColor("black")
@@ -141,7 +141,7 @@ class graficoInterController:
 
     def pdfPag4(self, c, diretorio, pagina):
         #   Quarta Página
-        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(c)  # Adiciona o logo no cabeçalho
 
 #       c.setFont('Helvetica-Bold', 14)
 #       c.setFillColor("black")
@@ -164,7 +164,7 @@ class graficoInterController:
 
     def pdfPag5(self, c, diretorio, pagina):
         #   Quinta Página
-        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(c)  # Adiciona o logo no cabeçalho
 
         c.drawImage(os.path.join(diretorio, "graf_indices_garantia_II.png"),
                     30, 455, width=510, height=300, mask='auto')
@@ -196,7 +196,7 @@ class graficoInterController:
 
     def pdfPag6(self, c, diretorio, pagina):
         #   Sexta Página
-        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(c)  # Adiciona o logo no cabeçalho
 
 #        c.setFont('Helvetica-Bold', 14)
 #        c.setFillColor("black")
@@ -229,7 +229,7 @@ class graficoInterController:
 
     def pdfPag7(self, c, diretorio, pagina):
         #   Setima Página
-        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(c)  # Adiciona o logo no cabeçalho
 
 #        c.setFont('Helvetica-Bold', 14)
 #        c.setFillColor("black")
@@ -252,7 +252,7 @@ class graficoInterController:
 
     def pdfPag8(self, c, diretorio, pagina):
         #   Oitava Página
-        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(c)  # Adiciona o logo no cabeçalho
 
 #        c.setFont('Helvetica-Bold', 14)
 #        c.setFillColor("black")
@@ -295,7 +295,7 @@ class graficoInterController:
 
     def pdfPag9(self, c, diretorio, pagina):
         #   Nona Página
-        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(c)  # Adiciona o logo no cabeçalho
 
 #        c.setFont('Helvetica-Bold', 14)
 #        c.setFillColor("black")
@@ -332,7 +332,7 @@ class graficoInterController:
 
     def pdfPag10(self, c, diretorio, pagina):
         #   Décima Página
-        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(c)  # Adiciona o logo no cabeçalho
 
 #        c.setFont('Helvetica-Bold', 14)
 #        c.setFillColor("black")
@@ -369,7 +369,7 @@ class graficoInterController:
 
     def pdfPag11(self, c, diretorio, pagina):
         #   Décima Primeira Página
-        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(c)  # Adiciona o logo no cabeçalho
 
 #        c.setFont('Helvetica-Bold', 14)
 #        c.setFillColor("black")
@@ -406,7 +406,7 @@ class graficoInterController:
 
     def pdfPag12(self, c, diretorio, pagina, idEmpreend, mes, ano):
         #   Décima Segunda Página
-        self.logo_cabecalho(self, c)  # Adiciona o logo no cabeçalho
+        self.logo_cabecalho(c)  # Adiciona o logo no cabeçalho
 
         consC = consideracaoController()
         consS = consC.listar_campos(idEmpreend, mes, ano)
