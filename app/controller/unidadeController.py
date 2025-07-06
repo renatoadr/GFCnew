@@ -390,7 +390,7 @@ class unidadeController:
           AND DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) BETWEEN %s AND %s
           AND uni.status IN ('Estoque', 'Vendido')
           AND uni.id_unidade = (
-              SELECT MAX(id_unidade) FROM tb_unidades
+              SELECT MAX(id_unidade) FROM {MySql.DB_NAME}.tb_unidades
               WHERE unidade = uni.unidade
               AND ano_vigencia = uni.ano_vigencia
               AND mes_vigencia = uni.mes_vigencia
