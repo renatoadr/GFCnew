@@ -421,15 +421,15 @@ class unidadeController:
         datas = MySql.getAll(
             queryDates, (
                 idEmpreend,
-                dataInicio,
-                dataFim
+                format(dataInicio, '%Y-%m-%d'),
+                format(dataFim, '%Y-%m-%d')
             )
         )
         unidades = MySql.getAll(
             query, (
                 idEmpreend,
-                dataInicio,
-                dataFim
+                format(dataInicio, '%Y-%m-%d'),
+                format(dataFim, '%Y-%m-%d')
             )
         )
 
