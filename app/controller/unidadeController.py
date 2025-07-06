@@ -389,8 +389,8 @@ class unidadeController:
           WHERE uni.id_empreendimento = %s
           AND DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) BETWEEN %s AND %s
           AND uni.status IN ('Estoque', 'Vendido')
-          AND uni.dt_ocorrencia = (
-              SELECT MAX(dt_ocorrencia) FROM {MySql.DB_NAME}.tb_unidades
+          AND uni.id_unidade = (
+              SELECT MAX(id_unidade) FROM tb_unidades
               WHERE unidade = uni.unidade
               AND ano_vigencia = uni.ano_vigencia
               AND mes_vigencia = uni.mes_vigencia
@@ -490,7 +490,6 @@ class unidadeController:
         print("Quantidade de unidades geradas", len(result), end="\n\n")
 
         for uni in result:
-
             key = f"{uni.getMesVigencia()}_{uni.getAnoVigencia()}"
             if not totais.get(key, None):
                 if uni.getStatus() == 'Estoque':
