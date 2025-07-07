@@ -28,7 +28,7 @@ class graficoInterController:
         empC = empreendimentoController()
         medCtrl = medicaoController()
         empS = empC.consultarEmpreendimentoPeloId(idEmpreend)
-        med = medCtrl.consultarMedicaoAtual(idEmpreend)
+        med = medCtrl.consultarMedicaoAtual(idEmpreend) 
 
         construtora = 'Construtora: ' + empS.getNmConstrutor()
         empreendimento = 'Empreendimento: ' + empS.getNmEmpreend()
@@ -41,7 +41,8 @@ class graficoInterController:
         self.logo_cabecalho(c)  # Adiciona o logo no cabeçalho
 
         c.setFont('Helvetica-Bold', 12)
-        c.drawString(190, 740, "RELATÓRIO DE GESTÃO MENSAL")
+#        c.drawString(190, 740, "RELATÓRIO DE GESTÃO MENSAL")
+        c.drawString(190, 735, "RELATÓRIO MENSAL DE ATIVIDADES")
         c.setFillColor(blue)
         c.setFont('Helvetica', 10)
         c.setFillColor((0.831, 0.243, 0.007))
@@ -422,7 +423,7 @@ class graficoInterController:
 
 #        c.setFont('Helvetica-Bold', 12)
         lin -= 30
-        c.drawString(35, lin, "Qualidade - segurança e aspecto visual:")
+        c.drawString(30, lin, "Qualidade - segurança e aspecto visual:")
 #        self.barraTitulo(30, lin, c, "19.         qualidade - segurança e aspécto visual:")
 
         c.setFont('Helvetica', 10)
@@ -444,7 +445,7 @@ class graficoInterController:
 
 #        c.setFont('Helvetica-Bold', 12)
         lin -= 20
-        c.drawString(35, lin, "Serviços realizados e andamento:")
+        c.drawString(30, lin, "Serviços realizados e andamento:")
 #        self.barraTitulo(30, lin, c, "20.         Serviços realizados e em andamento")
 
         c.setFont('Helvetica', 10)

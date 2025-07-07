@@ -164,12 +164,21 @@ def gerar_graf_progresso_obra(idEmpreend, mesVigencia, anoVigencia, mesInicio, a
     plt.plot(x2, y2, label='Realizado', linewidth=4,
              marker='o')  # marker indica o ponto xy
 
+#***************
+#    linhas = [-0.10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
+#
+#    tamLinha = len(x1) - 1
+#    plt.hlines(linhas, 0, tamLinha, '#9feafc')
+#    plt.plot(x1, y1, label='Estipulado em contrato')
+#    plt.plot(
+##**********
+
     annotationsy1 = y1
     annotationsy2 = y2
 
     # Determina caracteristicas dos pontos x/y no gráfico
-    plt.scatter(x1, y1, s=20)
-    plt.scatter(x2, y2, s=20)
+    plt.scatter(x1, y1, s=30)
+    plt.scatter(x2, y2, s=30)
     plt.ylim(-5, 100)            # Força os valores do eixo Y
     plt.tick_params(labelsize=14)  # tamanho da letra nos eixos X e Y
 
@@ -178,10 +187,10 @@ def gerar_graf_progresso_obra(idEmpreend, mesVigencia, anoVigencia, mesInicio, a
 
     for xi, yi, text in zip(x1, y1, annotationsy1):
         plt.annotate(text, xy=(xi, yi), xycoords='data', xytext=(
-            3, 10), textcoords='offset points', fontsize=14)
+            3, 20), textcoords='offset points', fontsize=14, color='blue')
     for xi, yi, text in zip(x2, y2, annotationsy2):
         plt.annotate(text, xy=(xi, yi), xycoords='data', xytext=(
-            3, -20), textcoords='offset points', fontsize=14)
+            3, -30), textcoords='offset points', fontsize=14, color='darkorange')
 
     plt.legend(fontsize=20, loc="upper left")
 #    plt.xlabel(fontsize=14)
@@ -249,13 +258,16 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     for u in recS:
         x1.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
         y1.append(IndiceGarantia if IndiceGarantia else 0.0)
-        y2.append(round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2))
-        vlrAtual = round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2)
+#        y2.append(round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2))
+#        vlrAtual = round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2)
+        y2.append(round(VlPlanoEmp / (u.getTtPago() + u.getTtUnidade()), 2))
+        vlrAtual = round(VlPlanoEmp / (u.getTtPago() + u.getTtUnidade()), 2)
+
         variacao = vlrAtual - vlrAnterior
         vlrAnterior = vlrAtual
         print(vlrAnterior, vlrAtual, variacao)
 
-    linhas = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.00,
+    linhas = [-0.1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.00,
               1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80]
 
     tamLinha = len(x1) - 1
@@ -270,7 +282,7 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     plt.scatter(x1, y1, s=20)
     plt.scatter(x1, y2, s=20)
 
-    plt.ylim(1.0, 1.8)
+#    plt.ylim(1.0, 1.8)
 
     plt.title("Índices de garantia previsto x existente", fontdict={
         'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
@@ -347,12 +359,14 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
     for u in recS:
         x2.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
         if u.getTtPago() > 0:
-            y3.append(round(u.getTtPago() / VlPlanoEmp, 2))
+#           y3.append(round(u.getTtPago() / VlPlanoEmp, 2))
+           y3.append(round(VlPlanoEmp / u.getTtPago(), 2))
         else:
             y3.append(0.0)
-        y4.append(round(u.getTtUnidade() / VlPlanoEmp, 2))
+#        y4.append(round(u.getTtUnidade() / VlPlanoEmp, 2))
+        y4.append(round(VlPlanoEmp / u.getTtUnidade(), 2))
 
-    linhas = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.00,
+    linhas = [-0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.00,
               1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80]
 
     tamLinha = len(x2) - 1
@@ -366,7 +380,7 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
     plt.scatter(x2, y3, s=20)
     plt.scatter(x2, y4, s=20)
 
-    plt.ylim(0.0, 1.8)
+#    plt.ylim(0.0, 1.8)
 
     plt.title("Índices de garantia previsto x existente", fontdict={
               'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
@@ -442,9 +456,9 @@ def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia, tipo):
             recipe.append(texto)
     else:
         for n in unid:
-            perc = round((n.getTtStatus()/soma)*100)
-            texto = str(n.getTtStatus()) + " " + \
-                n.getStatus() + " (" + str(perc) + "%)"
+            perc = (n.getTtStatus()/soma)*100
+#            texto = str(n.getTtStatus()) + " " + n.getStatus() + " (" + str(perc) + "%)"
+            texto = f"{n.getTtStatus()} {n.getStatus()} ({perc:.2f}%)"
             recipe.append(texto)
 
     wedges, texts = ax.pie(data, wedgeprops=dict(width=0.5), startangle=-40)
@@ -453,6 +467,16 @@ def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia, tipo):
     kw = dict(arrowprops=dict(arrowstyle="-"),
               bbox=bbox_props, zorder=0, va="center")
 
+#    for i, p in enumerate(wedges):
+#        ang = (p.theta2 - p.theta1)/2. + p.theta1
+#        y = np.sin(np.deg2rad(ang))
+#        x = np.cos(np.deg2rad(ang))
+#        horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
+#        connectionstyle = f"angle,angleA=0,angleB={ang}"
+#        kw["arrowprops"].update({"connectionstyle": connectionstyle})
+#        ax.annotate(recipe[i], xy=(x, y), xytext=(1.1*np.sign(x), 1.4*y),
+#                    horizontalalignment=horizontalalignment, **kw)        # caixa de anotações
+
     for i, p in enumerate(wedges):
         ang = (p.theta2 - p.theta1)/2. + p.theta1
         y = np.sin(np.deg2rad(ang))
@@ -460,8 +484,11 @@ def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia, tipo):
         horizontalalignment = {-1: "right", 1: "left"}[int(np.sign(x))]
         connectionstyle = f"angle,angleA=0,angleB={ang}"
         kw["arrowprops"].update({"connectionstyle": connectionstyle})
-        ax.annotate(recipe[i], xy=(x, y), xytext=(1.1*np.sign(x), 1.4*y),
-                    horizontalalignment=horizontalalignment, **kw)
+        # Ajuste dinâmico para evitar sobreposição
+        deslocamento_y = 1.0 + (i % 3) * 0.5  # alterna o deslocamento vertical 3
+        deslocamento_x = 1.0 + (i % 2) * 0.2  # alterna o deslocamento horizontal 9
+        ax.annotate(recipe[i], xy=(x, y), xytext=(deslocamento_x * np.sign(x), deslocamento_y * y),
+        horizontalalignment=horizontalalignment, **kw)
 
 #    ax.set_title("Vendas", fontdict={'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
 

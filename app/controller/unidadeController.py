@@ -389,8 +389,8 @@ class unidadeController:
           WHERE uni.id_empreendimento = %s
           AND DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) BETWEEN %s AND %s
           AND uni.status IN ('Estoque', 'Vendido')
-          AND uni.dt_ocorrencia = (
-              SELECT MAX(dt_ocorrencia) FROM {MySql.DB_NAME}.tb_unidades
+          AND uni.id_unidade = (
+              SELECT MAX(id_unidade) FROM {MySql.DB_NAME}.tb_unidades
               WHERE unidade = uni.unidade
               AND ano_vigencia = uni.ano_vigencia
               AND mes_vigencia = uni.mes_vigencia
@@ -517,12 +517,15 @@ class unidadeController:
 
             else:
                 tt = totais[key]
+                if uni.getStatus() == 'Estoque':
+                    valorUnidade = tt["valorUnidade"] + uni.getVlUnidade()
+                else:
+                    valorUnidade = tt["valorUnidade"] - uni.getVlUnidade()
+
                 ttNew = {
-                    "valorUnidade": tt["valorUnidade"] + (uni.getVlUnidade() if uni.getStatus() == 'Estoque' else 0),
+                    "valorUnidade": valorUnidade,
                     "valorPago": tt["valorPago"] + (uni.getVlReceber() if uni.getStatus() == 'Vendido' else 0)
                 }
-                print(
-                    f"Total calculdo para vigencia {key}: ", ttNew, end="\n\n")
                 totais[key] = ttNew
 
         print("Mapeando os objetos das unidades...", end="\n\n")
