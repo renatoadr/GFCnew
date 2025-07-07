@@ -501,8 +501,13 @@ class unidadeController:
 
             else:
                 tt = totais[key]
+                if uni.getStatus() == 'Estoque':
+                    valorUnidade = tt["valorUnidade"] + uni.getVlUnidade()
+                else:
+                    valorUnidade = tt["valorUnidade"] - uni.getVlUnidade()
+
                 ttNew = {
-                    "valorUnidade": tt["valorUnidade"] + (uni.getVlUnidade() if uni.getStatus() == 'Estoque' else 0),
+                    "valorUnidade": valorUnidade,
                     "valorPago": tt["valorPago"] + (uni.getVlReceber() if uni.getStatus() == 'Vendido' else 0)
                 }
                 totais[key] = ttNew
