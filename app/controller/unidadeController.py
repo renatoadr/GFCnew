@@ -494,33 +494,45 @@ class unidadeController:
             if not totais.get(key, None):
                 if uni.getStatus() == 'Estoque':
                     totais[key] = {
-                        "valorUnidade": uni.getVlUnidade(), "valorPago": 0}
+                        "valorUnidade": uni.getVlUnidade(),
+                        "valorPago": 0,
+                        "valorReceber": 0
+                    }
                 else:
-                    totais[key] = {"valorUnidade": 0,
-                                   "valorPago": uni.getVlReceber()}
-
+                    totais[key] = {
+                        "valorUnidade": uni.getVlUnidade(),
+                        "valorPago": uni.getVlUnidade(),
+                        "valorReceber": uni.getVlReceber()
+                    }
             else:
                 tt = totais[key]
-                if uni.getStatus() == 'Estoque':
-                    valorUnidade = tt["valorUnidade"] + uni.getVlUnidade()
-                else:
-                    valorUnidade = tt["valorUnidade"] - uni.getVlUnidade()
+                valorUnidade = tt["valorUnidade"] + uni.getVlUnidade()
 
-                ttNew = {
+                valorPago = tt["valorPago"]
+                valorReceber = tt["valorReceber"]
+                if uni.getStatus() == 'Vendido':
+                    valorPago = tt["valorPago"] + uni.getVlUnidade()
+                    valorReceber = tt["valorReceber"] + uni.getVlReceber()
+
+                totais[key] = {
                     "valorUnidade": valorUnidade,
-                    "valorPago": tt["valorPago"] + (uni.getVlReceber() if uni.getStatus() == 'Vendido' else 0)
+                    "valorPago": valorPago,
+                    "valorReceber": valorReceber
                 }
-                totais[key] = ttNew
 
         for key, value in totais.items():
             vigencia = key.split('_')
             uni = unidade()
             uni.setMesVigencia(vigencia[0])
             uni.setAnoVigencia(vigencia[1])
-            uni.setTtUnidade(value["valorUnidade"])
-            uni.setTtPago(value["valorPago"])
+            uni.setTtUnidade(value["valorUnidade"] - value["valorPago"])
+            uni.setTtPago(value["valorReceber"])
             print("Unidade mapeada: ", {
-                  "Vigencia": vigencia, "ValorUnidade": value["valorUnidade"], "ValorPago": value["valorPago"]}, end="\n\n")
+                  "Vigencia": vigencia,
+                  "ValorUnidade": value["valorUnidade"],
+                  "ValorPago": value["valorPago"]},
+                  end="\n\n"
+                  )
             totaisList.append(uni)
 
         return totaisList
