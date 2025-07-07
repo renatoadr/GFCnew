@@ -28,7 +28,7 @@ class graficoInterController:
         empC = empreendimentoController()
         medCtrl = medicaoController()
         empS = empC.consultarEmpreendimentoPeloId(idEmpreend)
-        med = medCtrl.consultarMedicaoAtual(idEmpreend)
+        med = medCtrl.consultarMedicaoAtual(idEmpreend) 
 
         construtora = 'Construtora: ' + empS.getNmConstrutor()
         empreendimento = 'Empreendimento: ' + empS.getNmEmpreend()
