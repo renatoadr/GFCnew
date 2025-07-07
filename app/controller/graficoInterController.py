@@ -34,15 +34,14 @@ class graficoInterController:
         empreendimento = 'Empreendimento: ' + empS.getNmEmpreend()
         empreendimento += ' - ' + 'End da Obra: ' + empS.getEnderecoCompleto()
         agenteFinanc = bancoController.getNmBanco(empS.getCodBanco())
-        vistoria = med.getNrMedicao() if med else '1ª' + ' Medição'
+        vistoria = (med.getNrMedicao() if med else '1ª') + ' Medição'
 
         # ATENÇÃO AJUSTAR DADOS DA VISTORIA
 
         self.logo_cabecalho(c)  # Adiciona o logo no cabeçalho
 
         c.setFont('Helvetica-Bold', 12)
-#        c.drawString(190, 740, "RELATÓRIO DE GESTÃO MENSAL")
-        c.drawString(190, 735, "RELATÓRIO MENSAL DE ATIVIDADES")
+        c.drawString(190, 740, "RELATÓRIO MENSAL DE ATIVIDADES")
         c.setFillColor(blue)
         c.setFont('Helvetica', 10)
         c.setFillColor((0.831, 0.243, 0.007))

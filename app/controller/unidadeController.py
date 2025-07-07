@@ -421,15 +421,15 @@ class unidadeController:
         datas = MySql.getAll(
             queryDates, (
                 idEmpreend,
-                dataInicio,
-                dataFim
+                format(dataInicio, '%Y-%m-%d'),
+                format(dataFim, '%Y-%m-%d')
             )
         )
         unidades = MySql.getAll(
             query, (
                 idEmpreend,
-                dataInicio,
-                dataFim
+                format(dataInicio, '%Y-%m-%d'),
+                format(dataFim, '%Y-%m-%d')
             )
         )
 
@@ -438,7 +438,6 @@ class unidadeController:
 
         print("Range real das unidades", datas[0])
         print("Quantidade de unidades encontradas: ", len(unidades), end="\n\n")
-        print("Realizando o processamento de normalização dos dados...", end="\n\n")
 
         dtI = datas[0]['data_inicio'].split('-')
         dtF = datas[0]['data_final'].split('-')
@@ -458,8 +457,6 @@ class unidadeController:
                 int(next['mes_vigencia']),
                 1
             ) if next else 0
-
-            print("Registro corrente: ", current, end="\n\n")
 
             if vigCurrent > dataInicio and (not previus or previus['unidade'] != current['unidade']):
                 self.recursiveCalculoData(
@@ -491,29 +488,16 @@ class unidadeController:
                 )
 
         print("Quantidade de unidades geradas", len(result), end="\n\n")
-        print("Calculando os totais por mês....", end="\n\n")
 
         for uni in result:
-            print("Totais antes do calculo: ", totais, end="\n\n")
-
             key = f"{uni.getMesVigencia()}_{uni.getAnoVigencia()}"
-
-            print("Vigencia atual: ", key, end="\n\n")
-
-            print("Unidade atual para calculos: ", {"Torre": uni.getIdTorre(
-            ), "Unidade": uni.getUnidade(), "Status": uni.getStatus(), "ValorUnidade": uni.getVlUnidade(), "ValorPago": uni.getVlReceber()}, end="\n\n")
-
             if not totais.get(key, None):
                 if uni.getStatus() == 'Estoque':
                     totais[key] = {
                         "valorUnidade": uni.getVlUnidade(), "valorPago": 0}
-                    print(
-                        "Total criado para Status Estoque: ", totais[key], end="\n\n")
                 else:
                     totais[key] = {"valorUnidade": 0,
                                    "valorPago": uni.getVlReceber()}
-                    print(
-                        "Total criado para Status Vendido: ", totais[key], end="\n\n")
 
             else:
                 tt = totais[key]
@@ -527,8 +511,6 @@ class unidadeController:
                     "valorPago": tt["valorPago"] + (uni.getVlReceber() if uni.getStatus() == 'Vendido' else 0)
                 }
                 totais[key] = ttNew
-
-        print("Mapeando os objetos das unidades...", end="\n\n")
 
         for key, value in totais.items():
             vigencia = key.split('_')

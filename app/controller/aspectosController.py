@@ -45,7 +45,12 @@ class aspectosController:
         total = int(len(campos) / 3) + 1
 
         for idx in range(1, total):
-            idPergunta = campos[f'id_pergunta_{idx}']
+            id = f'id_pergunta_{idx}'
+
+            if not id in campos:
+                continue
+
+            idPergunta = campos[id]
             status = campos[f'status_{idx}']
             descricao = campos[f'descricao_{idx}']
 
