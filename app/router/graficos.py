@@ -164,14 +164,14 @@ def gerar_graf_progresso_obra(idEmpreend, mesVigencia, anoVigencia, mesInicio, a
     plt.plot(x2, y2, label='Realizado', linewidth=4,
              marker='o')  # marker indica o ponto xy
 
-#***************
+# ***************
 #    linhas = [-0.10, 0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 #
 #    tamLinha = len(x1) - 1
 #    plt.hlines(linhas, 0, tamLinha, '#9feafc')
 #    plt.plot(x1, y1, label='Estipulado em contrato')
 #    plt.plot(
-##**********
+# **********
 
     annotationsy1 = y1
     annotationsy2 = y2
@@ -260,8 +260,9 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
         y1.append(IndiceGarantia if IndiceGarantia else 0.0)
 #        y2.append(round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2))
 #        vlrAtual = round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2)
-        y2.append(round(VlPlanoEmp / (u.getTtPago() + u.getTtUnidade()), 2))
-        vlrAtual = round(VlPlanoEmp / (u.getTtPago() + u.getTtUnidade()), 2)
+        valor = u.getTtPago() + u.getTtUnidade()
+        y2.append(round(VlPlanoEmp / valor if valor > 0 else 0, 2))
+        vlrAtual = round(VlPlanoEmp / valor if valor > 0 else 0, 2)
 
         variacao = vlrAtual - vlrAnterior
         vlrAnterior = vlrAtual
@@ -359,12 +360,16 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
     for u in recS:
         x2.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
         if u.getTtPago() > 0:
-#           y3.append(round(u.getTtPago() / VlPlanoEmp, 2))
-           y3.append(round(VlPlanoEmp / u.getTtPago(), 2))
+            #           y3.append(round(u.getTtPago() / VlPlanoEmp, 2))
+            y3.append(round(VlPlanoEmp / u.getTtPago(), 2))
         else:
             y3.append(0.0)
 #        y4.append(round(u.getTtUnidade() / VlPlanoEmp, 2))
-        y4.append(round(VlPlanoEmp / u.getTtUnidade(), 2))
+
+        if u.getTtUnidade() > 0:
+            y4.append(round(VlPlanoEmp / u.getTtUnidade(), 2))
+        else:
+            y4.append(0.0)
 
     linhas = [-0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.00,
               1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80]
@@ -485,10 +490,12 @@ def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia, tipo):
         connectionstyle = f"angle,angleA=0,angleB={ang}"
         kw["arrowprops"].update({"connectionstyle": connectionstyle})
         # Ajuste dinâmico para evitar sobreposição
-        deslocamento_y = 1.0 + (i % 3) * 0.5  # alterna o deslocamento vertical 3
-        deslocamento_x = 1.0 + (i % 2) * 0.2  # alterna o deslocamento horizontal 9
+        # alterna o deslocamento vertical 3
+        deslocamento_y = 1.0 + (i % 3) * 0.5
+        # alterna o deslocamento horizontal 9
+        deslocamento_x = 1.0 + (i % 2) * 0.2
         ax.annotate(recipe[i], xy=(x, y), xytext=(deslocamento_x * np.sign(x), deslocamento_y * y),
-        horizontalalignment=horizontalalignment, **kw)
+                    horizontalalignment=horizontalalignment, **kw)
 
 #    ax.set_title("Vendas", fontdict={'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 12}, loc='center')
 

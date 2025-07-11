@@ -405,6 +405,9 @@ class unidadeController:
         totais = {}
         totaisList = []
 
+        diff = abs(diff_mes(dataInicio, dataFim))
+        dataPrevista = dataInicio - relativedelta.relativedelta(months=diff)
+
         print("Buscando unidades para calcular com parametros: ", {
             "IdEmpreendimento": idEmpreend,
             "Data Início": dataInicio,
@@ -414,7 +417,7 @@ class unidadeController:
         unidades = MySql.getAll(
             query, (
                 idEmpreend,
-                format(dataInicio, '%Y-%m-%d'),
+                format(dataPrevista, '%Y-%m-%d'),
                 format(dataFim, '%Y-%m-%d')
             )
         )
@@ -438,9 +441,9 @@ class unidadeController:
                 1
             ) if next else 0
 
-            if vigCurrent > dataInicio and (not previus or previus['unidade'] != current['unidade']):
+            if vigCurrent > dataPrevista and (not previus or previus['unidade'] != current['unidade']):
                 self.recursiveCalculoData(
-                    dataInicio,
+                    dataPrevista,
                     vigCurrent,
                     current,
                     result,
@@ -470,6 +473,9 @@ class unidadeController:
         print("Quantidade de unidades geradas", len(result), end="\n\n")
 
         for uni in result:
+            if datetime(int(uni.getAnoVigencia()), int(uni.getMesVigencia()), 1) < dataInicio or datetime(int(uni.getAnoVigencia()), int(uni.getMesVigencia()), 20) > dataFim:
+                continue
+
             key = f"{uni.getMesVigencia()}_{uni.getAnoVigencia()}"
             if not totais.get(key, None):
                 if uni.getStatus() == 'Estoque':
