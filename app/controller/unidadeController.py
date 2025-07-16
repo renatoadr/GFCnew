@@ -396,9 +396,8 @@ class unidadeController:
               AND mes_vigencia = uni.mes_vigencia
               AND id_empreendimento = uni.id_empreendimento
               AND id_torre = uni.id_torre
-              AND status = uni.status
           )
-          ORDER BY uni.id_torre, uni.unidade, DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01'));
+          ORDER BY uni.id_torre, uni.unidade, DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')), uni.id_unidade;
         """
 
         result = []
@@ -428,8 +427,12 @@ class unidadeController:
         print("Quantidade de unidades encontradas: ", len(unidades), end="\n\n")
 
         for idx, current in enumerate(unidades):
-            previus = unidades[idx - 1] if idx > 0 else None
-            next = unidades[idx + 1] if idx + 1 < len(unidades) else None
+            idxPrevius = idx - 1
+            idxNext = idx + 1
+            previus = unidades[idxPrevius] if idx > 0 else None
+            next = unidades[idxNext] if idxNext < len(
+                unidades) else None
+
             vigCurrent = datetime(
                 int(current['ano_vigencia']),
                 int(current['mes_vigencia']),
@@ -441,9 +444,9 @@ class unidadeController:
                 1
             ) if next else 0
 
-            if vigCurrent > dataPrevista and (not previus or previus['unidade'] != current['unidade']):
+            if vigCurrent > dataInicio and (not previus or previus['unidade'] != current['unidade']):
                 self.recursiveCalculoData(
-                    dataPrevista,
+                    dataInicio,
                     vigCurrent,
                     current,
                     result,
@@ -473,7 +476,7 @@ class unidadeController:
         print("Quantidade de unidades geradas", len(result), end="\n\n")
 
         for uni in result:
-            if datetime(int(uni.getAnoVigencia()), int(uni.getMesVigencia()), 1) < dataInicio or datetime(int(uni.getAnoVigencia()), int(uni.getMesVigencia()), 20) > dataFim:
+            if datetime(int(uni.getAnoVigencia()), int(uni.getMesVigencia()), 1) < dataInicio or datetime(int(uni.getAnoVigencia()), int(uni.getMesVigencia()), 1) > dataFim:
                 continue
 
             key = f"{uni.getMesVigencia()}_{uni.getAnoVigencia()}"

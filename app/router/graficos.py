@@ -240,7 +240,7 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     recS = uniC.gerarInsumoRelatorio(
         idEmpreend,
         datetime(int(anoInicio), int(mesInicio), 1),
-        datetime(int(anoFinal), int(mesFinal), 20)
+        datetime(int(anoFinal), int(mesFinal), 1)
     )
 
     if not recS:
@@ -345,7 +345,7 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
     recS = uniC.gerarInsumoRelatorio(
         idEmpreend,
         datetime(int(anoInicio), int(mesInicio), 1),
-        datetime(int(anoFinal), int(mesFinal), 28)
+        datetime(int(anoFinal), int(mesFinal), 1)
     )
 
     if not recS:
