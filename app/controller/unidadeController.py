@@ -387,7 +387,7 @@ class unidadeController:
     def gerarInsumoRelatorio(self, idEmpreend: int, dataInicio: datetime, dataFim: datetime) -> list[unidade]:
         query = f""" SELECT * FROM {MySql.DB_NAME}.tb_unidades uni
           WHERE uni.id_empreendimento = %s
-          AND DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) BETWEEN %s AND %s
+          AND DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) <= %s
           AND uni.status IN ('Estoque', 'Vendido')
           AND uni.id_unidade = (
               SELECT MAX(id_unidade) FROM {MySql.DB_NAME}.tb_unidades
@@ -404,9 +404,6 @@ class unidadeController:
         totais = {}
         totaisList = []
 
-        diff = abs(diff_mes(dataInicio, dataFim))
-        dataPrevista = dataInicio - relativedelta.relativedelta(months=diff)
-
         print("Buscando unidades para calcular com parametros: ", {
             "IdEmpreendimento": idEmpreend,
             "Data Início": dataInicio,
@@ -416,7 +413,6 @@ class unidadeController:
         unidades = MySql.getAll(
             query, (
                 idEmpreend,
-                format(dataPrevista, '%Y-%m-%d'),
                 format(dataFim, '%Y-%m-%d')
             )
         )
