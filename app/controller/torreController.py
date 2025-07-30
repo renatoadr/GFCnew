@@ -14,10 +14,9 @@ class torreController:
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()
 
-        queryUnidade = "INSERT INTO " + MySql.DB_NAME + \
-            ".tb_unidades (id_empreendimento, id_torre, unidade, mes_vigencia, ano_vigencia, status, vl_unidade) VALUES (%s, %s, %s, %s, %s, %s, %s);"
-        queryTorre = "INSERT INTO " + MySql.DB_NAME + \
-            ".tb_torres ( id_empreendimento, nm_torre, qt_unidade, qt_andar, qt_coberturas, prefix_cobertura, num_apt_um_andar_um, vl_unidade, vl_cobertura ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
+        queryUnidade = f"INSERT INTO {MySql.DB_NAME}.tb_unidades (id_empreendimento, id_torre, unidade, mes_vigencia, ano_vigencia, status, vl_unidade) VALUES (%s, %s, %s, %s, %s, %s, %s);"
+
+        queryTorre = f"INSERT INTO {MySql.DB_NAME}.tb_torres ( id_empreendimento, nm_torre, qt_unidade, qt_andar, qt_coberturas, prefix_cobertura, num_apt_um_andar_um, vl_cobertura, vl_unidade  ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s);"
 
         dadosUnidade = []
 
@@ -46,7 +45,6 @@ class torreController:
 
         currentAndar = 1
         currentApt = initAp
-        currentBase = baseAndar
         limitePorAndar = currentApt + qtdApt - 1
 
         while currentAndar <= qtdAndar:
@@ -63,9 +61,8 @@ class torreController:
 
             if currentApt > limitePorAndar:
                 currentAndar += 1
-                currentBase += baseAndar
-                currentApt = currentBase + 1
-                limitePorAndar += baseAndar
+                currentApt = currentApt - qtdApt + baseAndar
+                limitePorAndar = currentApt + qtdApt - 1
 
         if qtdCobertura > 0:
             for num in range(1, qtdCobertura + 1):
@@ -106,7 +103,7 @@ class torreController:
         return listatorres
 
     def consultarTorrePeloId(self, idTorre):
-        query = f"""SELECT id_torre, id_empreendimento, nm_torre, qt_unidade, qt_andar, qt_coberturas, prefix_cobertura, num_apt_um_andar_um from {MySql.DB_NAME}.tb_torres WHERE id_torre = %s"""
+        query = f"""SELECT id_torre, id_empreendimento, nm_torre, qt_unidade, qt_andar, qt_coberturas, prefix_cobertura, num_apt_um_andar_um, vl_unidade, vl_cobertura from {MySql.DB_NAME}.tb_torres WHERE id_torre = %s"""
 
         linha = MySql.getOne(query, (idTorre,))
 
@@ -119,6 +116,8 @@ class torreController:
         linhaT.setQtCobertura(linha['qt_coberturas'])
         linhaT.setPrefixCobertura(linha['prefix_cobertura'])
         linhaT.setNumAptUmAndarUm(linha['num_apt_um_andar_um'])
+        linhaT.setVlrUnidade(linha['vl_unidade'])
+        linhaT.setVlrCobertura(linha['vl_cobertura'])
 
         return linhaT
 

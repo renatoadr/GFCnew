@@ -387,7 +387,7 @@ class unidadeController:
     def gerarInsumoRelatorio(self, idEmpreend: int, dataInicio: datetime, dataFim: datetime) -> list[unidade]:
         query = f""" SELECT * FROM {MySql.DB_NAME}.tb_unidades uni
           WHERE uni.id_empreendimento = %s
-          AND DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) BETWEEN %s AND %s
+          AND DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) <= %s
           AND uni.status IN ('Estoque', 'Vendido')
           AND uni.id_unidade = (
               SELECT MAX(id_unidade) FROM {MySql.DB_NAME}.tb_unidades
@@ -396,17 +396,9 @@ class unidadeController:
               AND mes_vigencia = uni.mes_vigencia
               AND id_empreendimento = uni.id_empreendimento
               AND id_torre = uni.id_torre
-              AND status = uni.status
           )
-          ORDER BY uni.id_torre, uni.unidade, DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01'));
+          ORDER BY uni.id_torre, uni.unidade, DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')), uni.id_unidade;
         """
-        queryDates = f""" SELECT
-          MIN(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) data_inicio,
-          MAX(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) data_final
-        FROM {MySql.DB_NAME}.tb_unidades uni
-        WHERE uni.id_empreendimento = %s
-        AND DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) BETWEEN %s AND %s
-        AND uni.status IN ('Estoque', 'Vendido')"""
 
         result = []
         totais = {}
@@ -418,35 +410,25 @@ class unidadeController:
             "Data Final": dataFim
         }, end="\n\n")
 
-        datas = MySql.getAll(
-            queryDates, (
-                idEmpreend,
-                format(dataInicio, '%Y-%m-%d'),
-                format(dataFim, '%Y-%m-%d')
-            )
-        )
         unidades = MySql.getAll(
             query, (
                 idEmpreend,
-                format(dataInicio, '%Y-%m-%d'),
                 format(dataFim, '%Y-%m-%d')
             )
         )
 
-        if not datas or not unidades:
+        if not unidades:
             return []
 
-        print("Range real das unidades", datas[0])
         print("Quantidade de unidades encontradas: ", len(unidades), end="\n\n")
 
-        dtI = datas[0]['data_inicio'].split('-')
-        dtF = datas[0]['data_final'].split('-')
-        dataInicio = datetime(int(dtI[0]), int(dtI[1]), int(dtI[2]))
-        dataFim = datetime(int(dtF[0]), int(dtF[1]), int(dtF[2]))
-
         for idx, current in enumerate(unidades):
-            previus = unidades[idx - 1] if idx > 0 else None
-            next = unidades[idx + 1] if idx + 1 < len(unidades) else None
+            idxPrevius = idx - 1
+            idxNext = idx + 1
+            previus = unidades[idxPrevius] if idx > 0 else None
+            next = unidades[idxNext] if idxNext < len(
+                unidades) else None
+
             vigCurrent = datetime(
                 int(current['ano_vigencia']),
                 int(current['mes_vigencia']),
@@ -490,6 +472,9 @@ class unidadeController:
         print("Quantidade de unidades geradas", len(result), end="\n\n")
 
         for uni in result:
+            if datetime(int(uni.getAnoVigencia()), int(uni.getMesVigencia()), 1) < dataInicio or datetime(int(uni.getAnoVigencia()), int(uni.getMesVigencia()), 1) > dataFim:
+                continue
+
             key = f"{uni.getMesVigencia()}_{uni.getAnoVigencia()}"
             if not totais.get(key, None):
                 if uni.getStatus() == 'Estoque':
