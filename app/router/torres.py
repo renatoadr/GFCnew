@@ -73,7 +73,7 @@ def cadastrar_torre():
         request.form.get('vlrCobertura')))
 
     torreC = torreController()
-    if torreC.existeNomeTorre(t.getNmTorre()):
+    if torreC.existeNomeTorre(t.getNmTorre(), t.getIdEmpreend()):
         flash_message.error('Este nome de torre já existe')
         return render_template("torre.html", idEmpreend=IdEmpreend().get(), nmEmpreend=NmEmpreend().get(), torre=t, novo=True)
 

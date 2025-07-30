@@ -300,11 +300,13 @@ def somaVlReceber(uni: unidade) -> float:
 def prepListaStatus(sts: str) -> list[str]:
     listaStatus = []
     if sts == 'Estoque':
-        listaStatus = ['Estoque', 'Quitado', 'Vendido']
+        listaStatus = ['Estoque', 'Permuta', 'Quitado', 'Vendido']
     elif sts == 'Vendido':
-        listaStatus = ['Vendido', 'Quitado', 'Distrato']
+        listaStatus = ['Vendido', 'Permuta', 'Quitado', 'Distrato']
     elif sts == 'Quitado':
         listaStatus = ['Quitado']
     elif sts == 'Distrato':
         listaStatus = ['Distrato']
+    elif sts == 'Permuta':
+        listaStatus = ['Permuta']
     return listaStatus

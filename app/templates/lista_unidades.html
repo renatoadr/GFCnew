@@ -73,7 +73,7 @@
                 <td class="text-center">{{ u.getStatus() }}</td>
                 <td class="text-center">{{ u.getVlUnidade() }}</td>
 
-                {% if not u.getNmComprador() and u.getStatus() in ['Vendido', 'Quitado'] %}
+                {% if not u.getNmComprador() and u.getStatus() in ['Vendido', 'Quitado', 'Permuta'] %}
                 <td class="text-center">
                   <span class="text-danger-emphasis h5" data-bs-toggle="tooltip"
                     data-bs-title="Esta unidade não tem um cliente associado. É necessário informar o cliente que comprou esta unidade.">

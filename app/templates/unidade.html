@@ -192,7 +192,7 @@
             let elVal = $(el).val()
             let id = $(el).attr('id')
             let allowZero = ['vlPosChaves', 'vlPreChaves', 'vlChaves']
-            if (['Vendido', 'Quitado'].includes(val) && (
+            if (['Vendido', 'Quitado', 'Permuta'].includes(val) && (
               (!allowZero.includes(id) && (parseFloat(elVal) === 0 || elVal === '')) || (allowZero.includes(id) && elVal === '')
             )) {
               $(el).val('');
@@ -218,7 +218,7 @@
       config.submitHandler = function (form) {
         let status = $('#status').val()
         if (
-          ['Vendido', 'Quitado'].includes(status) &&
+          ['Vendido', 'Quitado', 'Permuta'].includes(status) &&
           (form.cpfCnpjCliente.value === '' || !/\d/.test(form.cpfCnpjCliente.value))
         ) {
           $.toast({

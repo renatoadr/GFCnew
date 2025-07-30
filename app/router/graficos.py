@@ -185,12 +185,24 @@ def gerar_graf_progresso_obra(idEmpreend, mesVigencia, anoVigencia, mesInicio, a
     plt.title("PROGRESSO FÍSICO DA OBRA (Previsto x Realizado)", fontdict={
               'family': 'serif', 'color': 'black', 'weight': 'bold', 'size': 28}, loc='center')
 
-    for xi, yi, text in zip(x1, y1, annotationsy1):
-        plt.annotate(text, xy=(xi, yi), xycoords='data', xytext=(
-            3, 20), textcoords='offset points', fontsize=14, color='blue')
-    for xi, yi, text in zip(x2, y2, annotationsy2):
-        plt.annotate(text, xy=(xi, yi), xycoords='data', xytext=(
-            3, -30), textcoords='offset points', fontsize=14, color='darkorange')
+    contx1 = 0
+    tamX1 = len(x1)
+    tamX2 = len(x2)
+    for x in range(tamX1):
+        if x < tamX2:
+            if annotationsy1[x] > annotationsy2[x]:
+                desvioX1 = 20 # define a posição do texto no ponto x/y
+                desvioX2 = -20 # define a posição do texto no ponto x/y
+            else:
+                desvioX1 = -20
+                desvioX2 = 20
+        else:
+            desvioX1 = 20
+            desvioX2 = -20
+        plt.annotate(annotationsy1[x], xy=(x1[x], y1[x]), xycoords='data', xytext=(3, desvioX1), textcoords='offset points', fontsize=14, color='blue')
+        if contx1 < tamX2:   
+            plt.annotate(annotationsy2[x], xy=(x2[x], y2[x]), xycoords='data', xytext=(3, desvioX2), textcoords='offset points', fontsize=14, color='darkorange')
+            contx1 += 1  
 
     plt.legend(fontsize=20, loc="upper left")
 #    plt.xlabel(fontsize=14)
@@ -262,10 +274,10 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
 #        vlrAtual = round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2)
         y2.append(round(VlPlanoEmp / (u.getTtPago() + u.getTtUnidade()), 2))
         vlrAtual = round(VlPlanoEmp / (u.getTtPago() + u.getTtUnidade()), 2)
-
+#        print (u.getMesVigencia()+'/'+u.getAnoVigencia()+'>', 'plano emp ', VlPlanoEmp, u.getTtPago(), u.getTtUnidade(), 'Soma ', u.getTtPago() + u.getTtUnidade())            #  tirar 
         variacao = vlrAtual - vlrAnterior
         vlrAnterior = vlrAtual
-        print(vlrAnterior, vlrAtual, variacao)
+#s       print(vlrAnterior, vlrAtual, variacao)
 
     linhas = [-0.1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.00,
               1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80]
@@ -359,12 +371,13 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
     for u in recS:
         x2.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
         if u.getTtPago() > 0:
-#           y3.append(round(u.getTtPago() / VlPlanoEmp, 2))
-           y3.append(round(VlPlanoEmp / u.getTtPago(), 2))
+           y3.append(round(u.getTtPago() / VlPlanoEmp, 2))
+#           y3.append(round(VlPlanoEmp / u.getTtPago(), 2))
         else:
             y3.append(0.0)
-#        y4.append(round(u.getTtUnidade() / VlPlanoEmp, 2))
-        y4.append(round(VlPlanoEmp / u.getTtUnidade(), 2))
+        y4.append(round(u.getTtUnidade() / VlPlanoEmp, 2))
+#        y4.append(round(VlPlanoEmp / u.getTtUnidade(), 2))
+#        print(u.getMesVigencia()+'/'+u.getAnoVigencia()+'>', 'plano emp ', VlPlanoEmp, u.getTtPago(), u.getTtUnidade())            #  tirar
 
     linhas = [-0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.00,
               1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80]

@@ -605,7 +605,7 @@ class unidadeController:
           WHERE uni.id_empreendimento = %s
           AND uni.mes_vigencia = %s
           AND uni.ano_vigencia = %s
-          AND uni.status IN ('Vendido', 'Quitado')
+          AND uni.status IN ('Vendido', 'Quitado', 'Permuta')
           AND uni.ac_historico IS NULL
           AND (
               uni.cpf_cnpj_comprador IS NULL

@@ -175,9 +175,9 @@ class torreController:
             " where id_torre = %s "
         MySql.exec(query, (idTorre,))
 
-    def existeNomeTorre(self, nome):
+    def existeNomeTorre(self, nome, idEmpreend):
         query = f"select count(id_torre) existe FROM {MySql.DB_NAME}.tb_torres" + \
-            " WHERE nm_torre = %s "
+            " WHERE nm_torre = %s and id_empreendimento = "+ idEmpreend
         result = MySql.getOne(query, (nome,))
         return result['existe'] > 0
 

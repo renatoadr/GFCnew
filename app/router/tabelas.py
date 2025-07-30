@@ -935,7 +935,7 @@ def gerar_tab_empreend_capa(idEmpreend, mes, ano):
     if medAnterior is None or medAnterior.getDataMedicao() is None:
         periodo = f'De -- até {dataAtual}'
     else:
-        periodo = f'De {medAnterior.strftime("%d/%m/%Y")} até {dataAtual}'
+        periodo = f'De {medAnterior.getDataMedicao().strftime("%d/%m/%Y")} até {dataAtual}'
 
     data = [
         ['Incorporação         ', emp.getNmEmpreend()],
