@@ -144,7 +144,7 @@ def gerar_insumos():
                 fn(vig[1], vig[0])
 
     if initAno and initMes and endAno and endMes and insumosIntervalo:
-        if int(f"{initMes}{initAno}") > int(f"{endMes}{endAno}"):
+        if datetime(int(initAno), int(initMes), 1) > datetime(int(endAno), int(endMes), 1):
             initMes = endMes
             initAno = endAno
 
