@@ -8,6 +8,8 @@ from controller.unidadeController import unidadeController
 from controller.medicaoController import medicaoController
 from controller.bancoController import bancoController
 from reportlab.lib.colors import white, red, blue, green, black, orange
+from reportlab.pdfgen.canvas import Canvas
+
 import os
 
 
@@ -28,7 +30,7 @@ class graficoInterController:
         empC = empreendimentoController()
         medCtrl = medicaoController()
         empS = empC.consultarEmpreendimentoPeloId(idEmpreend)
-        med = medCtrl.consultarMedicaoAtual(idEmpreend) 
+        med = medCtrl.consultarMedicaoAtual(idEmpreend)
 
         construtora = 'Construtora: ' + empS.getNmConstrutor()
         empreendimento = 'Empreendimento: ' + empS.getNmEmpreend()
@@ -67,7 +69,7 @@ class graficoInterController:
         c.setFont('Helvetica', 10)
         c.drawString(570, 10, str(pagina))
 
-    def pdfPag2(self, c, diretorio, pagina):
+    def pdfPag2(self, c: Canvas, diretorio, pagina):
         #   Segunda Página
         self.logo_cabecalho(c)  # Adiciona o logo no cabeçalho
 
@@ -76,7 +78,7 @@ class graficoInterController:
                     30, 690, width=520, height=60, mask='auto')  # 30 690   520  60
 
         c.drawImage(os.path.join(diretorio, "tab_medicoes.png"),
-                    30, 370, width=520, height=300, mask='auto')
+                    30, 370, width=520, mask='auto')
         self.barraTitulo(
             30, 660, c, "2.          Comparativo: Previsto x Realizado Físico (%)")
 
