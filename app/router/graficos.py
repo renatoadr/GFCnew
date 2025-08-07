@@ -191,18 +191,20 @@ def gerar_graf_progresso_obra(idEmpreend, mesVigencia, anoVigencia, mesInicio, a
     for x in range(tamX1):
         if x < tamX2:
             if annotationsy1[x] > annotationsy2[x]:
-                desvioX1 = 20 # define a posição do texto no ponto x/y
-                desvioX2 = -20 # define a posição do texto no ponto x/y
+                desvioX1 = 20  # define a posição do texto no ponto x/y
+                desvioX2 = -20  # define a posição do texto no ponto x/y
             else:
                 desvioX1 = -20
                 desvioX2 = 20
         else:
             desvioX1 = 20
             desvioX2 = -20
-        plt.annotate(annotationsy1[x], xy=(x1[x], y1[x]), xycoords='data', xytext=(3, desvioX1), textcoords='offset points', fontsize=14, color='blue')
-        if contx1 < tamX2:   
-            plt.annotate(annotationsy2[x], xy=(x2[x], y2[x]), xycoords='data', xytext=(3, desvioX2), textcoords='offset points', fontsize=14, color='darkorange')
-            contx1 += 1  
+        plt.annotate(annotationsy1[x], xy=(x1[x], y1[x]), xycoords='data', xytext=(
+            3, desvioX1), textcoords='offset points', fontsize=14, color='blue')
+        if contx1 < tamX2:
+            plt.annotate(annotationsy2[x], xy=(x2[x], y2[x]), xycoords='data', xytext=(
+                3, desvioX2), textcoords='offset points', fontsize=14, color='darkorange')
+            contx1 += 1
 
     plt.legend(fontsize=20, loc="upper left")
 #    plt.xlabel(fontsize=14)
@@ -278,7 +280,7 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
 
         variacao = vlrAtual - vlrAnterior
         vlrAnterior = vlrAtual
-#s       print(vlrAnterior, vlrAtual, variacao)
+# s       print(vlrAnterior, vlrAtual, variacao)
 
     linhas = [-0.1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.00,
               1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80]
@@ -503,9 +505,9 @@ def gerar_graf_vendas(idEmpreend, mesVigencia, anoVigencia, tipo):
         kw["arrowprops"].update({"connectionstyle": connectionstyle})
         # Ajuste dinâmico para evitar sobreposição
         # alterna o deslocamento vertical 3
-        deslocamento_y = 1.0 + (i % 3) * 0.5
+        deslocamento_y = 1.2 + (i % 2) * 0.5
         # alterna o deslocamento horizontal 9
-        deslocamento_x = 1.0 + (i % 2) * 0.2
+        deslocamento_x = 0.9 + (i % 2) * 0.2
         ax.annotate(recipe[i], xy=(x, y), xytext=(deslocamento_x * np.sign(x), deslocamento_y * y),
                     horizontalalignment=horizontalalignment, **kw)
 

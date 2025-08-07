@@ -45,7 +45,6 @@ def init(app):
         logger.error("Não foi possível carregar as configurações: ", error)
 
 
-init(app)
-
 if __name__ == "__main__" or __name__ == "main":
+    init(app)
     app.run(host="0.0.0.0", port=5000)

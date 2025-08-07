@@ -11,6 +11,8 @@ import re
 
 fotos_bp = Blueprint('fotos', __name__)
 
+SIZE_IMAGE = (1280, 720)
+
 months = {
     "01": "Jan",
     "02": "Fev",
@@ -211,7 +213,8 @@ def saveImage(label, fieldName, nameFile, path):
     else:
         file = request.files.get(fieldName)
         if file:
-            img = redimensionar(file)
+            imgResize = redimensionar(file)
+            img = background_image(imgResize)
             img.filename = file.filename
             if not saveFile(img, path, nameFile):
                 flash(
@@ -263,14 +266,22 @@ def escreverNaImagem(file, desc):
     return img
 
 
+def background_image(file: ImageFile) -> ImageFile:
+    width, height = SIZE_IMAGE
+    image_background = Image.new("RGB", (width, height), "white")
+    pos_x = (width - file.width) // 2
+    pos_y = (height - file.height) // 2
+    image_background.paste(file, (pos_x, pos_y), file.convert("RGBA"))
+    return image_background
+
+
 def redimensionar(file):
     img = file
     try:
         img = Image.open(file)
     except:
         pass
-    nWSize = 1280
-    nHSize = 720
+    nWSize, nHSize = SIZE_IMAGE
     nWidth = 0
     nHeight = 0
 
@@ -305,7 +316,8 @@ def saveImageObra(idx, path):
                     f"Ouve um erro ao tentar salvar a imagem para o campo {label}")
         else:
             if file:
-                img = redimensionar(file)
+                imgResize = redimensionar(file)
+                img = background_image(imgResize)
                 img = escreverNaImagem(img, desc)
                 img.filename = file.filename
                 if not saveFile(img, path, nameFile):
