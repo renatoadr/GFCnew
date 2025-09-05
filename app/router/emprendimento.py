@@ -1,3 +1,4 @@
+import datetime
 from flask import Blueprint, request, render_template, redirect
 from controller.empreendimentoController import empreendimentoController
 from utils.security import login_required
@@ -5,11 +6,24 @@ from dto.empreendimento import empreendimento
 import utils.converter as converter
 from controller.bancoController import bancoController
 from utils.security import get_user_logged
+from utils.CtrlSessao import Vigencia
 
 emprendimento_bp = Blueprint('empreendimentos', __name__)
 
 ctrlBanco = bancoController()
 empc = empreendimentoController()
+
+
+@emprendimento_bp.route('/alterar_vigencia', methods=['POST'])
+def alterar_vigencia():
+    vigenciaField = request.form.get('vigencia')
+
+    if not vigenciaField:
+        vigenciaField = datetime.now().strftime('%Y-%m')
+
+    Vigencia().save(vigenciaField)
+
+    return redirect(request.referrer)
 
 
 @emprendimento_bp.route('/home')

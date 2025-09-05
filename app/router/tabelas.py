@@ -29,28 +29,28 @@ tam_dado = 12
 medCtrl = medicaoController()
 
 
-@tabelas_bp.route('/tab_notas')
-@login_required
-def tab_notas():
-    idEmpreend = IdEmpreend().get()
-    dtCarga = request.args.get("dtCarga")
-    mesVigencia = str(request.args.get('mesV')).zfill(2)
-    anoVigencia = str(request.args.get('anoV'))
-    codBanco = int(request.args.get('codBanco')
-                   ) if request.args.get('codBanco') else None
+# @tabelas_bp.route('/tab_notas')
+# @login_required
+# def tab_notas():
+#     idEmpreend = IdEmpreend().get()
+#     dtCarga = request.args.get("dtCarga")
+#     mesVigencia = str(request.args.get('mesV')).zfill(2)
+#     anoVigencia = str(request.args.get('anoV'))
+#     codBanco = int(request.args.get('codBanco')
+#                    ) if request.args.get('codBanco') else None
 
-    notC = notaController()
-    notS = notC.consultarNotaPelaData(idEmpreend, dtCarga)
+#     notC = notaController()
+#     notS = notC.consultarNotaPelaData(idEmpreend, dtCarga)
 
-    grafNome = gerar_tab_notas(
-        idEmpreend,
-        mesVigencia,
-        anoVigencia,
-        notS,
-        codBanco
-    )
+#     grafNome = gerar_tab_notas(
+#         idEmpreend,
+#         mesVigencia,
+#         anoVigencia,
+#         notS,
+#         codBanco
+#     )
 
-    return render_template("nota_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+#     return render_template("nota_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
 def gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS, codBanco):
@@ -145,27 +145,27 @@ def gerar_tab_notas(idEmpreend, mesVigencia, anoVigencia, notS, codBanco):
     return grafNome
 
 
-@tabelas_bp.route('/tab_conta')
-@login_required
-def tab_conta_corrente():
-    idEmpreend = IdEmpreend().get()
-    dtCarga = request.args.get("dtCarga")
-    mesVigencia = str(request.args.get('mesV')).zfill(2)
-    anoVigencia = str(request.args.get('anoV'))
-    codBanco = int(request.args.get('codBanco')
-                   ) if request.args.get('codBanco') else None
+# @tabelas_bp.route('/tab_conta')
+# @login_required
+# def tab_conta_corrente():
+#     idEmpreend = IdEmpreend().get()
+#     dtCarga = request.args.get("dtCarga")
+#     mesVigencia = str(request.args.get('mesV')).zfill(2)
+#     anoVigencia = str(request.args.get('anoV'))
+#     codBanco = int(request.args.get('codBanco')
+#                    ) if request.args.get('codBanco') else None
 
-    conC = contaController()
-    conS = conC.consultarContaPelaCarga(idEmpreend, dtCarga)
+#     conC = contaController()
+#     conS = conC.consultarContaPelaCarga(idEmpreend, dtCarga)
 
-    grafNome = gerar_tab_conta_corrente(
-        idEmpreend,
-        mesVigencia,
-        anoVigencia,
-        conS,
-        codBanco
-    )
-    return render_template("conta_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+#     grafNome = gerar_tab_conta_corrente(
+#         idEmpreend,
+#         mesVigencia,
+#         anoVigencia,
+#         conS,
+#         codBanco
+#     )
+#     return render_template("conta_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
 def gerar_tab_conta_corrente(idEmpreend, mesVigencia, anoVigencia, conS, codBanco):
@@ -787,21 +787,21 @@ def gerar_tab_medicoes(idEmpreend, mesVigencia, anoVigencia, mesInicio, anoInici
     return grafNome
 
 
-@tabelas_bp.route('/tab_orcamento_liberacao')
-@login_required
-def tab_orcamento_liberacao():
-    idEmpreend = IdEmpreend().get()
-    dtCarga = request.args.get("dtCarga")
-    mes = request.args.get("mesV")
-    ano = request.args.get("anoV")
-    codBanco = int(request.args.get('codBanco')
-                   ) if request.args.get('codBanco') else None
+# @tabelas_bp.route('/tab_orcamento_liberacao')
+# @login_required
+# def tab_orcamento_liberacao():
+#     idEmpreend = IdEmpreend().get()
+#     dtCarga = request.args.get("dtCarga")
+#     mes = request.args.get("mesV")
+#     ano = request.args.get("anoV")
+#     codBanco = int(request.args.get('codBanco')
+#                    ) if request.args.get('codBanco') else None
 
-    medC = orcamentoController()
-    medS = medC.consultarOrcamentoPelaData(idEmpreend, dtCarga)
-    grafNome = gerar_tab_orcamento_liberacao(
-        idEmpreend, mes, ano, medS, codBanco)
-    return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+#     medC = orcamentoController()
+#     medS = medC.consultarOrcamentoPelaData(idEmpreend, dtCarga)
+#     grafNome = gerar_tab_orcamento_liberacao(
+#         idEmpreend, mes, ano, medS, codBanco)
+#     return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
 def gerar_tab_orcamento_liberacao(idEmpreend, mes, ano, medS, codBanco):

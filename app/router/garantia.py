@@ -59,9 +59,7 @@ def tratar_garantias():
     return render_template(
         'garantias.html',
         obras=obras,
-        gerais=gerais,
-        minDate='2000-01',
-        maxDate=datetime.now().strftime('%Y-%m')
+        gerais=gerais
     )
 
 
@@ -74,6 +72,7 @@ def atualizar_garantia():
 
 
 @garantia_bp.route('/cadastrar_garantia', methods=['POST'])
+@login_required
 def cadastrar_garantia():
     date = datetime.now()
     docsObra = request.form.getlist('obraDocumento')
@@ -127,19 +126,19 @@ def prepareList(idEmpreend, tipo, date, docsList, stsList, obsList):
     return tuple(result)
 
 
-@garantia_bp.route('/gerar_relatorio_garantia', methods=['POST'])
-def gerar_relatorio_garantia():
-    idEmpreend = IdEmpreend().get()
-    tipo = request.form.get('tipo')
-    vigencia = request.form.get('vigencia')
+# @garantia_bp.route('/gerar_relatorio_garantia', methods=['POST'])
+# def gerar_relatorio_garantia():
+#     idEmpreend = IdEmpreend().get()
+#     tipo = request.form.get('tipo')
+#     vigencia = request.form.get('vigencia')
 
-    if not vigencia:
-        vigencia = datetime.now().strftime('%Y-%m')
+#     if not vigencia:
+#         vigencia = datetime.now().strftime('%Y-%m')
 
-    vigencia = vigencia.split('-')
-    mesVigencia = vigencia[1]
-    anoVigencia = vigencia[0]
-    if tipo == 'Geral':
-        return redirect(f'/tab_garantias_geral?idEmpreend={idEmpreend}&mesVigencia={mesVigencia}&anoVigencia={anoVigencia}')
-    else:
-        return redirect(f'/tab_garantias_obra?idEmpreend={idEmpreend}&mesVigencia={mesVigencia}&anoVigencia={anoVigencia}')
+#     vigencia = vigencia.split('-')
+#     mesVigencia = vigencia[1]
+#     anoVigencia = vigencia[0]
+#     if tipo == 'Geral':
+#         return redirect(f'/tab_garantias_geral?idEmpreend={idEmpreend}&mesVigencia={mesVigencia}&anoVigencia={anoVigencia}')
+#     else:
+#         return redirect(f'/tab_garantias_obra?idEmpreend={idEmpreend}&mesVigencia={mesVigencia}&anoVigencia={anoVigencia}')

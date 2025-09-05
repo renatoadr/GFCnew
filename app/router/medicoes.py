@@ -6,7 +6,6 @@ from utils.security import login_required
 from utils.helper import allowed_file
 import utils.converter as converter
 from dto.medicao import medicao
-from datetime import datetime
 import os
 
 medicoes_bp = Blueprint('medicoes', __name__)
@@ -42,9 +41,7 @@ def tratar_medicoes():
         return render_template(
             "lista_medicoes.html",
             mensagem="Medição não Cadastrada, importar o arquivo Excel!!!",
-            medicoes=medS,
-            minDate='2000-01',
-            maxDate=datetime.now().strftime('%Y-%m')
+            medicoes=medS
         )
     else:
         medCurrent = None
@@ -59,9 +56,7 @@ def tratar_medicoes():
             "lista_medicoes.html",
             medicoes=medS,
             medCurrent=medCurrent,
-            medPrevius=medPrevius,
-            minDate='2000-01',
-            maxDate=datetime.now().strftime('%Y-%m')
+            medPrevius=medPrevius
         )
 
 
@@ -134,6 +129,7 @@ def excluir_medicao():
 
 
 @medicoes_bp.route('/salvar_item_medicao', methods=['POST'])
+@login_required
 def salvar_item_medicao():
     med = medicao()
     med.setIdMedicao(request.form.get('idMedicao'))
@@ -165,27 +161,27 @@ def salvar_item_medicao():
     return redirect('/tratar_medicoes')
 
 
-@medicoes_bp.route('/gerar_relatorio_medicoes', methods=['POST'])
-def gerar_relatorio_medicoes():
-    idEmpreend = IdEmpreend().get()
-    tipo = request.form.get('tipo')
+# @medicoes_bp.route('/gerar_relatorio_medicoes', methods=['POST'])
+# def gerar_relatorio_medicoes():
+#     idEmpreend = IdEmpreend().get()
+#     tipo = request.form.get('tipo')
 
-    vig = request.form.get('vigencia')
-    if not vig:
-        vig = datetime.now().strftime('%Y-%m')
-    vig = vig.split('-')
+#     vig = request.form.get('vigencia')
+#     if not vig:
+#         vig = datetime.now().strftime('%Y-%m')
+#     vig = vig.split('-')
 
-    vigInit = request.form.get('vigenciaInicial')
-    if not vigInit:
-        vigInit = datetime.now().strftime('%Y-%m')
-    vigInit = vigInit.split('-')
+#     vigInit = request.form.get('vigenciaInicial')
+#     if not vigInit:
+#         vigInit = datetime.now().strftime('%Y-%m')
+#     vigInit = vigInit.split('-')
 
-    vigEnd = request.form.get('vigenciaFinal')
-    if not vigEnd:
-        vigEnd = datetime.now().strftime('%Y-%m')
-    vigEnd = vigEnd.split('-')
+#     vigEnd = request.form.get('vigenciaFinal')
+#     if not vigEnd:
+#         vigEnd = datetime.now().strftime('%Y-%m')
+#     vigEnd = vigEnd.split('-')
 
-    if tipo == 'tabela':
-        return redirect(f'/tab_medicoes?idEmpreend={idEmpreend}&mesVigencia={vig[1]}&anoVigencia={vig[0]}&mesInicio={vigInit[1]}&anoInicio={vigInit[0]}&mesFinal={vigEnd[1]}&anoFinal={vigEnd[0]}')
-    else:
-        return redirect(f'/graf_progresso_obra?idEmpreend={idEmpreend}&mesVigencia={vig[1]}&anoVigencia={vig[0]}&mesInicio={vigInit[1]}&anoInicio={vigInit[0]}&mesFinal={vigEnd[1]}&anoFinal={vigEnd[0]}')
+#     if tipo == 'tabela':
+#         return redirect(f'/tab_medicoes?idEmpreend={idEmpreend}&mesVigencia={vig[1]}&anoVigencia={vig[0]}&mesInicio={vigInit[1]}&anoInicio={vigInit[0]}&mesFinal={vigEnd[1]}&anoFinal={vigEnd[0]}')
+#     else:
+#         return redirect(f'/graf_progresso_obra?idEmpreend={idEmpreend}&mesVigencia={vig[1]}&anoVigencia={vig[0]}&mesInicio={vigInit[1]}&anoInicio={vigInit[0]}&mesFinal={vigEnd[1]}&anoFinal={vigEnd[0]}')

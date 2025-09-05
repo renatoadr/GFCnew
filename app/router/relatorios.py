@@ -1,6 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, current_app, send_from_directory, url_for
 from controller.graficoInterController import graficoInterController
-from utils.CtrlSessao import IdEmpreend, NmEmpreend, CodBanco
+from utils.CtrlSessao import IdEmpreend, NmEmpreend, CodBanco, Vigencia
 from controller.graficoController import graficoController
 from controller.geralController import geralController
 from utils.flash_message import flash_message
@@ -15,19 +15,10 @@ relatorios_bp = Blueprint('relatorios', __name__)
 @relatorios_bp.route('/gerar_relatorio')
 @login_required
 def gerar_relatorio():
-    vigencia = request.args.get('vigencia')
-
-    if not vigencia:
-        return redirect('/lista_relatorios')
-
-    vig = vigencia.split('-')
-
-    idEmpreend = request.args.get("idEmpreend")
-    apelido = request.args.get("apelido")
-    mes = vig[1]
-    ano = vig[0]
-
-    idEmpreend = request.args.get("idEmpreend")
+    idEmpreend = IdEmpreend().get()
+    apelido = NmEmpreend().get()
+    mes = Vigencia().getMonth()
+    ano = Vigencia().getYear()
     codBanco = CodBanco().get()
 
     if codBanco == 77:  # Banco Inter
@@ -40,12 +31,8 @@ def gerar_relatorio():
 def lista_relatorios():
     idEmpreend = request.args.get('idEmpreend')
     apelido = request.args.get('apelido')
-    vigencia = request.args.get('vigencia')
     codBanco = int(request.args.get('codBanco')
                    ) if request.args.get('codBanco') else None
-
-    if not vigencia:
-        vigencia = datetime.now().strftime('%Y-%m')
 
     if (idEmpreend is None and not IdEmpreend().has()) or (apelido is None and not NmEmpreend().has()):
         return redirect('/home')
@@ -72,15 +59,14 @@ def lista_relatorios():
     arqS = gerC.listar_arquivos_com_prefixo(
         os.path.normpath(diretorio), apelido)
 
+    arqS.reverse()
+
     if mobile:
         return render_template("mobile/download.html", arquivos=arqS)
     else:
         return render_template(
             "relatorio.html",
             arquivos=arqS,
-            minDate='2000-01',
-            maxDate=datetime.now().strftime('%Y-%m'),
-            vigencia=vigencia,
             apelido=apelido,
             idEmpreend=idEmpreend
         )
@@ -94,6 +80,14 @@ def download_arquivo():
     return send_from_directory(os.path.normpath(diretorio), arquivo, as_attachment=True)
 
 
+def get_name_pdf(apelido, ano, mes, path):
+    nomePdf = f"""{apelido}_{ano}_{mes}"""
+    if not os.path.exists(f"""{path}/{nomePdf}.pdf"""):
+        return nomePdf + '.pdf'
+    pdfs = list(filter(lambda it: nomePdf in it, os.listdir(path)))
+    return f"""{nomePdf}_v{len(pdfs)}.pdf"""
+
+
 def relatorio_padrao(idEmpreend, apelido, mes, ano):
 
     grafC = graficoController()
@@ -105,7 +99,7 @@ def relatorio_padrao(idEmpreend, apelido, mes, ano):
     # monta o diretório onde ficam todos os relatórios
     dirRelatorio = grafC.montaDir(idEmpreend, mes, ano, relatorio=True)
     grafC.criaDir(dirRelatorio)
-    nomePdf = apelido + "-" + ano + "-" + mes + ".pdf"
+    nomePdf = get_name_pdf(apelido, ano, mes, dirRelatorio)
 
     if grafC.verificaDir(diretorio) == False:
         flash_message.info("Não existem dados para o relatório")
@@ -175,10 +169,7 @@ def relatorio_padrao(idEmpreend, apelido, mes, ano):
         url_for(
             'relatorios.lista_relatorios',
             arquivos=arqS,
-            minDate='2000-01',
-            maxDate=datetime.now().strftime('%Y-%m'),
             apelido=apelido,
-            vigencia=f"{ano}-{mes}",
             idEmpreend=idEmpreend
         )
     )
@@ -199,7 +190,7 @@ def relatorio_inter(idEmpreend, apelido, mes, ano):
     # monta o diretório onde ficam todos os relatórios
     dirRelatorio = grafC.montaDir(idEmpreend, mes, ano, relatorio=True)
     grafC.criaDir(dirRelatorio)
-    nomePdf = apelido + "-" + ano + "-" + mes + ".pdf"
+    nomePdf = get_name_pdf(apelido, ano, mes, dirRelatorio)
 
     if grafC.verificaDir(diretorio) == False:
         flash_message.info("Não existem dados para o relatório")
@@ -272,10 +263,7 @@ def relatorio_inter(idEmpreend, apelido, mes, ano):
         url_for(
             'relatorios.lista_relatorios',
             arquivos=arqS,
-            minDate='2000-01',
-            maxDate=datetime.now().strftime('%Y-%m'),
             apelido=apelido,
-            vigencia=f"{ano}-{mes}",
             idEmpreend=idEmpreend
         )
     )

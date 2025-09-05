@@ -1,7 +1,7 @@
 from utils.security import login_required
 from flask import Blueprint, request, render_template, current_app, redirect, flash, jsonify, send_file
 from utils.logger import logger
-from utils.CtrlSessao import IdEmpreend, NmEmpreend
+from utils.CtrlSessao import IdEmpreend, NmEmpreend, Vigencia
 from utils.converter import converterStrToInt
 from PIL import Image, ImageDraw, ImageFont, ImageFile
 from utils.helper import criaPastas
@@ -77,32 +77,20 @@ def upload_config_fotos():
 
 
 @fotos_bp.route('/upload_fotos', methods=['POST'])
+@login_required
 def upload_fotos():
-    vigCurrent = request.form.get('vigCorrrente')
     qtdFotosObra = converterStrToInt(request.form.get("qtdObra"))
     qtd3D = converterStrToInt(request.form.get("qtd3D"))
     capa = request.form.getlist("capa")
-    vig = request.form.get('vigencia')
-    mesV = None
-    anoV = None
-    if vig:
-        vig = vig.split('-')
-        mesV = converterStrToInt(vig[1])
-        anoV = converterStrToInt(vig[0])
-
-    if vigCurrent is None and (mesV is None or mesV == 0 or anoV is None or anoV == 0):
-        return redirect('/upload_config_fotos')
+    vig = Vigencia().get()
+    mesV = converterStrToInt(vig[1])
+    anoV = converterStrToInt(vig[0])
 
     if qtdFotosObra > 0:
         qtdFotosObra += 1
 
     if qtd3D > 0:
         qtd3D += 1
-
-    if vigCurrent is not None:
-        ano, mes = vigCurrent.split('_')
-        mesV = mes
-        anoV = ano
 
     camposTelaCapa = []
 
@@ -111,7 +99,7 @@ def upload_fotos():
             if value in capa:
                 camposTelaCapa.append((label, value, name))
 
-    fotosCarregadas = carregarImagens(vigCurrent)
+    fotosCarregadas = carregarImagens('_'.join(vig))
 
     return render_template(
         "upload_fotos.html",
@@ -125,6 +113,7 @@ def upload_fotos():
 
 
 @fotos_bp.route('/upload_arquivo_fotos', methods=['POST'])
+@login_required
 def upload_arquivo_fotos():
     mesV = request.form.get('mesVigencia')
     anoV = request.form.get('anoVigencia')

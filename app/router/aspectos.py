@@ -1,9 +1,8 @@
 from flask import Blueprint, request, render_template, redirect
 
-from utils.CtrlSessao import IdEmpreend, NmEmpreend
+from utils.CtrlSessao import IdEmpreend, NmEmpreend, Vigencia
 from controller.aspectosController import aspectosController
 from utils.security import login_required
-from datetime import datetime
 
 aspectos_bp = Blueprint('aspectos', __name__)
 ctrl = aspectosController()
@@ -29,31 +28,24 @@ def tratar_aspectos_obra():
     else:
         NmEmpreend().set(nmEmpreend)
 
-    vigencia = request.args.get('vigencia')
-    if not vigencia:
-        vigencia = datetime.now().strftime('%Y-%m')
-    vig = vigencia.split('-')
-
     aspectos = ctrl.todasPerguntasComRespostas(
         IdEmpreend().get(),
-        vig[1],
-        vig[0]
+        Vigencia().getMonth(),
+        Vigencia().getYear()
     )
     return render_template(
         "aspectos.html",
         aspectos=aspectos,
-        minDate='2000-01',
-        maxDate=datetime.now().strftime('%Y-%m'),
-        vigencia=vigencia
     )
 
 
 @aspectos_bp.route('/atualizar_aspectos', methods=['POST'])
 def atualizar_aspectos():
     campos = request.form.to_dict()
-    vigencia = request.args.get('vigencia')
-    if not vigencia:
-        vigencia = datetime.now().strftime('%Y-%m')
-    vig = vigencia.split('-')
-    ctrl.salvar_aspectos(campos, IdEmpreend().get(), vig[1], vig[0])
+    ctrl.salvar_aspectos(
+        campos,
+        IdEmpreend().get(),
+        Vigencia().getMonth(),
+        Vigencia().getYear()
+    )
     return redirect('/home')

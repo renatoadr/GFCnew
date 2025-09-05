@@ -6,7 +6,7 @@ from controller.contaController import contaController
 from controller.notaController import notaController
 from router.tabelas import gerar_tab_conta_corrente, gerar_tab_notas, gerar_tab_orcamento_liberacao, gerar_tab_acomp_financeiro, gerar_tab_certidoes, gerar_tab_garantias_geral, gerar_tab_garantias_obra, gerar_tab_medicoes, gerar_tab_prazo_inter, gerar_tab_projeto_inter, gerar_tab_qualidade_inter, gerar_tab_seguranca_inter, gerar_tab_situacao_inter, gerar_tab_empreend_capa
 from utils.security import login_required
-from utils.CtrlSessao import IdEmpreend, NmEmpreend, CodBanco
+from utils.CtrlSessao import IdEmpreend, NmEmpreend, CodBanco, Vigencia
 from utils.flash_message import flash_message
 from utils.logger import logger
 from datetime import datetime
@@ -36,6 +36,14 @@ opcoesComRange = [
     ['graf_progresso_obra', 'Gráfico do Progresso da Obra', 'Não'],
     ['tab_medicoes', 'Tabela das Medições', 'Não'],
 ]
+
+
+class OpcoesView:
+    opcoes = []
+    opcoesComRange = []
+
+
+vopt = OpcoesView()
 
 
 def existeEmOpcoes(nome):
@@ -71,6 +79,9 @@ def gerar_relatorio():
     else:
         CodBanco().set(codBanco)
 
+    vopt.opcoes = opcoes.copy()
+    vopt.opcoesComRange = opcoesComRange.copy()
+
     if codBanco == 77:
         prazo = ['tab_prazo_inter', 'Tabela de Prazo', 'Não']
         projeto = ['tab_projeto_inter', 'Tabela de Projeto', 'Não']
@@ -79,36 +90,28 @@ def gerar_relatorio():
         situacao = ['tab_situacao_inter', 'Tabela de Situação', 'Não']
 
         if not existeEmOpcoes('tab_prazo_inter'):
-            opcoes.append(prazo)
+            vopt.opcoes.append(prazo)
         if not existeEmOpcoes('tab_projeto_inter'):
-            opcoes.append(projeto)
+            vopt.opcoes.append(projeto)
         if not existeEmOpcoes('tab_qualidade_inter'):
-            opcoes.append(qualidade)
+            vopt.opcoes.append(qualidade)
         if not existeEmOpcoes('tab_seguranca_inter'):
-            opcoes.append(seguranca)
+            vopt.opcoes.append(seguranca)
         if not existeEmOpcoes('tab_situacao_inter'):
-            opcoes.append(situacao)
+            vopt.opcoes.append(situacao)
 
-    vigencia = request.args.get('vigencia')
+    vig = Vigencia().get()
 
-    if not vigencia:
-        vigencia = datetime.now().strftime('%Y-%m')
-
-    vig = vigencia.split('-')
-
-    for opt in opcoes:
+    for opt in vopt.opcoes:
         opt[2] = 'Sim' if existe_insumo(opt[0], vig[1], vig[0]) else 'Não'
 
-    for opt in opcoesComRange:
+    for opt in vopt.opcoesComRange:
         opt[2] = 'Sim' if existe_insumo(opt[0], vig[1], vig[0]) else 'Não'
 
     return render_template(
         'gerar_relatorio.html',
-        opcoesComRange=opcoesComRange,
-        opcoes=opcoes,
-        vigencia=vigencia,
-        minDate='2000-01',
-        maxDate=datetime.now().strftime('%Y-%m'),
+        opcoesComRange=vopt.opcoesComRange,
+        opcoes=vopt.opcoes,
     )
 
 
@@ -117,12 +120,7 @@ def gerar_insumos():
     insumos = request.form.getlist('opcoes_relatorio')
     insumosIntervalo = request.form.getlist('opcoes_relatorio_range')
 
-    vigencia = request.form.get('vigencia')
-
-    if not vigencia:
-        vigencia = datetime.now().strftime('%Y-%m')
-
-    vig = vigencia.split('-')
+    vig = Vigencia().get()
 
     if not insumos and not insumosIntervalo:
         return redirect('/gerar_insumos_relatorios')
@@ -133,6 +131,12 @@ def gerar_insumos():
         '-') if inicioIntervalo else [None, None]
     endAno, endMes = finalIntervalo.split(
         '-') if finalIntervalo else [None, None]
+
+    todasOpcoes = vopt.opcoes.copy()
+    todasOpcoes.extend(vopt.opcoesComRange.copy())
+
+    if len(todasOpcoes) == 0:
+        return redirect('/gerar_insumos_relatorios')
 
     if CodBanco().get() == 77:
         gerar_tab_empreend_capa(IdEmpreend().get(), vig[1], vig[0])
@@ -153,8 +157,6 @@ def gerar_insumos():
                 fn = globals()[ins]
                 fn(vig[1], vig[0], initMes, initAno, endMes, endAno)
 
-    todasOpcoes = opcoes.copy()
-    todasOpcoes.extend(opcoesComRange)
     todosInsumos = insumos.copy()
 
     if initAno and initMes and endAno and endMes:
@@ -162,23 +164,22 @@ def gerar_insumos():
 
     opcoesView = []
     for ins in todosInsumos:
-        item = next(it for it in todasOpcoes if it[0] == ins)
         if existe_insumo(ins, vig[1], vig[0]):
+            item = next(it for it in todasOpcoes if it[0] == ins)
             opcoesView.append(item)
 
     return render_template(
         'gerar_relatorio_resultado.html',
         opcoes=opcoesView,
-        vigencia=vigencia
     )
 
 
-@gerar_relatorios_bp.route('/ver_insumo/<vigencia>/<arquivo>')
-def ver_insumo(vigencia, arquivo):
+@gerar_relatorios_bp.route('/ver_insumo/<arquivo>')
+def ver_insumo(arquivo):
     pathFile = os.path.join(
         current_app.config['DIRSYS'],
         IdEmpreend().get(),
-        vigencia.replace('-', '_'),
+        '_'.join(Vigencia().get()),
         arquivo
     )
     if os.path.exists(f"{pathFile}.png"):

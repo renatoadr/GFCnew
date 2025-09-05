@@ -71,6 +71,7 @@ def consultar_orcamento_data():
 
 
 @orcamentos_bp.route('/upload_arquivo_orcamentos', methods=['POST'])
+@login_required
 def upload_arquivo_orcamentos():
     if 'file' not in request.files:
         mensagem = "Erro no upload do arquivo. No file part."
@@ -122,6 +123,7 @@ def excluir_orcamento():
 
 
 @orcamentos_bp.route('/salvar_item_orcamento', methods=['POST'])
+@login_required
 def salvar_item_orcamento():
     item = get_orcamento_form()
     orcC = orcamentoController()
@@ -131,6 +133,7 @@ def salvar_item_orcamento():
 
 
 @orcamentos_bp.route('/incluir_item_orcamento', methods=['POST'])
+@login_required
 def incluir_item_orcamento():
     item = get_orcamento_form()
     orcC = orcamentoController()

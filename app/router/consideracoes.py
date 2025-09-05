@@ -1,9 +1,8 @@
 from flask import Blueprint, request, render_template, redirect
 
-from utils.CtrlSessao import IdEmpreend, NmEmpreend
+from utils.CtrlSessao import IdEmpreend, NmEmpreend, Vigencia
 from controller.consideracaoController import consideracaoController
 from utils.security import login_required
-from datetime import datetime
 
 consideracoes_bp = Blueprint('consideracoes', __name__)
 
@@ -28,29 +27,27 @@ def tratartorres():
     else:
         NmEmpreend().set(nmEmpreend)
 
-    vigencia = request.args.get('vigencia')
-    if not vigencia:
-        vigencia = datetime.now().strftime('%Y-%m')
-    vig = vigencia.split('-')
-
     ctrl = consideracaoController()
-    consid = ctrl.listar_campos(IdEmpreend().get(), vig[1], vig[0])
+    consid = ctrl.listar_campos(
+        IdEmpreend().get(),
+        Vigencia().getMonth(),
+        Vigencia().getYear()
+    )
     return render_template(
         "consideracoes.html",
         consid=consid,
-        minDate='2000-01',
-        maxDate=datetime.now().strftime('%Y-%m'),
-        vigencia=vigencia
     )
 
 
 @consideracoes_bp.route('/atualizar_consideracoes', methods=['POST'])
+@login_required
 def atualizar_consideracoes():
     campos = request.form.to_dict()
-    vigencia = request.args.get('vigencia')
-    if not vigencia:
-        vigencia = datetime.now().strftime('%Y-%m')
-    vig = vigencia.split('-')
     ctrl = consideracaoController()
-    ctrl.insert_registros(campos, IdEmpreend().get(), vig[1], vig[0])
+    ctrl.insert_registros(
+        campos,
+        IdEmpreend().get(),
+        Vigencia().getMonth(),
+        Vigencia().getYear()
+    )
     return redirect('/home')

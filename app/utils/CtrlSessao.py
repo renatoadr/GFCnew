@@ -1,3 +1,4 @@
+from datetime import datetime
 from flask import session
 
 
@@ -7,6 +8,7 @@ class CtrlSessao:
 
     def set(self, value):
         session[self._name] = value
+        session.modified = True
 
     def get(self):
         try:
@@ -22,6 +24,7 @@ class CtrlSessao:
             return False
 
     def clear(self):
+        session.pop(self._name, default=None)
         self.set(None)
 
 
@@ -63,3 +66,23 @@ class AnoVigencia(CtrlSessao):
 class CodBanco(CtrlSessao):
     def __init__(self):
         super().__init__('codBanco')
+
+
+class Vigencia(CtrlSessao):
+    def __init__(self):
+        super().__init__('vigencia')
+
+    def init(self):
+        Vigencia().save(datetime.now().strftime('%Y-%m'))
+
+    def getMonth(self):
+        vig = Vigencia().get()
+        return vig[1]
+
+    def getYear(self):
+        vig = Vigencia().get()
+        return vig[0]
+
+    def save(self, vigencia: str):
+        vig = vigencia.split('-')
+        Vigencia().set(vig)

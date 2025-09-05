@@ -11,6 +11,7 @@ notas_bp = Blueprint('notas', __name__)
 
 
 @notas_bp.route('/upload_arquivo_notas', methods=['POST'])
+@login_required
 def upload_arquivo_notas():
     # check if the post request has the file part
     if 'file' not in request.files:
@@ -121,6 +122,7 @@ def cadastrar_nota():
 
 
 @notas_bp.route('/salvar_nota', methods=['POST'])
+@login_required
 def salvar_nota():
     ct = get_nota_cadastro()
     contC = notaController()
@@ -129,6 +131,7 @@ def salvar_nota():
 
 
 @notas_bp.route('/criar_nota', methods=['POST'])
+@login_required
 def criar_nota():
     ct = get_nota_cadastro()
     ct.setAnoVigencia(AnoVigencia().get())

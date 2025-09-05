@@ -28,23 +28,23 @@ def obter_grafico():
     return send_file(grafNome, mimetype='image/png')
 
 
-@graficos_bp.route('/graf_orcamento_liberacao', methods=['GET'])
-@login_required
-def graf_orcamento_liberacao():
+# @graficos_bp.route('/graf_orcamento_liberacao', methods=['GET'])
+# @login_required
+# def graf_orcamento_liberacao():
 
-    tipo = request.args.get("tipo")
-    idEmpreend = IdEmpreend().get()
-    dtCarga = request.args.get("dtCarga")
-    mes = request.args.get("mesV")
-    ano = request.args.get("anoV")
+#     tipo = request.args.get("tipo")
+#     idEmpreend = IdEmpreend().get()
+#     dtCarga = request.args.get("dtCarga")
+#     mes = request.args.get("mesV")
+#     ano = request.args.get("anoV")
 
-    medC = orcamentoController()
-    medS = medC.consultarOrcamentoPelaData(idEmpreend, dtCarga)
+#     medC = orcamentoController()
+#     medS = medC.consultarOrcamentoPelaData(idEmpreend, dtCarga)
 
-    grafNome = gerar_graf_orcamento_liberacao(
-        idEmpreend, mes, ano, tipo, medS)
+#     grafNome = gerar_graf_orcamento_liberacao(
+#         idEmpreend, mes, ano, tipo, medS)
 
-    return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
+#     return render_template("orcamento_liberacao.html", grafNome=grafNome, version=random.randint(1, 100000))
 
 
 def gerar_graf_orcamento_liberacao(idEmpreend, mes, ano, tipo, medS):

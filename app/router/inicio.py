@@ -1,5 +1,6 @@
 from flask import Blueprint, request, render_template, redirect, url_for
 
+from utils.CtrlSessao import Vigencia, CodBanco, DtCarga, IdEmpreend, IdMedicao, NmEmpreend, IdOrca, AnoVigencia, MesVigencia
 from utils.security import login_user, logout_user, has_user_logged, has_user_mobile_logged, logout_user_mobile, get_user_logged_mobile, login_user_mobile
 from controller.empreendimentoController import empreendimentoController
 from controller.usuarioController import usuarioController
@@ -90,6 +91,7 @@ def valida_login():
             usu.getCodBanco()
         ))
         logout_user_mobile()
+        Vigencia().init()
         return redirect('/home')
     else:
         logout_user()
@@ -103,5 +105,13 @@ def sem_permissao():
 
 @inicio_bp.route('/logout')
 def logout():
+    Vigencia().clear()
+    CodBanco().clear()
+    DtCarga().clear()
+    IdEmpreend().clear()
+    IdMedicao().clear()
+    IdOrca().clear()
+    AnoVigencia().clear()
+    MesVigencia().clear()
     logout_user()
     return redirect("/")

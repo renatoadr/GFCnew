@@ -107,6 +107,7 @@ def cadastrar_conta():
 
 
 @contas_corrente_bp.route('/salvar_conta', methods=['POST'])
+@login_required
 def salvar_conta():
     ct = get_conta_cadastro()
     contC = contaController()
@@ -115,6 +116,7 @@ def salvar_conta():
 
 
 @contas_corrente_bp.route('/criar_conta', methods=['POST'])
+@login_required
 def criar_conta():
     ct = get_conta_cadastro()
     ct.setAnoVigencia(AnoVigencia().get())
