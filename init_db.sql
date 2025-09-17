@@ -240,75 +240,66 @@ CREATE TABLE  IF NOT EXISTS `tb_usuarios` (
   CONSTRAINT `email` UNIQUE (`email`)
 )
 ENGINE = InnoDB;
-CREATE TABLE IF NOT EXISTS `tb_sinapi_custo` (
-  `id` INT AUTO_INCREMENT NOT NULL,
-  `dt_criacao` DATE NOT NULL,
-  `dt_vigencia` DATE NOT NULL,
-  `cod_item` INT NOT NULL,
-  `nm_tipo` TEXT NOT NULL,
-  `vl_ac` DECIMAL(10,2) NOT NULL,
-  `vl_al` DECIMAL(10,2) NOT NULL,
-  `vl_am` DECIMAL(10,2) NOT NULL,
-  `vl_ap` DECIMAL(10,2) NOT NULL,
-  `vl_ba` DECIMAL(10,2) NOT NULL,
-  `vl_ce` DECIMAL(10,2) NOT NULL,
-  `vl_df` DECIMAL(10,2) NOT NULL,
-  `vl_es` DECIMAL(10,2) NOT NULL,
-  `vl_go` DECIMAL(10,2) NOT NULL,
-  `vl_ma` DECIMAL(10,2) NOT NULL,
-  `vl_mg` DECIMAL(10,2) NOT NULL,
-  `vl_ms` DECIMAL(10,2) NOT NULL,
-  `vl_mt` DECIMAL(10,2) NOT NULL,
-  `vl_pa` DECIMAL(10,2) NOT NULL,
-  `vl_pb` DECIMAL(10,2) NOT NULL,
-  `vl_pe` DECIMAL(10,2) NOT NULL,
-  `vl_pi` DECIMAL(10,2) NOT NULL,
-  `vl_pr` DECIMAL(10,2) NOT NULL,
-  `vl_rj` DECIMAL(10,2) NOT NULL,
-  `vl_rn` DECIMAL(10,2) NOT NULL,
-  `vl_ro` DECIMAL(10,2) NOT NULL,
-  `vl_rr` DECIMAL(10,2) NOT NULL,
-  `vl_rs` DECIMAL(10,2) NOT NULL,
-  `vl_sc` DECIMAL(10,2) NOT NULL,
-  `vl_se` DECIMAL(10,2) NOT NULL,
-  `vl_sp` DECIMAL(10,2) NOT NULL,
-  `vl_to` DECIMAL(10,2) NOT NULL,
-   PRIMARY KEY (`id`)
-)
-ENGINE = InnoDB;
-
-
-CREATE TABLE IF NOT EXISTS `tb_sinapi_item` (
-  `id` INT AUTO_INCREMENT NOT NULL,
-  `dt_criacao` DATE NOT NULL,
-  `dt_vigencia` DATE NOT NULL,
-  `cod_item` INT NOT NULL,
-  `cod_composicao` INT NOT NULL,
-  `nm_grupo` TEXT NOT NULL,
-  `nm_tipo` TEXT NOT NULL,
-  `tp_item` TEXT NOT NULL,
-  `desc_item` TEXT NOT NULL,
-  `tp_unidade` TEXT NOT NULL,
-  `tp_coeficiente` DECIMAL(11,7) NOT NULL,
+CREATE TABLE `tb_sinapi_item` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `dt_criacao` date NOT NULL,
+  `dt_vigencia` date NOT NULL,
+  `cod_item` int DEFAULT NULL,
+  `cod_composicao` int NOT NULL,
+  `nm_grupo` text NOT NULL,
+  `tp_item` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
+  `desc_item` text NOT NULL,
+  `tp_unidade` text NOT NULL,
+  `vl_coeficiente` decimal(11,7) DEFAULT NULL,
+  `dt_emissao` date NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `idx_sinapi_item_desc` (`desc_item`(250)),
+  KEY `idx_sinapi_item_comp_dt` (`cod_composicao`,`dt_vigencia`),
+  KEY `idx_sinapi_item_cod_comp_dt` (`cod_item`,`cod_composicao`,`dt_vigencia`)
+) ENGINE=MyISAM AUTO_INCREMENT=311360 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `tb_sinapi_custo` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `dt_criacao` date NOT NULL,
+  `dt_vigencia` date NOT NULL,
+  `cod_item` int NOT NULL,
+  `nm_tipo` text NOT NULL,
+  `vl_ac` decimal(10,2) NOT NULL,
+  `vl_al` decimal(10,2) NOT NULL,
+  `vl_am` decimal(10,2) NOT NULL,
+  `vl_ap` decimal(10,2) NOT NULL,
+  `vl_ba` decimal(10,2) NOT NULL,
+  `vl_ce` decimal(10,2) NOT NULL,
+  `vl_df` decimal(10,2) NOT NULL,
+  `vl_es` decimal(10,2) NOT NULL,
+  `vl_go` decimal(10,2) NOT NULL,
+  `vl_ma` decimal(10,2) NOT NULL,
+  `vl_mg` decimal(10,2) NOT NULL,
+  `vl_ms` decimal(10,2) NOT NULL,
+  `vl_mt` decimal(10,2) NOT NULL,
+  `vl_pa` decimal(10,2) NOT NULL,
+  `vl_pb` decimal(10,2) NOT NULL,
+  `vl_pe` decimal(10,2) NOT NULL,
+  `vl_pi` decimal(10,2) NOT NULL,
+  `vl_pr` decimal(10,2) NOT NULL,
+  `vl_rj` decimal(10,2) NOT NULL,
+  `vl_rn` decimal(10,2) NOT NULL,
+  `vl_ro` decimal(10,2) NOT NULL,
+  `vl_rr` decimal(10,2) NOT NULL,
+  `vl_rs` decimal(10,2) NOT NULL,
+  `vl_sc` decimal(10,2) NOT NULL,
+  `vl_se` decimal(10,2) NOT NULL,
+  `vl_sp` decimal(10,2) NOT NULL,
+  `vl_to` decimal(10,2) NOT NULL,
+  `dt_emissao` date NOT NULL,
   PRIMARY KEY (`id`)
-)
-ENGINE = InnoDB;
-
-CREATE INDEX `idx_sinapi_item_cod_comp_dt`
-ON `tb_sinapi_item` (
-  `cod_item`,
-  `cod_composicao`,
-  `dt_vigencia`
-);
-CREATE INDEX `idx_sinapi_item_comp_dt`
-ON `tb_sinapi_item` (
-  `cod_composicao`,
-  `dt_vigencia`
-);
-CREATE INDEX `idx_sinapi_item_desc`
-ON `tb_sinapi_item` (
-  `desc_item`(350)
-);
+) ENGINE=MyISAM AUTO_INCREMENT=102517 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `tb_opcoes` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `chave` varchar(40) NOT NULL,
+  `valor` text,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `tb_opcoes_chave_unique` (`chave`)
+) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE INDEX `idx_medicoes`
 ON `tb_medicoes` (
   `id_empreendimento` ASC,
