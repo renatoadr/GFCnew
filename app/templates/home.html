@@ -170,6 +170,13 @@
                     {% endif %}
 
                     <li>
+                      <a href="/sinapi_orcamentos?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                        data-bs-toggle="tooltip" data-bs-title="Orçamentos SINAPI">
+                        <i class="fa-solid fa-money-bill-trend-up"></i>
+                      </a>
+                    </li>
+
+                    <li>
                       <a href="/gerar_insumos_relatorios?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getApelido()}}&codBanco={{e.getCodBanco()}}"
                         data-bs-toggle="tooltip" data-bs-title="Gerar insumos para o relatório">
                         <i class="fa-solid fa-chart-pie"></i>

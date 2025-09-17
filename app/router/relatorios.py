@@ -80,6 +80,15 @@ def download_arquivo():
     return send_from_directory(os.path.normpath(diretorio), arquivo, as_attachment=True)
 
 
+@relatorios_bp.route('/deletar_relatorio')
+def deletar_relatorio():
+    arquivo = request.args.get('arquivo')
+    file = os.path.join(current_app.config['DIRSYS'], 'Relatorios', arquivo)
+    if os.path.exists(file):
+        os.remove(file)
+    return redirect('/lista_relatorios')
+
+
 def get_name_pdf(apelido, ano, mes, path):
     nomePdf = f"""{apelido}_{ano}_{mes}"""
     if not os.path.exists(f"""{path}/{nomePdf}.pdf"""):

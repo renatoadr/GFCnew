@@ -56,6 +56,12 @@
                   <a href="/download_arquivo?arquivo={{e}}" class="text-decoration-none text-primary-emphasis">
                     <i class="fa-solid fa-download"></i> Baixar Relatório
                   </a>
+                  {% if session.is_adm %}
+                  <a href="/deletar_relatorio?arquivo={{e}}" class="text-decoration-none text-danger"
+                    style="margin-left: 35px;">
+                    <i class="fa-solid fa-trash"></i> Deletar Relatório
+                  </a>
+                  {% endif %}
                 </td>
               </tr>
               {% endfor %}

@@ -5,7 +5,6 @@ from dto.orcamento import orcamento
 from utils.dbContext import MySql
 from datetime import datetime
 import pandas as pd
-from utils.converter import converterDateTimeToDateEnFormat
 
 
 class orcamentoController:
@@ -116,12 +115,14 @@ class orcamentoController:
 
         return listaItens
 
-
     def consultarOrcamentoPelaVigencia(self, idEmpreend, mesVigencia, anoVigencia):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor(dictionary=True)
 
-        query = "select id_orcamento, id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, item, orcado_valor, fisico_valor, fisico_percentual, fisico_saldo, financeiro_valor, financeiro_percentual, financeiro_saldo from " + MySql.DB_NAME + ".tb_orcamentos where id_empreendimento = '" + str(idEmpreend) + "' and mes_vigencia = '" +  mesVigencia + "' and ano_vigencia = '" +  anoVigencia + "'"
+        query = "select id_orcamento, id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, item, orcado_valor, fisico_valor, fisico_percentual, fisico_saldo, financeiro_valor, financeiro_percentual, financeiro_saldo from " + \
+            MySql.DB_NAME + ".tb_orcamentos where id_empreendimento = '" + \
+                str(idEmpreend) + "' and mes_vigencia = '" + \
+            mesVigencia + "' and ano_vigencia = '" + anoVigencia + "'"
 
         print(query)
 
@@ -160,7 +161,6 @@ class orcamentoController:
         print('-----------------> ', listaItens)
 
         return listaItens
-
 
     def consultarOrcamentoPeloId(self, idOrcamento):
         self.__connection = MySql.connect()
@@ -263,7 +263,6 @@ class orcamentoController:
             fisicoP = float(tabela.at[linha, 'Físico %'])
             financR = float(tabela.at[linha, 'Financeiro R$'])
 
-
             # Substituir valores NaN por 0
             if pd.isna(orcado):
                 orcado = 0.0
@@ -271,7 +270,6 @@ class orcamentoController:
                 fisicoP = 0.0
             if pd.isna(financR):
                 financR = 0.0
-
 
             if financR > 0:
                 financP = (financR/orcado) * 100

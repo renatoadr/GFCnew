@@ -21,8 +21,14 @@ $(function(){
     const button = event.relatedTarget;
     const action = button.getAttribute('data-action-process');
     const text = button.getAttribute('data-desc');
+    const useLoading = button.getAttribute('data-use-loading');
     $("#formUploadExcel").attr('action', action);
     $("#modalUploadExceldesc").html(text);
+    if (useLoading === 'true') {
+      $("#modalUploadConfirm").one("click", function() {
+        $('#loading').css('display', 'flex')
+      });
+    }
   });
 
    $('#modalExcludeConfirm').on('click', event => {

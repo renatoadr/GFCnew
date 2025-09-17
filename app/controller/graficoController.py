@@ -191,11 +191,13 @@ class graficoController:
             30, 780, "Imagens 3D projetadas retratando a realidade da obra")
 
         c.drawImage(os.path.join(diretorio, "foto_3D_1.png"),
-                    30, 550, width=250, height=200, mask='auto')
+                    30, 550, width=250, height=141, mask='auto')
         c.drawImage(os.path.join(diretorio, "foto_3D_2.png"),
-                    310, 550, width=250, height=200, mask='auto')
+                    310, 550, width=250, height=141,  mask='auto')
         c.drawImage(os.path.join(diretorio, "foto_3D_3.png"),
-                    30, 280, width=250, height=200, mask='auto')
+                    30, 280, width=250, height=141, mask='auto')
+        c.drawImage(os.path.join(diretorio, "foto_3D_4.png"),
+                    310, 280, width=250, height=141, mask='auto')
         c.drawImage(self.getPathImgs("legenda_2.png"), 420,
                     100, width=150, height=25, mask='auto')
 

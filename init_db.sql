@@ -240,6 +240,75 @@ CREATE TABLE  IF NOT EXISTS `tb_usuarios` (
   CONSTRAINT `email` UNIQUE (`email`)
 )
 ENGINE = InnoDB;
+CREATE TABLE IF NOT EXISTS `tb_sinapi_custo` (
+  `id` INT AUTO_INCREMENT NOT NULL,
+  `dt_criacao` DATE NOT NULL,
+  `dt_vigencia` DATE NOT NULL,
+  `cod_item` INT NOT NULL,
+  `nm_tipo` TEXT NOT NULL,
+  `vl_ac` DECIMAL(10,2) NOT NULL,
+  `vl_al` DECIMAL(10,2) NOT NULL,
+  `vl_am` DECIMAL(10,2) NOT NULL,
+  `vl_ap` DECIMAL(10,2) NOT NULL,
+  `vl_ba` DECIMAL(10,2) NOT NULL,
+  `vl_ce` DECIMAL(10,2) NOT NULL,
+  `vl_df` DECIMAL(10,2) NOT NULL,
+  `vl_es` DECIMAL(10,2) NOT NULL,
+  `vl_go` DECIMAL(10,2) NOT NULL,
+  `vl_ma` DECIMAL(10,2) NOT NULL,
+  `vl_mg` DECIMAL(10,2) NOT NULL,
+  `vl_ms` DECIMAL(10,2) NOT NULL,
+  `vl_mt` DECIMAL(10,2) NOT NULL,
+  `vl_pa` DECIMAL(10,2) NOT NULL,
+  `vl_pb` DECIMAL(10,2) NOT NULL,
+  `vl_pe` DECIMAL(10,2) NOT NULL,
+  `vl_pi` DECIMAL(10,2) NOT NULL,
+  `vl_pr` DECIMAL(10,2) NOT NULL,
+  `vl_rj` DECIMAL(10,2) NOT NULL,
+  `vl_rn` DECIMAL(10,2) NOT NULL,
+  `vl_ro` DECIMAL(10,2) NOT NULL,
+  `vl_rr` DECIMAL(10,2) NOT NULL,
+  `vl_rs` DECIMAL(10,2) NOT NULL,
+  `vl_sc` DECIMAL(10,2) NOT NULL,
+  `vl_se` DECIMAL(10,2) NOT NULL,
+  `vl_sp` DECIMAL(10,2) NOT NULL,
+  `vl_to` DECIMAL(10,2) NOT NULL,
+   PRIMARY KEY (`id`)
+)
+ENGINE = InnoDB;
+
+
+CREATE TABLE IF NOT EXISTS `tb_sinapi_item` (
+  `id` INT AUTO_INCREMENT NOT NULL,
+  `dt_criacao` DATE NOT NULL,
+  `dt_vigencia` DATE NOT NULL,
+  `cod_item` INT NOT NULL,
+  `cod_composicao` INT NOT NULL,
+  `nm_grupo` TEXT NOT NULL,
+  `nm_tipo` TEXT NOT NULL,
+  `tp_item` TEXT NOT NULL,
+  `desc_item` TEXT NOT NULL,
+  `tp_unidade` TEXT NOT NULL,
+  `tp_coeficiente` DECIMAL(11,7) NOT NULL,
+  PRIMARY KEY (`id`)
+)
+ENGINE = InnoDB;
+
+CREATE INDEX `idx_sinapi_item_cod_comp_dt`
+ON `tb_sinapi_item` (
+  `cod_item`,
+  `cod_composicao`,
+  `dt_vigencia`
+);
+CREATE INDEX `idx_sinapi_item_comp_dt`
+ON `tb_sinapi_item` (
+  `cod_composicao`,
+  `dt_vigencia`
+);
+CREATE INDEX `idx_sinapi_item_desc`
+ON `tb_sinapi_item` (
+  `desc_item`(350)
+);
 CREATE INDEX `idx_medicoes`
 ON `tb_medicoes` (
   `id_empreendimento` ASC,

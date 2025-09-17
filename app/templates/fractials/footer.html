@@ -1,3 +1,12 @@
+<div tabindex="-1" id="loading">
+  <div id="loading-content">
+    <div class="spinner-border text-light" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+    <p id="loading-text">Aguarde enquanto processamos o pedido</p>
+  </div>
+</div>
+
 <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="modalExclude">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -40,7 +49,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-success">Confirmar</button>
+          <button type="submit" class="btn btn-success" id="modalUploadConfirm">Confirmar</button>
         </div>
       </form>
     </div>
