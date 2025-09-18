@@ -42,7 +42,7 @@ def valida_login_m():
             usu.getCodBanco()
         ))
         logout_user()
-
+        Vigencia().init()
         return redirect('/mobile/home')
     else:
         return redirect(url_for(".mlogin", mensagem='Falha no login, verifique o usuário e a senha'))
