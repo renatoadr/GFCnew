@@ -39,7 +39,7 @@ class empreendimentoController:
         cursor.close()
         MySql.close(self.__connection)
 
-    def consultarEmpreendimentos(self, codBank):
+    def consultarEmpreendimentos(self, codBank=None):
         query = f"select * from  {MySql.DB_NAME}.tb_empreendimentos "
 
         lista = []
@@ -175,6 +175,7 @@ class empreendimentoController:
 
         for row in lista:
             emp = empreendimento()
+            emp.setIdEmpreend(row['id_empreendimento'])
             emp.setApelido(row['apelido'])
             emp.setNmConstrutor(row['nm_construtor'])
             emp.setNmEmpreend(row['nm_empreendimento'])

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, render_template, redirect, current_app, send_from_directory, url_for
+from flask import Blueprint, request, render_template, redirect, current_app, send_file, url_for
 from controller.graficoInterController import graficoInterController
 from utils.CtrlSessao import IdEmpreend, NmEmpreend, CodBanco, Vigencia
 from controller.graficoController import graficoController
@@ -6,7 +6,6 @@ from controller.geralController import geralController
 from utils.flash_message import flash_message
 from utils.security import login_required
 from reportlab.pdfgen import canvas
-from datetime import datetime
 import os
 
 relatorios_bp = Blueprint('relatorios', __name__)
@@ -75,9 +74,8 @@ def lista_relatorios():
 @relatorios_bp.route('/download_arquivo')
 def download_arquivo():
     arquivo = request.args.get('arquivo')
-    diretorio = os.path.join(current_app.config['DIRSYS'], 'Relatorios')
-    print('+++++++++++++', arquivo)
-    return send_from_directory(os.path.normpath(diretorio), arquivo, as_attachment=True)
+    file = os.path.join(current_app.config['DIRSYS'], 'Relatorios', arquivo)
+    return send_file(file, as_attachment=True, download_name=arquivo)
 
 
 @relatorios_bp.route('/deletar_relatorio')

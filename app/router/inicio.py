@@ -56,6 +56,7 @@ def home_m():
 
     usuC = empreendimentoController()
     uApelidos = usuC.consultarApelidos(sUs.codBank)
+
     return render_template("mobile/home.html", apelidos=uApelidos)
 
 
