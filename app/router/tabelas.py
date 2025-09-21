@@ -920,7 +920,6 @@ def tab_empreend_capa():
 def gerar_tab_empreend_capa(idEmpreend, mes, ano):
     empCtrl = empreendimentoController()
     emp = empCtrl.consultarEmpreendimentoPeloId(idEmpreend)
-    fig, ax = plt.subplots(1, 1)
     medAtual = medCtrl.consultarMedicaoAtual(idEmpreend)
     medAnterior = None
     dataAtual = (medAtual.getDataMedicao()

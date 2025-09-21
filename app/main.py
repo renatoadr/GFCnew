@@ -33,7 +33,9 @@ def init(app):
         config.read(config_location)
         app.config['UPLOAD_FOLDER'] = config.get("config", "UPLOAD_FOLDER")
         app.config['ALLOWED_EXTENSIONS'] = config.get(
-            "config", "ALLOWED_EXTENSIONS")
+            "config",
+            "ALLOWED_EXTENSIONS"
+        )
         app.config['BARRADIR'] = config.get("config", "BARRADIR")
         app.config['DIRSYS'] = config.get("config", "DIRSYS")
 
@@ -48,3 +50,4 @@ def init(app):
 if __name__ == "__main__" or __name__ == "main":
     init(app)
     app.run(host="0.0.0.0", port=5000)
+    logger.info('Aplicação rodando...')
