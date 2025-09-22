@@ -1,0 +1,8 @@
+[project]
+name = "GFC"
+version = "1.7.0.5"
+authors = [
+    { name = "Thiago Adriano", email = "thiago.s.adriano@gmail.com" },
+    { name = "Renato Adriano", email = "renato.adri51@gmail.com" },
+]
+description = "Objetivo de gerar relatórios do andamento de construções prediais"

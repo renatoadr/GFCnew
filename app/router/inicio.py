@@ -1,5 +1,6 @@
-from flask import Blueprint, request, render_template, redirect, url_for
+from flask import Blueprint, jsonify, request, render_template, redirect, url_for
 
+from app.enums.tipo_acessos import TipoAcessos
 from utils.CtrlSessao import Vigencia, CodBanco, DtCarga, IdEmpreend, IdMedicao, NmEmpreend, IdOrca, AnoVigencia, MesVigencia
 from utils.security import login_user, logout_user, has_user_logged, has_user_mobile_logged, logout_user_mobile, get_user_logged_mobile, login_user_mobile
 from controller.empreendimentoController import empreendimentoController
@@ -55,7 +56,11 @@ def home_m():
         redirect('/m')
 
     usuC = empreendimentoController()
-    uApelidos = usuC.consultarApelidos(sUs.codBank)
+    uApelidos = []
+    if sUs.profile == TipoAcessos.RT.name or sUs.profile == TipoAcessos.ADM.name:
+        uApelidos = usuC.consultarEmpreendimentos()
+    elif sUs.codBank is not None and sUs.codBank > 0:
+        uApelidos = usuC.consultarApelidos(sUs.codBank)
 
     return render_template("mobile/home.html", apelidos=uApelidos)
 
@@ -116,3 +121,22 @@ def logout():
     MesVigencia().clear()
     logout_user()
     return redirect("/")
+
+
+@inicio_bp.route('/version')
+def version():
+    try:
+        with open('pyproject.toml', 'r') as f:
+            content = f.read()
+            match = re.search(r'version\s*=\s*"([^"]+)"', content)
+            version = match.group(1) if match else 'unknown'
+
+        return jsonify({
+            'version': version,
+            'status': 'success'
+        })
+    except Exception as e:
+        return jsonify({
+            'version': 'unknown',
+            'error': str(e)
+        }), 500

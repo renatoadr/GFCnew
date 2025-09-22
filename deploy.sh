@@ -97,6 +97,9 @@ nome_arquivo="${nome_image}_${nova_versao}.tar"
 log "Alterando versão do deploy no docker-compose"
 sed -i "s/image: ${imagem_atual}/image: ${nome_image}:${nova_versao}/" docker-compose.yml
 
+log "Alterando versão do projeto"
+sed -i "s/version = \".*\"/version = \"${nova_versao}\"/" pyproject.toml
+
 log "Alterado Versao Atual: ${versao_atual} para Nova versão: ${nova_versao}"
 
 log "Iniciando build da aplicação"

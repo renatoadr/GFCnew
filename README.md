@@ -4,7 +4,7 @@ Este projeto tem como objetivo gerar relatórios do andamento de construções p
 ## Tecnologia
 
 ### Backend
-É um proejeto monolítico que tem como base os seguintes ferramentas:
+É um projeto monolítico que tem como base os seguintes ferramentas:
 - Python 3
 - PIP 24
 - Flask 3 *(Framework web)*

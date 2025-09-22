@@ -56,6 +56,7 @@ def login_user_mobile(user: User):
     session['user_logged_mobile'] = user.to_string()
     session['name_user_mobile'] = user.name.split(' ')[0]
     session['has_user_mobile_logged'] = True
+    session['is_adm_mobile'] = user.profile == TipoAcessos.RT.name or user.profile == TipoAcessos.ADM.name
     session.modified = True
 
 
