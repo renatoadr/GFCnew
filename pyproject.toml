@@ -1,6 +1,6 @@
 [project]
 name = "GFC"
-version = "1.7.0.5"
+version = "1.7.0.6"
 authors = [
     { name = "Thiago Adriano", email = "thiago.s.adriano@gmail.com" },
     { name = "Renato Adriano", email = "renato.adri51@gmail.com" },

@@ -1,13 +1,12 @@
 from flask import Blueprint, jsonify, request, render_template, redirect, url_for
 
-from app.enums.tipo_acessos import TipoAcessos
+from enums.tipo_acessos import TipoAcessos
 from utils.CtrlSessao import Vigencia, CodBanco, DtCarga, IdEmpreend, IdMedicao, NmEmpreend, IdOrca, AnoVigencia, MesVigencia
 from utils.security import login_user, logout_user, has_user_logged, has_user_mobile_logged, logout_user_mobile, get_user_logged_mobile, login_user_mobile
 from controller.empreendimentoController import empreendimentoController
 from controller.usuarioController import usuarioController
 from models.User import User
 import re
-import os
 
 inicio_bp = Blueprint('inicio', __name__)
 
