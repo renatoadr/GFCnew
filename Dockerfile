@@ -26,6 +26,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY /app/ .
 
+COPY pyproject.toml .
+
 COPY gfc_linux.cfg gfc.cfg
 
 EXPOSE 5000
