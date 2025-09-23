@@ -152,9 +152,9 @@ class unidadeController:
         print('+++++++++ consultarUnidadeChaves ++++++++++++++++++')
 
         if tipo == 'valor':
-            query = f"SELECT COUNT(id_unidade) AS total_unidades, sum(vl_chaves) AS total_chaves, sum(vl_pre_chaves) AS total_pre_chaves, sum(vl_pos_chaves) AS total_pos_chaves FROM {MySql.DB_NAME}.tb_unidades WHERE id_empreendimento = %s AND (vl_chaves > 0 or vl_pre_chaves > 0 or vl_pos_chaves > 0 ) AND status != 'distrato' AND ac_historico IS NULL"
+            query = f"SELECT COUNT(id_unidade) AS total_unidades, sum(vl_chaves) AS total_chaves, sum(vl_pre_chaves) AS total_pre_chaves, sum(vl_pos_chaves) AS total_pos_chaves FROM {MySql.DB_NAME}.tb_unidades WHERE id_empreendimento = %s AND (vl_chaves > 0 or vl_pre_chaves > 0 or vl_pos_chaves > 0 ) AND status != 'Distrato' AND ac_historico IS NULL"
         else:
-            query = f"SELECT COUNT(id_unidade) AS total_unidades, COUNT(CASE WHEN vl_chaves > 0 THEN 1 END) AS total_chaves, COUNT(CASE WHEN vl_pre_chaves > 0 THEN 1 END) AS total_pre_chaves, COUNT(CASE WHEN vl_pos_chaves > 0 THEN 1 END) AS total_pos_chaves FROM {MySql.DB_NAME}.tb_unidades WHERE id_empreendimento = %s AND (vl_chaves > 0 or vl_pre_chaves > 0 or vl_pos_chaves > 0 ) AND status != 'distrato' AND ac_historico IS NULL"
+            query = f"SELECT COUNT(id_unidade) AS total_unidades, COUNT(CASE WHEN vl_chaves > 0 THEN 1 END) AS total_chaves, COUNT(CASE WHEN vl_pre_chaves > 0 THEN 1 END) AS total_pre_chaves, COUNT(CASE WHEN vl_pos_chaves > 0 THEN 1 END) AS total_pos_chaves FROM {MySql.DB_NAME}.tb_unidades WHERE id_empreendimento = %s AND (vl_chaves > 0 or vl_pre_chaves > 0 or vl_pos_chaves > 0 ) AND status != 'Distrato' AND ac_historico IS NULL"
 
         cursor.execute(query, (idEmpreend,))
         linha = cursor.fetchone()

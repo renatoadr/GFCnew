@@ -193,8 +193,8 @@ def tab_situacao_inter(mes, ano):
         gerar_tab_situacao_inter(IdEmpreend().get(), mes, ano)
     except Exception as error:
         logger.error(
-            'Erro ao gerar a tabela de segurança do inter', error)
-        flash_message.error('Erro ao gerar a tabela de segurança do Inter')
+            'Erro ao gerar a tabela de situação do inter', error)
+        flash_message.error('Erro ao gerar a tabela de situação do Inter')
 
 
 def tab_seguranca_inter(mes, ano):

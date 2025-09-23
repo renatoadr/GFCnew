@@ -30,9 +30,9 @@ months = {
 
 camposCapa = (
     ('Foto Atual', 'fotoAtual', 'foto_atual'),
+    ('Evolução 3D', 'evolucao3D', 'evolucao_3D'),
     ('Elétrica 3D', 'eletrica3D', 'eletrica_3D'),
-    ('Hidráulica 3D', 'hidraulica3D', 'hidraulica_3D'),
-    ('Evolução 3D', 'evolucao3D', 'evolucao_3D')
+    ('Hidráulica 3D', 'hidraulica3D', 'hidraulica_3D')   
 )
 
 

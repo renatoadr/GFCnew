@@ -52,21 +52,21 @@ class graficoInterController:
         c.drawImage(os.path.join(diretorio, "foto_atual.png"),
                     40, 470, width=220, height=150, mask='auto')
         c.drawImage(os.path.join(diretorio, "evolucao_3D.png"),
-                    300, 440, width=300, height=200, mask='auto')
+                    300, 470, width=220, height=150, mask='auto')
         c.drawImage(os.path.join(diretorio, "eletrica_3D.png"),
                     40, 230, width=220, height=150, mask='auto')
         c.drawImage(os.path.join(diretorio, "hidraulica_3D.png"),
-                    350, 210, width=200, height=200, mask='auto')
+                    350, 230, width=220, height=150, mask='auto')
         c.drawImage(os.path.join(diretorio, "tab_empreend_capa.png"),
                     30, 30, width=500, height=100, mask='auto')
         c.drawImage(self.getPathImgs("legenda_2.png"),
-                    350, 160, width=200, height=30, mask='auto')
+                    350, 140, width=200, height=30, mask='auto')
 
         c.setFillColor(black)
         c.drawString(40, 630, 'Foto Atual')
-        c.drawString(300, 630, 'Evolução da obra por equivalência física de pavimentos')
+        c.drawString(310, 630, 'Evolução da Obra por Equivalência Física de Pavimentos')
         c.drawString(40, 400, 'Elétrica')
-        c.drawString(300, 400, 'Hidráulica')
+        c.drawString(310, 400, 'Hidráulica')
         c.setFont('Helvetica', 10)
         c.drawString(570, 10, str(pagina))
 
