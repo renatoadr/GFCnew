@@ -18,7 +18,7 @@ clear_stage() {
   rm -f *.tar *.gz
 
   log "Desfazendo versão do compose..."
-  git checkout docker-compose.yml
+  git checkout docker-compose.yml pyproject.toml
 
   log "Removendo imagem local"
   images=$(docker images -q "$nome_image")
@@ -171,7 +171,7 @@ log "Removendo imagem nova do docker local"
 docker rmi "${nome_image}:${nova_versao}"
 
 log "Enviando alteração da versão da aplicação para o repositório"
-git add docker-compose.yml
+git add docker-compose.yml pyproject.toml
 git commit -m "Novo deploy versao: ${nova_versao}"
 git push
 

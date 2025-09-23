@@ -21,10 +21,17 @@
           </h2>
         </div>
         <div class="col-6 d-flex justify-content-end align-items-center">
+          {% if session.user_logged_mobile %}
           <button type="button" id="backHistory" class="btn btn-outline-dark">
             <i class="fa-solid fa-caret-left"></i>
             Voltar
           </button>
+          {% else %}
+          <a href="/home" type="submit" class="btn btn-outline-dark">
+            <i class="fa-solid fa-caret-left"></i>
+            Voltar
+          </a>
+          {% endif %}
         </div>
       </div>
 
@@ -32,7 +39,8 @@
       <form action="/gerar_relatorio" id="formRelatorio" method="GET">
         <div class="row justify-content-end">
           <div class="col-3 p-3">
-            <button type="submit" class="btn btn-primary d-block w-100">Gerar Novo Relatório</button>
+            <button type="submit" class="btn btn-primary d-block w-100" id="gerarRelatorio">Gerar Novo
+              Relatório</button>
           </div>
         </div>
       </form>
@@ -77,6 +85,13 @@
     </div>
   </main>
   {% include 'fractials/footer.html' %}
+  <script>
+    $(function () {
+      $('#gerarRelatorio').on('click', function () {
+        $('#loading').css('display', 'flex')
+      })
+    })
+  </script>
 </body>
 
 </html>
