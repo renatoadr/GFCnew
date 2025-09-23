@@ -49,13 +49,13 @@ class graficoInterController:
         c.setFillColor((0.831, 0.243, 0.007))
         c.drawString(260, 700, vistoria)
 
-        c.drawImage(os.path.join(diretorio, "perspectiva.png"),
-                    40, 470, width=220, height=150, mask='auto')
-        c.drawImage(os.path.join(diretorio, "evolucao_3D_1.png"),
-                    300, 440, width=300, height=200, mask='auto')
         c.drawImage(os.path.join(diretorio, "foto_atual.png"),
+                    40, 470, width=220, height=150, mask='auto')
+        c.drawImage(os.path.join(diretorio, "evolucao_3D.png"),
+                    300, 440, width=300, height=200, mask='auto')
+        c.drawImage(os.path.join(diretorio, "eletrica_3D.png"),
                     40, 230, width=220, height=150, mask='auto')
-        c.drawImage(os.path.join(diretorio, "evolucao_3D_2.png"),
+        c.drawImage(os.path.join(diretorio, "hidraulica_3D.png"),
                     350, 210, width=200, height=200, mask='auto')
         c.drawImage(os.path.join(diretorio, "tab_empreend_capa.png"),
                     30, 30, width=500, height=100, mask='auto')
@@ -63,9 +63,10 @@ class graficoInterController:
                     350, 160, width=200, height=30, mask='auto')
 
         c.setFillColor(black)
-        c.drawString(40, 630, 'Perspectiva')
-        c.drawString(300, 630, 'Evolução em 3D')
-        c.drawString(40, 400, 'Foto Atual')
+        c.drawString(40, 630, 'Foto Atual')
+        c.drawString(300, 630, 'Evolução da obra por equivalência física de pavimentos')
+        c.drawString(40, 400, 'Elétrica')
+        c.drawString(300, 400, 'Hidráulica')
         c.setFont('Helvetica', 10)
         c.drawString(570, 10, str(pagina))
 
@@ -634,10 +635,10 @@ class graficoInterController:
         listaErro = self.verificaUnidadesVendidas(idEmpreend, vigencia)
 
         imgs = [
-            ('perspectiva', 'PERSPECTIVA', 1),
             ('foto_atual', 'FOTO ATUAL', 1),
-            ('evolucao_3D_1', 'EVOLUÇÃO 3D 1', 1),
-            ('evolucao_3D_2', 'EVOLUÇÃO 3D 2', 1),
+            ('evolucao_3D', 'EVOLUÇÃO 3D', 1),
+            ('eletrica_3D', 'ELÉTRICA 3D', 1),
+            ('hidraulica_3D', 'HIDRÁULICA 3D', 1),
 
             ('tab_prazo_inter', 'TABELA DE PRAZOS', 2),
             ('tab_medicoes', 'TABELA DE MEDIÇÕES', 2),

@@ -45,17 +45,18 @@ class graficoController:
         c.drawString(40, 690, empreendimento)
         c.drawString(40, 670, agenteFinanc)
         c.drawString(40, 660, vistoria)
-        c.drawString(40, 600, 'Perspectiva')
-        c.drawString(300, 600, 'Evolução em 3D')
-        c.drawString(40, 350, 'Foto Atual')
+        c.drawString(40, 600, 'Foto Atual')
+        c.drawString(300, 600, 'Evolução da Obra por Equivalência Física de Pavimentos')
+        c.drawString(40, 350, 'Elétrica')
+        c.drawString(300, 600, 'Hidráulica')
 
-        c.drawImage(os.path.join(diretorio, "perspectiva.png"),
-                    40, 420, width=220, height=150, mask='auto')
-        c.drawImage(os.path.join(diretorio, "evolucao_3D_1.png"),
-                    300, 380, width=300, height=200, mask='auto')
         c.drawImage(os.path.join(diretorio, "foto_atual.png"),
+                    40, 420, width=220, height=150, mask='auto')
+        c.drawImage(os.path.join(diretorio, "evolucao_3D.png"),
+                    300, 380, width=300, height=200, mask='auto')
+        c.drawImage(os.path.join(diretorio, "eletrica_3D.png"),
                     40, 180, width=220, height=150, mask='auto')
-        c.drawImage(os.path.join(diretorio, "evolucao_3D_2.png"),
+        c.drawImage(os.path.join(diretorio, "hidraulica_3D.png"),
                     350, 150, width=200, height=200, mask='auto')
         c.drawImage(self.getPathImgs("legenda_2.png"), 420,
                     100, width=150, height=25, mask='auto')
@@ -552,11 +553,11 @@ class graficoController:
                 'A imagem LEGENDA_2 na 1ª página não foi encontrada')
 
         imgs = [
-            ('perspectiva', 'PERSPECTIVA', 1),
             ('foto_atual', 'FOTO ATUAL', 1),
-            ('evolucao_3D_1', 'EVOLUÇÃO 3D 1', 1),
-            ('evolucao_3D_2', 'EVOLUÇÃO 3D 2', 1),
-
+            ('evolucao_3D', 'EVOLUÇÃO 3D', 1),
+            ('eletrica_3D', 'ELÉTRICA 3D', 1),
+            ('hidraulica_3D', 'HIDRÁULICA 3D', 1),
+                 
             ('tab_medicoes', 'TABELA DE MEDIÇÕES', 2),
             ('graf_progresso_obra', 'GRÁFICO DO PROGRESSO DA OBRA', 2),
 
