@@ -99,6 +99,7 @@ sed -i "s/image: ${imagem_atual}/image: ${nome_image}:${nova_versao}/" docker-co
 
 log "Alterando versão do projeto"
 sed -i "s/version = \".*\"/version = \"${nova_versao}\"/" pyproject.toml
+sed -i "s/^last_build = .*/last_build = \"$(date +'%Y-%m-%d %H:%M:%S')\"/" pyproject.toml
 
 log "Alterado Versao Atual: ${versao_atual} para Nova versão: ${nova_versao}"
 

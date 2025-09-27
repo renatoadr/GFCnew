@@ -122,20 +122,33 @@ def logout():
     return redirect("/")
 
 
-@inicio_bp.route('/version')
+@inicio_bp.route('/info')
 def version():
     try:
         with open('pyproject.toml', 'r') as f:
             content = f.read()
-            match = re.search(r'version\s*=\s*"([^"]+)"', content)
-            version = match.group(1) if match else 'unknown'
+            match_version = re.search(r'version\s*=\s*"([^"]+)"', content)
+            match_build = re.search(r'last_build\s*=\s*"([^"]+)"', content)
+            match_name = re.search(r'name\s*=\s*"([^"]+)"', content)
+            match_desc = re.search(r'description\s*=\s*"([^"]+)"', content)
+            version = match_version.group(1) if match_version else 'unknown'
+            build = match_build.group(1) if match_build else 'unknown'
+            desc = match_desc.group(1) if match_desc else 'unknown'
+            name = match_name.group(1) if match_name else 'unknown'
 
         return jsonify({
             'version': version,
-            'status': 'success'
+            'status': 'success',
+            'last_build': build,
+            'name': name,
+            'description': desc,
         })
     except Exception as e:
         return jsonify({
             'version': 'unknown',
+            'last_build': 'unknown',
+            'name': 'unknown',
+            'description': 'unknown',
+            'status': 'error',
             'error': str(e)
         }), 500

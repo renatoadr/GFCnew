@@ -247,9 +247,14 @@ def processarPlanilha(file):
     sheet['D3'] = datetime.now().strftime('%d/%m/%Y')
     sheet['C6'] = empreend.getNmEmpreend()
 
+    total = 0
     for row in sheet.iter_rows(min_row=8):
         codigo = row[2].value
         quantidade = row[5].value
+
+        if row[0].value is not None and row[0].value.lower() == 'total do orçamento':
+            row[7].value = total
+
         if codigo is None or not isinstance(codigo, int):
             continue
 
@@ -261,7 +266,9 @@ def processarPlanilha(file):
         )
         row[6].value = contadores['vl_unitario']
         row[7].value = contadores['total']
+        total += contadores['total']
 
+    sheet['D5'] = total
     ws.save(filename=os.path.join(
         path_save, f'orcamento_sinapi_{NmEmpreend().get().replace(' ', '_')}_{dados['mes_referencia']}_{datetime.now().date()}.xlsx'))
 
