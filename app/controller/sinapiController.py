@@ -1,5 +1,6 @@
 from utils.dbContext import MySql
 from decimal import Decimal, ROUND_HALF_UP
+from utils.logger import logger
 
 
 class sinapiController:
@@ -76,13 +77,17 @@ class sinapiController:
         """
 
         itens = MySql.getAll(query, (idEmpreend, codigo))
-        total = 0
-        vl_unitario = 0
+        total = Decimal(0)
+        vl_unitario = Decimal(0)
 
         for item in itens:
-            temp_calc = item['vl_base'] * item['vl_coeficiente']
-            vl_unitario += temp_calc
-            total += temp_calc * quant
+            try:
+                temp_calc = Decimal(item['vl_base']) * \
+                    Decimal(item['vl_coeficiente'])
+                vl_unitario += temp_calc
+                total += temp_calc * Decimal(quant)
+            except Exception as e:
+                logger.error(e)
         return {
             "vl_unitario": vl_unitario.quantize(Decimal('0.' + '0' * 2), rounding=ROUND_HALF_UP),
             "total": total.quantize(Decimal('0.' + '0' * 2), rounding=ROUND_HALF_UP)

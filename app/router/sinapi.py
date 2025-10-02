@@ -150,6 +150,7 @@ def download_orcamento_sinapi(nome_arquivo):
 
 
 @sinapi_bp.route('/deletar_orcamento_sinapi/<nome_arquivo>')
+@login_required
 def deletar_orcamento_sinapi(nome_arquivo):
     file = os.path.join(
         current_app.config['DIRSYS'],
@@ -186,15 +187,21 @@ def sinapi_orcamentos():
         current_app.config['DIRSYS'], "orcamentos_sinapi", IdEmpreend().get())
     orcs = []
 
+    last_date = None
     if os.path.exists(path_save):
         for orc in os.listdir(path_save):
             infos = orc.split('_')
-            orcs.append({
+            current_date = datetime.strptime(infos[-2], '%Y-%m-%d')
+            obj = {
                 'criacao': converterData(infos[-1].replace('.xlsx', '')),
                 'referencia': converterData(infos[-2], False),
                 'nome_arquivo': orc
-            })
-    orcs.sort(key=lambda dt: dt['criacao'], reverse=True)
+            }
+            if last_date is None or current_date > last_date:
+                orcs.append(obj)
+            else:
+                orcs.insert(0, obj)
+            last_date = current_date
     return render_template(
         "lista_orcamentos_sinapi.html",
         emissao='--' if dados is None else converterData(
