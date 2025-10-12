@@ -1,5 +1,6 @@
 from datetime import datetime
 import re
+from decimal import Decimal, ROUND_DOWN
 
 
 def converterStrToFloat(value, default=0):
@@ -52,3 +53,7 @@ def isNumber(value):
         return True
     except:
         return False
+
+
+def value_money(value: Decimal):
+    return value.quantize(Decimal('0.' + '0' * 2), rounding=ROUND_DOWN)

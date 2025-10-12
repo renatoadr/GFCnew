@@ -1,7 +1,8 @@
 from flask import Blueprint, render_template, redirect, url_for, request, current_app, send_file
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-
+from utils.converter import value_money
+from decimal import Decimal
 from utils.helper import allowed_file
 from utils.flash_message import flash_message
 from controller.sinapiController import sinapiController
@@ -14,6 +15,7 @@ from utils.CtrlSessao import IdEmpreend, NmEmpreend
 from datetime import datetime
 from zipfile import ZipFile
 from io import BytesIO
+from enums.indexes_planilha_sinapi import IDX_PLAN_SINAPI
 import requests
 import openpyxl
 import random
@@ -249,33 +251,72 @@ def processarPlanilha(file):
         data_only=True
     )
     sheet = ws.active
-    sheet['D1'] = empreend.getNmIncorp()
-    sheet['D2'] = empreend.getEnderecoCompleto()
-    sheet['D3'] = datetime.now().strftime('%d/%m/%Y')
-    sheet['C6'] = empreend.getNmEmpreend()
+    sheet[IDX_PLAN_SINAPI.NomeCliente.value] = empreend.getNmIncorp()
+    sheet[IDX_PLAN_SINAPI.Endereco.value] = empreend.getEnderecoCompleto()
+    sheet[IDX_PLAN_SINAPI.Data.value] = datetime.now().strftime('%d/%m/%Y')
+    sheet[IDX_PLAN_SINAPI.NomeEmpreend.value] = empreend.getNmEmpreend()
+    sheet[IDX_PLAN_SINAPI.DescPercentDiff.value] = 'Diferença entre orçamentos'
+    sheet[IDX_PLAN_SINAPI.DescTotalSinapi.value] = 'Orçamento SINAPI'
+    sheet[IDX_PLAN_SINAPI.CabecalhoTotal.value] = 'Total'
+    sheet[IDX_PLAN_SINAPI.CabecalhoUnitSinapi.value] = 'Custo unit Sinapi'
+    sheet[IDX_PLAN_SINAPI.CabecalhoTotalSinapi.value] = 'Total Sinapi'
+    sheet[IDX_PLAN_SINAPI.CabecalhoPercentDiff.value] = 'Diferença Orçamento'
 
     total = 0
-    for row in sheet.iter_rows(min_row=8):
-        codigo = row[2].value
-        quantidade = row[5].value
+    totalSinapi = 0
 
-        if row[0].value is not None and row[0].value.lower() == 'total do orçamento':
-            row[7].value = total
+    for row in sheet.iter_rows(min_row=9):
+        codigo = row[IDX_PLAN_SINAPI.Codigo.value].value
+        quantidade = row[IDX_PLAN_SINAPI.Quantidade.value].value
+        custoUnit = row[IDX_PLAN_SINAPI.Custo.value].value
+        composicao = row[IDX_PLAN_SINAPI.Composicao.value].value
+        unidade = row[IDX_PLAN_SINAPI.Unidade.value].value
 
-        if codigo is None or not isinstance(codigo, int):
+        if quantidade is None and custoUnit is None and composicao is None and unidade is None:
             continue
 
-        quant = 0 if quantidade is None else quantidade
-        contadores = sinapiController.valor_total_itens(
-            IdEmpreend().get(),
-            codigo,
-            quant
-        )
-        row[6].value = contadores['vl_unitario']
-        row[7].value = contadores['total']
-        total += contadores['total']
+        if quantidade is not None and (isinstance(quantidade, int) or isinstance(quantidade, float)):
+            quantidade = Decimal(quantidade)
+        else:
+            quantidade = Decimal(0)
 
-    sheet['D5'] = total
+        if custoUnit is not None and (isinstance(custoUnit, int) or isinstance(custoUnit, float)):
+            custoUnit = Decimal(custoUnit)
+        else:
+            custoUnit = Decimal(0)
+
+        if quantidade == 0 or custoUnit == 0:
+            continue
+
+        totalManual = custoUnit * quantidade
+        row[IDX_PLAN_SINAPI.Total.value].value = totalManual
+        total += totalManual
+
+        totalSinapiLinha = Decimal(0)
+        if codigo is not None and isinstance(codigo, int):
+            contadores = sinapiController.valor_total_itens(
+                IdEmpreend().get(),
+                codigo,
+                quantidade
+            )
+            row[IDX_PLAN_SINAPI.UnitSinapi.value].value = contadores['vl_unitario']
+            row[IDX_PLAN_SINAPI.TotalSinapi.value].value = contadores['total']
+            totalSinapi += contadores['total']
+            totalSinapiLinha = contadores['total']
+        else:
+            row[IDX_PLAN_SINAPI.UnitSinapi.value].value = custoUnit
+            row[IDX_PLAN_SINAPI.TotalSinapi.value].value = totalManual
+            totalSinapiLinha = totalManual
+            totalSinapi += totalManual
+
+        row[IDX_PLAN_SINAPI.PercentDiff.value].value = max(
+            totalManual, totalSinapiLinha) / min(totalSinapiLinha, totalManual)
+
+    sheet[IDX_PLAN_SINAPI.ValorTotal.value] = value_money(total)
+    sheet[IDX_PLAN_SINAPI.ValorTotalSinapi.value] = value_money(totalSinapi)
+    sheet[IDX_PLAN_SINAPI.ValorPercentDiff.value] = max(
+        total, totalSinapi) / min(total, totalSinapi)
+
     ws.save(filename=os.path.join(
         path_save, f'orcamento_sinapi_{NmEmpreend().get().replace(' ', '_')}_{dados['mes_referencia']}_{datetime.now().date()}.xlsx'))
 
