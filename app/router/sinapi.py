@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, redirect, url_for, request, current_app, send_file
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
-from utils.converter import value_money
+from utils.converter import value_decimal
 from decimal import Decimal
 from utils.helper import allowed_file
 from utils.flash_message import flash_message
@@ -299,26 +299,46 @@ def processarPlanilha(file):
                 codigo,
                 quantidade
             )
-            row[IDX_PLAN_SINAPI.UnitSinapi.value].value = contadores['vl_unitario']
-            row[IDX_PLAN_SINAPI.TotalSinapi.value].value = contadores['total']
-            totalSinapi += contadores['total']
-            totalSinapiLinha = contadores['total']
+            if contadores['total'] == 0:
+                row[IDX_PLAN_SINAPI.UnitSinapi.value].value = custoUnit
+                row[IDX_PLAN_SINAPI.TotalSinapi.value].value = totalManual
+                totalSinapiLinha = totalManual
+                totalSinapi += totalManual
+            else:
+                row[IDX_PLAN_SINAPI.UnitSinapi.value].value = contadores['vl_unitario']
+                row[IDX_PLAN_SINAPI.TotalSinapi.value].value = contadores['total']
+                totalSinapi += contadores['total']
+                totalSinapiLinha = contadores['total']
         else:
             row[IDX_PLAN_SINAPI.UnitSinapi.value].value = custoUnit
             row[IDX_PLAN_SINAPI.TotalSinapi.value].value = totalManual
             totalSinapiLinha = totalManual
             totalSinapi += totalManual
 
-        row[IDX_PLAN_SINAPI.PercentDiff.value].value = max(
-            totalManual, totalSinapiLinha) / min(totalSinapiLinha, totalManual)
+        percentdiff = calcPercent(totalManual, totalSinapiLinha)
+        if totalManual == totalSinapiLinha:
+            row[IDX_PLAN_SINAPI.PercentDiff.value].value = 0
+        else:
+            row[IDX_PLAN_SINAPI.PercentDiff.value].value = percentdiff if totalManual <= totalSinapiLinha else percentdiff * \
+                (-1)
 
-    sheet[IDX_PLAN_SINAPI.ValorTotal.value] = value_money(total)
-    sheet[IDX_PLAN_SINAPI.ValorTotalSinapi.value] = value_money(totalSinapi)
-    sheet[IDX_PLAN_SINAPI.ValorPercentDiff.value] = max(
-        total, totalSinapi) / min(total, totalSinapi)
+    percentdiffTotal = calcPercent(total, totalSinapi)
+    sheet[IDX_PLAN_SINAPI.ValorTotal.value] = value_decimal(total)
+    sheet[IDX_PLAN_SINAPI.ValorTotalSinapi.value] = value_decimal(totalSinapi)
+    if total == totalSinapi:
+        sheet[IDX_PLAN_SINAPI.ValorPercentDiff.value] = 0
+    else:
+        sheet[IDX_PLAN_SINAPI.ValorPercentDiff.value] = percentdiffTotal if total <= totalSinapi else percentdiffTotal * \
+            (-1)
 
     ws.save(filename=os.path.join(
         path_save, f'orcamento_sinapi_{NmEmpreend().get().replace(' ', '_')}_{dados['mes_referencia']}_{datetime.now().date()}.xlsx'))
+
+
+def calcPercent(valor1, valor2):
+    maior = max(valor1, valor2)
+    menor = min(valor1, valor2)
+    return (maior - menor) / maior
 
 
 def salvarCustoISD(isds, dt_corrente, dt_vigencia, dt_emissao):

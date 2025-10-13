@@ -1,7 +1,7 @@
 from utils.dbContext import MySql
 from decimal import Decimal
 from utils.logger import logger
-from utils.converter import value_money
+from utils.converter import value_decimal
 
 
 class sinapiController:
@@ -90,6 +90,6 @@ class sinapiController:
             except Exception as e:
                 logger.error(e)
         return {
-            "vl_unitario": value_money(vl_unitario),
-            "total": value_money(total)
+            "vl_unitario": value_decimal(vl_unitario),
+            "total": value_decimal(total)
         }

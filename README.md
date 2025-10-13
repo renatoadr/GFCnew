@@ -63,3 +63,7 @@ Por ser um monolito, foi adicionado as bibliotecas abaixo para layout e comporta
 - [Fontawesome *(galeria de ícones)*](https://fontawesome.com/icons)
 - [Jquery Mask *(Para manipular os inputs adicionando padrão)*](https://igorescobar.github.io/jQuery-Mask-Plugin/docs.html)
 - [Jquery Toast *(Para adicionar mensagens informativas para o usuário)*](https://kamranahmed.info/toast)
+
+
+### Diversos
+A planilha sinapi base tem a senha de desbloqueio GfC@4E96
