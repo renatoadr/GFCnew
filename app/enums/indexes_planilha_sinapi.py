@@ -7,10 +7,11 @@ class IDX_PLAN_SINAPI(Enum):
     Unidade = 4
     Quantidade = 5
     Custo = 6
-    Total = 7
+    QuantEng = 7
+    Total = 9
     UnitSinapi = 8
-    TotalSinapi = 9
-    PercentDiff = 10
+    TotalSinapi = 10
+    PercentDiff = 11
 
     NomeCliente = 'D1'
     Endereco = 'D2'
@@ -21,7 +22,7 @@ class IDX_PLAN_SINAPI(Enum):
     ValorTotalSinapi = 'G2'
     ValorPercentDiff = 'G3'
     NomeEmpreend = 'A5'
-    CabecalhoTotal = 'H6'
+    CabecalhoTotal = 'J6'
     CabecalhoUnitSinapi = 'I6'
-    CabecalhoTotalSinapi = 'J6'
-    CabecalhoPercentDiff = 'K6'
+    CabecalhoTotalSinapi = 'K6'
+    CabecalhoPercentDiff = 'L6'

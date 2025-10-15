@@ -257,7 +257,7 @@ def processarPlanilha(file):
     sheet[IDX_PLAN_SINAPI.NomeEmpreend.value] = empreend.getNmEmpreend()
     sheet[IDX_PLAN_SINAPI.DescPercentDiff.value] = 'Diferença entre orçamentos'
     sheet[IDX_PLAN_SINAPI.DescTotalSinapi.value] = 'Orçamento SINAPI'
-    sheet[IDX_PLAN_SINAPI.CabecalhoTotal.value] = 'Total'
+    sheet[IDX_PLAN_SINAPI.CabecalhoTotal.value] = 'Total Obra'
     sheet[IDX_PLAN_SINAPI.CabecalhoUnitSinapi.value] = 'Custo unit Sinapi'
     sheet[IDX_PLAN_SINAPI.CabecalhoTotalSinapi.value] = 'Total Sinapi'
     sheet[IDX_PLAN_SINAPI.CabecalhoPercentDiff.value] = 'Diferença Orçamento'
@@ -268,11 +268,10 @@ def processarPlanilha(file):
     for row in sheet.iter_rows(min_row=9):
         codigo = row[IDX_PLAN_SINAPI.Codigo.value].value
         quantidade = row[IDX_PLAN_SINAPI.Quantidade.value].value
+        quantEng = row[IDX_PLAN_SINAPI.QuantEng.value].value
         custoUnit = row[IDX_PLAN_SINAPI.Custo.value].value
-        composicao = row[IDX_PLAN_SINAPI.Composicao.value].value
-        unidade = row[IDX_PLAN_SINAPI.Unidade.value].value
 
-        if quantidade is None and custoUnit is None and composicao is None and unidade is None:
+        if quantidade is None and custoUnit is None and quantEng is None:
             continue
 
         if quantidade is not None and (isinstance(quantidade, int) or isinstance(quantidade, float)):
@@ -280,12 +279,17 @@ def processarPlanilha(file):
         else:
             quantidade = Decimal(0)
 
+        if quantEng is not None and (isinstance(quantEng, int) or isinstance(quantEng, float)):
+            quantEng = Decimal(quantEng)
+        else:
+            quantEng = Decimal(0)
+
         if custoUnit is not None and (isinstance(custoUnit, int) or isinstance(custoUnit, float)):
             custoUnit = Decimal(custoUnit)
         else:
             custoUnit = Decimal(0)
 
-        if quantidade == 0 or custoUnit == 0:
+        if quantEng == 0:
             continue
 
         totalManual = custoUnit * quantidade
@@ -297,45 +301,55 @@ def processarPlanilha(file):
             contadores = sinapiController.valor_total_itens(
                 IdEmpreend().get(),
                 codigo,
-                quantidade
+                quantEng
             )
             if contadores['total'] == 0:
+                totalEng = custoUnit * quantEng
                 row[IDX_PLAN_SINAPI.UnitSinapi.value].value = custoUnit
-                row[IDX_PLAN_SINAPI.TotalSinapi.value].value = totalManual
-                totalSinapiLinha = totalManual
-                totalSinapi += totalManual
+                row[IDX_PLAN_SINAPI.TotalSinapi.value].value = totalEng
+                totalSinapiLinha = totalEng
+                totalSinapi += totalEng
             else:
                 row[IDX_PLAN_SINAPI.UnitSinapi.value].value = contadores['vl_unitario']
                 row[IDX_PLAN_SINAPI.TotalSinapi.value].value = contadores['total']
                 totalSinapi += contadores['total']
                 totalSinapiLinha = contadores['total']
         else:
+            totalEng = custoUnit * quantEng
             row[IDX_PLAN_SINAPI.UnitSinapi.value].value = custoUnit
-            row[IDX_PLAN_SINAPI.TotalSinapi.value].value = totalManual
-            totalSinapiLinha = totalManual
-            totalSinapi += totalManual
+            row[IDX_PLAN_SINAPI.TotalSinapi.value].value = totalEng
+            totalSinapiLinha = totalEng
+            totalSinapi += totalEng
 
         percentdiff = calcPercent(totalManual, totalSinapiLinha)
-        if totalManual == totalSinapiLinha:
+        if codigo is None and custoUnit == 0:
             row[IDX_PLAN_SINAPI.PercentDiff.value].value = 0
+        elif quantidade == 0:
+            row[IDX_PLAN_SINAPI.PercentDiff.value].value = 1
+        elif totalManual == totalSinapiLinha:
+            row[IDX_PLAN_SINAPI.PercentDiff.value].value = 0
+        elif totalManual > totalSinapiLinha:
+            row[IDX_PLAN_SINAPI.PercentDiff.value].value = percentdiff * (-1)
         else:
-            row[IDX_PLAN_SINAPI.PercentDiff.value].value = percentdiff if totalManual <= totalSinapiLinha else percentdiff * \
-                (-1)
+            row[IDX_PLAN_SINAPI.PercentDiff.value].value = percentdiff
 
     percentdiffTotal = calcPercent(total, totalSinapi)
     sheet[IDX_PLAN_SINAPI.ValorTotal.value] = value_decimal(total)
     sheet[IDX_PLAN_SINAPI.ValorTotalSinapi.value] = value_decimal(totalSinapi)
     if total == totalSinapi:
         sheet[IDX_PLAN_SINAPI.ValorPercentDiff.value] = 0
+    elif total > totalSinapi:
+        sheet[IDX_PLAN_SINAPI.ValorPercentDiff.value] = percentdiffTotal * (-1)
     else:
-        sheet[IDX_PLAN_SINAPI.ValorPercentDiff.value] = percentdiffTotal if total <= totalSinapi else percentdiffTotal * \
-            (-1)
+        sheet[IDX_PLAN_SINAPI.ValorPercentDiff.value] = percentdiffTotal
 
     ws.save(filename=os.path.join(
         path_save, f'orcamento_sinapi_{NmEmpreend().get().replace(' ', '_')}_{dados['mes_referencia']}_{datetime.now().date()}.xlsx'))
 
 
 def calcPercent(valor1, valor2):
+    if valor1 == 0 or valor2 == 0:
+        return 0
     maior = max(valor1, valor2)
     menor = min(valor1, valor2)
     return (maior - menor) / maior
