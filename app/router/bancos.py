@@ -12,13 +12,13 @@ bancos_bp = Blueprint('bancos', __name__)
 def tratarbancos():
     usrCtrl = bancoController()
     banks = usrCtrl.lista_bancos()
-    return render_template("lista_bancos.html", bancos=banks)
+    return render_template("lista_bancos.html", bancos=banks, hideVig=True)
 
 
 @bancos_bp.route('/abrir_cad_banco')
 @login_required
 def abrir_cad_banco():
-    return render_template("banco.html")
+    return render_template("banco.html", hideVig=True)
 
 
 @bancos_bp.route('/cadastrar_banco', methods=['POST'])
@@ -39,7 +39,7 @@ def editar_bancos():
     if banco is None:
         return redirect('/tratar_bancos')
 
-    return render_template("banco.html", banco=banco)
+    return render_template("banco.html", banco=banco, hideVig=True)
 
 
 @bancos_bp.route('/salvar_alteracao_banco', methods=['POST'])

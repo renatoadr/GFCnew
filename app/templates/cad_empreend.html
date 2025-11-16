@@ -11,160 +11,160 @@
 <body>
   {% include 'fractials/menu.html' %}
 
-
-  <div class="container">
-    <div class="row">
-      <div class="col-6">
-        <h2 class="title"><i class="fa-solid fa-building"></i> {{ 'Editar' if empreend else 'Criar' }} Empreendimento
-        </h2>
-      </div>
-    </div>
-
-    <form action="{{'/salvar_empreend' if empreend else '/efetuar_cad_empreend'}}" method="POST"
-      id="formEmpreendimento">
+  <main>
+    <div class="container">
       <div class="row">
         <div class="col-6">
-
-          <div class="form-floating">
-            <input type="text" name="idEmpreendimento" id="idEmpreendimento" class="form-control" placeholder=""
-              readonly value="{{ empreend.getIdEmpreend() if empreend}}">
-            <label for="idEmpreendimento">Codigo do Empreendimento</label>
-          </div>
-
-          <div class="form-floating mt-4">
-            <input type="text" name="nmEmpreendimento" id="nmEmpreendimento" class="form-control" placeholder=""
-              value="{{ empreend.getNmEmpreend() if empreend}}" maxlength="100">
-            <label for="nmEmpreendimento">Nome</label>
-          </div>
-
-          <div class="form-floating mt-4">
-            <input type="text" name="apelido" id="apelido" class="form-control" placeholder=""
-              value="{{ empreend.getApelido() if empreend}}" maxlength="10">
-            <label for="apelido">Apelido</label>
-          </div>
-
-          <div class="form-floating mt-4">
-            <input type="text" name="cep" id="cep" class="form-control cep" placeholder=""
-              value="{{ empreend.getCep() if empreend}}" maxlength="9">
-            <label for="cep">CEP</label>
-          </div>
-
-          <div class="row">
-            <div class="col-5">
-              <div class="form-floating mt-4">
-                <select name="estado" id="estado" class="form-select" placeholder=""
-                  value="{{ empreend.getEstado() if empreend}}">
-                  <option value="">Selecione o estado</option>
-                </select>
-                <label for="estado">Estado</label>
-              </div>
-            </div>
-            <div class="col-7">
-              <div class="form-floating mt-4">
-                <select name="cidade" id="cidade" class="form-select" placeholder=""
-                  value="{{ empreend.getCidade() if empreend}}">
-                  <option value="">Selecione a cidade</option>
-                </select>
-                <label for="cidade">Cidade</label>
-              </div>
-            </div>
-          </div>
-
-          <div class="form-floating mt-4">
-            <input type="text" name="logradouro" id="logradouro" class="form-control" placeholder=""
-              value="{{ empreend.getLogradouro() if empreend}}" maxlength="100">
-            <label for="logradouro">Endereço</label>
-          </div>
-
-          <div class="form-floating mt-4">
-            <input type="text" name="bairro" id="bairro" class="form-control" placeholder=""
-              value="{{ empreend.getBairro() if empreend}}" maxlength="50">
-            <label for="bairro">Bairro</label>
-          </div>
-
-        </div>
-
-        <div class="col-6">
-          <div class="form-floating">
-            <input type="text" name="nmIncorp" id="nmIncorp" class="form-control" placeholder=""
-              value="{{ empreend.getNmIncorp() if empreend}}" maxlength="100">
-            <label for="nmIncorp">Incorporador</label>
-          </div>
-
-          <div class="form-floating mt-4">
-            <input type="text" name="nmConstrutor" id="nmConstrutor" class="form-control" placeholder=""
-              value="{{ empreend.getNmConstrutor() if empreend}}" maxlength="100">
-            <label for="nmConstrutor">Construtora</label>
-          </div>
-
-          <div class="form-floating mt-4">
-            <select name="codBanco" id="codBanco" class="form-select" placeholder=""
-              value="{{ empreend.getCodBanco() if empreend}}">
-              <option value="">Selecione o banco</option>
-              {% for bk in bancos %}
-              <option value="{{bk.getCodigo()}}" {% if empreend and empreend.getCodBanco()==bk.getCodigo() %} selected
-                {% endif %}>
-                {{bk.getCodigo()}} - {{bk.getDescricao()}}
-              </option>
-              {% endfor %}
-            </select>
-            <label for="codBanco">Banco</label>
-          </div>
-
-          <div class="row mt-4">
-            <div class="col-9">
-              <div class="form-floating ">
-                <input type="hidden" id="cpfCnpjEngenheiro" name="cpfCnpjEngenheiro"
-                  value="{{ empreend.getCpfCnpjEngenheiro() if empreend}}">
-                <input type="text" id="nmEngenheiro" class="form-control" placeholder=""
-                  value="{{ empreend.getNmEngenheiro() if empreend}}" maxlength="100">
-                <label for="nmEngenheiro">Nome do engenheiro</label>
-              </div>
-            </div>
-            <div class="col-3">
-              <button type="button" class="btn btn-primary btn-sm btn-associar" data-bs-toggle="modal"
-                data-bs-target="#modalAssociarCliente" data-input-doc-receiver="cpfCnpjEngenheiro"
-                data-input-name-receiver="nmEngenheiro"
-                data-initial-selected="{{ unidade.getCpfCnpjEngenheiro() if unidade}}">
-                <i class="fa-solid fa-user-plus mr-2"></i>
-                Associar Cliente
-              </button>
-            </div>
-          </div>
-
-          <div class="form-floating mt-4">
-            <input type="text" name="vlPlanoEmp" id="vlPlanoEmp" class="form-control money" placeholder=""
-              value="{{ empreend.getVlPlanoEmp() if empreend}}" maxlength="16">
-            <label for="vlPlanoEmp">Valor do Plano Empresário</label>
-          </div>
-
-          <div class="form-floating mt-4">
-            <input type="text" name="indiceGarantia" id="indiceGarantia" class="form-control percent10" placeholder=""
-              value="{{ empreend.getIndiceGarantia() if empreend}}" maxlength="6">
-            <label for="indiceGarantia">Indice de Garantia Contratado</label>
-          </div>
-
-          <div class="form-floating mt-4">
-            <input type="date" name="previsaoEntrega" id="previsaoEntrega" class="form-control" placeholder=""
-              value="{{ empreend.getPrevisaoEntrega() if empreend}}">
-            <label for="previsaoEntrega">Previsão de entrega</label>
-          </div>
-
+          <h2 class="title"><i class="fa-solid fa-building"></i> {{ 'Editar' if empreend else 'Criar' }} Empreendimento
+          </h2>
         </div>
       </div>
 
-      <div class="row mt-5 justify-content-center d-flex">
-        <div class="col-3">
-          <a href="/home" class="btn btn-secondary w-100">Cancelar</a>
-        </div>
-        <div class="col-3 offset-1">
-          <button type="submit" class="btn btn-success w-100">{{ 'Salvar' if empreend else 'Criar' }}</button>
-        </div>
-      </div>
-    </form>
+      <form action="{{'/salvar_empreend' if empreend else '/efetuar_cad_empreend'}}" method="POST"
+        id="formEmpreendimento">
+        <div class="row">
+          <div class="col-6">
 
-  </div>
+            <div class="form-floating">
+              <input type="text" name="idEmpreendimento" id="idEmpreendimento" class="form-control" placeholder=""
+                readonly value="{{ empreend.getIdEmpreend() if empreend}}">
+              <label for="idEmpreendimento">Codigo do Empreendimento</label>
+            </div>
 
+            <div class="form-floating mt-4">
+              <input type="text" name="nmEmpreendimento" id="nmEmpreendimento" class="form-control" placeholder=""
+                value="{{ empreend.getNmEmpreend() if empreend}}" maxlength="100">
+              <label for="nmEmpreendimento">Nome</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="apelido" id="apelido" class="form-control" placeholder=""
+                value="{{ empreend.getApelido() if empreend}}" maxlength="10">
+              <label for="apelido">Apelido</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="cep" id="cep" class="form-control cep" placeholder=""
+                value="{{ empreend.getCep() if empreend}}" maxlength="9">
+              <label for="cep">CEP</label>
+            </div>
+
+            <div class="row">
+              <div class="col-5">
+                <div class="form-floating mt-4">
+                  <select name="estado" id="estado" class="form-select" placeholder=""
+                    value="{{ empreend.getEstado() if empreend}}">
+                    <option value="">Selecione o estado</option>
+                  </select>
+                  <label for="estado">Estado</label>
+                </div>
+              </div>
+              <div class="col-7">
+                <div class="form-floating mt-4">
+                  <select name="cidade" id="cidade" class="form-select" placeholder=""
+                    value="{{ empreend.getCidade() if empreend}}">
+                    <option value="">Selecione a cidade</option>
+                  </select>
+                  <label for="cidade">Cidade</label>
+                </div>
+              </div>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="logradouro" id="logradouro" class="form-control" placeholder=""
+                value="{{ empreend.getLogradouro() if empreend}}" maxlength="100">
+              <label for="logradouro">Endereço</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="bairro" id="bairro" class="form-control" placeholder=""
+                value="{{ empreend.getBairro() if empreend}}" maxlength="50">
+              <label for="bairro">Bairro</label>
+            </div>
+
+          </div>
+
+          <div class="col-6">
+            <div class="form-floating">
+              <input type="text" name="nmIncorp" id="nmIncorp" class="form-control" placeholder=""
+                value="{{ empreend.getNmIncorp() if empreend}}" maxlength="100">
+              <label for="nmIncorp">Incorporador</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="nmConstrutor" id="nmConstrutor" class="form-control" placeholder=""
+                value="{{ empreend.getNmConstrutor() if empreend}}" maxlength="100">
+              <label for="nmConstrutor">Construtora</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <select name="codBanco" id="codBanco" class="form-select" placeholder=""
+                value="{{ empreend.getCodBanco() if empreend}}">
+                <option value="">Selecione o banco</option>
+                {% for bk in bancos %}
+                <option value="{{bk.getCodigo()}}" {% if empreend and empreend.getCodBanco()==bk.getCodigo() %} selected
+                  {% endif %}>
+                  {{bk.getCodigo()}} - {{bk.getDescricao()}}
+                </option>
+                {% endfor %}
+              </select>
+              <label for="codBanco">Banco</label>
+            </div>
+
+            <div class="row mt-4">
+              <div class="col-9">
+                <div class="form-floating ">
+                  <input type="hidden" id="cpfCnpjEngenheiro" name="cpfCnpjEngenheiro"
+                    value="{{ empreend.getCpfCnpjEngenheiro() if empreend}}">
+                  <input type="text" id="nmEngenheiro" class="form-control" placeholder=""
+                    value="{{ empreend.getNmEngenheiro() if empreend}}" maxlength="100">
+                  <label for="nmEngenheiro">Nome do engenheiro</label>
+                </div>
+              </div>
+              <div class="col-3">
+                <button type="button" class="btn btn-primary btn-sm btn-associar" data-bs-toggle="modal"
+                  data-bs-target="#modalAssociarCliente" data-input-doc-receiver="cpfCnpjEngenheiro"
+                  data-input-name-receiver="nmEngenheiro"
+                  data-initial-selected="{{ unidade.getCpfCnpjEngenheiro() if unidade}}">
+                  <i class="fa-solid fa-user-plus mr-2"></i>
+                  Associar Cliente
+                </button>
+              </div>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="vlPlanoEmp" id="vlPlanoEmp" class="form-control money" placeholder=""
+                value="{{ empreend.getVlPlanoEmp() if empreend}}" maxlength="16">
+              <label for="vlPlanoEmp">Valor do Plano Empresário</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="indiceGarantia" id="indiceGarantia" class="form-control percent10" placeholder=""
+                value="{{ empreend.getIndiceGarantia() if empreend}}" maxlength="6">
+              <label for="indiceGarantia">Indice de Garantia Contratado</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="date" name="previsaoEntrega" id="previsaoEntrega" class="form-control" placeholder=""
+                value="{{ empreend.getPrevisaoEntrega() if empreend}}">
+              <label for="previsaoEntrega">Previsão de entrega</label>
+            </div>
+
+          </div>
+        </div>
+
+        <div class="row mt-5 justify-content-center d-flex">
+          <div class="col-3">
+            <a href="/home" class="btn btn-secondary w-100">Cancelar</a>
+          </div>
+          <div class="col-3 offset-1">
+            <button type="submit" class="btn btn-success w-100">{{ 'Salvar' if empreend else 'Criar' }}</button>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  </main>
   {% include 'fractials/footer.html' %}
   <script>
     $(function () {

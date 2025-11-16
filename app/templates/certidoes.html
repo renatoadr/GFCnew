@@ -12,25 +12,25 @@
 
 <body>
   {% include 'fractials/menu.html' %}
-
-  <div class="container">
-    <div class="row">
-      <div class="col-6">
-        <h2 class="title"><i class="fa-solid fa-book"></i> {{ 'Editar' if certidoes else 'Criar' }} Certidões</h2>
-      </div>
-      <div class="col-6">
-        <div class="row h-100 justify-content-end align-items-center">
-          <div class="col-3">
-            <a href="/home" type="submit" class="btn btn-outline-dark">
-              <i class="fa-solid fa-caret-left"></i>
-              Voltar
-            </a>
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <h2 class="title"><i class="fa-solid fa-book"></i> {{ 'Editar' if certidoes else 'Criar' }} Certidões</h2>
+        </div>
+        <div class="col-6">
+          <div class="row h-100 justify-content-end align-items-center">
+            <div class="col-3">
+              <a href="/home" type="submit" class="btn btn-outline-dark">
+                <i class="fa-solid fa-caret-left"></i>
+                Voltar
+              </a>
+            </div>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- <p class="border-start border-5 p-3 pt-0 pb-0 h5 mb-2 mt-4 border-primary">Gerar Insumo para Relatório</p>
+      <!-- <p class="border-start border-5 p-3 pt-0 pb-0 h5 mb-2 mt-4 border-primary">Gerar Insumo para Relatório</p>
     <div class="bg-body-tertiary border border-1 p-3 rounded-4 mb-5">
       <form action="/gerar_relatorio_certidoes" method="post" id="formRelatorio">
         <div class="row">
@@ -50,145 +50,146 @@
       </form>
     </div> -->
 
-    <form action="{{'/salvar_certidoes' if certidoes else '/efetuar_cad_certidoes'}}" method="POST" id="formcertidoes">
+      <form action="{{'/salvar_certidoes' if certidoes else '/efetuar_cad_certidoes'}}" method="POST"
+        id="formcertidoes">
 
-      <div class="row">
-        <div class="col-6">
+        <div class="row">
+          <div class="col-6">
 
-          <div class="form-floating mt-6">
-            <select name="estadualStatus" id="estadualStatus" class="form-select"
-              value="{{ certidoes.getEstadualStatus() if certidoes}}">
-              <option value="">Selecione</option>
-              <option value="Positiva" {% if certidoes and certidoes.getEstadualStatus()=='Positiva' %} selected {%
-                endif %}>Positiva</option>
-              <option value="Pendente" {% if certidoes and certidoes.getEstadualStatus()=='Pendente' %} selected {%
-                endif %}>Pendente</option>
-              <option value="Negativa" {% if certidoes and certidoes.getEstadualStatus()=='Negativa' %} selected {%
-                endif %}>Negativa</option>
-            </select>
-            <label for="estadualStatus">Estadual</label>
+            <div class="form-floating mt-6">
+              <select name="estadualStatus" id="estadualStatus" class="form-select"
+                value="{{ certidoes.getEstadualStatus() if certidoes}}">
+                <option value="">Selecione</option>
+                <option value="Positiva" {% if certidoes and certidoes.getEstadualStatus()=='Positiva' %} selected {%
+                  endif %}>Positiva</option>
+                <option value="Pendente" {% if certidoes and certidoes.getEstadualStatus()=='Pendente' %} selected {%
+                  endif %}>Pendente</option>
+                <option value="Negativa" {% if certidoes and certidoes.getEstadualStatus()=='Negativa' %} selected {%
+                  endif %}>Negativa</option>
+              </select>
+              <label for="estadualStatus">Estadual</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <select name="fgtsStatus" id="fgtsStatus" class="form-select"
+                value="{{ certidoes.getFgtsStatus() if certidoes}}">
+                <option value="">Selecione</option>
+                </option>
+                <option value="Positiva" {% if certidoes and certidoes.getFgtsStatus()=='Positiva' %} selected {% endif
+                  %}>
+                  Positiva
+                </option>
+                <option value="Pendente" {% if certidoes and certidoes.getFgtsStatus()=='Pendente' %} selected {% endif
+                  %}>
+                  Pendente
+                </option>
+                <option value="Negativa" {% if certidoes and certidoes.getFgtsStatus()=='Negativa' %} selected {% endif
+                  %}>
+                  Negativa
+              </select>
+              <label for="fgtsStatus">FGTS</label>
+            </div>
+            <div class="form-floating mt-4">
+              <select name="municipalStatus" id="municipalStatus" class="form-select"
+                value="{{ certidoes.getMunicipalStatus() if certidoes}}">
+                <option value="">Selecione</option>
+                </option>
+                <option value="Positiva" {% if certidoes and certidoes.getMunicipalStatus()=='Positiva' %} selected {%
+                  endif %}>Positiva
+                </option>
+                <option value="Pendente" {% if certidoes and certidoes.getMunicipalStatus()=='Pendente' %} selected {%
+                  endif %}>Pendente
+                </option>
+                <option value="Negativa" {% if certidoes and certidoes.getMunicipalStatus()=='Negativa' %} selected {%
+                  endif %}>Negativa
+                </option>
+              </select>
+              <label for="municipalStatus">Municipal</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <select name="srfInssStatus" id="srfInssStatus" class="form-select"
+                value="{{ certidoes.getSrfInssStatus() if certidoes}}">
+                <option value="">Selecione</option>
+                <option value="Positiva" {% if certidoes and certidoes.getSrfInssStatus()=='Positiva' %} selected {%
+                  endif %}>Positiva
+                </option>
+                <option value="Pendente" {% if certidoes and certidoes.getSrfInssStatus()=='Pendente' %} selected {%
+                  endif %}>Pendente
+                </option>
+                <option value="Negativa" {% if certidoes and certidoes.getSrfInssStatus()=='Negativa' %} selected {%
+                  endif %}>Negativa
+                </option>
+              </select>
+              <label for="srfInssStatus">SRF/INSS</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <select name="trabalhistaStatus" id="trabalhistaStatus" class="form-select"
+                value="{{ certidoes.getTrabalhistaStatus() if certidoes}}">
+                <option value="">Selecione</option>
+                <option value="Positiva" {% if certidoes and certidoes.getTrabalhistaStatus()=='Positiva' %} selected {%
+                  endif %}>Positiva
+                </option>
+                <option value="Pendente" {% if certidoes and certidoes.getTrabalhistaStatus()=='Pendente' %} selected {%
+                  endif %}>Pendente
+                </option>
+                <option value="Negativa" {% if certidoes and certidoes.getTrabalhistaStatus()=='Negativa' %} selected {%
+                  endif %}>Negativa
+                </option>
+              </select>
+              <label for="trabalhistaStatus">Trabalhista</label>
+            </div>
+
           </div>
 
-          <div class="form-floating mt-4">
-            <select name="fgtsStatus" id="fgtsStatus" class="form-select"
-              value="{{ certidoes.getFgtsStatus() if certidoes}}">
-              <option value="">Selecione</option>
-              </option>
-              <option value="Positiva" {% if certidoes and certidoes.getFgtsStatus()=='Positiva' %} selected {% endif
-                %}>
-                Positiva
-              </option>
-              <option value="Pendente" {% if certidoes and certidoes.getFgtsStatus()=='Pendente' %} selected {% endif
-                %}>
-                Pendente
-              </option>
-              <option value="Negativa" {% if certidoes and certidoes.getFgtsStatus()=='Negativa' %} selected {% endif
-                %}>
-                Negativa
-            </select>
-            <label for="fgtsStatus">FGTS</label>
-          </div>
-          <div class="form-floating mt-4">
-            <select name="municipalStatus" id="municipalStatus" class="form-select"
-              value="{{ certidoes.getMunicipalStatus() if certidoes}}">
-              <option value="">Selecione</option>
-              </option>
-              <option value="Positiva" {% if certidoes and certidoes.getMunicipalStatus()=='Positiva' %} selected {%
-                endif %}>Positiva
-              </option>
-              <option value="Pendente" {% if certidoes and certidoes.getMunicipalStatus()=='Pendente' %} selected {%
-                endif %}>Pendente
-              </option>
-              <option value="Negativa" {% if certidoes and certidoes.getMunicipalStatus()=='Negativa' %} selected {%
-                endif %}>Negativa
-              </option>
-            </select>
-            <label for="municipalStatus">Municipal</label>
-          </div>
+          <div class="col-6">
+            <div class="form-floating">
+              <input type="date" name="estadualValidade" id="estadualValidade" class="form-control" placeholder=""
+                value="{{ certidoes.getEstadualValidade() if certidoes}}">
+              <label for="estadualValidade">Validade</label>
+            </div>
 
-          <div class="form-floating mt-4">
-            <select name="srfInssStatus" id="srfInssStatus" class="form-select"
-              value="{{ certidoes.getSrfInssStatus() if certidoes}}">
-              <option value="">Selecione</option>
-              <option value="Positiva" {% if certidoes and certidoes.getSrfInssStatus()=='Positiva' %} selected {% endif
-                %}>Positiva
-              </option>
-              <option value="Pendente" {% if certidoes and certidoes.getSrfInssStatus()=='Pendente' %} selected {% endif
-                %}>Pendente
-              </option>
-              <option value="Negativa" {% if certidoes and certidoes.getSrfInssStatus()=='Negativa' %} selected {% endif
-                %}>Negativa
-              </option>
-            </select>
-            <label for="srfInssStatus">SRF/INSS</label>
-          </div>
+            <div class="form-floating mt-4">
+              <input type="date" name="fgtsValidade" id="fgtsValidade" class="form-control" placeholder=""
+                value="{{ certidoes.getFgtsValidade() if certidoes}}">
+              <label for="fgtsValidade">Validade</label>
+            </div>
 
-          <div class="form-floating mt-4">
-            <select name="trabalhistaStatus" id="trabalhistaStatus" class="form-select"
-              value="{{ certidoes.getTrabalhistaStatus() if certidoes}}">
-              <option value="">Selecione</option>
-              <option value="Positiva" {% if certidoes and certidoes.getTrabalhistaStatus()=='Positiva' %} selected {%
-                endif %}>Positiva
-              </option>
-              <option value="Pendente" {% if certidoes and certidoes.getTrabalhistaStatus()=='Pendente' %} selected {%
-                endif %}>Pendente
-              </option>
-              <option value="Negativa" {% if certidoes and certidoes.getTrabalhistaStatus()=='Negativa' %} selected {%
-                endif %}>Negativa
-              </option>
-            </select>
-            <label for="trabalhistaStatus">Trabalhista</label>
-          </div>
+            <div class="form-floating mt-4">
+              <input type="date" name="municipalValidade" id="municipalValidade" class="form-control" placeholder=""
+                value="{{ certidoes.getMunicipalValidade() if certidoes}}">
+              <label for="municipalValidade">Validade</label>
+            </div>
 
+            <div class="form-floating mt-4">
+              <input type="date" name="srfInssValidade" id="srfInssValidade" class="form-control" placeholder=""
+                value="{{ certidoes.getSrfInssValidade() if certidoes}}">
+              <label for="srfInssValidade">Validade</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="date" name="trabalhistaValidade" id="trabalhistaValidade" class="form-control" placeholder=""
+                value="{{ certidoes.getTrabalhistaValidade() if certidoes}}">
+              <label for="trabalhistaValidade">Validade</label>
+            </div>
+
+          </div>
         </div>
 
-        <div class="col-6">
-          <div class="form-floating">
-            <input type="date" name="estadualValidade" id="estadualValidade" class="form-control" placeholder=""
-              value="{{ certidoes.getEstadualValidade() if certidoes}}">
-            <label for="estadualValidade">Validade</label>
+        <div class="row mt-5 justify-content-center d-flex">
+          <div class="col-3">
+            <a href="/home" class="btn btn-secondary w-100">Cancelar</a>
+            <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}">
           </div>
-
-          <div class="form-floating mt-4">
-            <input type="date" name="fgtsValidade" id="fgtsValidade" class="form-control" placeholder=""
-              value="{{ certidoes.getFgtsValidade() if certidoes}}">
-            <label for="fgtsValidade">Validade</label>
+          <div class="col-3 offset-1">
+            <button type="submit" class="btn btn-success w-100">{{ 'Salvar' if certidoes else 'Criar' }}</button>
           </div>
-
-          <div class="form-floating mt-4">
-            <input type="date" name="municipalValidade" id="municipalValidade" class="form-control" placeholder=""
-              value="{{ certidoes.getMunicipalValidade() if certidoes}}">
-            <label for="municipalValidade">Validade</label>
-          </div>
-
-          <div class="form-floating mt-4">
-            <input type="date" name="srfInssValidade" id="srfInssValidade" class="form-control" placeholder=""
-              value="{{ certidoes.getSrfInssValidade() if certidoes}}">
-            <label for="srfInssValidade">Validade</label>
-          </div>
-
-          <div class="form-floating mt-4">
-            <input type="date" name="trabalhistaValidade" id="trabalhistaValidade" class="form-control" placeholder=""
-              value="{{ certidoes.getTrabalhistaValidade() if certidoes}}">
-            <label for="trabalhistaValidade">Validade</label>
-          </div>
-
         </div>
-      </div>
+      </form>
 
-      <div class="row mt-5 justify-content-center d-flex">
-        <div class="col-3">
-          <a href="/home" class="btn btn-secondary w-100">Cancelar</a>
-          <input type="hidden" name="idEmpreend" value="{{ session.idEmpreend }}">
-        </div>
-        <div class="col-3 offset-1">
-          <button type="submit" class="btn btn-success w-100">{{ 'Salvar' if certidoes else 'Criar' }}</button>
-        </div>
-      </div>
-    </form>
-
-  </div>
-
+    </div>
+  </main>
   {% include 'fractials/footer.html' %}
   <script>
     $(function () {

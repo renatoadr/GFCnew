@@ -12,11 +12,11 @@
 <body>
   {% include 'fractials/menu.html' %}
   {% include 'fractials/submenu.html' %}
-  <main>
+  <main class="main-entry">
     <div class="container">
       <div class="row">
         <div class="col-6">
-          <h2 class="title title-page">
+          <h2 class="title title-page mt-4">
             <i class="fa-solid fa-users"></i> Clientes
           </h2>
         </div>
@@ -70,7 +70,7 @@
                 <td>
                   <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir">
                     <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
-                      data-modal-exclude-title="Orçamento"
+                      data-modal-exclude-title="Cliente"
                       data-modal-exclude-action="/excluir_cliente?cpfCnpj={{c.getCpfCnpj()}}"
                       data-modal-exclude-text="Deseja realmente excluir o cliente <strong>{{c.getNmCliente()}}</strong>?"></i>
                   </a>

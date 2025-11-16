@@ -11,108 +11,109 @@
 
 <body>
   {% include 'fractials/menu.html' %}
-
-
-  <div class="container">
-    <div class="row">
-      <div class="col-6">
-        <h2 class="title"><i class="fa-solid fa-shield-halved"></i> Atualizar Garantia
-        </h2>
+  <main>
+    <div class="container">
+      <div class="row">
+        <div class="col-6">
+          <h2 class="title"><i class="fa-solid fa-shield-halved"></i> Atualizar Garantia
+          </h2>
+        </div>
       </div>
+
+      <form action="/cadastrar_garantia" method="POST" id="formGarantia">
+
+        <div class="row mt-2">
+          <div class="col-12">
+            <h5>Documentos da Obra</h5>
+          </div>
+        </div>
+
+        {% for campo in camposObra %}
+        {% set gar = getGarantia(garantias, campo) %}
+        <div class="row mt-4">
+          <div class="col-4">
+            <div class="form-floating">
+              <input type="text" name="obraDocumento" id="documento_obra_{{loop.index}}" class="form-control"
+                placeholder="" readonly value="{{campo}}">
+              <label for="documento_obra_{{loop.index}}">Documento</label>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="form-floating">
+              <select name="obraStatus_{{loop.index}}" id="status_obra_{{loop.index}}" class="form-select required"
+                placeholder="" value="{{ gar.status if gar }}">
+                <option value="">Selecione</option>
+                <option value="Normal" {% if gar and gar.status=='Normal' %} selected {% endif %}>Normal</option>
+                <option value="Atenção" {% if gar and gar.status=='Atenção' %} selected {% endif %}>Atenção</option>
+                <option value="Verificar" {% if gar and gar.status=='Verificar' %} selected {% endif %}>Verificar
+                </option>
+              </select>
+              <label for="status_obra_{{loop.index}}">Status</label>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-floating">
+              <input type="text" name="obraObservacao" id="observacao_obra_{{loop.index}}" class="form-control"
+                placeholder="" value="{{ gar.observacao if gar }}" maxlength="50">
+              <label for="observacao_obra_{{idx}}">Observação</label>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+        <hr class="border border-primary-subtle border-2 opacity-50 mt-5">
+
+        <div class="row mt-5">
+          <div class="col-12">
+            <h5>Documentos Gerais</h5>
+          </div>
+        </div>
+        {% for campo in camposGeral %}
+        {% set gar = getGarantia(garantias, campo) %}
+        <div class="row mt-4">
+          <div class="col-4">
+            <div class="form-floating">
+              <input type="text" name="geralDocumento" id="documento_geral_{{loop.index}}" class="form-control"
+                placeholder="" readonly value="{{campo}}">
+              <label for="documento_geral_{{loop.index}}">Documento</label>
+            </div>
+          </div>
+          <div class="col-2">
+            <div class="form-floating">
+              <select name="geralStatus_{{loop.index}}" id="status_geral_{{loop.index}}" class="form-select required"
+                placeholder="" value="{{ gar.status if gar }}">
+                <option value="">Selecione</option>
+                <option value="Normal" {% if gar and gar.status=='Normal' %} selected {% endif %}>Normal</option>
+                <option value="Atenção" {% if gar and gar.status=='Atenção' %} selected {% endif %}>Atenção</option>
+                <option value="Verificar" {% if gar and gar.status=='Verificar' %} selected {% endif %}>Verificar
+                </option>
+              </select>
+              <label for="status_geral_{{loop.index}}">Status</label>
+            </div>
+          </div>
+          <div class="col-6">
+            <div class="form-floating">
+              <input type="text" name="geralObservacao" id="observacao_geral_{{loop.index}}" class="form-control"
+                placeholder="" value="{{ gar.observacao if gar }}" maxlength="50">
+              <label for="observacao_geral_{{idx}}">Observação</label>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+
+
+        <div class="row mt-5 justify-content-center d-flex">
+          <div class="col-3">
+            <a href="#" id="backHistory" class="btn btn-secondary w-100">Cancelar</a>
+          </div>
+          <div class="col-3 offset-1">
+            <button type="submit" class="btn btn-success w-100">Atualizar</button>
+          </div>
+        </div>
+      </form>
+
     </div>
-
-    <form action="/cadastrar_garantia" method="POST" id="formGarantia">
-
-      <div class="row mt-2">
-        <div class="col-12">
-          <h5>Documentos da Obra</h5>
-        </div>
-      </div>
-
-      {% for campo in camposObra %}
-      {% set gar = getGarantia(garantias, campo) %}
-      <div class="row mt-4">
-        <div class="col-4">
-          <div class="form-floating">
-            <input type="text" name="obraDocumento" id="documento_obra_{{loop.index}}" class="form-control"
-              placeholder="" readonly value="{{campo}}">
-            <label for="documento_obra_{{loop.index}}">Documento</label>
-          </div>
-        </div>
-        <div class="col-2">
-          <div class="form-floating">
-            <select name="obraStatus_{{loop.index}}" id="status_obra_{{loop.index}}" class="form-select required"
-              placeholder="" value="{{ gar.status if gar }}">
-              <option value="">Selecione</option>
-              <option value="Normal" {% if gar and gar.status=='Normal' %} selected {% endif %}>Normal</option>
-              <option value="Atenção" {% if gar and gar.status=='Atenção' %} selected {% endif %}>Atenção</option>
-              <option value="Verificar" {% if gar and gar.status=='Verificar' %} selected {% endif %}>Verificar</option>
-            </select>
-            <label for="status_obra_{{loop.index}}">Status</label>
-          </div>
-        </div>
-        <div class="col-6">
-          <div class="form-floating">
-            <input type="text" name="obraObservacao" id="observacao_obra_{{loop.index}}" class="form-control"
-              placeholder="" value="{{ gar.observacao if gar }}" maxlength="50">
-            <label for="observacao_obra_{{idx}}">Observação</label>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-
-      <hr class="border border-primary-subtle border-2 opacity-50 mt-5">
-
-      <div class="row mt-5">
-        <div class="col-12">
-          <h5>Documentos Gerais</h5>
-        </div>
-      </div>
-      {% for campo in camposGeral %}
-      {% set gar = getGarantia(garantias, campo) %}
-      <div class="row mt-4">
-        <div class="col-4">
-          <div class="form-floating">
-            <input type="text" name="geralDocumento" id="documento_geral_{{loop.index}}" class="form-control"
-              placeholder="" readonly value="{{campo}}">
-            <label for="documento_geral_{{loop.index}}">Documento</label>
-          </div>
-        </div>
-        <div class="col-2">
-          <div class="form-floating">
-            <select name="geralStatus_{{loop.index}}" id="status_geral_{{loop.index}}" class="form-select required"
-              placeholder="" value="{{ gar.status if gar }}">
-              <option value="">Selecione</option>
-              <option value="Normal" {% if gar and gar.status=='Normal' %} selected {% endif %}>Normal</option>
-              <option value="Atenção" {% if gar and gar.status=='Atenção' %} selected {% endif %}>Atenção</option>
-              <option value="Verificar" {% if gar and gar.status=='Verificar' %} selected {% endif %}>Verificar</option>
-            </select>
-            <label for="status_geral_{{loop.index}}">Status</label>
-          </div>
-        </div>
-        <div class="col-6">
-          <div class="form-floating">
-            <input type="text" name="geralObservacao" id="observacao_geral_{{loop.index}}" class="form-control"
-              placeholder="" value="{{ gar.observacao if gar }}" maxlength="50">
-            <label for="observacao_geral_{{idx}}">Observação</label>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-
-
-      <div class="row mt-5 justify-content-center d-flex">
-        <div class="col-3">
-          <a href="#" id="backHistory" class="btn btn-secondary w-100">Cancelar</a>
-        </div>
-        <div class="col-3 offset-1">
-          <button type="submit" class="btn btn-success w-100">Atualizar</button>
-        </div>
-      </div>
-    </form>
-
-  </div>
-
+  </main>
   {% include 'fractials/footer.html' %}
   <script>
     $(function () {

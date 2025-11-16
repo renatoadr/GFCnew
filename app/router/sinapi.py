@@ -66,77 +66,85 @@ headers = {
 @sinapi_bp.route('/atualizar_lista_sinapi', methods=['POST'])
 @login_required
 def atualizar_lista_sinapi():
-    now = datetime.now()
-    vigencia = (now - relativedelta(months=1))
+    vigencia = (datetime.now() - relativedelta(months=1))
     excel_nome = f"SINAPI_Referência_{vigencia.strftime('%Y_%m')}.xlsx"
     dados = opcaoCtrl.buscar(opcaoChave)
 
     vigencia = vigencia.replace(day=1)
 
-    if dados is not None and dados['mes_referencia'] == str(vigencia.date()):
+    if dados is not None and datetime.strptime(dados['mes_referencia'], '%Y-%m-%d') == vigencia:
         flash_message.info("Os dados atuais estão atualizados com a SINAPI")
     else:
-        try:
-            logger.info('Iniciado o carregamento da planilha SINAPI')
-            tentativas = Retry(
-                total=3,
-                status_forcelist=[429, 500, 502, 503, 504, 302],
-                allowed_methods=["GET"]
-            )
-            headers['User-Agent'] = random.choice(user_agents)
-            session = requests.Session()
-            session.max_redirects = 40
-            session.headers.update(headers)
-            adaptador = HTTPAdapter(max_retries=tentativas)
-            session.mount("http://", adaptador)
-            session.mount("https://", adaptador)
-            logger.info('Iniciado a solicitação da planilha SINAPI')
-            response = session.get(
-                url_relatorios.replace(
-                    '{vigencia}', vigencia.strftime('%Y-%m')),
-                timeout=30,
-                allow_redirects=True
-            )
-            logger.info('Finalizada a solicitação da planilha SINAPI')
-            response.raise_for_status()
-            with ZipFile(BytesIO(response.content)) as zip_file:
-                logger.info('Iniciando leitura do zip')
-                with zip_file.open(excel_nome) as excel_file:
-                    logger.info('Iniciando a leitura da planilha')
-                    wb = openpyxl.load_workbook(
-                        filename=excel_file,
-                        data_only=False
-                    )
-                    logger.info('Carregada planilha para openxl')
-                    sheetAnalitico = wb['Analítico']
-                    ref = datetime.strptime(
-                        sheetAnalitico['B3'].value, '%m/%Y').date()
-                    emissao = datetime.strptime(
-                        sheetAnalitico['B4'].value, '%d/%m/%Y').date()
-                    logger.info('Iniciando carregamento do ISD')
-                    salvarCustoISD(wb['ISD'], now.date(), ref, emissao)
-                    logger.info('Iniciando carregamento do CSD')
-                    salvarCustoCSD(wb['CSD'], now.date(), ref, emissao)
-                    logger.info('Iniciando carregamento dos Itens')
-                    salvarAnalitico(sheetAnalitico, now.date(), ref, emissao)
-                    logger.info('Deletando itens antigos')
-                    deletarAntigos()
-                    logger.info('Salvando informações de emissão e referência')
-                    opcaoCtrl.salvar(
-                        opcaoChave,
-                        {
-                            'data_emissao': str(emissao),
-                            'mes_referencia': str(ref)
-                        }
-                    )
-                    logger.info('Finalizado o processamento SINAPI')
+        get_sinapi_planilha(vigencia, excel_nome, dados)
+    return redirect(url_for('sinapi.sinapi_orcamentos'))
 
-        except Exception as err:
+
+def get_sinapi_planilha(vigencia, excel_nome, dados):
+    now = datetime.now()
+    try:
+        logger.info('Iniciado o carregamento da planilha SINAPI')
+        tentativas = Retry(
+            total=3,
+            status_forcelist=[429, 500, 502, 503, 504, 302],
+            allowed_methods=["GET"]
+        )
+        headers['User-Agent'] = random.choice(user_agents)
+        session = requests.Session()
+        session.max_redirects = 40
+        session.headers.update(headers)
+        adaptador = HTTPAdapter(max_retries=tentativas)
+        session.mount("http://", adaptador)
+        session.mount("https://", adaptador)
+        logger.info('Iniciado a solicitação da planilha SINAPI')
+        response = session.get(
+            url_relatorios.replace(
+                '{vigencia}', vigencia.strftime('%Y-%m')),
+            timeout=30,
+            allow_redirects=True
+        )
+        logger.info('Finalizada a solicitação da planilha SINAPI')
+        response.raise_for_status()
+        with ZipFile(BytesIO(response.content)) as zip_file:
+            logger.info('Iniciando leitura do zip')
+            with zip_file.open(excel_nome) as excel_file:
+                logger.info('Iniciando a leitura da planilha')
+                wb = openpyxl.load_workbook(
+                    filename=excel_file,
+                    data_only=False
+                )
+                logger.info('Carregada planilha para openxl')
+                sheetAnalitico = wb['Analítico']
+                ref = datetime.strptime(
+                    sheetAnalitico['B3'].value, '%m/%Y').date()
+                emissao = datetime.strptime(
+                    sheetAnalitico['B4'].value, '%d/%m/%Y').date()
+                logger.info('Iniciando carregamento do ISD')
+                salvarCustoISD(wb['ISD'], now.date(), ref, emissao)
+                logger.info('Iniciando carregamento do CSD')
+                salvarCustoCSD(wb['CSD'], now.date(), ref, emissao)
+                logger.info('Iniciando carregamento dos Itens')
+                salvarAnalitico(sheetAnalitico, now.date(), ref, emissao)
+                logger.info('Deletando itens antigos')
+                deletarAntigos()
+                logger.info('Salvando informações de emissão e referência')
+                opcaoCtrl.salvar(
+                    opcaoChave,
+                    {
+                        'data_emissao': str(emissao),
+                        'mes_referencia': str(ref)
+                    }
+                )
+                logger.info('Finalizado o processamento SINAPI')
+
+    except Exception as err:
+        if vigencia > datetime.strptime(dados['mes_referencia'], '%Y-%m-%d'):
+            vigencia = (vigencia - relativedelta(months=1))
+            excel_nome = f"SINAPI_Referência_{vigencia.strftime('%Y_%m')}.xlsx"
+            get_sinapi_planilha(vigencia, excel_nome, dados)
+        else:
             logger.error('Erro ao obter a planilha da SINAPI', err)
             flash_message.error(
                 "Não foi possível obter os dados da SINAPI. Tente novamente mais tarde")
-
-    return redirect(url_for('sinapi.sinapi_orcamentos'))
 
 
 @sinapi_bp.route('/download_orcamento_sinapi/<nome_arquivo>')

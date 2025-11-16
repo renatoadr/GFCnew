@@ -20,6 +20,10 @@ main {
   padding-top: 60px;
 }
 
+main.main-entry {
+  padding-top: 20px;
+}
+
 .container-alert {
   padding: 75px 0 0;
   margin-bottom: -55px;
@@ -306,7 +310,7 @@ main {
 
 #submenu-home {
   padding: 80px 0 0;
-  margin: 0;
+  margin: 0 0 -30px;
 }
 
 .f-13 {
@@ -375,4 +379,20 @@ main {
 #loading #loading-content p {
   margin-top: 10px;
   color: #fff;
+}
+
+.agrupadores-lista {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding-top: 5px;
+}
+
+.agrupadores-lista p {
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.agrupadores-lista p:hover {
+  background-color: #384f7C!important;
 }

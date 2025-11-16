@@ -1,6 +1,6 @@
 #!python3
 
-from flask import Flask
+from flask import Flask, request
 from utils.logger import logger
 from filters import filtros_bp
 import configparser
@@ -9,6 +9,22 @@ import os
 
 app = Flask(__name__)
 app.secret_key = "gfc001"
+
+
+@app.context_processor
+def utility_processor():
+    def update_query_string(**updates):
+        from urllib.parse import parse_qs, urlencode
+        current_params = parse_qs(request.query_string.decode('utf-8'))
+        for key, value in updates.items():
+            if value is None:
+                if key in current_params:
+                    del current_params[key]
+            else:
+                current_params[key] = [str(value)]
+        return urlencode(current_params, doseq=True)
+    return dict(update_query_string=update_query_string)
+
 
 path = os.path.abspath(__file__).replace(f"{__name__}.py", '')
 for route in os.listdir(os.path.join(path, 'router')):

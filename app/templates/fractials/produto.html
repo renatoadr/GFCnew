@@ -1,0 +1,243 @@
+<div class="row mt-3">
+  <div class="col-12 d-flex justify-content-end">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCriarProduto">
+      <i class="fa-solid fa-plus"></i>
+      Novo Produto
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <p class="border-start border-5 p-3 pt-0 pb-0 h5 mb-4 mt-0 border-primary">Filtrar</p>
+  <div class="bg-body-tertiary border border-1 p-3 rounded-4 mb-4">
+    <form action="/itens_produtos#prod" method="get">
+      <div class="row">
+        <div class="col-3 align-content-center">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="search_category_prod" name="spcat" placeholder=""
+              value="{{ request.args.get('spcat', '') }}">
+            <label for="search_category">Por Categoria</label>
+          </div>
+        </div>
+        <div class="col-3 align-content-center">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="search_category" name="spdesc" placeholder=""
+              value="{{ request.args.get('spdesc', '') }}">
+            <label for="search_category">Descrição</label>
+          </div>
+        </div>
+        <div class="col-3 align-content-center">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="search_group_prod" name="spgroup" placeholder=""
+              value="{{ request.args.get('spgroup', '') }}">
+            <label for="search_category">Agrupador</label>
+          </div>
+        </div>
+
+        <div class="col-3 align-content-center">
+          <button type="submit" class="btn btn-primary w-100">
+            Filtrar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<table class="table table-striped">
+  <thead class="table-light">
+    <tr>
+      <th>Categoria</th>
+      <th>Descrição</th>
+      <th class="text-center">Código</th>
+      <th class="text-center">Unidade</th>
+      <th class="text-center">Agrupador</th>
+      <th class="text-center">Ativo</th>
+      <th colspan="2" class="text-center">Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+
+    {% for prod in produtos %}
+    <tr>
+      <td>{{ prod.getCategoria() }}</td>
+      <td>{{ prod.getDescricao() }}</td>
+      <td class="text-center">{{ 'N/I' if prod.getCodigo() is none else prod.getCodigo() }}</td>
+      <td class="text-center">{{ prod.getUnidade() }}</td>
+      <td class="text-center">{{ 'N/I' if prod.getAgrupador() is none else prod.getAgrupador() }}</td>
+      <td class="text-center">
+        {% if prod.getAtivo() %}
+        <i class="fa-solid fa-check text-success"></i>
+        {% else %}
+        <i class="fa-solid fa-xmark text-danger"></i>
+        {% endif %}
+      </td>
+      <td class="text-center">
+        <a href="#" data-id-prod="{{prod.getId()}}" class="editar_prod" data-bs-toggle="tooltip"
+          data-bs-title="Editar Produto">
+          <i class="fa-solid fa-pencil text-warning"></i>
+        </a>
+      </td>
+      <td class="text-center">
+        <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Produto">
+          <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
+            data-modal-exclude-title="Produto" data-modal-exclude-action="/deletar_produto?id={{prod.getId()}}"
+            data-modal-exclude-text="Deseja realmente excluir o produto: <strong>{{prod.getDescricao()}}</strong>?"></i>
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+
+  </tbody>
+</table>
+
+{% if pagProd_totais > 1 %}
+<nav aria-label="Page navigation ">
+  <ul class="pagination justify-content-center">
+    {% for pagina in range(1, pagProd_totais + 1) %}
+    <li class="page-item {% if pagina == pagProd_atual %}active{% endif %}">
+      <a class="page-link" href="/itens_produtos?{{ update_query_string(pagProd=pagina) }}#prod">{{ pagina }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</nav>
+{% endif %}
+
+<div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="modalCriarProduto">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Novo Produto</h5>
+      </div>
+      <form action="cadastrar_produto" method="post" name="cad_produto">
+        <input type="hidden" name="id" value="">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12 mb-3">
+              <label for="categoria_prod" class="form-label">Categoria</label>
+              <select class="form-select form-select-sm" id="categoria_prod" name="categoria_prod" required>
+                <option>Não Informado</option>
+                {% for cat in categorias %}
+                <option value="{{ cat.getId() }}">{{ cat.getDescricao() }}</option>
+                {% endfor %}
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12 mb-3">
+              <label for="desc_prod" class="form-label">Descrição</label>
+              <input type="text" class="form-control" id="desc_prod" name="desc_prod" required maxlength="">
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-4 mb-3">
+              <label for="cod_prod" class="form-label">Código</label>
+              <input type="number" class="form-control" id="cod_prod" name="cod_prod" maxlength="10">
+            </div>
+
+            <div class="col-3 mb-3">
+              <label for="unidade_prod" class="form-label">Unidade</label>
+              <input type="text" class="form-control" id="unidade_prod" name="unidade_prod" required maxlength="5">
+            </div>
+
+            <div class="col-5 mb-3">
+              <label class="form-label d-block">Ativo</label>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="ativo_prod" id="ativo_prod_sim" value="Sim" checked>
+                <label class="form-check-label" for="ativo_prod_sim">Sim</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="ativo_prod" id="ativo_prod_nao" value="Não">
+                <label class="form-check-label" for="ativo_prod_nao">Não</label>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-12 mb-3">
+              <div class="box-agrupadores">
+                <label for="agrupador_prod" class="form-label">Agrupador</label>
+                <input type="text" class="form-control" id="agrupador_prod" name="agrupador_prod">
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-12">
+              <p class="m-0"><small>Agrupadores existentes:</small></p>
+              <div class="agrupadores-lista_prod">
+                {% for agrupador in agrupadores %}
+                <p class="badge bg-secondary">{{ agrupador }}</p>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const agrupadoresLista = document.querySelector('.agrupadores-lista_prod');
+    const isProduto = location.href.includes('#prod');
+
+    if (isProduto) {
+      const tab = new bootstrap.Tab(document.querySelector('#product-tab'));
+      tab.show();
+    }
+
+    agrupadoresLista.addEventListener('click', function (event) {
+      if (event.target.classList.contains('badge')) {
+        document.cad_produto.agrupador_prod.value = event.target.textContent;
+      }
+    });
+
+    document.addEventListener('hide.bs.modal', function (event) {
+      if (event.target.id === 'modalCriarProduto') {
+        document.querySelector('#modalCriarProduto .modal-title').textContent = 'Novo Produto';
+        document.cad_produto.ativo_prod.value = 'Sim';
+        document.cad_produto.categoria_prod.value = 'Não Informado';
+        document.cad_produto.agrupador_prod.value = '';
+        document.cad_produto.desc_prod.value = '';
+        document.cad_produto.cod_prod.value = '';
+        document.cad_produto.unidade_prod.value = '';
+        document.cad_produto.id.value = '';
+        document.cad_produto.action = 'cadastrar_produto';
+      }
+    });
+
+    document.querySelectorAll('.editar_prod').forEach(function (element) {
+      element.addEventListener('click', function (event) {
+        event.preventDefault();
+        const prodId = this.getAttribute('data-id-prod');
+
+        fetch(`/obter_dados_produto?id=${prodId}`)
+          .then(response => response.json())
+          .then(data => {
+            const modal = new bootstrap.Modal(document.getElementById('modalCriarProduto'));
+            document.querySelector('#modalCriarProduto .modal-title').textContent = 'Editar Produto';
+            document.cad_produto.categoria_prod.value = data.categoria_id || 'Não Informado';
+            document.cad_produto.desc_prod.value = data.descricao;
+            document.cad_produto.ativo_prod.value = data.ativo ? 'Sim' : 'Não';
+            document.cad_produto.agrupador_prod.value = data.agrupador || '';
+            document.cad_produto.cod_prod.value = data.codigo || '';
+            document.cad_produto.unidade_prod.value = data.unidade || '';
+            document.cad_produto.id.value = prodId;
+            document.cad_produto.action = `/editar_produto?id=${prodId}`;
+            modal.show();
+          })
+          .catch(error => { console.error('Erro ao obter dados do produto:', error) });
+      });
+    });
+  });
+</script>

@@ -1,0 +1,62 @@
+<!-- Template: lista_cliente -->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GFC - Listagem de Produtos e Itens do sistema</title>
+  {% include 'fractials/head.html' %}
+</head>
+
+<body>
+  {% include 'fractials/menu.html' %}
+  {% include 'fractials/submenu.html' %}
+  <main class="main-entry p-3">
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-9">
+          <h2 class="title title-page mt-4">
+            <i class="fa-solid fa-clipboard-list"></i> Itens e Produtos
+          </h2>
+        </div>
+        <div class="col-3 d-flex justify-content-end align-items-center">
+          <a href="/home" class="btn btn-outline-dark">
+            <i class="fa-solid fa-home"></i>
+            Início
+          </a>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-12">
+          <ul class="nav nav-tabs" id="myTab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <a href="#cat" class="nav-link active" id="category-tab" data-bs-toggle="tab" data-bs-target="#category"
+                type="button" role="tab">Categorias</a>
+            </li>
+            <li class="nav-item" role="presentation">
+              <a href="#prod" class="nav-link" id="product-tab" data-bs-toggle="tab" data-bs-target="#product"
+                type="button" role="tab">Produtos</a>
+            </li>
+
+          </ul>
+
+          <div class="tab-content">
+            <div class="tab-pane active" id="category" tabindex="0">
+              {% include 'fractials/categoria.html' %}
+            </div>
+            <div class="tab-pane" id="product" tabindex="0">
+              {% include 'fractials/produto.html' %}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </main>
+
+  {% include 'fractials/footer.html' %}
+</body>
+
+</html>

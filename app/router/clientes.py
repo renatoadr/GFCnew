@@ -14,16 +14,13 @@ def tratarclientes():
     cliC = clienteController()
     cliS = cliC.consultarClientes()
 
-    if len(cliS) == 0:
-        return render_template("lista_clientes.html", clienteS=cliS)
-    else:
-        return render_template("lista_clientes.html", clienteS=cliS)
+    return render_template("lista_clientes.html", clienteS=cliS, hideVig=True)
 
 
 @clientes_bp.route('/abrir_cad_cliente')
 @login_required
 def abrir_cad_cliente():
-    return render_template("cliente.html")
+    return render_template("cliente.html", hideVig=True)
 
 
 @clientes_bp.route('/cadastrar_cliente', methods=['POST'])
@@ -61,7 +58,7 @@ def editar_cliente():
         return redirect('/tratar_clientes')
 
     cliente.setCpfCnpj(converter.maskCpfOrCnpj(cliente.getCpfCnpj()))
-    return render_template("cliente.html", cliente=cliente, criacao=False)
+    return render_template("cliente.html", cliente=cliente, criacao=False, hideVig=True)
 
 
 @clientes_bp.route('/salvar_alteracao_cliente', methods=['POST'])

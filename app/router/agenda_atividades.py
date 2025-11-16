@@ -15,7 +15,7 @@ ctrl = agendaAtividadeController()
 @permission_access([TipoAcessos.RT, TipoAcessos.ADM])
 def agenda_atividades():
     atividades = ctrl.lista_atividades()
-    return render_template("lista_atividades_agenda.html", atividades=atividades)
+    return render_template("lista_atividades_agenda.html", atividades=atividades, hideVig=True)
 
 
 @agenda_atividades_bp.route('/editar_atividade')
@@ -24,7 +24,7 @@ def agenda_atividades():
 def editar_atividade():
     id = request.args.get('id')
     atividade = ctrl.buscar_pelo_id(id)
-    return render_template("cad_agenda_atividade.html", atividade=atividade, novo=False)
+    return render_template("cad_agenda_atividade.html", atividade=atividade, novo=False, hideVig=True)
 
 
 @agenda_atividades_bp.route('/cadastrar_atividade', methods=['POST'])
@@ -62,7 +62,7 @@ def salvar_atividade():
 @login_required
 @permission_access([TipoAcessos.RT, TipoAcessos.ADM])
 def abrir_cad_atividade():
-    return render_template("cad_agenda_atividade.html", atividade=None, novo=True)
+    return render_template("cad_agenda_atividade.html", atividade=None, novo=True, hideVig=True)
 
 
 @agenda_atividades_bp.route('/excluir_atividade')

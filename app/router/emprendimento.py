@@ -45,6 +45,7 @@ def abrir_home():
     return render_template(
         "home.html",
         empreends=emps,
+        hideVig=True,
         usa_filtro=usa_filtro,
         lista_bancos=lista_bancos,
         fitlro_banco_selecionado=int(filtro_banco) if filtro_banco else None
@@ -56,7 +57,7 @@ def abrir_home():
 def abrir_cad_empreend():
 
     bancos = ctrlBanco.lista_bancos()
-    return render_template("cad_empreend.html", bancos=bancos)
+    return render_template("cad_empreend.html", bancos=bancos, hideVig=True)
 
 
 @emprendimento_bp.route('/efetuar_cad_empreend', methods=['POST'])
@@ -98,7 +99,7 @@ def abrir_edicao_empreend():
     idEmpreend = request.args.get('idEmpreend')
     bancos = ctrlBanco.lista_bancos()
     empreend = empc.consultarEmpreendimentoPeloId(idEmpreend)
-    return render_template("cad_empreend.html", empreend=empreend, bancos=bancos)
+    return render_template("cad_empreend.html", empreend=empreend, bancos=bancos, hideVig=True)
 
 
 @emprendimento_bp.route('/salvar_empreend', methods=['POST'])

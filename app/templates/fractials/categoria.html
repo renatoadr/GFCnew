@@ -1,0 +1,200 @@
+<div class="row mt-3">
+  <div class="col-12 d-flex justify-content-end">
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCriarCategoria">
+      <i class="fa-solid fa-plus"></i>
+      Nova Categoria
+    </button>
+  </div>
+</div>
+
+<div class="row">
+  <p class="border-start border-5 p-3 pt-0 pb-0 h5 mb-4 mt-0 border-primary">Filtrar</p>
+  <div class="bg-body-tertiary border border-1 p-3 rounded-4 mb-4">
+    <form action="/itens_produtos#cat" method="get">
+      <div class="row">
+        <div class="col-4 align-content-center">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="search_category" name="scat" placeholder=""
+              value="{{ request.args.get('scat', '') }}">
+            <label for="search_category">Por Categoria</label>
+          </div>
+        </div>
+        <div class="col-4 align-content-center">
+          <div class="form-floating">
+            <input type="text" class="form-control" id="search_group" name="sgroup" placeholder=""
+              value="{{ request.args.get('sgroup', '') }}">
+            <label for="search_category">Por Agrupador</label>
+          </div>
+        </div>
+        <div class="col-2 align-content-center">
+          <button type="submit" class="btn btn-primary w-100">
+            Filtrar
+          </button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<table class="table table-striped">
+  <thead class="table-light">
+    <tr>
+      <th>Categoria Pai</th>
+      <th>Descrição</th>
+      <th class="text-center">Ativo</th>
+      <th class="text-center">Agrupador</th>
+      <th colspan="2" class="text-center">Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for cat in categorias %}
+    <tr>
+      <td>{{ 'N/I' if cat.getDescricaoPai() is none else cat.getDescricaoPai() }}</td>
+      <td>{{ cat.getDescricao() }}</td>
+      <td>
+        {% if cat.getAtivo() %}
+        <i class="fa-solid fa-check text-success"></i>
+        {% else %}
+        <i class="fa-solid fa-xmark text-danger"></i>
+        {% endif %}
+      </td>
+      <td class="text-center">{{ 'N/I' if cat.getAgrupador() is none else cat.getAgrupador() }}</td>
+      <td class="text-center">
+        <a href="#" data-id-cat="{{cat.getId()}}" class="editar" data-bs-toggle="tooltip"
+          data-bs-title="Editar Categoria">
+          <i class="fa-solid fa-pencil text-warning"></i>
+        </a>
+      </td>
+      <td class="text-center">
+        <a href="#" data-bs-toggle="tooltip" data-bs-title="Excluir Categoria">
+          <i class="fa-solid fa-trash text-danger" data-bs-toggle="modal" data-bs-target="#modalExclude"
+            data-modal-exclude-title="Categoria" data-modal-exclude-action="/excluir_categoria?id={{cat.getId()}}"
+            data-modal-exclude-text="Deseja realmente excluir a categoria: <strong>{{cat.getDescricao()}}</strong>?"></i>
+        </a>
+      </td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+
+{% if pagCat_totais > 1 %}
+<nav aria-label="Page navigation ">
+  <ul class="pagination justify-content-center">
+    {% for pagina in range(1, pagCat_totais + 1) %}
+    <li class="page-item {% if pagina == pagCat_atual %}active{% endif %}">
+      <a class="page-link" href="/itens_produtos?{{ update_query_string(pagCat=pagina) }}#cat">{{ pagina }}</a>
+    </li>
+    {% endfor %}
+  </ul>
+</nav>
+{% endif %}
+
+<div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="modalCriarCategoria">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Nova Categoria</h5>
+      </div>
+      <form action="cadastrar_categoria" method="post" name="cad_categoria">
+        <input type="hidden" name="id" value="">
+        <div class="modal-body">
+          <div class="row">
+            <div class="col-12 mb-3">
+              <label for="categoria_pai" class="form-label">Categoria Pai</label>
+              <select class="form-select form-select-sm" id="categoria_pai" name="categoria_pai">
+                <option>Não Informado</option>
+                {% for catpai in cats_pai %}
+                <option value="{{ catpai.getId() }}">{{ catpai.getDescricao() }}</option>
+                {% endfor %}
+              </select>
+            </div>
+            <div class="col-12 mb-3">
+              <label for="categoria" class="form-label">Categoria</label>
+              <input type="text" class="form-control" id="categoria" name="categoria" required>
+            </div>
+            <div class="col-12 mb-3">
+              <label class="form-label d-block">Ativo</label>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="ativo" id="ativo_sim" value="Sim" checked>
+                <label class="form-check-label" for="ativo_sim">Sim</label>
+              </div>
+              <div class="form-check form-check-inline">
+                <input class="form-check-input" type="radio" name="ativo" id="ativo_nao" value="Não">
+                <label class="form-check-label" for="ativo_nao">Não</label>
+              </div>
+            </div>
+            <div class="col-12 mb-3">
+              <div class="box-agrupadores">
+                <label for="agrupador" class="form-label">Agrupador</label>
+                <input type="text" class="form-control" id="agrupador" name="agrupador">
+              </div>
+            </div>
+            <div class="col-12">
+              <p class="m-0"><small>Agrupadores existentes:</small></p>
+              <div class="agrupadores-lista">
+                {% for agrupador in agrupadores %}
+                <p class="badge bg-secondary">{{ agrupador }}</p>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+          <button type="submit" class="btn btn-success">Salvar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const agrupadoresLista = document.querySelector('.agrupadores-lista');
+
+    agrupadoresLista.addEventListener('click', function (event) {
+      if (event.target.classList.contains('badge')) {
+        document.cad_categoria.agrupador.value = event.target.textContent;
+      }
+    });
+
+    document.addEventListener('hide.bs.modal', function (event) {
+      if (event.target.id === 'modalCriarCategoria') {
+        document.cad_categoria.ativo.value = 'Sim';
+        document.querySelector('#modalCriarCategoria .modal-title').textContent = 'Nova Categoria';
+        document.cad_categoria.categoria_pai.value = 'Não Informado';
+        document.cad_categoria.categoria.value = '';
+        document.cad_categoria.agrupador.value = '';
+        document.cad_categoria.id.value = '';
+        document.cad_categoria.action = 'cadastrar_categoria';
+        Array.from(document.cad_categoria.categoria_pai.options).forEach(el => el.hidden = false);
+      }
+    });
+
+    document.querySelectorAll('.editar').forEach(function (element) {
+      element.addEventListener('click', function (event) {
+        event.preventDefault();
+        const categoriaId = this.getAttribute('data-id-cat');
+
+        fetch(`/obter_dados_categoria?id=${categoriaId}`)
+          .then(response => response.json())
+          .then(data => {
+            const modal = new bootstrap.Modal(document.getElementById('modalCriarCategoria'));
+            document.querySelector('#modalCriarCategoria .modal-title').textContent = 'Editar Categoria';
+            document.cad_categoria.categoria_pai.value = data.categoria_pai || 'Não Informado';
+            document.cad_categoria.categoria.value = data.descricao;
+            document.cad_categoria.ativo.value = data.ativo ? 'Sim' : 'Não';
+            document.cad_categoria.agrupador.value = data.agrupador || '';
+            document.cad_categoria.id.value = categoriaId;
+            document.cad_categoria.action = `/editar_categoria?id=${categoriaId}`;
+            const optionToHide = Array.from(document.cad_categoria.categoria_pai.options).find(el => el.value === categoriaId);
+            if (optionToHide) {
+              optionToHide.hidden = true;
+            }
+            modal.show();
+          })
+          .catch(error => { console.error('Erro ao obter dados da categoria:', error) });
+      });
+    });
+  });
+</script>

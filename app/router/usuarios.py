@@ -21,7 +21,7 @@ def tratarusuarios():
     for us in usrs:
         us.setTpAcesso(TipoAcessos.to_name(us.getTpAcesso()))
 
-    return render_template("lista_usuarios.html", usuarios=usrs)
+    return render_template("lista_usuarios.html", usuarios=usrs, hideVig=True)
 
 
 @usuarios_bp.route('/abrir_cad_usuario')
@@ -34,7 +34,7 @@ def abrir_cad_usuario():
     tipos = []
     if sUser.profile in [TipoAcessos.ADM.name, TipoAcessos.RT.name]:
         tipos = TipoAcessos.to_list()
-    return render_template("usuario.html", tipos=tipos, bancos=bancos, tpl='adm')
+    return render_template("usuario.html", tipos=tipos, bancos=bancos, tpl='adm', hideVig=True)
 
 
 @usuarios_bp.route('/cadastrar_usuario', methods=['POST'])
@@ -74,7 +74,7 @@ def editar_usuarios():
     if usuario is None:
         return redirect('/tratar_usuarios')
 
-    return render_template("usuario.html", user=usuario, tipos=TipoAcessos.to_list(), bancos=bancos, tpl='adm')
+    return render_template("usuario.html", user=usuario, tipos=TipoAcessos.to_list(), bancos=bancos, tpl='adm', hideVig=True)
 
 
 @usuarios_bp.route('/salvar_alteracao_usuario', methods=['POST'])

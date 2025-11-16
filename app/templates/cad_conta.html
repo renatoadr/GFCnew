@@ -11,76 +11,76 @@
 
 <body>
   {% include 'fractials/menu.html' %}
-
-  <div class="container">
-    <div class="row">
-      <div class="col-6">
-        <h2 class="title"><i class="fa-solid fa-building-columns"></i> {{ 'Editar' if conta else 'Criar' }} Conta
-        </h2>
-      </div>
-    </div>
-
-    <form action="{{ '/salvar_conta' if conta else '/criar_conta' }}" method="POST" id="formConta">
-      <input type="hidden" name="idConta" value="{{conta.getIdConta() if conta}}">
-
+  <main>
+    <div class="container">
       <div class="row">
         <div class="col-6">
-
-          <div class="form-floating mt-4">
-            <input type="text" name="vlLiberacao" id="vlLiberacao" class="form-control money" placeholder=""
-              value="{{conta.getVlLiberacao() if conta}}" maxlength="20">
-            <label for="vlLiberacao">Valor Liberação</label>
-          </div>
-
-          <div class="form-floating mt-4">
-            <input type="text" name="vlAporteConstrutora" id="vlAporteConstrutora" class="form-control money"
-              placeholder="" value="{{conta.getVlAporteConstrutora() if conta}}" maxlength="20">
-            <label for="vlAporteConstrutora">Valor Aporte Construtora</label>
-          </div>
-
-          <div class="form-floating mt-4">
-            <input type="text" name="vlReceita" id="vlReceita" class="form-control money" placeholder=""
-              value="{{conta.getVlReceitaRecebiveis() if conta}}" maxlength="20">
-            <label for="vlReceita">Valor Receita Recebíveis</label>
-          </div>
-
-        </div>
-        <div class="col-6">
-
-          <div class="form-floating mt-4">
-            <input type="text" name="vlPagamentoObra" id="vlPagamentoObra" class="form-control money" placeholder=""
-              value="{{conta.getVlPagtoObra() if conta}}" maxlength="20">
-            <label for="vlPagamentoObra">Valor Pagamento Obra</label>
-          </div>
-
-          <div class="form-floating mt-4">
-            <input type="text" name="vlPagamento" id="vlPagamento" class="form-control money" placeholder=""
-              value="{{conta.getVlPagtoRh() if conta}}" maxlength="20">
-            <label for="vlPagamento">Valor Pagamento RH</label>
-          </div>
-
-          <div class="form-floating mt-4">
-            <input type="text" name="vlSaldo" id="vlSaldo" class="form-control money" placeholder=""
-              value="{{conta.getVlSaldo() if conta}}" maxlength="20">
-            <label for="vlSaldo">Valor do Saldo</label>
-          </div>
-
+          <h2 class="title"><i class="fa-solid fa-building-columns"></i> {{ 'Editar' if conta else 'Criar' }} Conta
+          </h2>
         </div>
       </div>
 
+      <form action="{{ '/salvar_conta' if conta else '/criar_conta' }}" method="POST" id="formConta">
+        <input type="hidden" name="idConta" value="{{conta.getIdConta() if conta}}">
 
-      <div class="row mt-5 justify-content-center d-flex">
-        <div class="col-3">
-          <a href="#" id="backHistory" class="btn btn-secondary w-100">Cancelar</a>
+        <div class="row">
+          <div class="col-6">
+
+            <div class="form-floating mt-4">
+              <input type="text" name="vlLiberacao" id="vlLiberacao" class="form-control money" placeholder=""
+                value="{{conta.getVlLiberacao() if conta}}" maxlength="20">
+              <label for="vlLiberacao">Valor Liberação</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="vlAporteConstrutora" id="vlAporteConstrutora" class="form-control money"
+                placeholder="" value="{{conta.getVlAporteConstrutora() if conta}}" maxlength="20">
+              <label for="vlAporteConstrutora">Valor Aporte Construtora</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="vlReceita" id="vlReceita" class="form-control money" placeholder=""
+                value="{{conta.getVlReceitaRecebiveis() if conta}}" maxlength="20">
+              <label for="vlReceita">Valor Receita Recebíveis</label>
+            </div>
+
+          </div>
+          <div class="col-6">
+
+            <div class="form-floating mt-4">
+              <input type="text" name="vlPagamentoObra" id="vlPagamentoObra" class="form-control money" placeholder=""
+                value="{{conta.getVlPagtoObra() if conta}}" maxlength="20">
+              <label for="vlPagamentoObra">Valor Pagamento Obra</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="vlPagamento" id="vlPagamento" class="form-control money" placeholder=""
+                value="{{conta.getVlPagtoRh() if conta}}" maxlength="20">
+              <label for="vlPagamento">Valor Pagamento RH</label>
+            </div>
+
+            <div class="form-floating mt-4">
+              <input type="text" name="vlSaldo" id="vlSaldo" class="form-control money" placeholder=""
+                value="{{conta.getVlSaldo() if conta}}" maxlength="20">
+              <label for="vlSaldo">Valor do Saldo</label>
+            </div>
+
+          </div>
         </div>
-        <div class="col-3 offset-1">
-          <button type="submit" class="btn btn-success w-100">{{ 'Atualizar' if conta else 'Criar' }}</button>
+
+
+        <div class="row mt-5 justify-content-center d-flex">
+          <div class="col-3">
+            <a href="#" id="backHistory" class="btn btn-secondary w-100">Cancelar</a>
+          </div>
+          <div class="col-3 offset-1">
+            <button type="submit" class="btn btn-success w-100">{{ 'Atualizar' if conta else 'Criar' }}</button>
+          </div>
         </div>
-      </div>
-    </form>
+      </form>
 
-  </div>
-
+    </div>
+  </main>
   {% include 'fractials/footer.html' %}
   <script>
     $(function () {
