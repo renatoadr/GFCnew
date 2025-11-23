@@ -1,4 +1,4 @@
-from app.dto.produto import produto
+from dto.produto import produto
 from utils.dbContext import MySql
 from decimal import Decimal
 from utils.logger import logger
