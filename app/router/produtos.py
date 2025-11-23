@@ -1,7 +1,7 @@
 from flask import Blueprint, request, render_template, redirect
 from controller.categoriasController import categoriasController
 from controller.produtosController import produtosController
-from utils.security import login_required
+from utils.security import login_required, login_required_api
 
 
 produtos_bp = Blueprint('produtos', __name__)
@@ -19,13 +19,12 @@ def tratar_produtos():
     pagProd = request.args.get('pagProd', 1, type=int)
     fPCat = request.args.get('spcat', None)
     fPDesc = request.args.get('spdesc', None)
-    fPGroup = request.args.get('spgroup', None)
-    produtos = prodCtrl.todos_produtos((fPCat, fPDesc, fPGroup), pagProd, 15)
+    produtos = prodCtrl.todos_produtos((fPCat, fPDesc), pagProd, 25)
 
     pagCat = request.args.get('pagCat', 1, type=int)
     filtroCat = request.args.get('scat', None)
     filtroGrp = request.args.get('sgroup', None)
-    categorias = catCtrl.todas_categorias((filtroCat, filtroGrp), pagCat, 15)
+    categorias = catCtrl.todas_categorias((filtroCat, filtroGrp), pagCat, 25)
 
     return render_template(
         "lista_produtos.html",
@@ -44,13 +43,13 @@ def tratar_produtos():
 @produtos_bp.route('/cadastrar_categoria', methods=['POST'])
 @login_required
 def cadastrar_categoria():
-    categoria_pai = request.form.get('categoria_pai')
+    cat_pai = request.form.get('categoria_pai')
     descricao = request.form.get('categoria')
     agrupador = request.form.get('agrupador')
     ativo = request.form.get('ativo') == 'Sim'
     agrupador = agrupador if agrupador != "" else None
-    categoria_pai = categoria_pai if categoria_pai != "Não Informado" else None
-    catCtrl.cadastrar_categoria(categoria_pai, descricao, agrupador, ativo)
+    cat_pai = cat_pai if cat_pai != "Não Informado" else None
+    catCtrl.cadastrar_categoria(cat_pai, descricao, agrupador, ativo)
     return redirect('/itens_produtos#cat')
 
 
@@ -66,18 +65,18 @@ def excluir_categoria():
 @login_required
 def editar_categoria():
     id = request.form.get('id')
-    categoria_pai = request.form.get('categoria_pai')
+    cat_pai = request.form.get('categoria_pai')
     descricao = request.form.get('categoria')
     agrupador = request.form.get('agrupador')
     ativo = request.form.get('ativo') == 'Sim'
     agrupador = agrupador if agrupador != "" else None
-    categoria_pai = categoria_pai if categoria_pai != "Não Informado" else None
-    catCtrl.atualizar_categoria(id, categoria_pai, descricao, agrupador, ativo)
+    cat_pai = cat_pai if cat_pai != "Não Informado" else None
+    catCtrl.atualizar_categoria(id, cat_pai, descricao, agrupador, ativo)
     return redirect('/itens_produtos#cat')
 
 
 @produtos_bp.route('/obter_dados_categoria', methods=['GET'])
-@login_required
+@login_required_api
 def obter_dados_categoria():
     id = request.args.get('id')
     categoria = catCtrl.obter_categoria_por_id(id)
@@ -94,7 +93,7 @@ def obter_dados_categoria():
 
 
 @produtos_bp.route('/obter_dados_produto', methods=['GET'])
-@login_required
+@login_required_api
 def obter_dados_produto():
     id = request.args.get('id')
     produto = prodCtrl.obter_produto_por_id(id)
@@ -105,8 +104,7 @@ def obter_dados_produto():
             "categoria_id": produto.getIdCategoria(),
             "ativo": produto.getAtivo(),
             "unidade": produto.getUnidade(),
-            "codigo": produto.getCodigo(),
-            "agrupador": produto.getAgrupador(),
+            "codigo": produto.getCodigo()
         }
     else:
         return {}
@@ -125,15 +123,13 @@ def deletar_produto():
 def editar_produto():
     id = request.args.get('id')
     descricao = request.form.get('desc_prod')
-    categoria_id = request.form.get('categoria_prod')
+    cat_id = request.form.get('categoria_prod')
     ativo = request.form.get('ativo_prod') == 'Sim'
     unidade = request.form.get('unidade_prod')
-    codigo = request.form.get('cod_prod')
-    agrupador = request.form.get('agrupador_prod')
-    agrupador = agrupador if agrupador != "" else None
-    categoria_id = categoria_id if categoria_id != "Não Informado" else None
-    prodCtrl.atualizar_produto(
-        id, categoria_id, codigo, unidade, ativo, descricao, agrupador)
+    codigo = request.form.get('cod_prod', None)
+    cat_id = cat_id if cat_id != "Não Informado" else None
+    codigo = codigo if codigo != "" else None
+    prodCtrl.atualizar_produto(id, cat_id, codigo, unidade, ativo, descricao)
     return redirect('/itens_produtos#prod')
 
 
@@ -141,13 +137,10 @@ def editar_produto():
 @login_required
 def cadastrar_produto():
     descricao = request.form.get('desc_prod')
-    categoria_id = request.form.get('categoria_prod')
+    cat_id = request.form.get('categoria_prod')
     ativo = request.form.get('ativo_prod') == 'Sim'
     unidade = request.form.get('unidade_prod')
     codigo = request.form.get('cod_prod')
-    agrupador = request.form.get('agrupador_prod')
-    agrupador = agrupador if agrupador != "" else None
-    categoria_id = categoria_id if categoria_id != "Não Informado" else None
-    prodCtrl.cadastrar_produto(
-        categoria_id, descricao, unidade, codigo, agrupador, ativo)
+    cat_id = cat_id if cat_id != "Não Informado" else None
+    prodCtrl.cadastrar_produto(cat_id, descricao, unidade, codigo, ativo)
     return redirect('/itens_produtos#prod')

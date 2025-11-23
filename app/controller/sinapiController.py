@@ -1,3 +1,4 @@
+from app.dto.produto import produto
 from utils.dbContext import MySql
 from decimal import Decimal
 from utils.logger import logger
@@ -93,3 +94,31 @@ class sinapiController:
             "vl_unitario": value_decimal(vl_unitario),
             "total": value_decimal(total)
         }
+
+    def buscar_categorias_produtos():
+        query = f"""SELECT
+                  tc.descricao AS categoria,
+                  tc2.descricao AS subcategoria,
+                  tip.codigo,
+                  tip.descricao AS produto,
+                  tip.unidade
+                FROM tb_categorias tc
+                LEFT JOIN tb_categorias tc2
+                ON tc2.id_cat_pai = tc.id
+                INNER JOIN tb_itens_produtos tip
+                ON tc2.id = tip.id_cat
+                AND tip.ativo = 1
+                WHERE tc.agrupador = 'SINAPI'
+                AND tc.ativo = 1
+                ORDER BY tc.id;"""
+        data = MySql.getAll(query)
+        produtos = []
+        for row in data:
+            produtoObj = produto()
+            produtoObj.setCategoria(row['subcategoria'])
+            produtoObj.setCategoriaPai(row['categoria'])
+            produtoObj.setCodigo(row['codigo'])
+            produtoObj.setDescricao(row['produto'])
+            produtoObj.setUnidade(row['unidade'])
+            produtos.append(produtoObj)
+        return produtos

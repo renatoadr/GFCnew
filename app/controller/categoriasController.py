@@ -113,9 +113,7 @@ class categoriasController:
 
     def listar_agrupadores(self):
         query = f"""SELECT DISTINCT agrupador
-          FROM {MySql.DB_NAME}.tb_categorias
-          WHERE agrupador IS NOT NULL
-          ORDER BY agrupador;"""
+          FROM {MySql.DB_NAME}.tb_categorias;"""
         data = MySql.getAll(query)
         agrupadores = [row['agrupador'] for row in data]
         return agrupadores

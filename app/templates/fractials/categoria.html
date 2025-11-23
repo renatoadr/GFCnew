@@ -1,6 +1,6 @@
 <div class="row mt-3">
   <div class="col-12 d-flex justify-content-end">
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalCriarCategoria">
+    <button type="button" class="btn btn-primary" data-bs-toggle="offcanvas" data-bs-target="#drawerCriarCategoria">
       <i class="fa-solid fa-plus"></i>
       Nova Categoria
     </button>
@@ -89,62 +89,65 @@
 </nav>
 {% endif %}
 
-<div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" id="modalCriarCategoria">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Nova Categoria</h5>
-      </div>
-      <form action="cadastrar_categoria" method="post" name="cad_categoria">
-        <input type="hidden" name="id" value="">
-        <div class="modal-body">
-          <div class="row">
-            <div class="col-12 mb-3">
-              <label for="categoria_pai" class="form-label">Categoria Pai</label>
-              <select class="form-select form-select-sm" id="categoria_pai" name="categoria_pai">
-                <option>Não Informado</option>
-                {% for catpai in cats_pai %}
-                <option value="{{ catpai.getId() }}">{{ catpai.getDescricao() }}</option>
-                {% endfor %}
-              </select>
+<div class="offcanvas offcanvas-end w-50" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+  id="drawerCriarCategoria">
+  <div class="offcanvas-header bg-body-secondary">
+    <h5 class="offcanvas-title">Nova Categoria</h5>
+  </div>
+  <div class="offcanvas-body">
+    <form action="cadastrar_categoria" method="post" name="cad_categoria">
+      <input type="hidden" name="id" value="">
+      <div class="modal-body">
+        <div class="row">
+          <div class="col-12 mb-3">
+            <label for="categoria_pai" class="form-label">Categoria Pai</label>
+            <select class="form-select form-select-sm" id="categoria_pai" name="categoria_pai">
+              <option>Não Informado</option>
+              {% for catpai in cats_pai %}
+              <option value="{{ catpai.getId() }}">{{ catpai.getDescricao() }}</option>
+              {% endfor %}
+            </select>
+          </div>
+          <div class="col-12 mb-3">
+            <label for="categoria" class="form-label">Categoria</label>
+            <input type="text" class="form-control" id="categoria" name="categoria" required>
+          </div>
+          <div class="col-12 mb-3">
+            <label class="form-label d-block">Ativo</label>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ativo" id="ativo_sim" value="Sim" checked>
+              <label class="form-check-label" for="ativo_sim">Sim</label>
             </div>
-            <div class="col-12 mb-3">
-              <label for="categoria" class="form-label">Categoria</label>
-              <input type="text" class="form-control" id="categoria" name="categoria" required>
+            <div class="form-check form-check-inline">
+              <input class="form-check-input" type="radio" name="ativo" id="ativo_nao" value="Não">
+              <label class="form-check-label" for="ativo_nao">Não</label>
             </div>
-            <div class="col-12 mb-3">
-              <label class="form-label d-block">Ativo</label>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="ativo" id="ativo_sim" value="Sim" checked>
-                <label class="form-check-label" for="ativo_sim">Sim</label>
-              </div>
-              <div class="form-check form-check-inline">
-                <input class="form-check-input" type="radio" name="ativo" id="ativo_nao" value="Não">
-                <label class="form-check-label" for="ativo_nao">Não</label>
-              </div>
+          </div>
+          <div class="col-12 mb-3">
+            <div class="box-agrupadores">
+              <label for="agrupador" class="form-label">Agrupador</label>
+              <input type="text" class="form-control" id="agrupador" name="agrupador">
             </div>
-            <div class="col-12 mb-3">
-              <div class="box-agrupadores">
-                <label for="agrupador" class="form-label">Agrupador</label>
-                <input type="text" class="form-control" id="agrupador" name="agrupador">
-              </div>
-            </div>
-            <div class="col-12">
-              <p class="m-0"><small>Agrupadores existentes:</small></p>
-              <div class="agrupadores-lista">
-                {% for agrupador in agrupadores %}
-                <p class="badge bg-secondary">{{ agrupador }}</p>
-                {% endfor %}
-              </div>
+          </div>
+          <div class="col-12">
+            <p class="m-0"><small>Agrupadores existentes:</small></p>
+            <div class="agrupadores-lista">
+              {% for agrupador in agrupadores %}
+              <p class="badge bg-secondary">{{ agrupador }}</p>
+              {% endfor %}
             </div>
           </div>
         </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-          <button type="submit" class="btn btn-success">Salvar</button>
+      </div>
+      <div class="row mt-3 justify-content-center d-flex border border-1 border-top border-bottom-0 border-0 pt-4">
+        <div class="col-5">
+          <button type="button" class="btn w-100 btn-secondary" data-bs-dismiss="offcanvas">Cancelar</button>
         </div>
-      </form>
-    </div>
+        <div class="col-5">
+          <button type="submit" class="btn w-100 btn-success">Salvar</button>
+        </div>
+      </div>
+    </form>
   </div>
 </div>
 
@@ -158,10 +161,10 @@
       }
     });
 
-    document.addEventListener('hide.bs.modal', function (event) {
-      if (event.target.id === 'modalCriarCategoria') {
+    document.addEventListener('hide.bs.offcanvas', function (event) {
+      if (event.target.id === 'drawerCriarCategoria') {
         document.cad_categoria.ativo.value = 'Sim';
-        document.querySelector('#modalCriarCategoria .modal-title').textContent = 'Nova Categoria';
+        document.querySelector('#drawerCriarCategoria .offcanvas-title').textContent = 'Nova Categoria';
         document.cad_categoria.categoria_pai.value = 'Não Informado';
         document.cad_categoria.categoria.value = '';
         document.cad_categoria.agrupador.value = '';
@@ -179,8 +182,8 @@
         fetch(`/obter_dados_categoria?id=${categoriaId}`)
           .then(response => response.json())
           .then(data => {
-            const modal = new bootstrap.Modal(document.getElementById('modalCriarCategoria'));
-            document.querySelector('#modalCriarCategoria .modal-title').textContent = 'Editar Categoria';
+            const modal = new bootstrap.Offcanvas(document.getElementById('drawerCriarCategoria'));
+            document.querySelector('#drawerCriarCategoria .offcanvas-title').textContent = 'Editar Categoria';
             document.cad_categoria.categoria_pai.value = data.categoria_pai || 'Não Informado';
             document.cad_categoria.categoria.value = data.descricao;
             document.cad_categoria.ativo.value = data.ativo ? 'Sim' : 'Não';

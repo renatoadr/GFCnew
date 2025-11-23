@@ -18,8 +18,7 @@ class produtosController:
           p.codigo,
           p.unidade,
           p.ativo,
-          p.descricao,
-          p.agrupador
+          p.descricao
         FROM {MySql.DB_NAME}.tb_itens_produtos p
         JOIN {MySql.DB_NAME}.tb_categorias c
         ON p.id_cat = c.id """
@@ -36,10 +35,6 @@ class produtosController:
         if filtros[1] is not None and filtros[1] != "":
             where_clauses.append("lower(p.descricao) REGEXP lower(%s)")
             params.append(filtros[1])
-
-        if filtros[2] is not None and filtros[2] != "":
-            where_clauses.append("lower(p.agrupador) REGEXP lower(%s)")
-            params.append(filtros[2])
 
         if where_clauses:
             query += " WHERE " + " AND ".join(where_clauses)
@@ -68,39 +63,8 @@ class produtosController:
             prod.setUnidade(row['unidade'])
             prod.setAtivo(row['ativo'])
             prod.setDescricao(row['descricao'])
-            prod.setAgrupador(row['agrupador'])
             produtos.append(prod)
         return (produtos, total_paginas)
-
-    def produtos_filtrados(self, filtro):
-        query = f"""SELECT
-          p.id,
-          p.id_cat,
-          c.descricao AS categoria,
-          p.codigo,
-          p.unidade,
-          p.ativo,
-          p.descricao,
-          p.agrupador
-        FROM {MySql.DB_NAME}.tb_itens_produtos p
-        JOIN {MySql.DB_NAME}.tb_categorias c
-        ON p.id_cat = c.id
-        WHERE lower(p.descricao) REGEXP lower(%s)
-        ORDER BY p.id;"""
-        data = MySql.getAll(query, (filtro,))
-        produtos = []
-        for row in data:
-            prod = produto()
-            prod.setId(row['id'])
-            prod.setIdCategoria(row['id_cat'])
-            prod.setCategoria(row['categoria'])
-            prod.setCodigo(row['codigo'])
-            prod.setUnidade(row['unidade'])
-            prod.setAtivo(row['ativo'])
-            prod.setDescricao(row['descricao'])
-            prod.setAgrupador(row['agrupador'])
-            produtos.append(prod)
-        return produtos
 
     def obter_produto_por_id(self, id):
         query = f"""SELECT
@@ -110,8 +74,7 @@ class produtosController:
           p.codigo,
           p.unidade,
           p.ativo,
-          p.descricao,
-          p.agrupador
+          p.descricao
         FROM {MySql.DB_NAME}.tb_itens_produtos p
         JOIN {MySql.DB_NAME}.tb_categorias c
         ON p.id_cat = c.id
@@ -126,7 +89,6 @@ class produtosController:
             prod.setUnidade(row['unidade'])
             prod.setAtivo(row['ativo'])
             prod.setDescricao(row['descricao'])
-            prod.setAgrupador(row['agrupador'])
             return prod
         else:
             return None
@@ -136,26 +98,23 @@ class produtosController:
         MySql.exec(query, (id,))
         logger.info(f"Produto com ID {id} deletado com sucesso.")
 
-    def atualizar_produto(self, id, id_cat, codigo, unidade, ativo, descricao, agrupador):
+    def atualizar_produto(self, id, id_cat, codigo, unidade, ativo, descricao):
         query = f"""UPDATE {MySql.DB_NAME}.tb_itens_produtos
           SET id_cat = %s,
               descricao = %s,
               unidade = %s,
               codigo = %s,
-              agrupador = %s,
               ativo = %s
           WHERE id = %s;"""
-        MySql.exec(query, (id_cat, descricao, unidade,
-                           codigo, agrupador, ativo, id))
+        MySql.exec(query, (id_cat, descricao, unidade, codigo, ativo, id))
         logger.info(f"Produto com ID {id} atualizado com sucesso.")
 
-    def cadastrar_produto(self, id_cat, descricao, unidade, codigo, agrupador, ativo):
+    def cadastrar_produto(self, id_cat, descricao, unidade, codigo, ativo):
         try:
             query = f"""INSERT INTO {MySql.DB_NAME}.tb_itens_produtos
-              (id_cat, descricao, unidade, codigo, agrupador, ativo)
-              VALUES (%s, %s, %s, %s, %s, %s);"""
-            MySql.exec(query, (id_cat, descricao,
-                               unidade, codigo, agrupador, ativo))
+              (id_cat, descricao, unidade, codigo, ativo)
+              VALUES (%s, %s, %s, %s, %s);"""
+            MySql.exec(query, (id_cat, descricao, unidade, codigo, ativo))
             logger.info(f"Produto '{descricao}' cadastrado com sucesso.")
         except Exception as e:
             logger.error(

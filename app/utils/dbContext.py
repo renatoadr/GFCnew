@@ -14,7 +14,8 @@ class MySql:
             connection = m.connect(
                 host=os.getenv('DB_HOST'),
                 user=os.getenv('DB_USER'),
-                password=MySql.getSenha()
+                password=MySql.getSenha(),
+                database=MySql.DB_NAME
             )
 
             if connection.is_connected():

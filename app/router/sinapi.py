@@ -21,6 +21,7 @@ import openpyxl
 import random
 import re
 import os
+from helpers.GerardorPlanilhaSinapi import GerardorPlanilhaSinapi
 
 sinapi_bp = Blueprint('sinapi', __name__)
 
@@ -242,6 +243,31 @@ def upload_orcamento_sinapi():
         flash_message.success(
             'Processamento concluído! Faça o download do arquivo na lista abaixo.')
     return redirect(url_for('sinapi.sinapi_orcamentos'))
+
+
+@sinapi_bp.route('/gerar_planilha_base_sinapi')
+@login_required
+def gerar_planilha_base_sinapi():
+    try:
+        prods = sinapiController.buscar_categorias_produtos()
+        file = os.path.join(
+            __file__.replace('sinapi.py', ''),
+            '..',
+            'static',
+            'planilha_base_orcamento_sinapi.xlsx'
+        )
+        gerador = GerardorPlanilhaSinapi(file, prods)
+        gerador.gerar_planilha_base_sinapi()
+        return send_file(
+            gerador.get_stream(),
+            as_attachment=True,
+            download_name='planilha_base_orcamento_sinapi.xlsx',
+            mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        )
+    except Exception as e:
+        logger.error('Erro ao gerar planilha base de orçamento SINAPI', e)
+        flash_message.error('Erro ao gerar planilha base de orçamento SINAPI')
+        return redirect(url_for('sinapi.sinapi_orcamentos'))
 
 
 def processarPlanilha(file):

@@ -6,8 +6,8 @@ class produto:
     __unidade__ = ""
     __ativo__ = False
     __descricao__ = ""
-    __agrupador__ = ""
     __categoria__ = ""
+    __categoria_pai__ = ""
 
     def getId(self):
         return self.__id__
@@ -26,6 +26,12 @@ class produto:
 
     def setCategoria(self, categoria):
         self.__categoria__ = categoria
+
+    def getCategoriaPai(self):
+        return self.__categoria_pai__
+
+    def setCategoriaPai(self, categoria_pai):
+        self.__categoria_pai__ = categoria_pai
 
     def getCodigo(self):
         return self.__codigo__
@@ -50,9 +56,3 @@ class produto:
 
     def setDescricao(self, descricao):
         self.__descricao__ = descricao
-
-    def getAgrupador(self):
-        return self.__agrupador__
-
-    def setAgrupador(self, agrupador):
-        self.__agrupador__ = agrupador

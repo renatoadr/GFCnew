@@ -7,11 +7,11 @@ from datetime import datetime, timedelta
 
 def login_required_api(fn):
     @wraps(fn)
-    def validate_login(*args, **kwargs):
+    def validate_login_api(*args, **kwargs):
         if not has_user_logged():
-            return jsonify({'status': 401, 'message': 'Usuário não está logado'})
+            return jsonify({'status': 401, 'message': 'Usuário não está logado'}), 401
         return fn(*args, **kwargs)
-    return validate_login
+    return validate_login_api
 
 
 def login_required(fn):
