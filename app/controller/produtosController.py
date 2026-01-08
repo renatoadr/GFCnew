@@ -117,5 +117,5 @@ class produtosController:
             MySql.exec(query, (id_cat, descricao, unidade, codigo, ativo))
             logger.info(f"Produto '{descricao}' cadastrado com sucesso.")
         except Exception as e:
-            logger.error(
+            logger.exception(
                 f"Erro ao cadastrar produto '{descricao}': {str(e)}")

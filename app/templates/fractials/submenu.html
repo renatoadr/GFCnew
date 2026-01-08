@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand bg-body-secondary" id="submenu-home">
   <div class="container">
-    <ul class="navbar-nav">
+    <ul class="navbar-nav w-100">
       <li class="nav-item">
         <a href="/home" class="nav-link p-3"><i class="fa-solid fa-building"></i>
           Empreendimentos</a>
@@ -26,8 +26,17 @@
       </li>
       {% endif %}
       <li class="nav-item">
-        <a href="/itens_produtos" class="nav-link  p-3"><i class="fa-solid fa-clipboard-list"></i>
-          Itens e Produtos</a>
+        <a href="/itens_produtos" class="nav-link  p-3">
+          <i class="fa-solid fa-clipboard-list"></i>
+          Itens e Produtos
+        </a>
+      </li>
+
+      <li class="nav-item ms-auto">
+        <button id="sync_elonet" class="btn btn-info mt-2">
+          <i class="fa-solid fa-group-arrows-rotate"></i>
+          Sincronizar com Elonet
+        </button>
       </li>
     </ul>
   </div>

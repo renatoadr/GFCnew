@@ -21,7 +21,7 @@ class MySql:
             if connection.is_connected():
                 return connection
         except Exception as e:
-            logger.error('Erro ao conectar com o banco: ', e)
+            logger.exception('Erro ao conectar com o banco: ', e)
             return None
 
     def getConn(self):
@@ -43,7 +43,7 @@ class MySql:
                 self.__cursor__ = None
                 self.__conn__ = None
         except Exception as error:
-            logger.error("Error in close connection ", error)
+            logger.exception("Error in close connection ", error)
 
     @staticmethod
     def getSenha():
@@ -71,7 +71,7 @@ class MySql:
             cursor.execute(query, args)
             ret = cursor.fetchone()
         except Exception as error:
-            logger.error("Erro ao realizar o fetchone", error)
+            logger.exception("Erro ao realizar o fetchone", error)
         finally:
             db.dbClose()
         return ret
@@ -85,7 +85,7 @@ class MySql:
             cursor.execute(query, args)
             ret = cursor.fetchall()
         except Exception as error:
-            logger.error("Erro ao realizar o fetchall", error)
+            logger.exception("Erro ao realizar o fetchall", error)
         finally:
             conn.dbClose()
         return ret
@@ -98,7 +98,7 @@ class MySql:
             conn.getConn().commit()
             return True
         except Exception as error:
-            logger.error("Erro ao realizar o execute", error)
+            logger.exception("Erro ao realizar o execute", error)
         finally:
             conn.dbClose()
         return False
@@ -111,7 +111,7 @@ class MySql:
             conn.getConn().commit()
             return True
         except Exception as error:
-            logger.error("Erro ao realizar o executemany", error)
+            logger.exception("Erro ao realizar o executemany", error)
         finally:
             conn.dbClose()
         return False

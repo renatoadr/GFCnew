@@ -16,3 +16,4 @@ data_db
 db_password.txt
 *.pem
 certs
+logs

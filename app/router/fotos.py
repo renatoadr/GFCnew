@@ -32,7 +32,7 @@ camposCapa = (
     ('Foto Atual', 'fotoAtual', 'foto_atual'),
     ('Evolução 3D', 'evolucao3D', 'evolucao_3D'),
     ('Elétrica 3D', 'eletrica3D', 'eletrica_3D'),
-    ('Hidráulica 3D', 'hidraulica3D', 'hidraulica_3D')   
+    ('Hidráulica 3D', 'hidraulica3D', 'hidraulica_3D')
 )
 
 
@@ -221,7 +221,7 @@ def saveFile(file: ImageFile, path, nameFile):
         else:
             return False
     except Exception as error:
-        logger.error('Erro ao salvar a imagem: %s', error)
+        logger.exception('Erro ao salvar a imagem: %s', error)
         return False
 
 

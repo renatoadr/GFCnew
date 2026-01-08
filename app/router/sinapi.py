@@ -143,7 +143,7 @@ def get_sinapi_planilha(vigencia, excel_nome, dados):
             excel_nome = f"SINAPI_Referência_{vigencia.strftime('%Y_%m')}.xlsx"
             get_sinapi_planilha(vigencia, excel_nome, dados)
         else:
-            logger.error('Erro ao obter a planilha da SINAPI', err)
+            logger.exception('Erro ao obter a planilha da SINAPI', err)
             flash_message.error(
                 "Não foi possível obter os dados da SINAPI. Tente novamente mais tarde")
 
@@ -265,7 +265,7 @@ def gerar_planilha_base_sinapi():
             mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
         )
     except Exception as e:
-        logger.error('Erro ao gerar planilha base de orçamento SINAPI', e)
+        logger.exception('Erro ao gerar planilha base de orçamento SINAPI', e)
         flash_message.error('Erro ao gerar planilha base de orçamento SINAPI')
         return redirect(url_for('sinapi.sinapi_orcamentos'))
 

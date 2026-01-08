@@ -215,6 +215,100 @@
     </div>
   </main>
   {% include 'fractials/footer.html' %}
+  <script>
+    let attempt = 0;
+    let init = true
+    $(document).ready(function () {
+      function toogleLoading(show) {
+        if (show) {
+          $('#loading').css('display', 'flex');
+          $('body').css('overflow', 'hidden');
+        } else {
+          $('#loading').css('display', 'none');
+          $('body').css('overflow', 'auto');
+        }
+      }
+
+      function poolingSyncElonet() {
+        $.ajax({
+          url: '/status_sync_elonet',
+          method: 'GET',
+          success: function (response) {
+            const data = JSON.parse(response);
+            if (data.in_progress) {
+              let message = '';
+              toogleLoading(true);
+              if (data.main_task_message) {
+                message += data.main_task_message + '<br>';
+              }
+              if (data.sub_task_message) {
+                message += data.sub_task_message;
+              }
+              $('#loading-text').html(message);
+              setTimeout(poolingSyncElonet, 1000);
+            } else if (data.error && !init) {
+              toogleLoading(false);
+              $.toast({
+                heading: '<strong>Falha no processamento</strong>',
+                text: data.error,
+                icon: 'error',
+                position: 'bottom-center',
+                hideAfter: 10000,
+              });
+            } else if (!init) {
+              toogleLoading(false);
+              $.toast({
+                heading: '<strong>Sincronização Concluída</strong>',
+                text: "A sincronização com Elonet foi concluída com sucesso.",
+                icon: 'success',
+                position: 'bottom-center',
+                hideAfter: 10000,
+              });
+            }
+            init = false;
+          },
+          error: function (error) {
+            if (attempt < 5) {
+              attempt++;
+              setTimeout(poolingSyncElonet, 3000);
+            }
+          }
+        });
+      }
+
+      $('#sync_elonet').click(function (e) {
+        e.preventDefault();
+        init = false;
+        toogleLoading(true);
+        $('#loading-text').text('');
+        $.ajax({
+          url: '/sincronizar_elonet',
+          method: 'GET',
+          success: function (response) {
+            const data = JSON.parse(response);
+            $('#loading-text').text(data.message);
+            poolingSyncElonet();
+          },
+          error: function (error) {
+            if (error.status === 401) {
+              window.location.href = '/';
+              return;
+            }
+            toogleLoading(false);
+            $.toast({
+              heading: '<strong>Falha no processamento</strong>',
+              text: "Não foi possível iniciar a sincronização com Elonet. Tente novamente mais tarde.",
+              icon: 'error',
+              position: 'bottom-center',
+              hideAfter: 10000,
+            });
+          }
+        });
+      });
+
+      poolingSyncElonet();
+    });
+  </script>
 </body>
 
 </html>

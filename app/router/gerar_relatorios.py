@@ -192,7 +192,7 @@ def tab_situacao_inter(mes, ano):
     try:
         gerar_tab_situacao_inter(IdEmpreend().get(), mes, ano)
     except Exception as error:
-        logger.error(
+        logger.exception(
             'Erro ao gerar a tabela de situação do inter', error)
         flash_message.error('Erro ao gerar a tabela de situação do Inter')
 
@@ -201,7 +201,7 @@ def tab_seguranca_inter(mes, ano):
     try:
         gerar_tab_seguranca_inter(IdEmpreend().get(), mes, ano)
     except Exception as error:
-        logger.error(
+        logger.exception(
             'Erro ao gerar a tabela de segurança do inter', error)
         flash_message.error('Erro ao gerar a tabela de segurança do Inter')
 
@@ -210,7 +210,7 @@ def tab_qualidade_inter(mes, ano):
     try:
         gerar_tab_qualidade_inter(IdEmpreend().get(), mes, ano)
     except Exception as error:
-        logger.error(
+        logger.exception(
             'Erro ao gerar a tabela de qualidade do inter', error)
         flash_message.error('Erro ao gerar a tabela de qualidade do Inter')
 
@@ -219,7 +219,7 @@ def tab_projeto_inter(mes, ano):
     try:
         gerar_tab_projeto_inter(IdEmpreend().get(), mes, ano)
     except Exception as error:
-        logger.error(
+        logger.exception(
             'Erro ao gerar a tabela de projeto do inter', error)
         flash_message.error('Erro ao gerar a tabela de projeto do Inter')
 
@@ -228,7 +228,7 @@ def tab_prazo_inter(mes, ano):
     try:
         gerar_tab_prazo_inter(IdEmpreend().get(), mes, ano, 77)
     except Exception as error:
-        logger.error(
+        logger.exception(
             'Erro ao gerar a tabela de prazos do inter', error)
         flash_message.error('Erro ao gerar a tabela de prazos do Inter')
 
@@ -245,7 +245,7 @@ def graf_orcamento_liberacao_valor(mes, ano):
             flash_message.warning(
                 'Não há dados para gerar o gráfico de orçamento de liberação de valor')
     except Exception as error:
-        logger.error(
+        logger.exception(
             'Erro ao gerar o gráfico de orçamento de liberação de valor', error)
         flash_message.error(
             'Erro ao gerar o gráfico de orçamento de liberação de valor')
@@ -262,7 +262,7 @@ def tab_conta_corrente(mes, ano):
             flash_message.warning(
                 'Não há dados para gerar a tabela de contas corrente')
     except Exception as error:
-        logger.error(
+        logger.exception(
             'Erro ao gerar a tabela de contas correntes', error)
         flash_message.error('Erro ao gerar a tabela de contas correntes')
 
@@ -277,7 +277,7 @@ def tab_notas(mes, ano):
         else:
             flash_message.warning('Não há dados para gerar a tabela de notas')
     except Exception as error:
-        logger.error(
+        logger.exception(
             'Erro ao gerar a tabela de notas', error)
         flash_message.error('Erro ao gerar a tabela de notas')
 
@@ -294,7 +294,7 @@ def tab_orcamento_liberacao(mes, ano):
             flash_message.warning(
                 'Não há dados para gerar a tabela de orçamento liberação')
     except Exception as error:
-        logger.error(
+        logger.exception(
             'Erro ao gerar a tabela de orçamento liberação', error)
         flash_message.error('Erro ao gerar a tabela de orçamento liberação')
 
@@ -314,7 +314,7 @@ def tab_acomp_financeiro(mes, ano):
         else:
             flash('Não há dados para gerar a tabela de acompanhamento financeiro')
     except Exception as error:
-        logger.error(
+        logger.exception(
             'Erro ao gerar tabela de acompanhamento financeiro', error)
         flash_message.error(
             'Erro ao gerar tabela de acompanhamento financeiro')
@@ -327,7 +327,8 @@ def graf_indices_garantia_I(mes, ano, mesInit, anoInit, mesFinal, anoFinal):
             flash_message.warning(
                 'Não foram encontrados dados para gerar o gráfico de índices de garantias I')
     except Exception as error:
-        logger.error('Erro ao gerar gráfico de índices de garantia I', error)
+        logger.exception(
+            'Erro ao gerar gráfico de índices de garantia I', error)
         flash_message.error('Erro ao gerar gráfico de índices de garantia I')
 
 
@@ -338,7 +339,8 @@ def graf_indices_garantia_II(mes, ano, mesInit, anoInit, mesFinal, anoFinal):
             flash_message.warning(
                 'Não foram encontrados dados para gerar o gráfico de índices de garantias II')
     except Exception as error:
-        logger.error('Erro ao gerar gráfico de índices de garantia II', error)
+        logger.exception(
+            'Erro ao gerar gráfico de índices de garantia II', error)
         flash_message.error('Erro ao gerar gráfico de índices de garantia II')
 
 
@@ -349,7 +351,7 @@ def graf_progresso_obra(mes, ano, mesInit, anoInit, mesFinal, anoFinal):
             flash_message.warning(
                 'Não foram encontrados dados para gerar o gráfico de progresso da obra')
     except Exception as error:
-        logger.error('Erro ao gerar gráfico do progresso da obra', error)
+        logger.exception('Erro ao gerar gráfico do progresso da obra', error)
         flash_message.error('Erro ao gerar gráfico do progresso da obra')
 
 
@@ -363,7 +365,7 @@ def tab_medicoes(mes, ano, mesInit, anoInit, mesFinal, anoFinal):
             flash_message.warning(
                 'Não foram encontrados dados para gerar a tabela de medições')
     except Exception as error:
-        logger.error('Erro a tabela de medições', error)
+        logger.exception('Erro a tabela de medições', error)
         flash_message.error('Erro a tabela de medições')
 
 
@@ -373,7 +375,7 @@ def graf_chaves_perc(mes, ano):
             flash_message.warning(
                 'Não foram encontrados dados para gerar o gráfico de chaves ')
     except Exception as error:
-        logger.error('Erro ao gerar o gráfico de chaves (%)', error)
+        logger.exception('Erro ao gerar o gráfico de chaves (%)', error)
         flash_message.error('Erro ao gerar o gráfico de chaves (%)')
 
 
@@ -383,7 +385,7 @@ def graf_chaves_valor(mes, ano):
             flash_message.warning(
                 'Não foram encontrados dados para gerar o gráfico de chaves (R$)')
     except Exception as error:
-        logger.error('Erro ao gerar o gráfico de chaves (R$)', error)
+        logger.exception('Erro ao gerar o gráfico de chaves (R$)', error)
         flash_message.error('Erro ao gerar o gráfico de chaves (R$)')
 
 
@@ -393,7 +395,7 @@ def graf_vendas_perc(mes, ano):
             flash_message.warning(
                 'Não foram encontrados dados para gerar o gráfico de vendas (%)')
     except Exception as error:
-        logger.error('Erro ao gerar o gráfico de vendas (%)', error)
+        logger.exception('Erro ao gerar o gráfico de vendas (%)', error)
         flash_message.error('Erro ao gerar o gráfico de vendas (%)')
 
 
@@ -403,7 +405,7 @@ def graf_vendas_valor(mes, ano):
             flash_message.warning(
                 'Não foram encontrados dados para gerar o gráfico de vendas (R$)')
     except Exception as error:
-        logger.error('Erro ao gerar o gráfico de vendas (R$)', error)
+        logger.exception('Erro ao gerar o gráfico de vendas (R$)', error)
         flash_message.error('Erro ao gerar o gráfico de vendas (R$)')
 
 
@@ -413,7 +415,7 @@ def tab_certidoes(mes, ano):
             flash_message.warning(
                 'Não foram encontrados dados para gerar a tabela de certidões')
     except Exception as error:
-        logger.error(
+        logger.exception(
             'Erro ao gerar a tabela de certidões', error)
         flash_message.error('Erro ao gerar a tabela de certidões')
 
@@ -424,7 +426,7 @@ def tab_garantias_geral(mes, ano):
             flash_message.warning(
                 'Não foram encontrados dados para gerar a tabela de garantias gerais')
     except Exception as error:
-        logger.error(
+        logger.exception(
             'Erro ao gerar a tabela de garantias gerais', error)
         flash_message.error('Erro ao gerar a tabela de garantias gerais')
 
@@ -435,7 +437,7 @@ def tab_garantias_obra(mes, ano):
             flash_message.warning(
                 'Não foram encontrados dados para gerar a tabela de garantias de obra')
     except Exception as error:
-        logger.error(
+        logger.exception(
             'Erro ao gerar a tabela de garantias da obra', error)
         flash_message.error('Erro ao gerar a tabela de garantias da obra')
 

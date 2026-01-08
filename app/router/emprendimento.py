@@ -1,17 +1,30 @@
-import datetime
 from flask import Blueprint, request, render_template, redirect
+import datetime
+
 from controller.empreendimentoController import empreendimentoController
-from utils.security import login_required
-from dto.empreendimento import empreendimento
-import utils.converter as converter
 from controller.bancoController import bancoController
+from dto.empreendimento import empreendimento
 from utils.security import get_user_logged
+from utils.security import login_required, login_required_api
 from utils.CtrlSessao import Vigencia
+from utils.logger import logger
+import utils.converter as converter
+import json
+import threading
+from core.sync_elonet.run_sync_elonet import RunSyncElonet
+from main import app
 
 emprendimento_bp = Blueprint('empreendimentos', __name__)
 
 ctrlBanco = bancoController()
 empc = empreendimentoController()
+
+msg_sync_elonet: dict = {
+    "main_task_message": None,
+    "sub_task_message": None,
+    "error": None,
+    "in_progress": False
+}
 
 
 @emprendimento_bp.route('/alterar_vigencia', methods=['POST'])
@@ -125,3 +138,47 @@ def salvar_empreend():
 
     empc.salvarEmpreendimento(empreend)
     return redirect("/home")
+
+
+@emprendimento_bp.route('/sincronizar_elonet')
+@login_required_api
+def sincronizar_elonet():
+    global msg_sync_elonet
+    msg_sync_elonet = {
+        "main_task_message": None,
+        "sub_task_message": None,
+        "error": None,
+        "in_progress": True
+    }
+    t = threading.Thread(target=worker_sync_elonet)
+    t.start()
+    return json.dumps({"message": "Sincronização com Elonet iniciada..."})
+
+
+@emprendimento_bp.route('/status_sync_elonet')
+def status_sync_elonet():
+    return json.dumps(msg_sync_elonet)
+
+
+def worker_sync_elonet():
+    global msg_sync_elonet
+    try:
+        with app.app_context():
+            runner = RunSyncElonet()
+            for message in runner.start():
+                msg_sync_elonet = message
+                logger.info(f'Status Sync Elonet: {msg_sync_elonet}')
+            msg_sync_elonet = {
+                "main_task_message": None,
+                "sub_task_message": None,
+                "error": None,
+                "in_progress": False
+            }
+    except Exception as e:
+        logger.exception(f'Erro durante a sincronização Elonet: {e}')
+        msg_sync_elonet = {
+            "main_task_message": None,
+            "sub_task_message": None,
+            "error": "Ocorreu um erro durante a sincronização. Por favor, tente novamente mais tarde.",
+            "in_progress": False
+        }

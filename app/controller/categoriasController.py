@@ -98,7 +98,7 @@ class categoriasController:
             logger.info(
                 f"Categoria '{descricao}' cadastrada com sucesso.")
         except Exception as e:
-            logger.error(
+            logger.exception(
                 f"Erro ao cadastrar categoria '{descricao}': {str(e)}")
 
     def deletar_categoria(self, id):
@@ -108,7 +108,7 @@ class categoriasController:
             MySql.exec(query, (id,))
             logger.info(f"Categoria ID '{id}' deletada com sucesso.")
         except Exception as e:
-            logger.error(
+            logger.exception(
                 f"Erro ao deletar categoria ID '{id}': {str(e)}")
 
     def listar_agrupadores(self):
@@ -131,7 +131,7 @@ class categoriasController:
             logger.info(
                 f"Categoria ID '{id}' atualizada com sucesso.")
         except Exception as e:
-            logger.error(
+            logger.exception(
                 f"Erro ao atualizar categoria ID '{id}': {str(e)}")
 
     def obter_categoria_por_id(self, id):

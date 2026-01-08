@@ -17,32 +17,53 @@
   <main>
     <div class="container">
       <div class="row">
-        <div class="col-4 offset-4 mt-5 bg-white p-4 rounded-2 shadow">
-          <img src="../static/imgs/logo-gfc.png" class="w-50 m-auto d-block mb-3" alt="Logo GFC">
-          <p class="text-center">Informe os dados para acessar o sistema</p>
-          <form action="/login" method="POST" id="loginForm">
-            <div class="row mt-3">
-              <div class="col-12">
-                <div class="form-floating">
-                  <input type="email" name="email" id="emailIpt" class="form-control" placeholder="">
-                  <label for="emailIpt">Email</label>
+        <div class="col-4 bg-white p-4 rounded-2 shadow" id="login_box">
+          <div id="hub">
+            <p>Selecione o sistema que deseja acessar</p>
+            <div class="row">
+              <div class="col-4">
+                <a href="#" class="link" id="link-laudo">
+                  <i class="fa-solid fa-newspaper"></i>
+                  <p>Laudos</p>
+                </a>
+              </div>
+              <div class="col-6 offset-2">
+                <a href="https://service.elonethabitacao.com.br/SIAR/site/login" class="link">
+                  <i class="fa-solid fa-address-book"></i>
+                  <p>Gestão de carteira</p>
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <div id="form" style="display: none;">
+            <img src="../static/imgs/logo-gfc.png" class="w-50 m-auto d-block mb-3" alt="Logo GFC">
+            <p class="text-center">Informe os dados para acessar o sistema</p>
+            <form action="/login" method="POST" id="loginForm">
+              <div class="row mt-3">
+                <div class="col-12">
+                  <div class="form-floating">
+                    <input type="email" name="email" id="emailIpt" class="form-control" placeholder="">
+                    <label for="emailIpt">Email</label>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="row mt-3">
-              <div class="col-12">
-                <div class="form-floating">
-                  <input type="password" name="senha" id="senhaIpt" class="form-control" placeholder="">
-                  <label for="senhaIpt">Senha</label>
+              <div class="row mt-3">
+                <div class="col-12">
+                  <div class="form-floating">
+                    <input type="password" name="senha" id="senhaIpt" class="form-control" placeholder="">
+                    <label for="senhaIpt">Senha</label>
+                  </div>
                 </div>
               </div>
-            </div>
-            <div class="row mt-3">
-              <div class="col-12">
-                <button type="submit" class="btn btn-primary w-100">Acessar</button>
+              <div class="row mt-3">
+                <div class="col-12">
+                  <button type="submit" class="btn btn-primary w-100">Acessar</button>
+                </div>
               </div>
-            </div>
-          </form>
+            </form>
+          </div>
+
         </div>
       </div>
 
@@ -52,6 +73,11 @@
   {% include 'fractials/footer.html' %}
   <script>
     $(function () {
+      $("#link-laudo").click(function (e) {
+        e.preventDefault();
+        $("#hub").hide('fast');
+        $("#form").show('fast');
+      });
       $("#loginForm").validate({
         rules: {
           email: {

@@ -89,7 +89,7 @@ class sinapiController:
                 vl_unitario += temp_calc
                 total += temp_calc * quant
             except Exception as e:
-                logger.error(e)
+                logger.exception(e)
         return {
             "vl_unitario": value_decimal(vl_unitario),
             "total": value_decimal(total)

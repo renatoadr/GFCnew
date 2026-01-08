@@ -369,7 +369,7 @@ main.main-entry {
 
 #loading #loading-content {
   width: 350px;
-  height: 100px;
+  height: auto;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -379,6 +379,7 @@ main.main-entry {
 #loading #loading-content p {
   margin-top: 10px;
   color: #fff;
+  text-align: center;
 }
 
 .agrupadores-lista {
@@ -395,4 +396,81 @@ main.main-entry {
 
 .agrupadores-lista p:hover {
   background-color: #384f7C!important;
+}
+
+#login_box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+#hub > p {
+  text-align: center;
+  background: #e5e5e5;
+  color: #383838;
+  padding: 10px;
+  border-radius: 15px 0;
+}
+
+#hub .link {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 700;
+  padding: 15px 0 0;
+  margin: 20px 0 0;
+}
+
+#hub .link svg {
+  font-size: 30px;
+  margin-bottom: 10px;
+}
+
+#hub div div .link,
+#hub div div .link p,
+#hub div div .link svg path {
+  transition: all 200ms ease-in;
+}
+
+#hub div div .link:hover,
+#hub div div .link:hover p,
+#hub div div .link:hover svg path {
+  transition: all 200ms ease-out;
+}
+
+#hub div div:nth-child(1) .link p {
+  color: #304575;
+}
+
+#hub div div:nth-child(1) .link svg path {
+  fill: #304575;
+}
+
+#hub div div:nth-child(2) .link p {
+  color: #1e4b10;
+}
+
+#hub div div:nth-child(2) .link svg path {
+  fill: #1e4b10;
+}
+
+#hub div div:nth-child(1) .link:hover {
+  background: #304575;
+}
+
+#hub div div:nth-child(2) .link:hover {
+  background: #1e4b10;
+}
+
+#hub div div .link:hover p {
+  color: #fff;
+}
+
+#hub div div .link:hover svg path {
+  fill: #fff;
 }
