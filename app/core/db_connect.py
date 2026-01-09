@@ -1,4 +1,6 @@
 from flask_sqlalchemy import SQLAlchemy
+import urllib.parse
+
 import os
 
 db = SQLAlchemy()
@@ -13,7 +15,7 @@ PLUGIN = os.getenv('DB_PLUGIN', 'mysqlconnector')
 
 try:
     filePass = open('/run/secrets/db-password', 'r')
-    PASSWORD = filePass.read()
+    PASSWORD = urllib.parse.quote_plus(filePass.read())
 except:
     PASSWORD = os.getenv('DB_PASS')
 
