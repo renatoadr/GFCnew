@@ -7,7 +7,8 @@ class Conta(db.Model):
 
     id_conta = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id_empreendimento = db.Column(db.Integer, nullable=False)
-    id_empreed_elonet = db.Column(db.Integer, nullable=True)
+    id_empreed_elonet = db.Column(db.Integer, nullable=False)
+    id_conta_elonet = db.Column(db.Integer, autoincrement=True)
     mes_vigencia = db.Column(db.String(2), nullable=False)
     ano_vigencia = db.Column(db.String(4), nullable=False)
     dt_carga = db.Column(

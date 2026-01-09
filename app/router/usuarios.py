@@ -38,6 +38,7 @@ def abrir_cad_usuario():
 
 
 @usuarios_bp.route('/cadastrar_usuario', methods=['POST'])
+@login_required
 def cadastrar_usuarios():
     user = getForm()
 
@@ -78,6 +79,7 @@ def editar_usuarios():
 
 
 @usuarios_bp.route('/salvar_alteracao_usuario', methods=['POST'])
+@login_required
 def salvar_alteracao_usuarios():
     user = getForm()
     sUs = get_user_logged()
@@ -124,6 +126,7 @@ def salvar_alteracao_usuarios():
 
 
 @usuarios_bp.route('/excluir_usuario')
+@login_required
 def excluir_usuarios():
     idUser = request.args.get('id')
     cliC = usuarioController()
@@ -132,6 +135,7 @@ def excluir_usuarios():
 
 
 @usuarios_bp.route('/minha-conta')
+@login_required
 def minha_conta():
     sUs = get_user_logged() if has_user_logged() else get_user_logged_mobile()
     ctrlUser = usuarioController()
@@ -142,7 +146,7 @@ def minha_conta():
         ctrlBanco = bancoController()
         bancos = ctrlBanco.lista_bancos()
 
-    return render_template("usuario.html", user=usuario, bancos=bancos, tpl='conta')
+    return render_template("usuario.html", user=usuario, bancos=bancos, tpl='conta', hideVig=True)
 
 
 def getForm() -> usuario:

@@ -47,7 +47,19 @@
               <i class="fa-solid fa-bars fa-2x text-white"></i>
             </button>
             <ul class="submenu" id="submenu_perfil">
-              <li><a class="dropdown-item" href="/minha-conta">Conta</a></li>
+              <li>
+                <a class="dropdown-item" href="/minha-conta">
+                  <i class="fa-solid fa-user-gear small me-1"></i>
+                  Conta
+                </a>
+              </li>
+              <li>
+                <a class="dropdown-item text-info-emphasis"
+                  href="https://service.elonethabitacao.com.br/SIAR/site/login" target="_blank">
+                  <i class="fa-solid fa-arrow-up-right-from-square small me-1"></i>
+                  Gestão de carteira
+                </a>
+              </li>
               <li>
                 <a href="{{'/logout_m' if session.has_user_mobile_logged else '/logout'}}"
                   class="btn btn-danger btn-sm w-100">

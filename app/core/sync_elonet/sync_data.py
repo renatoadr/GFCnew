@@ -153,7 +153,7 @@ class SyncDataElonet:
             data,
             torre,
             novaTorre,
-            DomainElonetEnum.TORRE,
+            DomainElonetEnum.TORRES,
             campos_ignorados=['id_empreed_elonet', 'id_torre_elonet']
         )
 
@@ -168,20 +168,23 @@ class SyncDataElonet:
         unidade = Unidade.query.filter(
             and_(
                 Unidade.id_empreed_elonet == data['id_empreed_elonet'],
-                Unidade.id_unidade_elonet == data['id_unidade_elonet']
+                Unidade.id_unidade_elonet == data['id_registro'],
+                Unidade.id_torre_elonet == data['id_torre_elonet']
             )).first()
 
         novaUnidade = Unidade()
         if not unidade:
             novaUnidade.id_empreed_elonet = data['id_empreed_elonet']
-            novaUnidade.id_unidade_elonet = data['id_unidade_elonet']
+            novaUnidade.id_unidade_elonet = data['id_registro']
+            novaUnidade.id_torre_elonet = data['id_torre_elonet']
             logger.info(
-                f'Unidade com ID Elonet {data["id_unidade_elonet"]} não encontrada.')
+                f'Unidade com ID Elonet {data["id_registro"]} não encontrada.')
         else:
             novaUnidade.id_empreed_elonet = unidade.id_empreed_elonet
             novaUnidade.id_unidade_elonet = unidade.id_unidade_elonet
+            novaUnidade.id_torre_elonet = unidade.id_torre_elonet
             novaUnidade.id_unidade = unidade.id_unidade
-            logger.info(f'Unidade encontrada: {unidade.nm_unidade}')
+            logger.info(f'Unidade encontrada: {unidade.id_unidade}')
 
         data['cpf_cnpj_comprador'] = re.sub(r'\D', '', data.get(
             'cpf_cnpj_comprador')) if data.get('cpf_cnpj_comprador') else None
@@ -190,28 +193,32 @@ class SyncDataElonet:
             data,
             unidade,
             novaUnidade,
-            DomainElonetEnum.UNIDADE,
-            campos_ignorados=['id_empreed_elonet', 'id_unidade_elonet']
+            DomainElonetEnum.UNIDADES,
+            campos_ignorados=[
+                'id_empreed_elonet',
+                'id_unidade_elonet',
+                'id_registro'
+            ]
         )
 
         if not unidade:
-            logger.info(f'Nova unidade criada: {novaUnidade.nm_unidade}')
+            logger.info(f'Nova unidade criada: {novaUnidade.id_unidade}')
         else:
             logger.info(
-                f'Unidade atualizada com sucesso: {novaUnidade.nm_unidade}')
+                f'Unidade atualizada com sucesso: {novaUnidade.id_unidade}')
 
     def processarContas(self, data):
         logger.info('Processando dados de Contas...')
 
         conta = Conta.query.filter(
             Conta.id_empreed_elonet == data['id_empreed_elonet'],
-            Conta.id_conta_elonet == data['id_conta_elonet']
+            Conta.id_conta_elonet == data['id_registro']
         ).first()
 
         novaConta = Conta()
         if not conta:
             novaConta.id_empreed_elonet = data['id_empreed_elonet']
-            novaConta.id_conta_elonet = data['id_conta_elonet']
+            novaConta.id_conta_elonet = data['id_registro']
             logger.info(
                 f'Conta com ID Elonet {data["id_empreed_elonet"]} não encontrada.')
         else:
@@ -232,8 +239,12 @@ class SyncDataElonet:
             data,
             conta,
             novaConta,
-            DomainElonetEnum.CONTA,
-            campos_ignorados=['id_empreed_elonet', 'id_conta_elonet']
+            DomainElonetEnum.CONTAS,
+            campos_ignorados=[
+                'id_empreed_elonet',
+                'id_conta_elonet',
+                'id_registro'
+            ]
         )
 
         if not conta:

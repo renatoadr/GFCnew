@@ -20,7 +20,7 @@ def login_required(fn):
         if not has_user_logged():
             return redirect(url_for('inicio.login', next=request.url))
         user = get_user_logged()
-        if (user.logged_in + timedelta(minutes=15)) < datetime.now():
+        if (user.logged_in + timedelta(minutes=30)) < datetime.now():
             logout_user()
             return redirect('/')
         else:
