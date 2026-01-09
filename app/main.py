@@ -80,11 +80,11 @@ if __name__ == "main":
         app.run(
             port=os.getenv("FLASK_APP_PORT", 5000),
             use_reloader=os.getenv("FLASK_USE_RELOADER", True),
-            host=os.getenv("FLASK_APP_HOST", "127.0.0.1")
+            host=os.getenv("FLASK_APP_HOST", "0.0.0.0")
         )
         logger.info('Aplicação rodando...')
         logger.info(f'=== SERVIDOR GFC INICIADO ===')
-        logger.info(f'URL: http://{os.getenv("FLASK_APP_HOST", "127.0.0.1")
+        logger.info(f'URL: http://{os.getenv("FLASK_APP_HOST", "0.0.0.0")
                                    }:{os.getenv("FLASK_APP_PORT", 5000)}')
         logger.info(f'==============================')
     except Exception as e:
