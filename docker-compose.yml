@@ -23,7 +23,7 @@ services:
       - dbnet
 
   app:
-    image: gfcapp:1.10.0.1
+    image: gfcapp:1.11.0.0
     restart: always
     build:
       context: .
