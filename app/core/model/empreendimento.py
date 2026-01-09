@@ -1,4 +1,4 @@
-from app.utils import logger
+from utils import logger
 from core.db_connect import db
 
 
