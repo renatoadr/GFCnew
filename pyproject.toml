@@ -1,10 +1,10 @@
 [project]
 name = "GFC"
-version = "1.11.3.0"
+version = "1.11.4.0"
 authors = [
     { name = "Thiago Adriano", email = "thiago.s.adriano@gmail.com" },
     { name = "Renato Adriano", email = "renato.adri51@gmail.com" },
 ]
 description = "Sistema GFC tem o objetivo de gerar relatórios do andamento de construções prediais"
 [tool]
-last_build = "2026-01-09 11:44:36"
+last_build = "2026-01-11 17:32:11"
