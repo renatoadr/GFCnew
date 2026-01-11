@@ -108,10 +108,16 @@ class SyncDataElonet:
             logger.info(
                 f'Empreendimento encontrado: {empreendimento.nm_empreendimento}')
 
+        novoEmpreendimento.indice_garantia = data.get(
+            'indice_garantia') or 0.01
+        nomes = data.get('nm_empreendimento').strip().split(' ')
+        apelido = ''.join([palavra[0] for palavra in nomes if palavra])
+        novoEmpreendimento.apelido = apelido.upper()
+
         data['cep'] = re.sub(r'\D', '', data.get(
             'cep')) if data.get('cep') else None
         data['previsao_entrega'] = datetime.strptime(data.get(
-            'previsao_entrega'), '%Y-%m-%d') if data.get('previsao_entrega') else None
+            'previsao_entrega'), '%Y-%m-%d').date() if data.get('previsao_entrega') else None
 
         self.__processarDados__(
             data,
@@ -139,12 +145,22 @@ class SyncDataElonet:
 
         novaTorre = Torre()
         if not torre:
+            emp = Empreendimento.query.filter(
+                Empreendimento.id_empreed_elonet == data['id_empreed_elonet']
+            ).first()
+            if not emp:
+                logger.info(
+                    f'Empreendimento com ID Elonet {data["id_empreed_elonet"]} não encontrado.')
+                return
+            novaTorre.id_empreendimento = emp.id_empreendimento
             novaTorre.id_empreed_elonet = data['id_empreed_elonet']
             novaTorre.id_torre_elonet = data['id_torre_elonet']
+
             logger.info(
                 f'Torre com ID Elonet {data["id_torre_elonet"]} não encontrada.')
         else:
             novaTorre.id_empreed_elonet = torre.id_empreed_elonet
+            novaTorre.id_empreendimento = torre.id_empreendimento
             novaTorre.id_torre_elonet = torre.id_torre_elonet
             novaTorre.id_torre = torre.id_torre
             logger.info(f'Torre encontrada: {torre.nm_torre}')
@@ -165,29 +181,62 @@ class SyncDataElonet:
     def processarUnidades(self, data):
         logger.info('Processando dados de Unidades...')
 
+        torre = Torre.query.filter(
+            and_(
+                Torre.id_empreed_elonet == data['id_empreed_elonet'],
+                Torre.id_torre_elonet == data['id_torre_elonet']
+            )
+        ).first()
+
+        if not torre:
+            logger.info(
+                f'Torre com ID Elonet {data["id_torre_elonet"]} para empreendimento {data['id_empreed_elonet']} não encontrado.')
+            return
+
         unidade = Unidade.query.filter(
             and_(
                 Unidade.id_empreed_elonet == data['id_empreed_elonet'],
-                Unidade.id_unidade_elonet == data['id_registro'],
-                Unidade.id_torre_elonet == data['id_torre_elonet']
+                Unidade.id_torre_elonet == data['id_torre_elonet'],
+                Unidade.unidade == data['unidade'],
+                Unidade.ac_historico == None
             )).first()
 
         novaUnidade = Unidade()
+
+        chaves = data.get('vl_chaves') or 0.0
+        preChaves = data.get('vl_pre_chaves') or 0.0
+        posChaves = data.get('vl_pos_chaves') or 0.0
+
+        novaUnidade.vl_receber = chaves + preChaves + posChaves
+
         if not unidade:
+            now = datetime.now()
             novaUnidade.id_empreed_elonet = data['id_empreed_elonet']
-            novaUnidade.id_unidade_elonet = data['id_registro']
+            novaUnidade.id_empreendimento = torre.id_empreendimento
             novaUnidade.id_torre_elonet = data['id_torre_elonet']
+            novaUnidade.id_torre = torre.id_torre
+            novaUnidade.unidade = data['unidade']
+            novaUnidade.mes_vigencia = str(now.month).zfill(2)
+            novaUnidade.ano_vigencia = str(now.year)
+
             logger.info(
                 f'Unidade com ID Elonet {data["id_registro"]} não encontrada.')
         else:
             novaUnidade.id_empreed_elonet = unidade.id_empreed_elonet
-            novaUnidade.id_unidade_elonet = unidade.id_unidade_elonet
+            novaUnidade.id_empreendimento = unidade.id_empreendimento
             novaUnidade.id_torre_elonet = unidade.id_torre_elonet
-            novaUnidade.id_unidade = unidade.id_unidade
+            novaUnidade.id_torre = unidade.id_torre
+            novaUnidade.mes_vigencia = unidade.mes_vigencia
+            novaUnidade.ano_vigencia = unidade.ano_vigencia
+            unidade.ac_historico = 'EDITADO_SINC'
+            unidade.save()
             logger.info(f'Unidade encontrada: {unidade.id_unidade}')
 
         data['cpf_cnpj_comprador'] = re.sub(r'\D', '', data.get(
             'cpf_cnpj_comprador')) if data.get('cpf_cnpj_comprador') else None
+
+        data['status'] = data.get(
+            'status_financeiro').capitalize() if data.get('status_financeiro') else None
 
         self.__processarDados__(
             data,
@@ -197,9 +246,18 @@ class SyncDataElonet:
             campos_ignorados=[
                 'id_empreed_elonet',
                 'id_unidade_elonet',
-                'id_registro'
+                'id_registro',
+                'unidade'
             ]
         )
+
+        numUnidade = int(data.get('unidade')) if data.get(
+            'unidade') and data.get('unidade').isdigit() else None
+        if torre.num_apt_um_andar_um is None or torre.num_apt_um_andar_um > numUnidade:
+            torre.num_apt_um_andar_um = numUnidade
+        if torre.vl_unidade is None or torre.vl_unidade > novaUnidade.vl_unidade:
+            torre.vl_unidade = novaUnidade.vl_unidade
+        torre.save()
 
         if not unidade:
             logger.info(f'Nova unidade criada: {novaUnidade.id_unidade}')
@@ -217,14 +275,31 @@ class SyncDataElonet:
 
         novaConta = Conta()
         if not conta:
+            emp = Empreendimento.query.filter(
+                Empreendimento.id_empreed_elonet == data['id_empreed_elonet']
+            ).first()
+            if not emp:
+                logger.info(
+                    f'Empreendimento com ID Elonet {data["id_empreed_elonet"]} não encontrado.')
+                return
+            novaConta.id_empreendimento = emp.id_empreendimento
             novaConta.id_empreed_elonet = data['id_empreed_elonet']
             novaConta.id_conta_elonet = data['id_registro']
+            novaConta.vl_aporte_construtora = 0
+            novaConta.vl_pagto_obra = 0
+            novaConta.vl_pagto_rh = 0
+            novaConta.vl_saldo = 0
             logger.info(
                 f'Conta com ID Elonet {data["id_empreed_elonet"]} não encontrada.')
         else:
             novaConta.id_empreed_elonet = conta.id_empreed_elonet
+            novaConta.id_empreendimento = conta.id_empreendimento
             novaConta.id_conta_elonet = conta.id_conta_elonet
             novaConta.id_conta = conta.id_conta
+            novaConta.vl_aporte_construtora = conta.vl_aporte_construtora
+            novaConta.vl_pagto_obra = conta.vl_pagto_obra
+            novaConta.vl_pagto_rh = conta.vl_pagto_rh
+            novaConta.vl_saldo = conta.vl_saldo
             logger.info(f'Conta encontrada: {conta.id_empreed_elonet}')
 
         if data.get('mes_referencia') is not None:
@@ -232,8 +307,8 @@ class SyncDataElonet:
             data['ano_vigencia'] = ref[0]
             data['mes_vigencia'] = ref[1]
 
-        data['data_registro'] = datetime.strptime(data.get(
-            'data_registro'), '%Y-%m-%d').date() if data.get('data_registro') else None
+        data['dt_carga'] = datetime.strptime(data.get(
+            'data_registro'), '%Y-%m-%d') if data.get('data_registro') else None
 
         self.__processarDados__(
             data,
@@ -246,6 +321,12 @@ class SyncDataElonet:
                 'id_registro'
             ]
         )
+
+        aportes = novaConta.vl_liberacao + \
+            novaConta.vl_aporte_construtora + novaConta.vl_receita_recebiveis
+        pagamentos = novaConta.vl_pagto_obra + novaConta.vl_pagto_rh
+        novaConta.vl_diferenca = aportes - pagamentos - novaConta.vl_saldo
+        novaConta.save()
 
         if not conta:
             logger.info(f'Nova conta criada: {novaConta}')

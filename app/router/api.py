@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from core.request_bot import RequestBot
 from controller.clienteController import clienteController
 from controller.agendaController import agendaController
 from utils.security import login_required_api

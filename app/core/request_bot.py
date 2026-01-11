@@ -34,7 +34,7 @@ class RequestBot:
             response = self.session.post(
                 f"{self.url}/{path}",
                 timeout=60,
-                allow_redirects=False,
+                allow_redirects=True,
                 json=body,
                 verify=False
             )

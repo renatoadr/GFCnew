@@ -4,6 +4,7 @@ from utils.logger import logger
 
 class Torre(db.Model):
     __tablename__ = "tb_torres"
+
     id_torre = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id_empreendimento = db.Column(db.Integer, nullable=False)
     id_torre_elonet = db.Column(db.Integer, nullable=True)

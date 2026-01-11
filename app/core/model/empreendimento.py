@@ -29,7 +29,6 @@ class Empreendimento(db.Model):
     indice_garantia = db.Column(db.Numeric(3, 2), nullable=False)
     previsao_entrega = db.Column(db.Date, nullable=False)
     cod_banco = db.Column(db.Integer, nullable=True)
-    id_empreed_elonet = db.Column(db.Integer, nullable=True)
 
     def save(self):
         try:

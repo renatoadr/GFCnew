@@ -78,6 +78,8 @@ ENGINE = MyISAM;
 CREATE TABLE  IF NOT EXISTS `tb_contas` (
   `id_conta` INT AUTO_INCREMENT NOT NULL,
   `id_empreendimento` INT NOT NULL,
+  `id_empreed_elonet` INT NULL,
+  `id_conta_elonet` INT NULL,
   `mes_vigencia` VARCHAR(2) NOT NULL,
   `ano_vigencia` VARCHAR(4) NOT NULL,
   `dt_carga` DATETIME NULL,
@@ -93,6 +95,7 @@ CREATE TABLE  IF NOT EXISTS `tb_contas` (
 ENGINE = InnoDB;
 CREATE TABLE  IF NOT EXISTS `tb_empreendimentos` (
   `id_empreendimento` INT AUTO_INCREMENT NOT NULL,
+  `id_empreed_elonet` INT NULL,
   `nm_empreendimento` VARCHAR(100) NULL,
   `apelido` VARCHAR(10) NULL,
   `nm_incorporador` VARCHAR(100) NULL,
@@ -198,12 +201,14 @@ ENGINE = InnoDB;
 CREATE TABLE  IF NOT EXISTS `tb_torres` (
   `id_torre` INT AUTO_INCREMENT NOT NULL,
   `id_empreendimento` INT NOT NULL,
+  `id_empreed_elonet` INT NULL,
+  `id_torre_elonet` INT NULL,
   `nm_torre` VARCHAR(20) NOT NULL,
   `qt_unidade` INT NOT NULL,
   `qt_andar` INT NOT NULL,
   `qt_coberturas` INT NULL,
   `prefix_cobertura` VARCHAR(20) NULL,
-  `num_apt_um_andar_um` INT NOT NULL,
+  `num_apt_um_andar_um` INT NULL,
   `vl_unidade` DECIMAL(15,2) NULL,
   `vl_cobertura` DECIMAL(15,2) NULL,
    PRIMARY KEY (`id_torre`)
@@ -213,6 +218,8 @@ CREATE TABLE  IF NOT EXISTS `tb_unidades` (
   `id_unidade` INT AUTO_INCREMENT NOT NULL,
   `id_empreendimento` INT NOT NULL,
   `id_torre` INT NOT NULL,
+  `id_empreed_elonet` INT NULL,
+  `id_torre_elonet` INT NULL,
   `unidade` VARCHAR(15) NOT NULL,
   `mes_vigencia` VARCHAR(2) NOT NULL,
   `ano_vigencia` VARCHAR(4) NOT NULL,
@@ -256,7 +263,7 @@ CREATE TABLE `tb_sinapi_item` (
   KEY `idx_sinapi_item_desc` (`desc_item`(250)),
   KEY `idx_sinapi_item_comp_dt` (`cod_composicao`,`dt_vigencia`),
   KEY `idx_sinapi_item_cod_comp_dt` (`cod_item`,`cod_composicao`,`dt_vigencia`)
-) ENGINE=MyISAM AUTO_INCREMENT=311360 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE TABLE `tb_sinapi_custo` (
   `id` int NOT NULL AUTO_INCREMENT,
   `dt_criacao` date NOT NULL,
@@ -292,14 +299,14 @@ CREATE TABLE `tb_sinapi_custo` (
   `vl_to` decimal(10,2) NOT NULL,
   `dt_emissao` date NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=102517 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE TABLE `tb_opcoes` (
   `id` int NOT NULL AUTO_INCREMENT,
   `chave` varchar(40) NOT NULL,
   `valor` text,
   PRIMARY KEY (`id`),
   UNIQUE KEY `tb_opcoes_chave_unique` (`chave`)
-) ENGINE=MyISAM AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE TABLE `tb_itens_produtos` (
   `id` int NOT NULL AUTO_INCREMENT,
   `id_cat` int NOT NULL,
@@ -308,7 +315,7 @@ CREATE TABLE `tb_itens_produtos` (
   `unidade` varchar(10) DEFAULT NULL,
   `ativo` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=372 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE TABLE `tb_categorias` (
   `id` int NOT NULL AUTO_INCREMENT,
   `id_cat_pai` int DEFAULT NULL,
@@ -318,7 +325,16 @@ CREATE TABLE `tb_categorias` (
   PRIMARY KEY (`id`),
   KEY `tb_categorias_agrupador_IDX` (`agrupador`) USING BTREE,
   KEY `tb_categorias_descricao_IDX` (`descricao`) USING BTREE
-) ENGINE=MyISAM AUTO_INCREMENT=67 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `tb_sync_elonet` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `chave_dominio` varchar(50) NOT NULL,
+  `nm_campo` varchar(100) NOT NULL,
+  `valor_antigo` text,
+  `novo_valor` text,
+  `ts_sync` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE INDEX `idx_medicoes`
 ON `tb_medicoes` (
   `id_empreendimento` ASC,

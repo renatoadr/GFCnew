@@ -4,10 +4,10 @@ from utils.logger import logger
 
 class Unidade(db.Model):
     __tablename__ = "tb_unidades"
+
     id_unidade = db.Column(db.Integer, primary_key=True, autoincrement=True)
     id_empreendimento = db.Column(db.Integer, nullable=False)
     id_torre = db.Column(db.Integer, nullable=False)
-    id_unidade_elonet = db.Column(db.Integer, nullable=True)
     id_torre_elonet = db.Column(db.Integer, nullable=True)
     id_empreed_elonet = db.Column(db.Integer, nullable=True)
     unidade = db.Column(db.String(15), nullable=False)
