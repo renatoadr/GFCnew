@@ -4,7 +4,7 @@ services:
     container_name: mysql_db
     restart: always
     healthcheck:
-      test: ['CMD-SHELL', 'mysqladmin ping -h 127.0.0.1 --password="$$(cat /run/secrets/db-password)" --silent']
+      test: ["CMD-SHELL", 'mysqladmin ping -h 127.0.0.1 --password="$$(cat /run/secrets/db-password)" --silent']
       interval: 3s
       retries: 5
       start_period: 30s
@@ -30,6 +30,12 @@ services:
       dockerfile: Dockerfile
     container_name: app_gfc
     environment:
+      MPLBACKEND: "agg"
+      FLASK_ENV: "production"
+      FLASK_DEBUG: false
+      WERKZEUG_RUN_MAIN: false
+      PYDEVD_DISABLE_FILE_VALIDATION: 1
+      SQLALCHEMY_TRACK_MODIFICATIONS: false
       DB_HOST: db
       DB_USER: "root"
       DB_NAME: "db_gfc"

@@ -55,6 +55,7 @@ def lista_relatorios():
 
     gerC = geralController()
     diretorio = os.path.join(current_app.config['DIRSYS'], 'Relatorios')
+
     arqS = gerC.listar_arquivos_com_prefixo(
         os.path.normpath(diretorio), apelido)
 

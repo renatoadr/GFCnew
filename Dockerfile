@@ -2,8 +2,6 @@ FROM python:3.13-bullseye
 
 WORKDIR /app_gfc
 
-ENV MPLBACKEND=agg
-
 RUN apt-get update -y
 
 RUN apt-get upgrade -y

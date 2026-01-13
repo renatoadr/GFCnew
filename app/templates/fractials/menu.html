@@ -22,8 +22,8 @@
             <div class="col-9">
               <label for="vigencia" class="form-label small text-light m-0">vigência</label>
               <input type="month" name="vigencia" id="vigencia"
-                value="{{ session.vigencia[0] }}-{{ session.vigencia[1] }}" class="form-control form-control-sm"
-                min="2000-01" max="2050-12">
+                value="{{ session.vigencia[0] if session.vigencia[0] else '' }}-{{ session.vigencia[1] if session.vigencia[1] else '' }}"
+                class="form-control form-control-sm" min="2000-01" max="2050-12">
             </div>
             <div class="col-3 align-content-end">
               <button type="submit" class="btn btn-primary btn-sm">

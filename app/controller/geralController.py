@@ -3,6 +3,7 @@
 
 import os
 from flask import send_from_directory, current_app
+from utils.logger import logger
 
 
 class geralController:
@@ -67,8 +68,16 @@ class geralController:
         if not os.path.exists(diretorio):
             os.makedirs(diretorio)
 
-        return [arquivo for arquivo in os.listdir(diretorio)
-                if os.path.isfile(os.path.join(diretorio, arquivo)) and arquivo.startswith(prefixo)]
+        docs = os.listdir(diretorio)
+        result = []
+        logger.debug(
+            f"Listando arquivos no diretório: {diretorio} com prefixo: {prefixo}")
+        logger.debug(f"Arquivos encontrados: {docs}")
+        for arquivo in docs:
+            if arquivo.startswith(prefixo) and os.path.isfile(os.path.join(diretorio, arquivo)):
+                result.append(arquivo)
+        logger.debug(f"Arquivos filtrados: {result}")
+        return result
 
     def download_arquivo(self, arquivo):
         diretorio = os.path.join(current_app.config['DIRSYS'], 'Relatorios')
