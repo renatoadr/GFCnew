@@ -290,10 +290,10 @@ def processarPlanilha(file):
     sheet[IDX_PLAN_SINAPI.Data.value] = datetime.now().strftime('%d/%m/%Y')
     sheet[IDX_PLAN_SINAPI.NomeEmpreend.value] = empreend.getNmEmpreend()
     sheet[IDX_PLAN_SINAPI.DescPercentDiff.value] = 'Diferença entre orçamentos'
-    sheet[IDX_PLAN_SINAPI.DescTotalSinapi.value] = 'Orçamento SINAPI'
+    sheet[IDX_PLAN_SINAPI.DescTotalSinapi.value] = 'Orçamento SINAPI (França Part.)'
     sheet[IDX_PLAN_SINAPI.CabecalhoTotal.value] = 'Total Obra'
-    sheet[IDX_PLAN_SINAPI.CabecalhoUnitSinapi.value] = 'Custo unit Sinapi'
-    sheet[IDX_PLAN_SINAPI.CabecalhoTotalSinapi.value] = 'Total Sinapi'
+    sheet[IDX_PLAN_SINAPI.CabecalhoUnitSinapi.value] = 'Custo unit Sinapi (França Part.)'
+    sheet[IDX_PLAN_SINAPI.CabecalhoTotalSinapi.value] = 'Total Sinapi (França Part.)'
     sheet[IDX_PLAN_SINAPI.CabecalhoPercentDiff.value] = 'Diferença Orçamento'
 
     total = 0
