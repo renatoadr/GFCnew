@@ -154,7 +154,7 @@
                     </li>
 
                     <li>
-                      <a href="/consideracoes?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                      <a href="/consideracoes?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getApelido()}}"
                         data-bs-toggle="tooltip" data-bs-title="Considerações Finais">
                         <i class="fa-solid fa-clipboard-check"></i>
                       </a>
@@ -162,7 +162,7 @@
 
                     {% if e.getCodBanco() == 77%}
                     <li>
-                      <a href="/aspectos_obra?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}"
+                      <a href="/aspectos_obra?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getApelido()}}"
                         data-bs-toggle="tooltip" data-bs-title="Aspectos da Obra">
                         <i class="fa-regular fa-star-half-stroke"></i>
                       </a>
@@ -177,14 +177,14 @@
                     </li>
 
                     <li>
-                      <a href="/gerar_insumos_relatorios?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getNmEmpreend()}}&codBanco={{e.getCodBanco()}}"
+                      <a href="/gerar_insumos_relatorios?idEmpreend={{e.getIdEmpreend()}}&nmEmpreend={{e.getApelido()}}&codBanco={{e.getCodBanco()}}"
                         data-bs-toggle="tooltip" data-bs-title="Gerar insumos para o relatório">
                         <i class="fa-solid fa-chart-pie"></i>
                       </a>
                     </li>
 
                     <li>
-                      <a href="/lista_relatorios?idEmpreend={{e.getIdEmpreend()}}&apelido={{e.getNmEmpreend()}}&codBanco={{e.getCodBanco()}}"
+                      <a href="/lista_relatorios?idEmpreend={{e.getIdEmpreend()}}&apelido={{e.getApelido()}}&codBanco={{e.getCodBanco()}}"
                         data-bs-toggle="tooltip" data-bs-title="Relatórios">
                         <i class="fa-solid fa-file-contract"></i>
                       </a>

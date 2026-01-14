@@ -70,13 +70,13 @@ class geralController:
 
         docs = os.listdir(diretorio)
         result = []
-        logger.debug(
+        logger.info(
             f"Listando arquivos no diretório: {diretorio} com prefixo: {prefixo}")
-        logger.debug(f"Arquivos encontrados: {docs}")
+        logger.info(f"Arquivos encontrados: {docs}")
         for arquivo in docs:
             if arquivo.startswith(prefixo) and os.path.isfile(os.path.join(diretorio, arquivo)):
                 result.append(arquivo)
-        logger.debug(f"Arquivos filtrados: {result}")
+        logger.info(f"Arquivos filtrados: {result}")
         return result
 
     def download_arquivo(self, arquivo):
