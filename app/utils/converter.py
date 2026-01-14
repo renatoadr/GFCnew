@@ -56,4 +56,4 @@ def isNumber(value):
 
 
 def value_decimal(value: Decimal):
-    return value.quantize(Decimal('0.' + '0' * 2), rounding=ROUND_HALF_DOWN)
+    return Decimal(value or 0.0).quantize(Decimal('0.' + '0' * 2), rounding=ROUND_HALF_DOWN)
