@@ -239,6 +239,7 @@ def graf_orcamento_liberacao_valor(mes, ano):
         medS = medC.consultarOrcamentoPelaVigencia(
             IdEmpreend().get(), mes, ano)
         if medS:
+            medS.reverse()
             gerar_graf_orcamento_liberacao(
                 IdEmpreend().get(), mes, ano, 'valor', medS)
         else:

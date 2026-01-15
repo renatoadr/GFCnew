@@ -1,6 +1,7 @@
 # controller or business logic
 # Trata base de UNIDADES
 
+# from helpers.DebugRelatorioUnidade import DebugRelatorioUnidade
 from dto.unidade import unidade
 from utils.dbContext import MySql
 from datetime import datetime
@@ -385,6 +386,7 @@ class unidadeController:
                 vigNext, dataFinal, item, lista, changeInitDate)
 
     def gerarInsumoRelatorio(self, idEmpreend: int, dataInicio: datetime, dataFim: datetime) -> list[unidade]:
+        # debug = DebugRelatorioUnidade(idEmpreend, dataInicio, dataFim)
         query = f""" SELECT * FROM {MySql.DB_NAME}.tb_unidades uni
           WHERE uni.id_empreendimento = %s
           AND DATE(CONCAT(uni.ano_vigencia, '-', uni.mes_vigencia, '-01')) <= %s
@@ -416,6 +418,8 @@ class unidadeController:
                 format(dataFim, '%Y-%m-%d')
             )
         )
+
+        # debug.unidades = unidades
 
         if not unidades:
             return []
@@ -471,6 +475,8 @@ class unidadeController:
 
         print("Quantidade de unidades geradas", len(result), end="\n\n")
 
+        # debug.unidadesProcessadas = result
+
         for uni in result:
             if datetime(int(uni.getAnoVigencia()), int(uni.getMesVigencia()), 1) < dataInicio or datetime(int(uni.getAnoVigencia()), int(uni.getMesVigencia()), 1) > dataFim:
                 continue
@@ -505,6 +511,8 @@ class unidadeController:
                     "valorReceber": valorReceber
                 }
 
+        # debug.totais = totais
+
         for key, value in totais.items():
             vigencia = key.split('_')
             uni = unidade()
@@ -519,6 +527,9 @@ class unidadeController:
                   end="\n\n"
                   )
             totaisList.append(uni)
+
+        # debug.totaisProcessados = totaisList
+        # debug.save()
 
         return totaisList
 

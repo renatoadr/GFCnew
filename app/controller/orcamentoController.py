@@ -45,7 +45,7 @@ class orcamentoController:
         return listaOrcamentos
 
     def consultarOrcamentoPelaVigencia(self, idEmpreend, mes, ano):
-        query = f"SELECT id_orcamento, id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, item, orcado_valor, fisico_valor, fisico_percentual, fisico_saldo, financeiro_valor, financeiro_percentual, financeiro_saldo FROM {MySql.DB_NAME}.tb_orcamentos WHERE id_empreendimento = %s AND mes_vigencia = %s AND ano_vigencia = %s ORDER BY id_orcamento DESC"
+        query = f"SELECT id_orcamento, id_empreendimento, mes_vigencia, ano_vigencia, dt_carga, item, orcado_valor, fisico_valor, fisico_percentual, fisico_saldo, financeiro_valor, financeiro_percentual, financeiro_saldo FROM {MySql.DB_NAME}.tb_orcamentos WHERE id_empreendimento = %s AND mes_vigencia = %s AND ano_vigencia = %s ORDER BY id_orcamento ASC"
 
         lista = MySql.getAll(query, (idEmpreend, mes, ano))
         listaItens = []
