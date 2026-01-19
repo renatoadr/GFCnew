@@ -10,6 +10,23 @@ import pandas as pd
 class orcamentoController:
     __connection = None
 
+    def buscarSomaOrcamentoPorVigencia(self, idEmpreend, dataInicio, dataFIm):
+        query = f"""SELECT
+        CONCAT(t.mes_vigencia,'_',t.ano_vigencia) vigencia,
+        SUM(t.orcado_valor) total
+        FROM {MySql.DB_NAME}.tb_orcamentos t
+        WHERE t.id_empreendimento = %s
+        AND CAST(CONCAT(t.ano_vigencia, '-', t.mes_vigencia, '-', '01') AS DATE) BETWEEN %s AND %s
+        GROUP BY CAST(CONCAT(t.ano_vigencia,'-',t.mes_vigencia, '-', '01') AS DATE)
+        ORDER by CAST(CONCAT(t.ano_vigencia,'-',t.mes_vigencia, '-', '01') AS DATE)
+      """
+
+        lista = MySql.getAll(query, (idEmpreend, dataInicio, dataFIm))
+        resultado = {}
+        for x in lista:
+            resultado[x['vigencia']] = x['total']
+        return resultado
+
     def consultarOrcamentos(self, idEmpreend):
         self.__connection = MySql.connect()
         cursor = self.__connection.cursor()

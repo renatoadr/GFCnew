@@ -486,28 +486,25 @@ class unidadeController:
                 if uni.getStatus() == 'Estoque':
                     totais[key] = {
                         "valorUnidade": uni.getVlUnidade(),
-                        "valorPago": 0,
                         "valorReceber": 0
                     }
                 else:
                     totais[key] = {
-                        "valorUnidade": uni.getVlUnidade(),
-                        "valorPago": uni.getVlUnidade(),
+                        "valorUnidade": 0,
                         "valorReceber": uni.getVlReceber()
                     }
             else:
                 tt = totais[key]
-                valorUnidade = tt["valorUnidade"] + uni.getVlUnidade()
-
-                valorPago = tt["valorPago"]
+                valorUnidade = tt["valorUnidade"]
                 valorReceber = tt["valorReceber"]
-                if uni.getStatus() == 'Vendido':
-                    valorPago = tt["valorPago"] + uni.getVlUnidade()
-                    valorReceber = tt["valorReceber"] + uni.getVlReceber()
+
+                if uni.getStatus() == 'Estoque':
+                    valorUnidade = valorUnidade + uni.getVlUnidade()
+                else:
+                    valorReceber = valorReceber + uni.getVlReceber()
 
                 totais[key] = {
                     "valorUnidade": valorUnidade,
-                    "valorPago": valorPago,
                     "valorReceber": valorReceber
                 }
 
@@ -518,14 +515,8 @@ class unidadeController:
             uni = unidade()
             uni.setMesVigencia(vigencia[0])
             uni.setAnoVigencia(vigencia[1])
-            uni.setTtUnidade(value["valorUnidade"] - value["valorPago"])
-            uni.setTtPago(value["valorReceber"])
-            print("Unidade mapeada: ", {
-                  "Vigencia": vigencia,
-                  "ValorUnidade": value["valorUnidade"],
-                  "ValorPago": value["valorPago"]},
-                  end="\n\n"
-                  )
+            uni.setTtUnidade(value["valorUnidade"])
+            uni.setVlReceber(value["valorReceber"])
             totaisList.append(uni)
 
         # debug.totaisProcessados = totaisList

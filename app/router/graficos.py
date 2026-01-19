@@ -1,3 +1,5 @@
+from core.model.contabil_empreendimentos import ContabilEmpreendimentos
+from core.model.empreendimento import Empreendimento
 from utils.security import login_required
 from flask import Blueprint, request, render_template, send_file
 from controller.empreendimentoController import empreendimentoController
@@ -244,20 +246,20 @@ def graf_indices_garantia_I():
 
 def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInicio, anoInicio, mesFinal, anoFinal):
     geral = geralController()
-    empC = empreendimentoController()
-    empS = empC.consultarEmpreendimentoPeloId(idEmpreend)
+    empreend = Empreendimento.query.get(idEmpreend)
 
-    VlPlanoEmp = empS.getVlPlanoEmp()
-    IndiceGarantia = empS.getIndiceGarantia()
+    if not empreend:
+        return ''
 
-    uniC = unidadeController()
-    recS = uniC.gerarInsumoRelatorio(
-        idEmpreend,
-        datetime(int(anoInicio), int(mesInicio), 1),
-        datetime(int(anoFinal), int(mesFinal), 1)
-    )
+    contabeis = ContabilEmpreendimentos.query.filter(
+        ContabilEmpreendimentos.id_empreendimento == idEmpreend,
+        ContabilEmpreendimentos.dt_vigencia >= datetime(
+            int(anoInicio), int(mesInicio), 1).date(),
+        ContabilEmpreendimentos.dt_vigencia <= datetime(
+            int(anoFinal), int(mesFinal), 1).date()
+    ).order_by(ContabilEmpreendimentos.dt_vigencia).all()
 
-    if not recS:
+    if not contabeis:
         return ''
 
     plt.switch_backend('agg')
@@ -269,27 +271,23 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     vlrAnterior = 0
     varicao = 0
 
-    for u in recS:
-        x1.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
-        y1.append(IndiceGarantia if IndiceGarantia else 0.0)
-#        y2.append(round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2))
-#        vlrAtual = round((u.getTtPago() + u.getTtUnidade()) / VlPlanoEmp, 2)
-        valor = u.getTtPago() + u.getTtUnidade()
-        y2.append(round(VlPlanoEmp / valor if valor > 0 else 0, 2))
-        vlrAtual = round(VlPlanoEmp / valor if valor > 0 else 0, 2)
+    linhas = [0]
 
-        variacao = vlrAtual - vlrAnterior
-        vlrAnterior = vlrAtual
-# s       print(vlrAnterior, vlrAtual, variacao)
+    for cont in contabeis:
+        total = cont.vlr_liberado + cont.vlr_a_liberar
+        valorUnidade = cont.vlr_recebivel + cont.vlr_estoque
+        valoFinal = round(total / valorUnidade, 2)
+        x1.append(geral.formatammmaa(
+            str(cont.dt_vigencia.month), str(cont.dt_vigencia.year)))
+        y1.append(empreend.indice_garantia)
+        y2.append(valoFinal)
 
     linhas = [-0.1, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.00,
-              1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80]
-
+              1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80, 1.90, 2.0, 2.1, 2.2, 2.3]
     tamLinha = len(x1) - 1
     plt.hlines(linhas, 0, tamLinha, '#9feafc')
     plt.plot(x1, y1, label='Estipulado em contrato')
-    plt.plot(
-        x1, y2, label='Recebiveis + estoque - Variação no período: ' + str(variacao))
+    plt.plot(x1, y2, label='Recebiveis + estoque')
 
     annotationsy1 = y1
     annotationsy2 = y2
@@ -305,6 +303,7 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     for xi, yi, text in zip(x1, y1, annotationsy1):
         plt.annotate(text, xy=(xi, yi), xycoords='data',
                      xytext=(3, 10), textcoords='offset points')
+
     for xi, yi, text in zip(x1, y2, annotationsy2):
         plt.annotate(text, xy=(xi, yi), xycoords='data',
                      xytext=(3, -10), textcoords='offset points')
@@ -351,18 +350,15 @@ def graf_indices_garantia_II():
 
 def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInicio, anoInicio, mesFinal, anoFinal):
     geral = geralController()
-    empC = empreendimentoController()
-    empS = empC.consultarEmpreendimentoPeloId(idEmpreend)
-    VlPlanoEmp = empS.getVlPlanoEmp()
+    contabeis = ContabilEmpreendimentos.query.filter(
+        ContabilEmpreendimentos.id_empreendimento == idEmpreend,
+        ContabilEmpreendimentos.dt_vigencia >= datetime(
+            int(anoInicio), int(mesInicio), 1).date(),
+        ContabilEmpreendimentos.dt_vigencia <= datetime(
+            int(anoFinal), int(mesFinal), 1).date()
+    ).order_by(ContabilEmpreendimentos.dt_vigencia).all()
 
-    uniC = unidadeController()
-    recS = uniC.gerarInsumoRelatorio(
-        idEmpreend,
-        datetime(int(anoInicio), int(mesInicio), 1),
-        datetime(int(anoFinal), int(mesFinal), 1)
-    )
-
-    if not recS:
+    if not contabeis:
         return ''
 
     plt.switch_backend('agg')
@@ -371,19 +367,13 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
     y3 = []
     y4 = []
 
-    for u in recS:
-        x2.append(geral.formatammmaa(u.getMesVigencia(), u.getAnoVigencia()))
-        if u.getTtPago() > 0:
-            #           y3.append(round(u.getTtPago() / VlPlanoEmp, 2))
-            y3.append(round(VlPlanoEmp / u.getTtPago(), 2))
-        else:
-            y3.append(0.0)
-#        y4.append(round(u.getTtUnidade() / VlPlanoEmp, 2))
-
-        if u.getTtUnidade() > 0:
-            y4.append(round(VlPlanoEmp / u.getTtUnidade(), 2))
-        else:
-            y4.append(0.0)
+    for cont in contabeis:
+        x2.append(geral.formatammmaa(
+            str(cont.dt_vigencia.month), str(cont.dt_vigencia.year)))
+        y3.append(round(cont.vlr_recebivel /
+                        (cont.vlr_a_liberar + cont.vlr_liberado), 2))
+        y4.append(round(cont.vlr_estoque /
+                        (cont.vlr_a_liberar + cont.vlr_liberado), 2))
 
     linhas = [-0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.00,
               1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80]

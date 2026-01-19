@@ -335,6 +335,19 @@ CREATE TABLE `tb_sync_elonet` (
   `ts_sync` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
 ) ENGINE=MyISAM AUTO_INCREMENT=1 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE IF NOT EXISTS `tb_contabil_empreendimentos` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `id_empreendimento` int NOT NULL,
+  `id_empreendimento_elonet` int DEFAULT NULL,
+  `dt_criado` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `dt_vigencia` date NOT NULL,
+  `vlr_liberado` decimal(15,2) NOT NULL,
+  `vlr_a_liberar` decimal(15,2) NOT NULL,
+  `vlr_estoque` decimal(15,2) NOT NULL,
+  `vlr_recebivel` decimal(15,2) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `empreend_vigencia` (`id_empreendimento_elonet`,`dt_vigencia`)
+) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 CREATE INDEX `idx_medicoes`
 ON `tb_medicoes` (
   `id_empreendimento` ASC,
