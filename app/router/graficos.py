@@ -276,7 +276,7 @@ def gerar_graf_indices_garantia_I(idEmpreend, mesVigencia, anoVigencia, mesInici
     for cont in contabeis:
         total = cont.vlr_liberado + cont.vlr_a_liberar
         valorUnidade = cont.vlr_recebivel + cont.vlr_estoque
-        valoFinal = round(total / valorUnidade, 2)
+        valoFinal = round(valorUnidade / total, 2)
         x1.append(geral.formatammmaa(
             str(cont.dt_vigencia.month), str(cont.dt_vigencia.year)))
         y1.append(empreend.indice_garantia)
@@ -371,9 +371,9 @@ def gerar_graf_indices_garantia_II(idEmpreend, mesVigencia, anoVigencia, mesInic
         x2.append(geral.formatammmaa(
             str(cont.dt_vigencia.month), str(cont.dt_vigencia.year)))
         y3.append(round(cont.vlr_recebivel /
-                        (cont.vlr_a_liberar + cont.vlr_liberado), 2))
+                        (cont.vlr_estoque + cont.vlr_recebivel), 2))
         y4.append(round(cont.vlr_estoque /
-                        (cont.vlr_a_liberar + cont.vlr_liberado), 2))
+                        (cont.vlr_estoque + cont.vlr_recebivel), 2))
 
     linhas = [-0.1, 0.0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1.00,
               1.10, 1.20, 1.30, 1.40, 1.50, 1.60, 1.70, 1.80]
